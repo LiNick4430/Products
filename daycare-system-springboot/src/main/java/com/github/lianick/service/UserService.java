@@ -8,6 +8,7 @@ public interface UserService {
 
 	List<User> findAllUser();
 	User getUserById(Long id);
-	User getUserByAccount(String account);
+	User getUserByAccount(String account, String password);
 	
+	boolean login(String account, String password);
 }
