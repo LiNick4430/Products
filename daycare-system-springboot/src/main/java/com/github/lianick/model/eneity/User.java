@@ -11,10 +11,12 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Table;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "users")					// 指定資料表名稱為 "users"
 @EqualsAndHashCode(callSuper = true)	// 將 callSuper 設為 true，告訴 Lombok 在生成 equals() 和 hashCode() 時，也要包含父類別的欄位。
