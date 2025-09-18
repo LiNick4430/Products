@@ -26,8 +26,8 @@ public class User extends BaseEntity{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "user_id")
 	private Long userId;				// 系統產生的 流水編號
-	@Column(nullable = false)
-	private String name;				// 姓名
+	@Column(name = "user_name", nullable = false)
+	private String userName;				// 姓名
 	@Column(name = "national_id_no", nullable = false, unique = true)
 	private String nationalIdNo; 		// 身分證字號
 	@Column(nullable = false)
