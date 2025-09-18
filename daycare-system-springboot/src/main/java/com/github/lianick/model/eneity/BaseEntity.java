@@ -1,4 +1,4 @@
-package com.github.lianick.model;
+package com.github.lianick.model.eneity;
 
 import java.time.LocalDateTime;
 
@@ -10,7 +10,7 @@ import lombok.Data;
 
 @MappedSuperclass
 @Data
-public abstract class BaseModel {
+public abstract class BaseEntity {
 
 	@Column(name = "create_date",nullable = false, updatable = false)
 	private LocalDateTime createDate;		// 新增日期
