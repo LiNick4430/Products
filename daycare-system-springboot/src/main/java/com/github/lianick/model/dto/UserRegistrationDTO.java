@@ -7,16 +7,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+//User註冊時 用的 DTO
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDTO {
+public class UserRegistrationDTO {
 
-	private Long userId;				// 系統產生的 流水編號
-	private String name;				// 姓名
-	private String nationalIdNo; 		// 身分證字號
-	private LocalDateTime birthdate;	// 生日
+	private Long id;					// 對應 User.userId 
+	private String name;				// 對應 User.userName
+	private String idNumber; 			// 對應 User.nationalIdNo
+	private LocalDateTime birthday;		// 對應 User.birthdate
 	
 	private String registeredAddress;	// 戶籍地址
 	private String mailingAddress;		// 通訊地址
@@ -24,10 +25,7 @@ public class UserDTO {
 	private String phoneNumber;			// 手機號碼
 	
 	private String account;				// 帳號名稱
-	private String password;			// 密碼(hash)
+	private String password;			// 未加密的明文密碼 加密後 對應 User.password
 	
 	private String role;				// 帳號權限等級
-	
-	private Boolean isActive;			// 帳號是否已啟用 (Email驗證後設為true)
-	
 }
