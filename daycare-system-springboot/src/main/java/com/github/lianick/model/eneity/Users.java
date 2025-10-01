@@ -1,6 +1,8 @@
 package com.github.lianick.model.eneity;
 
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 
 import java.time.LocalDateTime;
@@ -52,6 +54,10 @@ public class Users extends BaseEntity {
 	
 	@Column(name = "login_date")
 	private LocalDateTime loginDate;	// 最後登入日期
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "role_id", nullable = false)
+	private Role role;
 	
 	@OneToOne(mappedBy = "users", fetch = FetchType.LAZY)	// mappedBy 意思是 告訴 JPA 去 User_Public 找 users, 他會 會定義外鍵 (user_id)
 	private User_Public publicInfo;		// 反向關聯：一個 Users 對應一個 User_Public
