@@ -39,5 +39,5 @@ public class Role extends BaseEntity{
 	@JoinTable(name = "role_permission",									// 指定中間表名稱
 				joinColumns = @JoinColumn(name = "role_id"),				// 本身在中間表的外鍵
 				inverseJoinColumns = @JoinColumn(name = "permission_id"))	// 對方在中間表的外鍵
-	private Set<Permission> permissions;
+	private Set<Permission> permissions;	// 儲存 該角色 所擁有的 權限集合
 }
