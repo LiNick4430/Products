@@ -27,26 +27,26 @@ public class Announcements extends BaseEntity{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "announcements_id")
-	private Long announcementsId;	// 公告 ID
+	private Long announcementsId;			// 公告 ID
 	
 	@Column(name = "title", nullable = false)
-	private String title;			// 公告 標題
+	private String title;					// 公告 標題
 	
 	@Column(name = "content", columnDefinition = "TEXT", nullable = false)
-	private String content;			// 公告 內容
+	private String content;					// 公告 內容
 	
 	@Column(name = "publish_date", nullable = false)
-	private LocalDateTime publishDate;	// 公告 實際發布時間
+	private LocalDateTime publishDate;		// 公告 實際發布時間
 	
 	@Column(name = "is_published", nullable = false)
-	private Boolean isPublished = false;		// 預設為未發布 (草稿)
+	private Boolean isPublished = false;	// 預設為未發布 (草稿)
 	
 	@Column(name = "expiry_date ")
-	private LocalDateTime expiryDate;	// 公告 到期日期 (可為 NULL)
+	private LocalDateTime expiryDate;		// 公告 到期日期 (可為 NULL)
 	
 	// 機構關聯 (多對一)
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "organization_id", nullable = false)	// 誰發布的
+	@JoinColumn(name = "organization_id", nullable = false)	// 哪一個 機構 發布的
 	private Organization organization;
 	
 }
