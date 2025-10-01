@@ -21,7 +21,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "role")
+@Table(name = "role")		// 角色 用於 RBAC
 public class Role extends BaseEntity{
 
 	@Id
@@ -29,10 +29,10 @@ public class Role extends BaseEntity{
 	@Column(name = "role_id")
 	private Long roleId;				// 角色 ID
 	
-	@Column(name = "role_name", unique = true, nullable = false)
+	@Column(name = "name", unique = true, nullable = false)
 	private String name;				// 角色 名
 	
-	@Column(name = "role_description")
+	@Column(name = "description")
 	private String description;			// 角色 描述
 	
 	@ManyToMany

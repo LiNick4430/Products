@@ -25,7 +25,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "users")					// 指定資料表名稱為 "users"
+@Table(name = "users")			// 指定資料表名稱為 "users" 帳號 相關
 public class Users extends BaseEntity {
 
 	@Id
@@ -62,10 +62,10 @@ public class Users extends BaseEntity {
 	
 	// 反向關聯：一個 Users 對應一個 User_Public
 	@OneToOne(mappedBy = "users", fetch = FetchType.LAZY)	// mappedBy 意思是 告訴 JPA 去 User_Public 找 users, 他會 會定義外鍵 (user_id)
-	private User_Public publicInfo;		
+	private UserPublic publicInfo;		
 	
 	// 反向關聯：一個 Users 對應一個 User_Admin
 	@OneToOne(mappedBy = "users", fetch = FetchType.LAZY)
-	private User_Admin adminInfo;		
+	private UserAdmin adminInfo;		
 	
 }

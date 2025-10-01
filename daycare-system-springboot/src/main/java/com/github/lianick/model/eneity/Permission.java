@@ -16,7 +16,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "permission")
+@Table(name = "permission")		// 權限 用於 RBAC
 public class Permission extends BaseEntity{
 
 	@Id
@@ -24,9 +24,9 @@ public class Permission extends BaseEntity{
 	@Column(name = "permission_id")
 	private Long permissionId;				// 權限 ID
 	
-	@Column(name = "permission_name", unique = true, nullable = false)
+	@Column(name = "name", unique = true, nullable = false)
 	private String name;					// 權限 名稱
 	
-	@Column(name = "permission_description")
+	@Column(name = "description")
 	private String description;				// 權限 描述
 }
