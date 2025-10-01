@@ -55,14 +55,17 @@ public class Users extends BaseEntity {
 	@Column(name = "login_date")
 	private LocalDateTime loginDate;	// 最後登入日期
 	
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "role_id", nullable = false)
+	// 多對一關係，定義 Role 的外鍵
+	@ManyToOne(fetch = FetchType.EAGER)				// 建議 EAGER，因為登入時通常需要知道角色
+	@JoinColumn(name = "role_id", nullable = false)	// <--- 外鍵欄位名稱，不可為空
 	private Role role;
 	
+	// 反向關聯：一個 Users 對應一個 User_Public
 	@OneToOne(mappedBy = "users", fetch = FetchType.LAZY)	// mappedBy 意思是 告訴 JPA 去 User_Public 找 users, 他會 會定義外鍵 (user_id)
-	private User_Public publicInfo;		// 反向關聯：一個 Users 對應一個 User_Public
+	private User_Public publicInfo;		
 	
+	// 反向關聯：一個 Users 對應一個 User_Admin
 	@OneToOne(mappedBy = "users", fetch = FetchType.LAZY)
-	private User_Admin adminInfo;		// 反向關聯：一個 Users 對應一個 User_Admin
+	private User_Admin adminInfo;		
 	
 }
