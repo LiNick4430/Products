@@ -1,3 +1,4 @@
+use daycare;
 -- Table 基本資料填入
 
 -- Table role permission role_permission 為了 RBAC(Role-Based Access Control)
