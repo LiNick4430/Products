@@ -24,22 +24,22 @@ public class Organization extends BaseEntity {
 	@Column(name = "organization_id")
 	private Long organizationId;	// 機構 ID
 	
-	@Column(name = "name", unique = true, nullable = false)
+	@Column(name = "organization_name", unique = true, nullable = false)
 	private String name;			// 機構 名稱
 	
-	@Column(name = "description")
+	@Column(name = "organization_description")
 	private String description;		// 機構 介紹
 	
-	@Column(name = "address", nullable = false)
+	@Column(name = "organization_address", nullable = false)
 	private String address;			// 機構 地址
 	
-	@Column(name = "phone", nullable = false)
+	@Column(name = "organization_phone", nullable = false)
 	private String phone;			// 機構 電話
 	
-	@Column(name = "email", nullable = false)
+	@Column(name = "organization_email", nullable = false)
 	private String email;			// 機構 電子信箱
 	
-	@Column(name = "fax")
+	@Column(name = "organization_fax")
 	private String fax;				// 機構 傳真
 	
 }

@@ -34,18 +34,18 @@ public class UserPublic extends BaseEntity{
 	@JoinColumn(name = "user_id", unique = true, nullable = false)
 	private Users users;				// 帳號 ID
 	
-	@Column(name = "name", nullable = false)
+	@Column(name = "public_name", nullable = false)
 	private String name;				// 民眾 姓名
 	
-	@Column(name = "national_id_no", nullable = false, unique = true)
+	@Column(name = "public_national_id_no", nullable = false, unique = true)
 	private String nationalIdNo; 		// 身分證字號
 	@Column(nullable = false)
 	private LocalDateTime birthdate;	// 生日
 	
-	@Column(name = "registered_address", nullable = false)
+	@Column(name = "public_registered_address", nullable = false)
 	private String registeredAddress;	// 戶籍地址
 	
-	@Column(name = "mailing_address", nullable = false)
+	@Column(name = "public_mailing_address", nullable = false)
 	private String mailingAddress;		// 通訊地址
 	
 }

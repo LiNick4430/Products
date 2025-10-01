@@ -29,10 +29,10 @@ public class Role extends BaseEntity{
 	@Column(name = "role_id")
 	private Long roleId;				// 角色 ID
 	
-	@Column(name = "name", unique = true, nullable = false)
+	@Column(name = "role_name", unique = true, nullable = false)
 	private String name;				// 角色 名
 	
-	@Column(name = "description")
+	@Column(name = "role_description")
 	private String description;			// 角色 描述
 	
 	@ManyToMany

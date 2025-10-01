@@ -33,11 +33,11 @@ public class UserAdmin extends BaseEntity{
 	@JoinColumn(name = "user_id", unique = true, nullable = false)
 	private Users users;				// 帳號 ID
 	
-	@Column(name = "name", nullable = false)
+	@Column(name = "admin_name", nullable = false)
 	private String name;				// 員工 姓名
 	
-	@Column(name = "title", nullable = false)
-	private String title;				// 職稱
+	@Column(name = "admin_job_title", nullable = false)
+	private String jobTitle;				// 職稱
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "organization_id", nullable = false)

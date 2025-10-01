@@ -33,26 +33,26 @@ public class Users extends BaseEntity {
 	@Column(name = "user_id")
 	private Long userId;				// 帳號 ID
 
-	@Column(nullable = false, unique = true)
+	@Column(name = "user_email", nullable = false, unique = true)
 	private String email;				// e-mail
 	
-	@Column(name = "phone_number", nullable = false)
+	@Column(name = "user_phone_number", nullable = false)
 	private String phoneNumber;			// 手機號碼
 	
-	@Column(nullable = false, unique = true)
+	@Column(name = "user_account", nullable = false, unique = true)
 	private String account;				// 帳號名稱
 	
 	@JsonIgnore // 防止回傳 JSON 時洩漏密碼
-    @Column(nullable = false)
+    @Column(name = "user_password", nullable = false)
 	private String password;			// 密碼(hash)		使用 PasswordSecurity, BCrypt 演算法 的 hash 內部 包含了 salt
 	
-	@Column(name = "is_active", nullable = false)
+	@Column(name = "user_is_active", nullable = false)
 	private Boolean isActive;			// 帳號是否已啟用 (Email驗證後設為true)
 	
-	@Column(name = "active_date")
+	@Column(name = "user_active_date")
 	private LocalDateTime activeDate;	// 啟用日期
 	
-	@Column(name = "login_date")
+	@Column(name = "user_login_date")
 	private LocalDateTime loginDate;	// 最後登入日期
 	
 	// 多對一關係，定義 Role 的外鍵

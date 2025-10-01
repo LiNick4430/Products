@@ -16,17 +16,18 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "permission")		// 權限 用於 RBAC
-public class Permission extends BaseEntity{
+@Table(name = "regulations")			// 規範
+public class Regulations extends BaseEntity{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "permission_id")
-	private Long permissionId;				// 權限 ID
+	@Column(name = "regulation_id")
+	private Long regulationId;			// 規範 ID
 	
-	@Column(name = "permission_name", unique = true, nullable = false)
-	private String name;					// 權限 名稱
+	@Column(name = "regulation_type", nullable = false, unique = true)
+	private String type;				// 規範 類型
 	
-	@Column(name = "permission_description")
-	private String description;				// 權限 描述
+	@Column(name = "regulation_content", columnDefinition = "TEXT", nullable = false)
+	private String content;				// 規範 內容
+	
 }
