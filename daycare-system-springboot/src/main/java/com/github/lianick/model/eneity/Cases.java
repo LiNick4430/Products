@@ -24,7 +24,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "case")						// 案件
+@Table(name = "cases")						// 案件
 public class Cases extends BaseEntity{
 
 	@Id
