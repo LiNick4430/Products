@@ -1,5 +1,6 @@
 package com.github.lianick.model.eneity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -29,7 +30,8 @@ public class UserAdmin extends BaseEntity{
 	private Long adminId;				// 員工 ID
 	
 	// 定義一對一關係，並將外鍵設為唯一 (unique = true)
-	@OneToOne(fetch = FetchType.LAZY)
+	// cascade = CascadeType.ALL => 對父 Entity (User) 執行的任何操作，都應該自動應用於所有相關的子 Entity (UserAdmin)。
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "user_id", unique = true, nullable = false)
 	private Users users;				// 帳號 ID
 	

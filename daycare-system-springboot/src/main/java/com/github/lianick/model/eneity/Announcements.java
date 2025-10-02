@@ -1,7 +1,9 @@
 package com.github.lianick.model.eneity;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -10,6 +12,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,7 +24,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "announcements")	// 公告
+@Table(name = "announcement")	// 公告
 public class Announcements extends BaseEntity{
 
 	@Id
@@ -49,4 +52,6 @@ public class Announcements extends BaseEntity{
 	@JoinColumn(name = "organization_id", nullable = false)	// 哪一個 機構 發布的
 	private Organization organization;
 	
+	@OneToMany(mappedBy = "announcements", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private Set<DocumentAdmin> documents;	// 公告 的 文件
 }
