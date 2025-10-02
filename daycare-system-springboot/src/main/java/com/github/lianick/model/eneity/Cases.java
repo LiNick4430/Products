@@ -67,7 +67,7 @@ public class Cases extends BaseEntity{
 	@OneToMany(mappedBy = "cases", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private Set<CasePriority> priorities;			// 案件 所選擇的 優先條件
 	
-	@OneToMany(mappedBy = "case", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "cases", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private Set<DocumentPublic> documents;	// 案件 所使用 附件
 	
 }
