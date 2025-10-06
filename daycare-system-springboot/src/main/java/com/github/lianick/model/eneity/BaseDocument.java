@@ -2,17 +2,13 @@ package com.github.lianick.model.eneity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @MappedSuperclass
-public class BaseDocument extends BaseEntity{
+public abstract class BaseDocument extends BaseEntity{
 
 	@Column(name = "file_name", nullable = false)
 	private String fileName;			// 附件 檔案名稱
