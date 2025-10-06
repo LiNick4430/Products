@@ -31,7 +31,7 @@ public class ReviewLogs extends BaseEntity{
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "case_id", nullable = false)
-	private Cases cases;						// 審核 case
+	private Cases cases;						// 審核 case ID
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "admin_id", nullable = false)
@@ -43,8 +43,8 @@ public class ReviewLogs extends BaseEntity{
 	@Column(name = "review_date", nullable = false)
 	private LocalDateTime reviewDate;			// 審核 日期
 	
-	@Column(name = "admin_message", columnDefinition = "TEXT")
-    private String adminMessage;                // 審核人員的意見/原因 (前台可顯示)
+	@Column(name = "review_message", columnDefinition = "TEXT")
+    private String reviewMessage;                // 審核人員的意見/原因 (前台可顯示)
 	
 	@Column(name = "notify_date")				// 通知時間可能允許為 NULL (尚未通知)
 	private LocalDateTime notifyDate;			// 通知時間

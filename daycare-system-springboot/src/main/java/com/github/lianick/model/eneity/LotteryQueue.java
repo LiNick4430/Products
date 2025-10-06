@@ -22,7 +22,9 @@ import lombok.Setter;
 @Entity
 @Table(name = "lottery_queue",			// 候補/抽籤 序列
 		uniqueConstraints = {
-			@UniqueConstraint(columnNames = {"case_id", "organization_id"})	// 確保 (案件ID, 機構ID) 的組合是唯一的
+			@UniqueConstraint(
+					name = "UK_case_organization_unique",
+					columnNames = {"case_id", "organization_id"})	// 確保 (案件ID, 機構ID) 的組合是唯一的
 		})				
 public class LotteryQueue extends BaseEntity{
 

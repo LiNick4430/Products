@@ -42,13 +42,8 @@ public class Cases extends BaseEntity{
 	@Column(name = "case_application_method", nullable = false)
 	private String applicationMethod;		// 申請方式
 	
-	@ManyToOne
-	@JoinColumn(name = "organization_id_1", nullable = false)
-	private Organization organizationFirst;		// 第一申請機構
-	
-	@ManyToOne
-	@JoinColumn(name = "organization_id_2")		// 備選 可以空
-	private Organization organizationSecond;	// 第二申請機構(備選)
+	@OneToMany(mappedBy = "cases", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private Set<CaseOrganization> organizations;	// 機構(第一 和 第二志願)
 	
 	// 對應前台(申請 退件 通過)
 	@Column(name = "case_status", nullable = false)

@@ -21,7 +21,9 @@ import lombok.Setter;
 @Entity
 @Table(name = "role_permission", 			// 角色-權限 用於 RBAC 關聯資料表
 		uniqueConstraints = {
-				@UniqueConstraint(columnNames = {"role_id", "permission_id"})	// 確保 role_id 和 permission_id 的組合是唯一的
+				@UniqueConstraint(
+						name = "UK_role_permission_unique",
+						columnNames = {"role_id", "permission_id"})	// 確保 role_id 和 permission_id 的組合是唯一的
 		})
 public class RolePermission extends BaseEntity{
 

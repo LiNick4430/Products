@@ -16,9 +16,10 @@ public abstract class BaseEntity {
 
 	@Column(name = "create_date",nullable = false, updatable = false)
 	private LocalDateTime createDate;		// 新增日期
+	
 	@Column(name = "update_date",nullable = false)
 	private LocalDateTime updateDate;		// 最後更新日期
-	
+
 	// 「在 Entity 第一次被存進資料庫前」執行的方法。
 	@PrePersist
 	protected void onCreate() {
