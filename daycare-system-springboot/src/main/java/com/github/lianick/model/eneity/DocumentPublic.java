@@ -41,7 +41,7 @@ public class DocumentPublic extends BaseDocument{
 	// 個人文件庫
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "public_id")
-	private UserPublic uploaderPublic;
+	private UserPublic userPublic;
 	
 	// 民眾 文件 專用
 	

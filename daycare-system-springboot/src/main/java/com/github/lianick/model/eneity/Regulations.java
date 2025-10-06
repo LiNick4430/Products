@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -30,4 +32,7 @@ public class Regulations extends BaseEntity{
 	@Column(name = "regulation_content", columnDefinition = "TEXT", nullable = false)
 	private String content;				// 規範 內容
 	
+	@ManyToOne
+	@JoinColumn(name = "organization_id", nullable = false)
+	private Organization organization;	// 規範 機構
 }

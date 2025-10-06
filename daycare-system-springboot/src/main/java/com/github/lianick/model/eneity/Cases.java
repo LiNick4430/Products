@@ -52,22 +52,26 @@ public class Cases extends BaseEntity{
 	
 	// 對應前台(申請 退件 通過)
 	@Column(name = "case_status", nullable = false)
-	private String status;					// 申請當前狀態
+	private String status;						// 申請當前狀態
 	
 	/*	可以藉由 幼兒ID -> 民眾ID -> 帳戶ID 反查到
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", nullable = false)
-	private Users users;					// 帳戶ID
+	private Users users;						// 帳戶ID
 	*/
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "child_id", nullable = false)
-	private ChildInfo childInfo;			// 幼兒ID
+	private ChildInfo childInfo;				// 幼兒ID
+	
+	// 以下 三個 的生命週期 都和 cases 綁定 因此使用 cascade = CascadeType.ALL
 	
 	@OneToMany(mappedBy = "cases", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	private Set<CasePriority> priorities;			// 案件 所選擇的 優先條件
+	private Set<CasePriority> priorities;		// 案件 所選擇的 優先條件
 	
 	@OneToMany(mappedBy = "cases", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	private Set<DocumentPublic> documents;	// 案件 所使用 附件
+	private Set<DocumentPublic> documents;		// 案件 所使用 附件
 	
+	@OneToMany(mappedBy = "cases", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private Set<ReviewLogs> reviewHistorys;		// 案件 的 審核紀錄
 }

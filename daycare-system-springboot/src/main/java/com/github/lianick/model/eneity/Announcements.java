@@ -24,7 +24,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "announcement")	// 公告
+@Table(name = "announcements")				// 公告
 public class Announcements extends BaseEntity{
 
 	@Id
@@ -50,7 +50,7 @@ public class Announcements extends BaseEntity{
 	// 機構關聯 (多對一)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "organization_id", nullable = false)	// 哪一個 機構 發布的
-	private Organization organization;
+	private Organization organization;		// 哪一個 機構 發布的
 	
 	@OneToMany(mappedBy = "announcements", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private Set<DocumentAdmin> documents;	// 公告 的 文件

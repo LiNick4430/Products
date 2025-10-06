@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -55,17 +56,18 @@ public class Users extends BaseEntity {
 	@Column(name = "user_login_date")
 	private LocalDateTime loginDate;	// 最後登入日期
 	
+	// 確保在 Service 層中，當 role 為 民眾 時，你只創建 UserPublic；當 role 為 基層/高級 時，你只創建 UserAdmin。
 	// 多對一關係，定義 Role 的外鍵
 	@ManyToOne(fetch = FetchType.EAGER)				// 建議 EAGER，因為登入時通常需要知道角色
 	@JoinColumn(name = "role_id", nullable = false)	// <--- 外鍵欄位名稱，不可為空
 	private Role role;
 	
+	// 共享主鍵（Shared Primary Key, SPK）模式, Users 為生命週期的主導者
 	// 反向關聯：一個 Users 對應一個 User_Public
-	@OneToOne(mappedBy = "users", fetch = FetchType.LAZY)	// mappedBy 意思是 告訴 JPA 去 User_Public 找 users, 他會 會定義外鍵 (user_id)
+	@OneToOne(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)	// mappedBy 意思是 告訴 JPA 去 User_Public 找 users, 他會 會定義外鍵 (user_id)
 	private UserPublic publicInfo;		
 	
 	// 反向關聯：一個 Users 對應一個 User_Admin
-	@OneToOne(mappedBy = "users", fetch = FetchType.LAZY)
-	private UserAdmin adminInfo;		
-	
+	@OneToOne(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private UserAdmin adminInfo;
 }

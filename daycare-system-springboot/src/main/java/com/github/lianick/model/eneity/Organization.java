@@ -48,5 +48,11 @@ public class Organization extends BaseEntity {
 	private String fax;				// 機構 傳真
 	
 	@OneToMany(mappedBy = "organization", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	private Set<DocumentAdmin> documents;	// 機構相關 的 文件
+	private Set<DocumentAdmin> documents;		// 機構相關 的 文件
+	
+	@OneToMany(mappedBy = "organization", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private Set<Announcements> announcements;	// 機構相關 的 公告
+	
+	@OneToMany(mappedBy = "organization", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private Set<Regulations> regulations;		// 機構相關 的 規範
 }
