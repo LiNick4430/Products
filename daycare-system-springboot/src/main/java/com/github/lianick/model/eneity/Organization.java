@@ -39,7 +39,7 @@ public class Organization extends BaseEntity {
 	private String address;			// 機構 地址
 	
 	@Column(name = "organization_phone", nullable = false)
-	private String phone;			// 機構 電話
+	private String phoneNumber;			// 機構 電話
 	
 	@Column(name = "organization_email", nullable = false)
 	private String email;			// 機構 電子信箱
