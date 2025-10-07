@@ -17,7 +17,6 @@ import jakarta.transaction.Transactional;
 
 // 當通過驗證的帳號 就可以填寫基本資料
 @SpringBootTest
-//確保整個測試類別在事務中運行
 @Transactional
 public class PublicUserInformation {
 

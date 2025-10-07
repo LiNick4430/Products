@@ -11,6 +11,7 @@ import jakarta.transaction.Transactional;
 
 // 尋找 Role 並 找到 所擁有的 permission
 @SpringBootTest
+@Transactional
 public class FindRole {
 
 	@Autowired
