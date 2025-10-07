@@ -48,7 +48,7 @@ public class Users extends BaseEntity {
 	private String password;			// 密碼(hash)		使用 PasswordSecurity, BCrypt 演算法 的 hash 內部 包含了 salt
 	
 	@Column(name = "user_is_active", nullable = false)
-	private Boolean isActive;			// 帳號是否已啟用 (Email驗證後設為true)
+	private Boolean isActive = false;	// 帳號是否已啟用 (Email驗證後設為true)
 	
 	@Column(name = "user_active_date")
 	private LocalDateTime activeDate;	// 啟用日期
