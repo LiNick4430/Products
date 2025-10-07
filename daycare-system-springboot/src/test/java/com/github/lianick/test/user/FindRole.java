@@ -7,6 +7,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import com.github.lianick.model.eneity.Role;
 import com.github.lianick.repository.RoleRepository;
 
+import jakarta.transaction.Transactional;
+
+// 尋找 Role 並 找到 所擁有的 permission
 @SpringBootTest
 public class FindRole {
 
@@ -14,10 +17,14 @@ public class FindRole {
 	private RoleRepository roleRepository;
 	
 	@Test
+	@Transactional
 	public void find() {
 		Role role = roleRepository.findById(1L).get();
 		
 		System.out.println(role.getName());
+		
+		role.getPermissions().forEach(permission -> {
+			System.out.println(permission.getName());
+		});
 	}
-	
 }
