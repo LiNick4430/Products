@@ -2,6 +2,8 @@ package com.github.lianick.model.eneity;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.SQLRestriction;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.PrePersist;
@@ -12,6 +14,7 @@ import lombok.Setter;
 @MappedSuperclass
 @Getter
 @Setter
+@SQLRestriction("delete_at IS NULL")
 public abstract class BaseEntity {
 
 	@Column(name = "create_date",nullable = false, updatable = false)

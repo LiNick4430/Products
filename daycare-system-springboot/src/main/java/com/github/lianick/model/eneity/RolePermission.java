@@ -25,7 +25,7 @@ import lombok.Setter;
 						name = "UK_role_permission_unique",
 						columnNames = {"role_id", "permission_id"})	// 確保 role_id 和 permission_id 的組合是唯一的
 		})
-public class RolePermission extends BaseEntity{
+public class RolePermission {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
