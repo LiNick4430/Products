@@ -25,7 +25,7 @@ public class VerifyUser {
 	@Rollback(false)
 	public void verify() {
 		// 測試用變數
-		Long id = 2L;
+		Long id = 4L;
 		
 		Optional<Users> optUser = usersRepository.findById(id);
 		if (optUser.isEmpty()) {

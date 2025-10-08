@@ -50,7 +50,7 @@ public class PublicUserInformation {
 		UserPublic userPublic = new UserPublic();
 		userPublic.setUsers(user);
 		userPublic.setName("民眾B");
-		userPublic.setNationalIdNo("B123456789");
+		userPublic.setNationalIdNo("民眾B");		// 測試用
 		userPublic.setBirthdate(LocalDate.parse("1991-01-01"));
 		userPublic.setRegisteredAddress("台中市");
 		userPublic.setMailingAddress("台中市");

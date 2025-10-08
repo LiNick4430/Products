@@ -26,6 +26,5 @@ public class FindAdminUser {
 		userAdmins.forEach(userAdmin -> {
 			System.out.println(userAdmin.getAdminId());
 		});
-		
 	}
 }

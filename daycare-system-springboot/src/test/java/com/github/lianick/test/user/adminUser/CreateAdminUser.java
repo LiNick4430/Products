@@ -27,13 +27,14 @@ public class CreateAdminUser {
 	@Rollback(false)
 	public void create() {
 		Role ROLE_STAFF = roleRepository.findByName("ROLE_STAFF").get();
+		Role ROLE_MANAGER = roleRepository.findByName("ROLE_MANAGER").get();
 		
 		Users user = new Users();
-		user.setEmail("test04@xxx.com");
+		user.setEmail("test07@xxx.com");
 		user.setPhoneNumber("0900111222");
-		user.setAccount("test04");
+		user.setAccount("test07");
 		user.setPassword("123456");
-		user.setRole(ROLE_STAFF);
+		user.setRole(ROLE_MANAGER);
 		
 		usersRepository.save(user);
 		

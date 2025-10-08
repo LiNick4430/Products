@@ -34,8 +34,8 @@ public class AdminUserInformation {
 	@Rollback(false)	// 強制提交事務，不回滾
 	public void setInformation() {
 		// 測試用變數
-		Long userId = 3L;
-		Long organizationId = 1L;
+		Long userId = 4L;
+		Long organizationId = 2L;
 		
 		// 查詢 該 ID 是否已經啟用 且 並未和 UserPublic/UserAdmin 連結
 		Optional<Users> optUser = usersRepository.findActiveAdminUserById(userId);
@@ -62,7 +62,7 @@ public class AdminUserInformation {
 		// 員工基本資料
 		UserAdmin userAdmin = new UserAdmin();
 		userAdmin.setUsers(user);
-		userAdmin.setName("員工A");
+		userAdmin.setName("員工B");
 		userAdmin.setJobTitle("櫃台");
 		userAdmin.setOrganization(organization);
 		
