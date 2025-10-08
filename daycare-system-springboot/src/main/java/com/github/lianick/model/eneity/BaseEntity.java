@@ -2,8 +2,6 @@ package com.github.lianick.model.eneity;
 
 import java.time.LocalDateTime;
 
-import org.hibernate.annotations.SQLRestriction;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.PrePersist;
@@ -14,7 +12,6 @@ import lombok.Setter;
 @MappedSuperclass
 @Getter
 @Setter
-@SQLRestriction("delete_at IS NULL")
 public abstract class BaseEntity {
 
 	@Column(name = "create_date",nullable = false, updatable = false)
@@ -23,6 +20,7 @@ public abstract class BaseEntity {
 	@Column(name = "update_date",nullable = false)
 	private LocalDateTime updateDate;		// 最後更新日期
 	
+	// @SQLRestriction("delete_at IS NULL") 繼承的 Entity 需要添加這個 
 	@Column(name = "delete_at")
 	private LocalDateTime deleteAt;				// 被刪除的時間
 	

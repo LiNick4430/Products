@@ -3,6 +3,8 @@ package com.github.lianick.model.eneity;
 import java.time.LocalDateTime;
 import java.util.Set;
 
+import org.hibernate.annotations.SQLRestriction;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -25,6 +27,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "cases")						// 案件
+@SQLRestriction("delete_at IS NULL")
 public class Cases extends BaseEntity{
 
 	@Id

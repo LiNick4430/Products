@@ -9,7 +9,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import com.github.lianick.model.eneity.UserPublic;
 import com.github.lianick.repository.UserPublicRepository;
 
-import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 
 
@@ -20,14 +19,8 @@ public class FindPublicUser {
 	@Autowired
 	private UserPublicRepository userPublicRepository;
 	
-	@Autowired
-	private EntityManager entityManager;
-	
 	@Test
 	public void find() {
-		
-		// 強制清理 JPA 快取，使 findAll 必須去 DB 查詢
-        entityManager.clear();
 		
 		List<UserPublic> userPublics =  userPublicRepository.findAll();
 		

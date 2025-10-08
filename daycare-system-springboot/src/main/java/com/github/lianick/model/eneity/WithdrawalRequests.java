@@ -2,6 +2,8 @@ package com.github.lianick.model.eneity;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.SQLRestriction;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -23,6 +25,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "withdrawal_requests")			// 撤銷申請
+@SQLRestriction("delete_at IS NULL")
 public class WithdrawalRequests extends BaseEntity{
 
 	@Id

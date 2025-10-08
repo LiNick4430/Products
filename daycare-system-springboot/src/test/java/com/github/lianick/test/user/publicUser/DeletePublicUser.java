@@ -28,13 +28,19 @@ public class DeletePublicUser {
 		// 測試用變數
 		Long publicId = 1L;
 		
-		// 檢查 是否 存在
+		// 檢查 是否 存在 
 		Optional<UserPublic> optUserPublic = userPublicRepository.findById(publicId);
 		if (optUserPublic.isEmpty()) {
 			System.out.printf("Public id = %d 不存在\n", publicId);
 			return;
 		}
+		
 		UserPublic userPublic = optUserPublic.get();
+		// 檢查 是否 已經被 軟刪除
+		if (userPublic.getDeleteAt() != null) {
+			System.out.printf("Public id = %d 已經被刪除\n", publicId);
+			return;
+		}
 		
 		// 執行 軟刪除
 		userPublic.setDeleteAt(LocalDateTime.now());

@@ -2,6 +2,8 @@ package com.github.lianick.model.eneity;
 
 import java.util.Set;
 
+import org.hibernate.annotations.SQLRestriction;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -22,6 +24,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "role")		// 角色 用於 RBAC
+@SQLRestriction("delete_at IS NULL")
 public class Role extends BaseEntity{
 
 	@Id

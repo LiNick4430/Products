@@ -2,6 +2,8 @@ package com.github.lianick.model.eneity;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.SQLRestriction;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -22,6 +24,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "review_logs")					// 審核紀錄
+@SQLRestriction("delete_at IS NULL")
 public class ReviewLogs extends BaseEntity{
 
 	@Id

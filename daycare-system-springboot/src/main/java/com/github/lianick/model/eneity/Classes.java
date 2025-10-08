@@ -1,5 +1,7 @@
 package com.github.lianick.model.eneity;
 
+import org.hibernate.annotations.SQLRestriction;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -20,6 +22,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "classes")					// 班級
+@SQLRestriction("delete_at IS NULL")
 public class Classes extends BaseEntity{
 
 	@Id

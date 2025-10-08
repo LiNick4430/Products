@@ -2,6 +2,8 @@ package com.github.lianick.model.eneity;
 
 import java.time.LocalDate;
 
+import org.hibernate.annotations.SQLRestriction;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -21,6 +23,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "child_info")						// 幼兒基本資料
+@SQLRestriction("delete_at IS NULL")
 public class ChildInfo extends BaseEntity{
 
 	@Id

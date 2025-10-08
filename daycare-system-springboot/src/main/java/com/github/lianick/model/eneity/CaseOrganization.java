@@ -1,5 +1,7 @@
 package com.github.lianick.model.eneity;
 
+import org.hibernate.annotations.SQLRestriction;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -31,7 +33,8 @@ import lombok.Setter;
 					name = "UK_case_preference_unique",		// 確保 案件 不會出現重複的 志願序
 					columnNames = {"case_id", "case_organization_preference_order"}
 					)
-		})				
+		})
+@SQLRestriction("delete_at IS NULL")
 public class CaseOrganization extends BaseEntity{
 
 	@Id

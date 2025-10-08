@@ -30,7 +30,7 @@ public class PublicUserInformation {
 	@Rollback(false)	// 強制提交事務，不回滾
 	public void setInformation() {
 		// 測試用變數
-		Long userId = 1L;
+		Long userId = 2L;
 		
 		// 查詢 該 ID 是否已經啟用 且 並未和 UserPublic/UserAdmin 連結
 		Optional<Users> optUser = usersRepository.findActivePublicUserById(userId);
@@ -49,8 +49,8 @@ public class PublicUserInformation {
 		// 民眾基本資料
 		UserPublic userPublic = new UserPublic();
 		userPublic.setUsers(user);
-		userPublic.setName("民眾A");
-		userPublic.setNationalIdNo("A123456789");
+		userPublic.setName("民眾B");
+		userPublic.setNationalIdNo("B123456789");
 		userPublic.setBirthdate(LocalDate.parse("1991-01-01"));
 		userPublic.setRegisteredAddress("台中市");
 		userPublic.setMailingAddress("台中市");

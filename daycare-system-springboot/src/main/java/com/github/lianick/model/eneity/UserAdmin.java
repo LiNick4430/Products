@@ -2,6 +2,8 @@ package com.github.lianick.model.eneity;
 
 import java.util.Set;
 
+import org.hibernate.annotations.SQLRestriction;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -25,6 +27,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "admin_user")			// 員工 帳號相關
+@SQLRestriction("delete_at IS NULL")
 public class UserAdmin extends BaseEntity{
 
 	// ID 設置	共享主鍵（Shared Primary Key, SPK）模式

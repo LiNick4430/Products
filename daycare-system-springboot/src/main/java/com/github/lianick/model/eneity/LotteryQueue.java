@@ -1,5 +1,7 @@
 package com.github.lianick.model.eneity;
 
+import org.hibernate.annotations.SQLRestriction;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -25,7 +27,8 @@ import lombok.Setter;
 			@UniqueConstraint(
 					name = "UK_case_organization_unique",
 					columnNames = {"case_id", "organization_id"})	// 確保 (案件ID, 機構ID) 的組合是唯一的
-		})				
+		})
+@SQLRestriction("delete_at IS NULL")
 public class LotteryQueue extends BaseEntity{
 
 	@Id

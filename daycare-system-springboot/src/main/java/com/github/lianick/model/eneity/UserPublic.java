@@ -3,6 +3,8 @@ package com.github.lianick.model.eneity;
 import java.time.LocalDate;
 import java.util.Set;
 
+import org.hibernate.annotations.SQLRestriction;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -26,6 +28,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "public_user")		// 民眾 帳號相關
+@SQLRestriction("delete_at IS NULL")
 public class UserPublic extends BaseEntity{
 
 	// ID 設置	共享主鍵（Shared Primary Key, SPK）模式

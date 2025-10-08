@@ -1,5 +1,7 @@
 package com.github.lianick.model.eneity;
 
+import org.hibernate.annotations.SQLRestriction;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,6 +19,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "priority")			// case 用 優先條件
+@SQLRestriction("delete_at IS NULL")
 public class Priority extends BaseEntity{
 
 	@Id

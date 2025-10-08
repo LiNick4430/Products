@@ -25,15 +25,20 @@ public class VerifyUser {
 	@Rollback(false)
 	public void verify() {
 		// 測試用變數
-		Long id = 3L;
+		Long id = 2L;
 		
 		Optional<Users> optUser = usersRepository.findById(id);
 		if (optUser.isEmpty()) {
 			System.out.println("此 ID 不存在");
 			return;
 		}
-		
 		Users user = optUser.get();
+		
+		if (user.getIsActive().equals(true)) {
+			System.out.println("ID 己經 驗證完成");
+			return;
+		}
+		
 		user.setIsActive(true);
 		user.setActiveDate(LocalDateTime.now());
 		

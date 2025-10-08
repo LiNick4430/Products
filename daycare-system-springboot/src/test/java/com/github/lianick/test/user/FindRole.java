@@ -20,7 +20,10 @@ public class FindRole {
 	@Test
 	@Transactional
 	public void find() {
-		Role role = roleRepository.findById(1L).get();
+		// 設定變數
+		Long userId = 2L;
+		
+		Role role = roleRepository.findById(userId).get();
 		
 		System.out.println(role.getName());
 		

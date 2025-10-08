@@ -7,6 +7,8 @@ import jakarta.persistence.OneToOne;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.SQLRestriction;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
@@ -27,6 +29,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "users")			// 指定資料表名稱為 "users" 帳號 相關
+@SQLRestriction("delete_at IS NULL")
 public class Users extends BaseEntity {
 
 	@Id

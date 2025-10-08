@@ -2,6 +2,8 @@ package com.github.lianick.model.eneity;
 
 import java.util.Set;
 
+import org.hibernate.annotations.SQLRestriction;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,6 +24,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "organization")		// 機構
+@SQLRestriction("delete_at IS NULL")
 public class Organization extends BaseEntity {
 
 	@Id
