@@ -29,9 +29,9 @@ public class CreatePublicUser {
 		Role ROLE_PUBLIC = roleRepository.findByName("ROLE_PUBLIC").get();
 		
 		Users user = new Users();
-		user.setEmail("test05@xxx.com");
+		user.setEmail("test08@xxx.com");
 		user.setPhoneNumber("0900111222");
-		user.setAccount("test05");
+		user.setAccount("test08");
 		user.setPassword("123456");
 		user.setRole(ROLE_PUBLIC);
 		
