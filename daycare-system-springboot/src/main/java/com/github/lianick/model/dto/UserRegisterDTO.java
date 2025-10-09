@@ -10,12 +10,11 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserRegisterDTO {	// 註冊用
-	private Long id;
 	private String email;
 	private String phoneNumber;
 	
 	private String username;
 	private String password;
 	
-	private Long roleType;
+	private Long roleNumber;
 }

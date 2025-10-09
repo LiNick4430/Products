@@ -18,10 +18,8 @@ import com.github.lianick.model.dto.UserRegisterDTO;
 @Service
 public interface UserSrevice {
 
-	// 民眾註冊帳號
-	UserRegisterDTO registerUserPublic(UserRegisterDTO userRegisterDTO);
-	// 員工註冊帳號
-	UserRegisterDTO registerUserAdmin(UserRegisterDTO userRegisterDTO);	
+	// 註冊帳號
+	UserRegisterDTO registerUser(UserRegisterDTO userRegisterDTO);
 	// 驗證帳號
 	void veriftyUser(String token);
 	// 登陸帳號
