@@ -2,10 +2,12 @@ package com.github.lianick.service;
 
 import org.springframework.stereotype.Service;
 
+import com.github.lianick.exception.UserNoFoundException;
 import com.github.lianick.model.dto.UserDeleteDTO;
 import com.github.lianick.model.dto.UserForgetPasswordDTO;
 import com.github.lianick.model.dto.UserLoginDTO;
 import com.github.lianick.model.dto.UserRegisterDTO;
+import com.github.lianick.response.ApiResponse;
 
 /*
 	業務流程確認
@@ -19,13 +21,13 @@ import com.github.lianick.model.dto.UserRegisterDTO;
 public interface UserSrevice {
 
 	// 註冊帳號
-	UserRegisterDTO registerUser(UserRegisterDTO userRegisterDTO);
+	ApiResponse<UserRegisterDTO> registerUser(UserRegisterDTO userRegisterDTO);
 	// 驗證帳號
-	void veriftyUser(String token);
+	ApiResponse<Void> veriftyUser(String token);
 	// 登陸帳號
-	UserLoginDTO loginUser(UserLoginDTO userLoginDTO);
+	ApiResponse<UserLoginDTO> loginUser(UserLoginDTO userLoginDTO) throws UserNoFoundException;
 	// 忘記密碼
-	UserForgetPasswordDTO forgetPassword(UserForgetPasswordDTO userForgetPasswordDTO);
+	ApiResponse<UserForgetPasswordDTO> forgetPassword(UserForgetPasswordDTO userForgetPasswordDTO);
 	// 刪除帳號
-	void deleteUser(UserDeleteDTO userDeleteDTO);
+	ApiResponse<Void> deleteUser(UserDeleteDTO userDeleteDTO);
 }
