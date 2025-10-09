@@ -1,6 +1,6 @@
 package com.github.lianick.model.eneity;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Set;
 
 import org.hibernate.annotations.SQLRestriction;
@@ -38,17 +38,17 @@ public class Announcements extends BaseEntity{
 	@Column(name = "announcement_title", nullable = false)
 	private String title;					// 公告 標題
 	
-	@Column(name = "announcement_content", columnDefinition = "TEXT", nullable = false)
+	@Column(name = "announcement_content", columnDefinition = "LONGTEXT", nullable = false)
 	private String content;					// 公告 內容
 	
-	@Column(name = "announcement_publish_date", nullable = false)
-	private LocalDateTime publishDate;		// 公告 實際發布時間
+	@Column(name = "announcement_publish_date")
+	private LocalDate publishDate;			// 公告 實際發布時間
 	
 	@Column(name = "announcement_is_published", nullable = false)
 	private Boolean isPublished = false;	// 預設為未發布 (草稿)
 	
 	@Column(name = "announcement_expiry_date")
-	private LocalDateTime expiryDate;		// 公告 到期日期 (可為 NULL)
+	private LocalDate expiryDate;			// 公告 到期日期 (可為 NULL)
 	
 	// 機構關聯 (多對一)
 	@ManyToOne(fetch = FetchType.LAZY)
