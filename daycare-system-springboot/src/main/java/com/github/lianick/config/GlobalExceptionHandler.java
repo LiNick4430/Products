@@ -12,9 +12,9 @@ import com.github.lianick.response.ApiResponse;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-	@ExceptionHandler(UserNoFoundException.class) 	// ⬅️ 關鍵 1: 指定要捕獲的異常類型
-	@ResponseStatus(HttpStatus.UNAUTHORIZED)     	// ⬅️ 關鍵 2: 設定響應的 HTTP 狀態碼 (401 或 404)
-    @ResponseBody                                	// ⬅️ 關鍵 3: 告訴 Spring 將返回值（ApiResponse）直接寫入 HTTP 響應體
+	@ExceptionHandler(UserNoFoundException.class) 	// 指定要捕獲的異常類型
+	@ResponseStatus(HttpStatus.UNAUTHORIZED)     	// 設定響應的 HTTP 狀態碼 (401 或 404)
+    @ResponseBody                                	// 告訴 Spring 將返回值（ApiResponse）直接寫入 HTTP 響應體
 	public ApiResponse<?> handleUserNoFoundException(UserNoFoundException ex) {
 		return new ApiResponse<>(false, ex.getMessage(), null);
 	}
