@@ -1,0 +1,45 @@
+README.md 		說明文件
+docker-compose.yml 	Docker Compose 管理文件
+
+---------------------------------------------------------------------------------------------------
+1. 安裝 Docker
+https://www.docker.com/products/docker-desktop/
+
+建議 使用 Personal 模式 建立帳號
+
+2. 假設需要升級 wsl 版本
+開啟 CMD / PowerShell 以 管理員權限
+執行 wsl --update --web-download 更新版本
+
+3. 建立 mailhog
+開啟 CMD / PowerShell
+執行 docker run -d --name mailhog -p 1025:1025 -p 8025:8025 mailhog/mailhog
+
+
+docker run	使用 mailhog/mailhog(假設沒有會自動下載) 建立 容器 並 啟動
+-d		分離（Detached）模式下運行容器
+--name mailhog	為這個新容器指定一個名稱
+-p 1025:1025	MailHog 服務的 SMTP 埠口 (1025) 對應到主機的 1025 埠口
+-p 8025:8025	MailHog 服務的 Web UI 埠口 (8025) 對應到主機的 8025 埠口
+mailhog/mailhog	用來建立容器的 Docker 映像檔（Image）名稱
+
+4. 管理  mailhog
+開啟 Docker Desktop
+點選 Containers
+
+Name	ContainerID	Image		Port(s)			Actions
+mailhog	ccaa1e220832	mailhog/mailhog	1025:1025 8025:8025	
+
+利用 Actions 管理
+
+---------------------------------------------------------------------------------------------------
+使用 Docker Desktop 管理
+使用 Docker Compose 啟動，您就可以在 Docker Desktop 介面的 Containers 區塊中，看到一個名為 專案名稱 的群組。
+
+您現在可以直接在 Docker Desktop 介面中完成以下操作：
+
+開啟 / 啟動： 點擊群組名稱旁的 啟動按鈕 (三角形)。
+停止： 點擊 停止按鈕 (方形)。
+重新啟動： 點擊 重新整理按鈕 (圓形箭頭)。
+
+透過 Docker Compose，需要一個指令即可啟動整個開發環境，並且可以方便地透過 Docker Desktop 圖形介面管理。
