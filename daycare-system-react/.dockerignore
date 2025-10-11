@@ -1,0 +1,7 @@
+# 忽略 node_modules (我們會在 Dockerfile 中重新安裝)
+node_modules
+# 忽略日誌或暫存檔
+npm-debug.log
+.DS_Store
+# 忽略編輯器相關設定
+.vscode

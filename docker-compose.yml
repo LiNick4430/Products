@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  # -------------------------------------------------------------------
+  # 1. React 開發前端服務 (Frontend Development Service)
+  # -------------------------------------------------------------------
+  frontend-dev:
+    # 使用您已經建置好的映像檔
+    image: daycare-system-react
+    # 設定容器名稱 (方便識別)
+    container_name: daycare-react-app
+    # 將容器的 5173 埠口映射到主機的 5173 埠口
+    ports:
+      - "5173:5173"
+    # 掛載本地程式碼，實現即時熱重載 (HMR)
+    volumes:
+      - ./daycare-system-react:/app
+      # ⚠️ 建議加入：將容器內的 node_modules 掛載為一個匿名 Volume
+      # 這可以防止 Windows 上的 node_modules 覆蓋容器內正確的 Linux 版本
+      - /app/node_modules
+      
+    # 覆寫 CMD，解決檔案監聽和網路暴露問題
+    # sh -c "npm install --force && npm run dev -- --host" 
+    # 這裡我們用更簡單的方式，並假設您已將 watch: { usePolling: true } 加入 vite.config.js
+    command: npm run dev -- --host
+    
+    # 保持容器運行 (如果它崩潰了，會嘗試重啟)
+    restart: always 
+    
+  # -------------------------------------------------------------------
+  # 2. MailHog 郵件測試服務 (MailHog Service)
+  # -------------------------------------------------------------------
+  mailhog:
+    image: mailhog/mailhog
+    container_name: mailhog
+    ports:
+      # SMTP 埠口
+      - "1025:1025"
+      # Web UI 埠口
+      - "8025:8025"
+    restart: always
