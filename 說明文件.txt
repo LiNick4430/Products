@@ -15,13 +15,12 @@ https://www.docker.com/products/docker-desktop/
 開啟 CMD / PowerShell
 執行 docker run -d --name mailhog -p 1025:1025 -p 8025:8025 mailhog/mailhog
 
-
-docker run	使用 mailhog/mailhog(假設沒有會自動下載) 建立 容器 並 啟動
--d		分離（Detached）模式下運行容器
---name mailhog	為這個新容器指定一個名稱
--p 1025:1025	MailHog 服務的 SMTP 埠口 (1025) 對應到主機的 1025 埠口
--p 8025:8025	MailHog 服務的 Web UI 埠口 (8025) 對應到主機的 8025 埠口
-mailhog/mailhog	用來建立容器的 Docker 映像檔（Image）名稱
+docker run	      使用 mailhog/mailhog(假設沒有會自動下載) 建立 容器 並 啟動
+-d		            分離（Detached）模式下運行容器
+--name mailhog	  為這個新容器指定一個名稱
+-p 1025:1025	    MailHog 服務的 SMTP 埠口 (1025) 對應到主機的 1025 埠口
+-p 8025:8025	    MailHog 服務的 Web UI 埠口 (8025) 對應到主機的 8025 埠口
+mailhog/mailhog	  用來建立容器的 Docker 映像檔（Image）名稱
 
 4. 管理  mailhog
 開啟 Docker Desktop

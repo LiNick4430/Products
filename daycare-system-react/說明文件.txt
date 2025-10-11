@@ -1,7 +1,7 @@
-Dockerfile 的意思與作用
+1. Dockerfile 作用
 Dockerfile 就像是 Docker 製作容器映像檔（Image）的藍圖或食譜。它包含了一系列指令，告訴 Docker 應該如何從頭開始建構您的應用程式環境。
 
-指令	作用與意義
+指令	                                作用與意義
 FROM node:20-alpine AS development	  基礎環境： 告訴 Docker 從哪個基礎映像檔開始建構。這裡選擇了一個輕量、基於 Alpine Linux 的 Node.js v20 版本。AS development 是為了多階段建構做準備，標記這是開發階段。
 WORKDIR /app	                        設定目錄： 告訴 Docker 接下來的所有指令都將在容器內的 /app 目錄下執行。這成為了容器內應用程式的根目錄。
 COPY package*.json ./	                複製依賴文件： 僅複製 package.json 和 package-lock.json 到 /app。這是為了利用 Docker 的快取機制：如果這些文件沒有改變，Docker 不會重新執行 npm install，從而加快映像檔建構速度。
@@ -10,11 +10,28 @@ COPY . .	                            複製程式碼： 將所有剩餘的專案
 EXPOSE 5173	                          曝露埠口： 聲明容器內的應用程式將會在 5173 埠口上提供服務。這是一個說明性的指令，實際的埠口映射需要透過 docker run -p 或 docker-compose.yml 來完成。
 CMD ["npm", "run", "dev"]	            啟動命令： 定義容器啟動後要執行的預設命令。這就是您的 React 開發伺服器啟動指令。
 
-2. .dockerignore 的意思與作用
+2. .dockerignore 作用
 .dockerignore 檔案的作用與 Git 的 .gitignore 檔案非常相似，它是用來定義在建構 Docker 映像檔時，應該忽略哪些本地檔案和目錄，不要將它們複製到映像檔中。
 
-忽略項目	作用與意義
-node_modules	                        節省空間與確保相容性： 這是最重要的。node_modules 資料夾非常龐大，會顯著增加映像檔大小。更重要的是，您本機的 node_modules 是為您的 Windows/macOS 環境編譯的，不能在容器的 Linux 環境中使用。因此，我們忽略它，並在 Dockerfile 中使用 RUN npm install 讓容器自己安裝正確的 Linux 版本。
-npm-debug.log	                        清理： 忽略本地日誌文件，它們對映像檔運行無用。
-.DS_Store	                            清理： 忽略 macOS 系統生成的暫存文件。
-.vscode	                              清理： 忽略 VS Code 的設定檔。這些是您個人的開發設定，不應該包含在應用程式的運行環境中。
+忽略項目	                            作用與意義
+node_modules	                       節省空間與確保相容性： 這是最重要的。node_modules 資料夾非常龐大，會顯著增加映像檔大小。更重要的是，您本機的 node_modules 是為您的 Windows/macOS 環境編譯的，不能在容器的 Linux 環境中使用。因此，我們忽略它，並在 Dockerfile 中使用 RUN npm install 讓容器自己安裝正確的 Linux 版本。
+npm-debug.log	                       清理： 忽略本地日誌文件，它們對映像檔運行無用。
+.DS_Store	                           清理： 忽略 macOS 系統生成的暫存文件。
+.vscode	                             清理： 忽略 VS Code 的設定檔。這些是您個人的開發設定，不應該包含在應用程式的運行環境中。
+
+3.  Docker/WSL 檔案監聽問題
+vite.config.js 中 defineConfig 底下加入
+
+// *** 新增以下設定來解決 Docker/WSL 檔案監聽問題 ***
+  server: {
+    // 確保伺服器監聽所有網路介面
+    host: true,
+
+    // 配置 HMR/檔案監聽
+    watch: {
+      // 啟用輪詢 (Polling) 機制
+      usePolling: true,
+      // 這裡可以選擇性地增加輪詢間隔，預設通常是 100ms
+    }
+  }
+  // **********************************************
