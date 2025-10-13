@@ -52,7 +52,7 @@ public class CreateUser {
 		Role ROLE_STAFF = roleRepository.findByName("ROLE_STAFF").get();		// 基層
 		Role ROLE_MANAGER = roleRepository.findByName("ROLE_MANAGER").get();	// 管理
 		// 帳號設定
-		String account = "test01";
+		String account = "test02";
 		String email = account + "@xxx.com";		// 方便測試 email 和 帳號 同名
 		String phone = "0900111222";
 		// 密碼加密
@@ -74,7 +74,9 @@ public class CreateUser {
 		
 		usersRepository.save(user);
 		
-		// 2. 同時 建立 帳號啟動驗證碼
+		// 2. 建立 帳號啟動驗證碼
+		usersVeriftyRepository.markAllUnusedTokenAsUsed(account);	// 先將 未使用的 token 變成 已使用
+		
 		UserVerify userVerify = new UserVerify();
 		userVerify.setToken(token);
 		userVerify.setExpiryTime(expiryTime);

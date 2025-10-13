@@ -18,7 +18,7 @@ import jakarta.transaction.Transactional;
 // 驗證信箱成功後 啟用帳號
 @SpringBootTest
 @Transactional
-public class VerifyUser {
+public class VerifyUser2 {
 
 	@Autowired
 	private UsersRepository usersRepository;
@@ -30,44 +30,41 @@ public class VerifyUser {
 	@Rollback(false)
 	public void verify() {
 		// 測試用變數
-		// Long id = 1L;
-		String account = "test02";
 		String token = "257e9f61041249e585f49500601ed75d";
+		LocalDateTime now = LocalDateTime.now();
 		
-		// 1. 帳號檢測
-		Optional<Users> optUser = usersRepository.findByAccount(account);
-		if (optUser.isEmpty()) {
-			System.out.println("此 帳號 不存在");
-			return;
-		}
-		Users user = optUser.get();
-		
-		if (user.getIsActive().equals(true)) {
-			System.out.println("帳號 己經 驗證完成");
-			return;
-		}
-		
-		// 2. 找尋 token 並檢測
-		Optional<UserVerify> optUserVerify = usersVeriftyRepository.findNewTokenByUserAccount(user.getAccount()); 
+		// 1. 使用 Token 紀錄 找尋 UsersVerify 紀錄
+		Optional<UserVerify> optUserVerify = usersVeriftyRepository.findByToken(token);
 		if (optUserVerify.isEmpty()) {
-			System.out.println("驗證碼已經過期");
-			return;
+			System.out.println("驗證碼無效或不存在");
+		    return;
 		}
 		UserVerify userVerify = optUserVerify.get();
+		Users users = userVerify.getUsers();
 		
-		if (!token.equals(userVerify.getToken())) {
-			System.out.println("驗證碼錯誤");
-			return;
+		// 2. 判斷 Token 狀態
+		if (userVerify.getIsUsed()) {
+			System.out.println("驗證碼已經被使用");
+		    return;
+		}
+		if (userVerify.getExpiryTime().isBefore(now)) {
+			System.out.println("驗證碼已經過期");
+		    return;
 		}
 		
+		// 3. 判斷 Users 狀態 以防止重複使用
+		if (users.getIsActive()) {
+			System.out.println("帳號已經驗證完成");
+		    return;
+		}
+		
+		// 4. 啟用帳號
 		userVerify.setIsUsed(true);
+		users.setIsActive(true);
+		users.setActiveDate(now);
 		
 		usersVeriftyRepository.save(userVerify);
-		
-		user.setIsActive(true);
-		user.setActiveDate(LocalDateTime.now());
-		
-		usersRepository.save(user);
+		usersRepository.save(users);
 		
 		System.out.println("帳號啟用成功");
 		

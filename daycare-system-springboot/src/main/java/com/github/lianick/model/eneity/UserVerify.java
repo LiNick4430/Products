@@ -33,7 +33,8 @@ public class UserVerify extends BaseEntity {
 	@Column(name = "verify_user_id")
 	private Long verifyId;				// 驗證碼 ID
 	
-	@Column(name = "verify_user_toekn", nullable = false)
+	// 由 UUID 產生的 = 128位元(長度36), 經由處裡減去"-" 變成 length = 32
+	@Column(name = "verify_user_toekn", nullable = false, unique = true, length = 32)
 	private String token;				// 認證碼 toekn
 	
 	@Column(name = "verify_user_expiry_time", nullable = false)

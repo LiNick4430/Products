@@ -1,7 +1,5 @@
 package com.github.lianick.service;
 
-import org.springframework.stereotype.Service;
-
 import com.github.lianick.exception.UserNoFoundException;
 import com.github.lianick.model.dto.UserDeleteDTO;
 import com.github.lianick.model.dto.UserForgetPasswordDTO;
@@ -17,7 +15,7 @@ import com.github.lianick.response.ApiResponse;
 		如果 role 是員工 → 呼叫 UserAdminService.create() → 成功創建 UserAdmin。
 	防護： 如果 Service 層有人試圖對一個已是民眾的帳號創建員工紀錄，admin_user 表會因為 Primary Key 衝突而拋出資料庫錯誤（如果 Service 層沒有提前檢查的話）。
  * */
-@Service
+
 public interface UserSrevice {
 
 	// 註冊帳號
