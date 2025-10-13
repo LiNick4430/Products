@@ -39,7 +39,7 @@ public class UserVerify extends BaseEntity {
 	@Column(name = "verify_user_expiry_time", nullable = false)
 	private LocalDateTime expiryTime;	// 認證碼 過期時間(預設 +15分)
 	
-	@Column(name = "verify_user_used")
+	@Column(name = "verify_user_is_used")
 	private Boolean isUsed = false;		// 認證碼 是否使用過
 	
 	@ManyToOne
