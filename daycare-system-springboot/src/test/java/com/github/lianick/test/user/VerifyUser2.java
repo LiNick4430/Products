@@ -30,7 +30,7 @@ public class VerifyUser2 {
 	@Rollback(false)
 	public void verify() {
 		// 測試用變數
-		String token = "257e9f61041249e585f49500601ed75d";
+		String token = "35ac823fff89454ab835c8a389e66bfa";
 		LocalDateTime now = LocalDateTime.now();
 		
 		// 1. 使用 Token 紀錄 找尋 UsersVerify 紀錄

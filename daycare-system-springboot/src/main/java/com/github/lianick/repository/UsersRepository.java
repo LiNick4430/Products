@@ -23,15 +23,15 @@ public interface UsersRepository extends JpaRepository<Users, Long> {
 			, nativeQuery = true)
 	List<Users> findNoActiveAndUnlinkedAllUser();
 	
-	// 尋找 未通過認證(user_is_active = false) 且 尚未連結 public/admin user_id 目標帳號 
+	// 尋找 尚未連結 public/admin user_id 目標帳號 
 	@Query(value = 
 			"SELECT users.* FROM users "
 			+ "LEFT JOIN public_user ON user_id = public_id "
 			+ "LEFT JOIN admin_user ON user_id = admin_id "
-			+ "WHERE user_id = :id AND user_is_active = false AND users.delete_at IS NULL "
+			+ "WHERE user_id = :id AND users.delete_at IS NULL "
 			+ "AND public_id IS NULL AND admin_id IS NULL"
 			, nativeQuery = true)
-	Optional<Users> findNoActiveAndUnlinkedUserById(@Param("id") Long id);
+	Optional<Users> findUnlinkedUserById(@Param("id") Long id);
 	
 	// 尋找 通過認證(user_is_active = true) 的 public user_id 目標帳號 
 	@Query(value = 

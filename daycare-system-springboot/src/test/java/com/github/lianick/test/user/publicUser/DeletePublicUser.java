@@ -1,6 +1,7 @@
 package com.github.lianick.test.user.publicUser;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -12,6 +13,7 @@ import org.springframework.test.annotation.Rollback;
 import com.github.lianick.model.eneity.ChildInfo;
 import com.github.lianick.model.eneity.DocumentPublic;
 import com.github.lianick.model.eneity.UserPublic;
+import com.github.lianick.model.eneity.UserVerify;
 import com.github.lianick.repository.UserPublicRepository;
 
 import jakarta.transaction.Transactional;
@@ -57,6 +59,12 @@ public class DeletePublicUser {
 		if (documents != null) {
 			documents.forEach(document -> {
 				document.setDeleteAt(deleteTime);
+			});
+		}
+		List<UserVerify> userVerifies = userPublic.getUsers().getUserVerifies();
+		if (userVerifies != null) {
+			userVerifies.forEach(userVerify -> {
+				userVerify.setDeleteAt(deleteTime);
 			});
 		}
 		

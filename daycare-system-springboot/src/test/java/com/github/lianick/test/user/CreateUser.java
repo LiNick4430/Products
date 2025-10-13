@@ -15,6 +15,7 @@ import com.github.lianick.model.eneity.Users;
 import com.github.lianick.repository.RoleRepository;
 import com.github.lianick.repository.UsersRepository;
 import com.github.lianick.repository.UsersVerifyRepository;
+import com.github.lianick.service.impl.EmailServiceImpl;
 import com.github.lianick.util.PasswordSecurity;
 import com.github.lianick.util.TokenUUID;
 
@@ -35,10 +36,10 @@ public class CreateUser {
 	private RoleRepository roleRepository;
 	
 	@Autowired
-	private JavaMailSender javaMailSender;
+	private PasswordSecurity passwordSecurity;
 	
 	@Autowired
-	private PasswordSecurity passwordSecurity;
+	private EmailServiceImpl emailServiceImpl;
 	
 	@Autowired
 	private TokenUUID tokenUUID;
@@ -84,16 +85,9 @@ public class CreateUser {
 		
 		usersVeriftyRepository.save(userVerify);
 		
-		// 3.寄出 認證碼		
-		SimpleMailMessage message = new SimpleMailMessage();
-		String verfityURL = "http://localhost:8080/api/users/verify?token=" + userVerify.getToken();	// 預設 認證 網址
-		
-		message.setFrom("test@daycare.com");
-		message.setTo(user.getEmail());
-		message.setSubject("帳號啟用信件");
-		message.setText("請點擊以下連結已啟用帳號:\n" + verfityURL);
-		
-		javaMailSender.send(message);
+		// 3.寄出 認證碼
+		String verificationLink = "http://localhost:8080/api/users/verify?token=" + userVerify.getToken();	// 預設 認證 網址		
+		emailServiceImpl.sendVerificationEmail(email, "帳號啟用信件", verificationLink);
 		
 		System.out.println("申請帳號成功");
 	}

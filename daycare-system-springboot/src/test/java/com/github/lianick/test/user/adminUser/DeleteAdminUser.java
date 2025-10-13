@@ -1,14 +1,19 @@
 package com.github.lianick.test.user.adminUser;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 
+import com.github.lianick.model.eneity.ChildInfo;
+import com.github.lianick.model.eneity.DocumentPublic;
 import com.github.lianick.model.eneity.UserAdmin;
+import com.github.lianick.model.eneity.UserVerify;
 import com.github.lianick.repository.UserAdminRepository;
 
 import jakarta.transaction.Transactional;
@@ -27,6 +32,7 @@ public class DeleteAdminUser {
 	public void delete() {		// 軟刪除 = delete_at 打上時間
 		// 測試用變數
 		Long adminId = 3L;
+		LocalDateTime deleteTime = LocalDateTime.now();
 		
 		// 檢查 是否 存在
 		Optional<UserAdmin> optUserAdmin = userAdminRepository.findById(adminId);
@@ -38,8 +44,17 @@ public class DeleteAdminUser {
 		UserAdmin userAdmin = optUserAdmin.get();
 
 		// 執行 軟刪除
-		userAdmin.setDeleteAt(LocalDateTime.now());
-		userAdmin.getUsers().setDeleteAt(LocalDateTime.now());
+		// 1. 主要欄位
+		userAdmin.setDeleteAt(deleteTime);
+		userAdmin.getUsers().setDeleteAt(deleteTime);
+		
+		// 2. 關聯欄位
+		List<UserVerify> userVerifies = userAdmin.getUsers().getUserVerifies();
+		if (userVerifies != null) {
+			userVerifies.forEach(userVerify -> {
+				userVerify.setDeleteAt(deleteTime);
+			});
+		}
 		
 		// 儲存回去資料庫
 		userAdminRepository.save(userAdmin);

@@ -1,6 +1,7 @@
 package com.github.lianick.test.user;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 
+import com.github.lianick.model.eneity.UserVerify;
 import com.github.lianick.model.eneity.Users;
 import com.github.lianick.repository.UsersRepository;
 
@@ -24,11 +26,11 @@ public class DeleteUser {
 	@Rollback(false)	// 強制提交事務，不回滾。
 	public void deleteNoActiveUser() {
 		// 變數
-		Long userId = 5L;
+		Long userId = 2L;
 		LocalDateTime deleteTime = LocalDateTime.now();
 		
 		// 找到 目標 ID
-		Optional<Users> optUser = usersRepository.findNoActiveAndUnlinkedUserById(userId);
+		Optional<Users> optUser = usersRepository.findUnlinkedUserById(userId);
 		if (optUser.isEmpty()) {
 			System.out.println("User id = %d 不存在 或 已經被刪除");
 			return;
@@ -37,6 +39,13 @@ public class DeleteUser {
 		
 		// 執行 軟刪除
 		user.setDeleteAt(deleteTime);
+		// 關聯欄位
+		List<UserVerify> userVerifies = user.getUserVerifies();
+		if (userVerifies != null) {
+			userVerifies.forEach(userVerify -> {
+				userVerify.setDeleteAt(deleteTime);
+			});
+		}
 		
 		// 回存
 		usersRepository.save(user);
