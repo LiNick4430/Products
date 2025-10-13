@@ -3,9 +3,11 @@ package com.github.lianick.model.eneity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.hibernate.annotations.SQLRestriction;
 
@@ -67,10 +69,14 @@ public class Users extends BaseEntity {
 	@JoinColumn(name = "role_id", nullable = false)	// <--- 外鍵欄位名稱，不可為空
 	private Role role;
 	
+	// 紀錄 帳號的 認證 Token
+	@OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private List<UserVerify> userVerifies;
+	
 	// 共享主鍵（Shared Primary Key, SPK）模式, Users 為生命週期的主導者
 	// 反向關聯：一個 Users 對應一個 User_Public
 	@OneToOne(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)	// mappedBy 意思是 告訴 JPA 去 User_Public 找 users, 他會 會定義外鍵 (user_id)
-	private UserPublic publicInfo;		
+	private UserPublic publicInfo;
 	
 	// 反向關聯：一個 Users 對應一個 User_Admin
 	@OneToOne(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
