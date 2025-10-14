@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.http.HttpStatus;
 
 import com.github.lianick.exception.MailSendFailureException;
+import com.github.lianick.exception.TokenFailureException;
 import com.github.lianick.exception.UserNoFoundException;
 import com.github.lianick.response.ApiResponse;
 
@@ -31,5 +32,13 @@ public class GlobalExceptionHandler {
     @ResponseBody                                		
 	public ApiResponse<?> handleMailSendFailureException(MailSendFailureException ex) {
 		return new ApiResponse<>(false, "服務器內部錯誤：無法發送電子郵件，請稍後重試。" , null);
+	}
+	
+	// token 驗證相關 的 錯誤 (1. 無效不存在 2. 過期 3. 已經被使用)
+	@ExceptionHandler(TokenFailureException.class) 		
+	@ResponseStatus(HttpStatus.BAD_REQUEST)   			// 400
+    @ResponseBody                                		
+	public ApiResponse<?> handleTokenFailureException(TokenFailureException ex) {
+		return new ApiResponse<>(false, ex.getMessage() , null);
 	}
 }

@@ -1,10 +1,12 @@
 package com.github.lianick.service;
 
+import com.github.lianick.exception.TokenFailureException;
 import com.github.lianick.exception.UserNoFoundException;
 import com.github.lianick.model.dto.UserDeleteDTO;
 import com.github.lianick.model.dto.UserForgetPasswordDTO;
 import com.github.lianick.model.dto.UserLoginDTO;
 import com.github.lianick.model.dto.UserRegisterDTO;
+import com.github.lianick.model.dto.UserVerifyDTO;
 import com.github.lianick.model.eneity.Users;
 import com.github.lianick.response.ApiResponse;
 
@@ -22,7 +24,7 @@ public interface UserService {
 	// 註冊帳號
 	ApiResponse<UserRegisterDTO> registerUser(UserRegisterDTO userRegisterDTO);
 	// 驗證帳號
-	ApiResponse<Void> veriftyUser(String token);
+	ApiResponse<Void> veriftyUser(UserVerifyDTO userVerifyDTO) throws TokenFailureException;
 	// 登陸帳號
 	ApiResponse<UserLoginDTO> loginUser(UserLoginDTO userLoginDTO) throws UserNoFoundException;
 	// 忘記密碼
@@ -31,5 +33,5 @@ public interface UserService {
 	ApiResponse<Void> deleteUser(UserDeleteDTO userDeleteDTO);
 	
 	// 產生 帳號驗證碼 同時寄出驗證信
-	void generateUserToken(Users users);
+	void generateUserToken(Users users, String subject);
 }
