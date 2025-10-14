@@ -16,6 +16,7 @@ import com.github.lianick.model.dto.user.UserDeleteDTO;
 import com.github.lianick.model.dto.user.UserForgetPasswordDTO;
 import com.github.lianick.model.dto.user.UserLoginDTO;
 import com.github.lianick.model.dto.user.UserRegisterDTO;
+import com.github.lianick.model.dto.user.UserUpdateDTO;
 import com.github.lianick.model.dto.user.UserVerifyDTO;
 import com.github.lianick.model.eneity.UserVerify;
 import com.github.lianick.model.eneity.Users;
@@ -119,17 +120,19 @@ public class UserServiceImpl implements UserService{
 	        .orElseThrow(() -> new UserNoFoundException("帳號或密碼錯誤"));
 
 	    // 使用 checkPassword 方法
-	    if (checkPassword(userLoginDTO, tableUser)) {
-	    	userLoginDTO.setPassword(null);; 			// 回傳給前台 會先將密碼清空
-	        return new ApiResponse<UserLoginDTO>(true, "登陸成功", userLoginDTO);
+	    if (!checkPassword(userLoginDTO, tableUser)) {
+	    	// 如果 密碼不相符, 統一由 UserNoFoundException -> GlobalExceptionHandler 處理回傳
+		    throw new UserNoFoundException("帳號或密碼錯誤");
 	    }
-	    
-	    // 如果 密碼不相符, 統一由 UserNoFoundException -> GlobalExceptionHandler 處理回傳
-	    throw new UserNoFoundException("帳號或密碼錯誤");
+	    userLoginDTO.setPassword(null);; 				// 回傳給前台 會先將密碼清空
+    	tableUser.setLoginDate(LocalDateTime.now());	// 登入時間
+    	usersRepository.save(tableUser);
+    	
+        return new ApiResponse<UserLoginDTO>(true, "登陸成功", userLoginDTO);
 	}
 
 	@Override
-	public ApiResponse<Void> forgetPasswordSendEmail(UserForgetPasswordDTO userForgetPasswordDTO) {
+	public ApiResponse<Void> forgetPasswordSendEmail(UserForgetPasswordDTO userForgetPasswordDTO) throws UserNoFoundException{
 		// 找尋資料庫 對應的帳號
 	    Users tableUser = usersRepository.findByAccount(userForgetPasswordDTO.getUsername())
 	        .orElseThrow(() -> new UserNoFoundException("帳號或密碼錯誤"));
@@ -165,7 +168,7 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	@Override
-	public ApiResponse<Void> forgetPasswordUpdatePassword(UserForgetPasswordDTO userForgetPasswordDTO) {
+	public ApiResponse<Void> forgetPasswordUpdatePassword(UserForgetPasswordDTO userForgetPasswordDTO) throws TokenFailureException, UserNoFoundException{
 		// 取出/建立 所需資料
 		Users tableUser = usersRepository.findByAccount(userForgetPasswordDTO.getUsername())
 			        .orElseThrow(() -> new UserNoFoundException("帳號或密碼錯誤"));
@@ -197,6 +200,55 @@ public class UserServiceImpl implements UserService{
 		return new ApiResponse<>(true, "密碼更新完成, 請使用新密碼登入", null);
 	}
 
+	@Override
+	public ApiResponse<Void> updateUserCheckPassword(UserUpdateDTO userUpdateDTO) {
+		// 找尋資料庫 對應的帳號
+	    Users tableUser = usersRepository.findByAccount(userUpdateDTO.getUsername())
+	        .orElseThrow(() -> new UserNoFoundException("帳號或密碼錯誤"));
+	    // 使用 checkPassword 方法 複查 密碼是否相同
+	    if (!checkPassword(userUpdateDTO, tableUser)) {
+	    	throw new UserNoFoundException("帳號或密碼錯誤");
+	    }
+	    
+		return new ApiResponse<>(true, "密碼確認成功, 進入修改資料網頁", null);
+	}
+
+	@Override
+	public ApiResponse<Void> updateUser(UserUpdateDTO userUpdateDTO) {
+		// 複查一次 
+	    Users tableUser = usersRepository.findByAccount(userUpdateDTO.getUsername())
+	        .orElseThrow(() -> new UserNoFoundException("帳號或密碼錯誤"));
+	    
+	    // 更新資料, 同時檢查 null、空字串、和空白字元
+	    String rawPassword = userUpdateDTO.getNewPassword();
+	    String newEmail = userUpdateDTO.getNewEmail();
+	    String newPhoneNumber = userUpdateDTO.getNewPhoneNumber();
+	    
+		if (rawPassword != null && !rawPassword.isBlank()) {
+			
+			String hashPassword = passwordSecurity.hashPassword(rawPassword);
+			tableUser.setPassword(hashPassword);
+			
+			// 密碼改變， 同時將所有 UserVerify Token 作廢 
+			usersVerifyRepository.markAllUnusedTokenAsUsed(tableUser.getAccount());
+		}
+		
+		if (newEmail != null && !newEmail.isBlank()) {
+			tableUser.setEmail(userUpdateDTO.getNewEmail());
+			
+			// 新信箱 進行認證
+			generateUserToken(tableUser, "新信箱認證信", "reset-email");
+		}
+		
+		if (newPhoneNumber != null && !newPhoneNumber.isBlank()) {
+			tableUser.setPhoneNumber(userUpdateDTO.getNewPhoneNumber());
+		}
+		
+		usersRepository.save(tableUser);
+	    
+	    return new ApiResponse<>(true, "資料更新完成 請重新登入", null);
+	}
+	
 	@Override
 	public ApiResponse<Void> deleteUser(UserDeleteDTO userDeleteDTO) throws UserNoFoundException{
 		// 找尋資料庫 對應的帳號
@@ -264,5 +316,7 @@ public class UserServiceImpl implements UserService{
 	    // 進行 密碼比對
 		return passwordSecurity.verifyPassword(rawPassword, encodedPassword);
 	}
+
+	
 	
 }

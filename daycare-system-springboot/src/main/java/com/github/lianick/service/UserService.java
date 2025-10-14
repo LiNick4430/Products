@@ -7,6 +7,7 @@ import com.github.lianick.model.dto.user.UserDeleteDTO;
 import com.github.lianick.model.dto.user.UserForgetPasswordDTO;
 import com.github.lianick.model.dto.user.UserLoginDTO;
 import com.github.lianick.model.dto.user.UserRegisterDTO;
+import com.github.lianick.model.dto.user.UserUpdateDTO;
 import com.github.lianick.model.dto.user.UserVerifyDTO;
 import com.github.lianick.model.eneity.Users;
 import com.github.lianick.response.ApiResponse;
@@ -28,12 +29,21 @@ public interface UserService {
 	ApiResponse<Void> veriftyUser(UserVerifyDTO userVerifyDTO) throws TokenFailureException;
 	// 登陸帳號
 	ApiResponse<UserLoginDTO> loginUser(UserLoginDTO userLoginDTO) throws UserNoFoundException;
-	// 忘記密碼 - 發送驗證信
-	ApiResponse<Void> forgetPasswordSendEmail(UserForgetPasswordDTO userForgetPasswordDTO);
-	// 忘記密碼 - token 驗證
+	
+	// 忘卻密碼 三步驟
+	// 發送驗證信
+	ApiResponse<Void> forgetPasswordSendEmail(UserForgetPasswordDTO userForgetPasswordDTO) throws UserNoFoundException;
+	// token 驗證
 	ApiResponse<Void> forgetPasswordVerifty(UserForgetPasswordDTO userForgetPasswordDTO) throws TokenFailureException;
-	// 忘記密碼 - 通過驗證信後 修改密碼
-	ApiResponse<Void> forgetPasswordUpdatePassword(UserForgetPasswordDTO userForgetPasswordDTO);
+	// 通過驗證信後 修改密碼
+	ApiResponse<Void> forgetPasswordUpdatePassword(UserForgetPasswordDTO userForgetPasswordDTO) throws TokenFailureException, UserNoFoundException;
+	
+	// 修改帳號資料 二步驟
+	// 確認密碼
+	ApiResponse<Void> updateUserCheckPassword(UserUpdateDTO userUpdateDTO);
+	// update 資料
+	ApiResponse<Void> updateUser(UserUpdateDTO userUpdateDTO);
+	
 	// 刪除帳號
 	ApiResponse<Void> deleteUser(UserDeleteDTO userDeleteDTO) throws UserNoFoundException;
 	
