@@ -1,4 +1,4 @@
-package com.github.lianick.model.dto;
+package com.github.lianick.model.dto.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,12 +9,10 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserRegisterDTO {	// 註冊用
+public class UserForgetPasswordDTO {	// 忘記密碼 用
+	private Long id;
 	private String email;
 	private String phoneNumber;
 	
 	private String username;
-	private String password;
-	
-	private Long roleNumber;
 }

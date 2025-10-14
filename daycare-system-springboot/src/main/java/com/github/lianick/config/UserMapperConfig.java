@@ -5,8 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import com.github.lianick.converter.RoleNumberToRoleConveter;
-import com.github.lianick.model.dto.UserLoginDTO;
-import com.github.lianick.model.dto.UserRegisterDTO;
+import com.github.lianick.model.dto.user.UserLoginDTO;
+import com.github.lianick.model.dto.user.UserRegisterDTO;
 import com.github.lianick.model.eneity.Users;
 
 @Configuration

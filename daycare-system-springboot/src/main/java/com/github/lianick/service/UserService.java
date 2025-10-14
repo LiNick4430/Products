@@ -3,11 +3,11 @@ package com.github.lianick.service;
 import com.github.lianick.exception.TokenFailureException;
 import com.github.lianick.exception.UserNoFoundException;
 import com.github.lianick.model.dto.PasswordAwareDTO;
-import com.github.lianick.model.dto.UserDeleteDTO;
-import com.github.lianick.model.dto.UserForgetPasswordDTO;
-import com.github.lianick.model.dto.UserLoginDTO;
-import com.github.lianick.model.dto.UserRegisterDTO;
-import com.github.lianick.model.dto.UserVerifyDTO;
+import com.github.lianick.model.dto.user.UserDeleteDTO;
+import com.github.lianick.model.dto.user.UserForgetPasswordDTO;
+import com.github.lianick.model.dto.user.UserLoginDTO;
+import com.github.lianick.model.dto.user.UserRegisterDTO;
+import com.github.lianick.model.dto.user.UserVerifyDTO;
 import com.github.lianick.model.eneity.Users;
 import com.github.lianick.response.ApiResponse;
 

@@ -1,4 +1,4 @@
-package com.github.lianick.model.dto;
+package com.github.lianick.model.dto.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
