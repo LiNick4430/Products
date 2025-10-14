@@ -2,6 +2,7 @@ package com.github.lianick.service;
 
 import com.github.lianick.exception.TokenFailureException;
 import com.github.lianick.exception.UserNoFoundException;
+import com.github.lianick.model.dto.PasswordAwareDTO;
 import com.github.lianick.model.dto.UserDeleteDTO;
 import com.github.lianick.model.dto.UserForgetPasswordDTO;
 import com.github.lianick.model.dto.UserLoginDTO;
@@ -30,8 +31,11 @@ public interface UserService {
 	// 忘記密碼
 	ApiResponse<UserForgetPasswordDTO> forgetPassword(UserForgetPasswordDTO userForgetPasswordDTO);
 	// 刪除帳號
-	ApiResponse<Void> deleteUser(UserDeleteDTO userDeleteDTO);
+	ApiResponse<Void> deleteUser(UserDeleteDTO userDeleteDTO) throws UserNoFoundException;
 	
 	// 產生 帳號驗證碼 同時寄出驗證信
 	void generateUserToken(Users users, String subject);
+	
+	// 密碼驗證, 泛型 T 必須是 PasswordAwareDTO 或其子類
+	<T extends PasswordAwareDTO> Boolean checkPassword (T userDto, Users tableUser);
 }

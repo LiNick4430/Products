@@ -1,6 +1,7 @@
 package com.github.lianick.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.github.lianick.exception.TokenFailureException;
 import com.github.lianick.exception.UserNoFoundException;
+import com.github.lianick.model.dto.PasswordAwareDTO;
 import com.github.lianick.model.dto.UserDeleteDTO;
 import com.github.lianick.model.dto.UserForgetPasswordDTO;
 import com.github.lianick.model.dto.UserLoginDTO;
@@ -112,17 +114,13 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public ApiResponse<UserLoginDTO> loginUser(UserLoginDTO userLoginDTO) throws UserNoFoundException {
-		// 1. 找尋資料庫 對應的帳號
+		// 找尋資料庫 對應的帳號
 	    Users tableUser = usersRepository.findByAccount(userLoginDTO.getUsername())
 	        .orElseThrow(() -> new UserNoFoundException("帳號或密碼錯誤"));
 
-	    // 2. 檢查密碼 是否相符
-	    String rawPassword = userLoginDTO.getRawPassword(); // 使用者輸入的明文密碼
-	    String encodedPassword = tableUser.getPassword(); 	// 資料庫中儲存的雜湊密碼
-	    
-	    // 直接使用明文密碼和雜湊密碼進行比對
-	    if (passwordSecurity.verifyPassword(rawPassword, encodedPassword)) {
-	    	userLoginDTO.setRawPassword(rawPassword); // 回傳給前台 會先將密碼清空
+	    // 使用 checkPassword 方法
+	    if (checkPassword(userLoginDTO, tableUser)) {
+	    	userLoginDTO.setPassword(null);; 			// 回傳給前台 會先將密碼清空
 	        return new ApiResponse<UserLoginDTO>(true, "登陸成功", userLoginDTO);
 	    }
 	    
@@ -137,9 +135,33 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public ApiResponse<Void> deleteUser(UserDeleteDTO userDeleteDTO) {
-		// TODO Auto-generated method stub
-		return null;
+	public ApiResponse<Void> deleteUser(UserDeleteDTO userDeleteDTO) throws UserNoFoundException{
+		// 找尋資料庫 對應的帳號
+	    Users tableUser = usersRepository.findByAccount(userDeleteDTO.getUsername())
+	        .orElseThrow(() -> new UserNoFoundException("帳號或密碼錯誤"));
+
+	    // 使用 checkPassword 方法 複查 密碼是否相同
+	    if (!checkPassword(userDeleteDTO, tableUser)) {
+	    	throw new UserNoFoundException("帳號或密碼錯誤");
+	    }
+	    
+	    // 建立 變數
+	    LocalDateTime deleteTime = LocalDateTime.now();
+	    
+		// 執行 軟刪除
+	    tableUser.setDeleteAt(deleteTime);
+		// 關聯欄位
+		List<UserVerify> userVerifies = tableUser.getUserVerifies();
+		if (userVerifies != null) {
+			userVerifies.forEach(userVerify -> {
+				userVerify.setDeleteAt(deleteTime);
+			});
+		}
+		
+		// 回存
+		usersRepository.save(tableUser);
+	    
+		return new ApiResponse<Void>(true, "帳號刪除成功", null);
 	}
 
 	@Override
@@ -165,5 +187,17 @@ public class UserServiceImpl implements UserService{
 		// 3. 寄出驗證信
 		String verificationLink = "http://localhost:8080/api/users/verify?token=" + userVerify.getToken();	// 預設 認證 網址		
 		emailServiceImpl.sendVerificationEmail(email, subject, verificationLink);
+	}
+
+	@Override
+	public <T extends PasswordAwareDTO> Boolean checkPassword(T userDto, Users tableUser) {
+		// 取出 使用者輸入的 明文密碼
+	    String rawPassword = userDto.getRawPassword(); 		// 使用者輸入的明文密碼
+	    
+	    // 取出 資料庫的 雜湊密碼
+	    String encodedPassword = tableUser.getPassword(); 	// 資料庫中儲存的雜湊密碼
+	    
+	    // 進行 密碼比對
+		return passwordSecurity.verifyPassword(rawPassword, encodedPassword);
 	}
 }

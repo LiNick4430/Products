@@ -9,11 +9,12 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDeleteDTO {	// 刪除用
-	private Long id;
-	private String email;
-	private String phoneNumber;
-	
+public class UserDeleteDTO implements PasswordAwareDTO{	// 刪除用
 	private String username;
 	private String password;
+	
+	@Override
+	public String getRawPassword() {
+		return this.password;
+	}
 }
