@@ -5,6 +5,7 @@ import com.github.lianick.model.dto.UserDeleteDTO;
 import com.github.lianick.model.dto.UserForgetPasswordDTO;
 import com.github.lianick.model.dto.UserLoginDTO;
 import com.github.lianick.model.dto.UserRegisterDTO;
+import com.github.lianick.model.eneity.Users;
 import com.github.lianick.response.ApiResponse;
 
 /*
@@ -16,7 +17,7 @@ import com.github.lianick.response.ApiResponse;
 	防護： 如果 Service 層有人試圖對一個已是民眾的帳號創建員工紀錄，admin_user 表會因為 Primary Key 衝突而拋出資料庫錯誤（如果 Service 層沒有提前檢查的話）。
  * */
 
-public interface UserSrevice {
+public interface UserService {
 
 	// 註冊帳號
 	ApiResponse<UserRegisterDTO> registerUser(UserRegisterDTO userRegisterDTO);
@@ -28,4 +29,7 @@ public interface UserSrevice {
 	ApiResponse<UserForgetPasswordDTO> forgetPassword(UserForgetPasswordDTO userForgetPasswordDTO);
 	// 刪除帳號
 	ApiResponse<Void> deleteUser(UserDeleteDTO userDeleteDTO);
+	
+	// 產生 帳號驗證碼 同時寄出驗證信
+	void generateUserToken(Users users);
 }
