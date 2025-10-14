@@ -68,7 +68,7 @@ public class UserServiceImpl implements UserService{
 		// 儲存
 		usersRepository.save(users);
 		// 產生驗證碼 同時 寄出 驗證信
-		generateUserToken(users, "帳號啟用信件");
+		generateUserToken(users, "帳號啟用信件", "verify");
 		// 返回時 通常把 密碼清空
 		userRegisterDTO.setPassword(null);
 		return new ApiResponse<UserRegisterDTO>(true, "帳號建立成功, 請驗證信箱", userRegisterDTO);
@@ -129,9 +129,72 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public ApiResponse<UserForgetPasswordDTO> forgetPassword(UserForgetPasswordDTO userForgetPasswordDTO) {
-		// TODO Auto-generated method stub
-		return null;
+	public ApiResponse<Void> forgetPasswordSendEmail(UserForgetPasswordDTO userForgetPasswordDTO) {
+		// 找尋資料庫 對應的帳號
+	    Users tableUser = usersRepository.findByAccount(userForgetPasswordDTO.getUsername())
+	        .orElseThrow(() -> new UserNoFoundException("帳號或密碼錯誤"));
+	    
+	    // 產生驗證碼 同時 寄出 驗證信
+	    generateUserToken(tableUser, "忘記密碼驗證信件", "reset-password");
+	    
+		return new ApiResponse<Void>(true, "驗證信寄出成功", null);
+	}
+	
+	@Override
+	public ApiResponse<Void> forgetPasswordVerifty(UserForgetPasswordDTO userForgetPasswordDTO) throws TokenFailureException {
+		// 取出/建立 所需資料
+		String token = userForgetPasswordDTO.getToekn();
+		LocalDateTime now = LocalDateTime.now();
+		
+		// 1. 使用 Token 紀錄 找尋 UsersVerify 紀錄
+		Optional<UserVerify> optUserVerify = usersVerifyRepository.findByToken(token);
+		if (optUserVerify.isEmpty()) {
+			throw new TokenFailureException("驗證碼無效或不存在");
+		}
+		UserVerify userVerify = optUserVerify.get();
+		
+		// 2. 判斷 Token 狀態
+		if (userVerify.getIsUsed()) {
+			throw new TokenFailureException("驗證碼已經被使用");
+		}
+		if (userVerify.getExpiryTime().isBefore(now)) {
+			throw new TokenFailureException("驗證碼已經過期");
+		}
+		
+		return new ApiResponse<Void>(true, "驗證成功, 進入修改密碼網頁", null);
+	}
+	
+	@Override
+	public ApiResponse<Void> forgetPasswordUpdatePassword(UserForgetPasswordDTO userForgetPasswordDTO) {
+		// 取出/建立 所需資料
+		Users tableUser = usersRepository.findByAccount(userForgetPasswordDTO.getUsername())
+			        .orElseThrow(() -> new UserNoFoundException("帳號或密碼錯誤"));
+		String token = userForgetPasswordDTO.getToekn();
+		String rawPassword = userForgetPasswordDTO.getPassword();
+		LocalDateTime now = LocalDateTime.now(); 
+		// 驗證 token, 預設已經膯過第二步 這裡將不再驗證 時間
+		Optional<UserVerify> optUserVerify = usersVerifyRepository.findByToken(token);
+		if (optUserVerify.isEmpty()) {
+			throw new TokenFailureException("驗證碼無效或不存在");
+		}
+		UserVerify userVerify = optUserVerify.get();
+		LocalDateTime newExpiryTime = userVerify.getExpiryTime().plusHours(1);	// 延長修改時間 讓用戶有額外 1個小時 可以修正
+		if (userVerify.getIsUsed()) {
+			throw new TokenFailureException("驗證碼已經被使用");
+		}
+		if (newExpiryTime.isBefore(now)) {
+			throw new TokenFailureException("閒置時間太久, 將離開網頁");
+		}
+		// 更新密碼
+		String hashPassword = passwordSecurity.hashPassword(rawPassword);
+		tableUser.setPassword(hashPassword);
+		// 認證 已經使用
+		userVerify.setIsUsed(true);
+		// 存回去
+		usersRepository.save(tableUser);
+		usersVerifyRepository.save(userVerify);
+		 
+		return new ApiResponse<>(true, "密碼更新完成, 請使用新密碼登入", null);
 	}
 
 	@Override
@@ -165,7 +228,7 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public void generateUserToken(Users users, String subject) {
+	public void generateUserToken(Users users, String subject, String apiName) {
 		// 1. 取出/建立 所需資料
 		String account = users.getAccount();
 		String email = users.getEmail();
@@ -185,7 +248,8 @@ public class UserServiceImpl implements UserService{
 		usersVerifyRepository.save(userVerify);
 		
 		// 3. 寄出驗證信
-		String verificationLink = "http://localhost:8080/api/users/verify?token=" + userVerify.getToken();	// 預設 認證 網址		
+		// 根據不同 api 導向 不同用途 (1. 驗證帳號 2. 忘記密碼)
+		String verificationLink = "http://localhost:8080/api/users/" + apiName + "?token=" + userVerify.getToken();			
 		emailServiceImpl.sendVerificationEmail(email, subject, verificationLink);
 	}
 
@@ -200,4 +264,5 @@ public class UserServiceImpl implements UserService{
 	    // 進行 密碼比對
 		return passwordSecurity.verifyPassword(rawPassword, encodedPassword);
 	}
+	
 }

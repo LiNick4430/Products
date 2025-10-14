@@ -28,13 +28,17 @@ public interface UserService {
 	ApiResponse<Void> veriftyUser(UserVerifyDTO userVerifyDTO) throws TokenFailureException;
 	// 登陸帳號
 	ApiResponse<UserLoginDTO> loginUser(UserLoginDTO userLoginDTO) throws UserNoFoundException;
-	// 忘記密碼
-	ApiResponse<UserForgetPasswordDTO> forgetPassword(UserForgetPasswordDTO userForgetPasswordDTO);
+	// 忘記密碼 - 發送驗證信
+	ApiResponse<Void> forgetPasswordSendEmail(UserForgetPasswordDTO userForgetPasswordDTO);
+	// 忘記密碼 - token 驗證
+	ApiResponse<Void> forgetPasswordVerifty(UserForgetPasswordDTO userForgetPasswordDTO) throws TokenFailureException;
+	// 忘記密碼 - 通過驗證信後 修改密碼
+	ApiResponse<Void> forgetPasswordUpdatePassword(UserForgetPasswordDTO userForgetPasswordDTO);
 	// 刪除帳號
 	ApiResponse<Void> deleteUser(UserDeleteDTO userDeleteDTO) throws UserNoFoundException;
 	
 	// 產生 帳號驗證碼 同時寄出驗證信
-	void generateUserToken(Users users, String subject);
+	void generateUserToken(Users users, String subject, String apiName);
 	
 	// 密碼驗證, 泛型 T 必須是 PasswordAwareDTO 或其子類
 	<T extends PasswordAwareDTO> Boolean checkPassword (T userDto, Users tableUser);
