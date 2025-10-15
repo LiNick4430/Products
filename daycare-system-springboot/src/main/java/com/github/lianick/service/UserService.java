@@ -41,6 +41,8 @@ public interface UserService {
 	// 修改帳號資料 二步驟
 	// 確認密碼
 	ApiResponse<Void> updateUserCheckPassword(UserUpdateDTO userUpdateDTO);
+	// 假設要 更新信箱 的 信箱驗證方法
+	ApiResponse<Void> updateUserVeriftyEmail(UserUpdateDTO userUpdateDTO);
 	// update 資料
 	ApiResponse<Void> updateUser(UserUpdateDTO userUpdateDTO);
 	

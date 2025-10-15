@@ -31,7 +31,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
-@RequiredArgsConstructor	// Lombok 會自動生成包含所有 final 欄位的建構式, 用於 private final ModelMapper userMapper;
 @Transactional				// 確保 完整性 
 public class UserServiceImpl implements UserService{
 
@@ -50,12 +49,11 @@ public class UserServiceImpl implements UserService{
 	@Autowired
 	private TokenUUID tokenUUID;
 	
-	// 注入時不需要 @Autowired，因為 Lombok 會處理它
-	@Qualifier("userModelMapper")
-	private final ModelMapper userMapper;
+	@Autowired
+	private ModelMapper modelMapper;
 	
 	public Users convertToUser(UserRegisterDTO userRegisterDTO) {
-		return userMapper.map(userRegisterDTO, Users.class);
+		return modelMapper.map(userRegisterDTO, Users.class);
 	}
 
 	@Override
@@ -214,6 +212,12 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
+	public ApiResponse<Void> updateUserVeriftyEmail(UserUpdateDTO userUpdateDTO) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	@Override
 	public ApiResponse<Void> updateUser(UserUpdateDTO userUpdateDTO) {
 		// 複查一次 
 	    Users tableUser = usersRepository.findByAccount(userUpdateDTO.getUsername())
@@ -316,6 +320,8 @@ public class UserServiceImpl implements UserService{
 	    // 進行 密碼比對
 		return passwordSecurity.verifyPassword(rawPassword, encodedPassword);
 	}
+
+	
 
 	
 	

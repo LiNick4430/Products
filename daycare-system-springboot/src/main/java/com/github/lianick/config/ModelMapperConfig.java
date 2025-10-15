@@ -5,19 +5,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import com.github.lianick.converter.RoleNumberToRoleConveter;
-import com.github.lianick.model.dto.user.UserLoginDTO;
 import com.github.lianick.model.dto.user.UserRegisterDTO;
 import com.github.lianick.model.eneity.Users;
 
 @Configuration
-public class UserMapperConfig {
+public class ModelMapperConfig {
 
 	@Autowired
     private  RoleNumberToRoleConveter roleTypeToRoleConveter;
 
-
 	@Bean
-	ModelMapper userModelMapper() {
+	public ModelMapper modelMapper() {
 		ModelMapper modelMapper = new ModelMapper();
 		
 		// Entity -> DTO
