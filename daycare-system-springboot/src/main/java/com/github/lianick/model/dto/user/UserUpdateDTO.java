@@ -12,13 +12,20 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserUpdateDTO implements PasswordAwareDTO{	// 更新資料用
+	private Long id;
 
-	private String newEmail;			// 用於 2. update
-	private String newPhoneNumber;		// 用於 2. update
+	private String email;				// 從資料庫取出的 舊信箱
+	private String phoneNumber;			// 從資料庫取出的 舊電話號碼
+	
+	private String newEmail;			// 用於 4. update
+	private String newPhoneNumber;		// 用於 4. update
+	
+	private Boolean mailIsActive;		// 用於 3. 信箱驗證
+	private String token;				// 用於 3. 信箱驗證
 	
 	private String username;
 	private String password;			// 用於 1. checkPassword
-	private String newPassword;			// 用於 2. update 
+	private String newPassword;			// 用於 4. update 
 	
 	@Override
 	public String getRawPassword() {

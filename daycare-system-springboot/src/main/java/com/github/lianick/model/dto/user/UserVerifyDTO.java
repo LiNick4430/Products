@@ -10,6 +10,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserVerifyDTO {	// 帳號 認證用
-
-	private String toekn;		// 認證碼
+	private Long id;			// 回傳用
+	
+	private String token;		// 認證碼
 }

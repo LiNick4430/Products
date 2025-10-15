@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.github.lianick.exception.TokenFailureException;
@@ -28,7 +27,6 @@ import com.github.lianick.util.PasswordSecurity;
 import com.github.lianick.util.TokenUUID;
 
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
 
 @Service
 @Transactional				// 確保 完整性 
@@ -58,25 +56,34 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public ApiResponse<UserRegisterDTO> registerUser(UserRegisterDTO userRegisterDTO) {
-		// DTO 轉 Entity
+		// 1. DTO 轉 Entity
 		Users users = convertToUser(userRegisterDTO);
-		// 密碼加密
+		
+		// 2. 密碼 取出加密處理
 		String rawPassword = users.getPassword();
 		String hashPassword = passwordSecurity.hashPassword(rawPassword);
 		users.setPassword(hashPassword);
-		// 儲存
-		usersRepository.save(users);
-		// 產生驗證碼 同時 寄出 驗證信
+		
+		// 3. users 儲存
+		users = usersRepository.save(users);
+		
+		// 4. 產生驗證碼 同時 寄出 驗證信
 		generateUserToken(users, "帳號啟用信件", "verify");
-		// 返回時 通常把 密碼清空
+		
+		// 5. Entity 轉 DTO
+		userRegisterDTO = modelMapper.map(users, UserRegisterDTO.class);
+		
+		// 6. 返回處理: 清空 password, 給予角色ID
+		userRegisterDTO.setRoleNumber(users.getRole().getRoleId());
 		userRegisterDTO.setPassword(null);
+		
 		return new ApiResponse<UserRegisterDTO>(true, "帳號建立成功, 請驗證信箱", userRegisterDTO);
 	}
 
 	@Override
-	public ApiResponse<Void> veriftyUser(UserVerifyDTO userVerifyDTO) throws TokenFailureException {
-		// 取出/建立 所需資料
-		String token = userVerifyDTO.getToekn();
+	public ApiResponse<UserVerifyDTO> veriftyUser(UserVerifyDTO userVerifyDTO) throws TokenFailureException {
+		// 0. 取出/建立 所需資料
+		String token = userVerifyDTO.getToken();
 		LocalDateTime now = LocalDateTime.now();
 		
 		// 1. 使用 Token 紀錄 找尋 UsersVerify 紀錄
@@ -97,7 +104,7 @@ public class UserServiceImpl implements UserService{
 		
 		// 3. 判斷 Users 狀態 以防止重複使用
 		if (users.getIsActive()) {
-			return new ApiResponse<Void>(true, "帳號已經是啟用狀態", null);
+			return new ApiResponse<UserVerifyDTO>(true, "帳號已經是啟用狀態", null);
 		}
 		
 		// 4. 啟用帳號
@@ -106,45 +113,64 @@ public class UserServiceImpl implements UserService{
 		users.setActiveDate(now);
 		
 		usersVerifyRepository.save(userVerify);
-		usersRepository.save(users);
+		users = usersRepository.save(users);
 		
-		return new ApiResponse<Void>(true, "帳號啟用成功", null);
+		// 5. Entity 轉 DTO
+		userVerifyDTO = modelMapper.map(users, UserVerifyDTO.class);
+		
+		// 6. 返回處理: 清空 token
+		userVerifyDTO.setToken(null);
+		
+		return new ApiResponse<UserVerifyDTO>(true, "帳號啟用成功", userVerifyDTO);
 	}
 
 	@Override
 	public ApiResponse<UserLoginDTO> loginUser(UserLoginDTO userLoginDTO) throws UserNoFoundException {
-		// 找尋資料庫 對應的帳號
+		// 1. 找尋資料庫 對應的帳號
 	    Users tableUser = usersRepository.findByAccount(userLoginDTO.getUsername())
 	        .orElseThrow(() -> new UserNoFoundException("帳號或密碼錯誤"));
 
-	    // 使用 checkPassword 方法
+	    // 2. checkPassword 方法 驗證密碼
 	    if (!checkPassword(userLoginDTO, tableUser)) {
 	    	// 如果 密碼不相符, 統一由 UserNoFoundException -> GlobalExceptionHandler 處理回傳
 		    throw new UserNoFoundException("帳號或密碼錯誤");
 	    }
-	    userLoginDTO.setPassword(null);; 				// 回傳給前台 會先將密碼清空
-    	tableUser.setLoginDate(LocalDateTime.now());	// 登入時間
+	    // 3. 登入成功 打上時間
+	    tableUser.setLoginDate(LocalDateTime.now());	// 登入時間
     	usersRepository.save(tableUser);
+	    
+	    // 4. Entity 轉 DTO
+	    userLoginDTO = modelMapper.map(tableUser, UserLoginDTO.class);
+	    
+	    // 5. 返回處理: 清空 password
+    	userLoginDTO.setPassword(null);
     	
         return new ApiResponse<UserLoginDTO>(true, "登陸成功", userLoginDTO);
 	}
 
 	@Override
-	public ApiResponse<Void> forgetPasswordSendEmail(UserForgetPasswordDTO userForgetPasswordDTO) throws UserNoFoundException{
-		// 找尋資料庫 對應的帳號
+	public ApiResponse<UserForgetPasswordDTO> forgetPasswordSendEmail(UserForgetPasswordDTO userForgetPasswordDTO) throws UserNoFoundException{
+		// 1. 找尋資料庫 對應的帳號
 	    Users tableUser = usersRepository.findByAccount(userForgetPasswordDTO.getUsername())
 	        .orElseThrow(() -> new UserNoFoundException("帳號或密碼錯誤"));
 	    
-	    // 產生驗證碼 同時 寄出 驗證信
+	    // 2. 產生驗證碼 同時 寄出 驗證信
 	    generateUserToken(tableUser, "忘記密碼驗證信件", "reset-password");
 	    
-		return new ApiResponse<Void>(true, "驗證信寄出成功", null);
+	    // 3. Entity 轉 DTO
+	    userForgetPasswordDTO = modelMapper.map(tableUser, UserForgetPasswordDTO.class);
+	    
+	    // 4. 返回處理: 清空 敏感數值
+	    userForgetPasswordDTO.setToken(null);
+	    userForgetPasswordDTO.setPassword(null);
+	    
+		return new ApiResponse<UserForgetPasswordDTO>(true, "驗證信寄出成功", userForgetPasswordDTO);
 	}
 	
 	@Override
-	public ApiResponse<Void> forgetPasswordVerifty(UserForgetPasswordDTO userForgetPasswordDTO) throws TokenFailureException {
-		// 取出/建立 所需資料
-		String token = userForgetPasswordDTO.getToekn();
+	public ApiResponse<UserForgetPasswordDTO> forgetPasswordVerifty(UserForgetPasswordDTO userForgetPasswordDTO) throws TokenFailureException {
+		// 0. 取出/建立 所需資料
+		String token = userForgetPasswordDTO.getToken();
 		LocalDateTime now = LocalDateTime.now();
 		
 		// 1. 使用 Token 紀錄 找尋 UsersVerify 紀錄
@@ -162,18 +188,29 @@ public class UserServiceImpl implements UserService{
 			throw new TokenFailureException("驗證碼已經過期");
 		}
 		
-		return new ApiResponse<Void>(true, "驗證成功, 進入修改密碼網頁", null);
+		// 3. 取出 Entity
+		Users tableUser = userVerify.getUsers();
+		
+		// 4. Entity 轉 DTO
+	    userForgetPasswordDTO = modelMapper.map(tableUser, UserForgetPasswordDTO.class);
+	    
+	    // 5. 返回處理: 清空 敏感數值
+	    userForgetPasswordDTO.setToken(null);
+	    userForgetPasswordDTO.setPassword(null);
+		
+		return new ApiResponse<UserForgetPasswordDTO>(true, "驗證成功, 進入修改密碼網頁", userForgetPasswordDTO);
 	}
 	
 	@Override
-	public ApiResponse<Void> forgetPasswordUpdatePassword(UserForgetPasswordDTO userForgetPasswordDTO) throws TokenFailureException, UserNoFoundException{
-		// 取出/建立 所需資料
+	public ApiResponse<UserForgetPasswordDTO> forgetPasswordUpdatePassword(UserForgetPasswordDTO userForgetPasswordDTO) throws TokenFailureException, UserNoFoundException{
+		// 1. 取出/建立 所需資料
 		Users tableUser = usersRepository.findByAccount(userForgetPasswordDTO.getUsername())
 			        .orElseThrow(() -> new UserNoFoundException("帳號或密碼錯誤"));
-		String token = userForgetPasswordDTO.getToekn();
+		String token = userForgetPasswordDTO.getToken();
 		String rawPassword = userForgetPasswordDTO.getPassword();
-		LocalDateTime now = LocalDateTime.now(); 
-		// 驗證 token, 預設已經膯過第二步 這裡將不再驗證 時間
+		LocalDateTime now = LocalDateTime.now();
+		
+		// 2. 驗證 token, 預設已經膯過第二步 這裡將不再驗證 時間
 		Optional<UserVerify> optUserVerify = usersVerifyRepository.findByToken(token);
 		if (optUserVerify.isEmpty()) {
 			throw new TokenFailureException("驗證碼無效或不存在");
@@ -186,44 +223,118 @@ public class UserServiceImpl implements UserService{
 		if (newExpiryTime.isBefore(now)) {
 			throw new TokenFailureException("閒置時間太久, 將離開網頁");
 		}
-		// 更新密碼
+		// 3. 更新密碼
 		String hashPassword = passwordSecurity.hashPassword(rawPassword);
 		tableUser.setPassword(hashPassword);
-		// 認證 已經使用
+		
+		// 4. 設定 已經 認證 
 		userVerify.setIsUsed(true);
-		// 存回去
-		usersRepository.save(tableUser);
+		
+		// 5. 存回去
+		tableUser = usersRepository.save(tableUser);
 		usersVerifyRepository.save(userVerify);
-		 
-		return new ApiResponse<>(true, "密碼更新完成, 請使用新密碼登入", null);
+		
+		// 6. Entity 轉 DTO
+	    userForgetPasswordDTO = modelMapper.map(tableUser, UserForgetPasswordDTO.class);
+	    
+	    // 7. 返回處理: 清空 敏感數值
+	    userForgetPasswordDTO.setToken(null);
+	    userForgetPasswordDTO.setPassword(null);
+		
+		return new ApiResponse<UserForgetPasswordDTO>(true, "密碼更新完成, 請使用新密碼登入", null);
 	}
 
 	@Override
-	public ApiResponse<Void> updateUserCheckPassword(UserUpdateDTO userUpdateDTO) {
-		// 找尋資料庫 對應的帳號
+	public ApiResponse<UserUpdateDTO> updateUserCheckPassword(UserUpdateDTO userUpdateDTO) {
+		// 1. 找尋資料庫 對應的帳號
 	    Users tableUser = usersRepository.findByAccount(userUpdateDTO.getUsername())
 	        .orElseThrow(() -> new UserNoFoundException("帳號或密碼錯誤"));
-	    // 使用 checkPassword 方法 複查 密碼是否相同
+	    
+	    // 2. 使用 checkPassword 方法 複查 密碼是否相同
 	    if (!checkPassword(userUpdateDTO, tableUser)) {
 	    	throw new UserNoFoundException("帳號或密碼錯誤");
 	    }
 	    
-		return new ApiResponse<>(true, "密碼確認成功, 進入修改資料網頁", null);
+	    // 3. Entity 轉 DTO
+	    userUpdateDTO = modelMapper.map(tableUser, UserUpdateDTO.class);
+	    
+	    // 4. 返回處理: 清空 password
+	    userUpdateDTO.setPassword(null);
+	    userUpdateDTO.setNewPassword(null);
+	    userUpdateDTO.setMailIsActive(false);		// 給予 預設值 
+	    userUpdateDTO.setToken(null);
+	    
+		return new ApiResponse<>(true, "密碼確認成功, 進入修改資料網頁", userUpdateDTO);
 	}
 
 	@Override
-	public ApiResponse<Void> updateUserVeriftyEmail(UserUpdateDTO userUpdateDTO) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	@Override
-	public ApiResponse<Void> updateUser(UserUpdateDTO userUpdateDTO) {
-		// 複查一次 
+	public ApiResponse<UserUpdateDTO> updateUserSendEmail(UserUpdateDTO userUpdateDTO) {
+		// 1. 取出/建立 所需資料
+		String newEmail = userUpdateDTO.getNewEmail();
 	    Users tableUser = usersRepository.findByAccount(userUpdateDTO.getUsername())
 	        .orElseThrow(() -> new UserNoFoundException("帳號或密碼錯誤"));
 	    
-	    // 更新資料, 同時檢查 null、空字串、和空白字元
+	    // 2. 寄出驗證信
+	    generateUserTokenByNewEmail(tableUser, "新信箱驗證信", "reset-email", newEmail);
+	    
+	    // 3. Entity 轉 DTO
+	    userUpdateDTO = modelMapper.map(tableUser, UserUpdateDTO.class);
+	    
+	    // 4. 返回處理
+	    userUpdateDTO.setPassword(null);
+	    userUpdateDTO.setNewPassword(null);
+	    userUpdateDTO.setNewEmail(newEmail);
+	    userUpdateDTO.setToken(null);
+	    
+		return new ApiResponse<>(true, "驗證信已經寄出, 請收信", userUpdateDTO);
+	}
+	
+	@Override
+	public ApiResponse<UserUpdateDTO> updateUserVeriftyEmail(UserUpdateDTO userUpdateDTO) {
+		// 1. 取出/建立 所需資料
+		String token = userUpdateDTO.getToken();
+		String newEmail = userUpdateDTO.getNewEmail();
+		LocalDateTime now = LocalDateTime.now();
+	    Users tableUser = usersRepository.findByAccount(userUpdateDTO.getUsername())
+	        .orElseThrow(() -> new UserNoFoundException("帳號或密碼錯誤"));
+	    
+	    // 2. 驗證 token
+ 		Optional<UserVerify> optUserVerify = usersVerifyRepository.findByToken(token);
+ 		if (optUserVerify.isEmpty()) {
+ 			throw new TokenFailureException("驗證碼 無效或不存在");
+ 		}
+ 		UserVerify userVerify = optUserVerify.get();
+ 		if (userVerify.getIsUsed()) {
+ 			throw new TokenFailureException("驗證碼 已經被使用");
+ 		}
+ 		if (userVerify.getExpiryTime().isBefore(now)) {
+			throw new TokenFailureException("驗證碼 已經過期");
+		}
+ 		if (!userVerify.getNewEmailTarget().equals(newEmail)) {
+			throw new TokenFailureException("驗證碼 信箱錯誤或與待驗證信箱不符");
+		}
+ 		
+ 		// 3. 驗證成功 後 確認已經使用 並回傳
+ 		userVerify.setIsUsed(true);
+ 		usersVerifyRepository.save(userVerify);
+ 		
+	    // 4. 返回處理
+	    userUpdateDTO.setPassword(null);
+	    userUpdateDTO.setNewPassword(null);
+	    userUpdateDTO.setNewEmail(newEmail);
+	    userUpdateDTO.setToken(null);
+	    userUpdateDTO.setMailIsActive(true);
+	    
+		return new ApiResponse<>(true, "信箱: " + newEmail + "\n 已經通過驗證", userUpdateDTO);
+	}
+	
+	@Override
+	public ApiResponse<UserUpdateDTO> updateUser(UserUpdateDTO userUpdateDTO) {
+		// 1. 複查一次 
+	    Users tableUser = usersRepository.findByAccount(userUpdateDTO.getUsername())
+	        .orElseThrow(() -> new UserNoFoundException("帳號或密碼錯誤"));
+	    
+	    // 2. 更新資料, 同時檢查 null、空字串、和空白字元
 	    String rawPassword = userUpdateDTO.getNewPassword();
 	    String newEmail = userUpdateDTO.getNewEmail();
 	    String newPhoneNumber = userUpdateDTO.getNewPhoneNumber();
@@ -237,20 +348,25 @@ public class UserServiceImpl implements UserService{
 			usersVerifyRepository.markAllUnusedTokenAsUsed(tableUser.getAccount());
 		}
 		
-		if (newEmail != null && !newEmail.isBlank()) {
+		if (newEmail != null && !newEmail.isBlank() && userUpdateDTO.getMailIsActive() == true) {
 			tableUser.setEmail(userUpdateDTO.getNewEmail());
-			
-			// 新信箱 進行認證
-			generateUserToken(tableUser, "新信箱認證信", "reset-email");
 		}
 		
 		if (newPhoneNumber != null && !newPhoneNumber.isBlank()) {
 			tableUser.setPhoneNumber(userUpdateDTO.getNewPhoneNumber());
 		}
 		
-		usersRepository.save(tableUser);
+		tableUser = usersRepository.save(tableUser);
+		
+		// 4. Entity 轉 DTO
+	    userUpdateDTO = modelMapper.map(tableUser, UserUpdateDTO.class);
 	    
-	    return new ApiResponse<>(true, "資料更新完成 請重新登入", null);
+	    // 5. 返回處理
+	    userUpdateDTO.setPassword(null);
+	    userUpdateDTO.setNewPassword(null);
+	    userUpdateDTO.setToken(null);
+	    
+	    return new ApiResponse<>(true, "資料更新完成 請重新登入", userUpdateDTO);
 	}
 	
 	@Override
@@ -308,6 +424,32 @@ public class UserServiceImpl implements UserService{
 		String verificationLink = "http://localhost:8080/api/users/" + apiName + "?token=" + userVerify.getToken();			
 		emailServiceImpl.sendVerificationEmail(email, subject, verificationLink);
 	}
+	
+	@Override
+	public void generateUserTokenByNewEmail(Users users, String subject, String apiName, String newEmail) {
+		// 1. 取出/建立 所需資料
+		String account = users.getAccount();
+		String token = tokenUUID.generateToekn(); 
+		LocalDateTime expiryTime = LocalDateTime.now().plusMinutes(15);
+		
+		// 將該帳號所有未使用的舊 Token 標記為「已使用」(isUsed = true)。
+		// 以確保同一時間只存在一個有效的認證 Token，防止使用者誤用或惡意重發。
+		usersVerifyRepository.markAllUnusedTokenAsUsed(account);
+		
+		// 2. 產生驗證碼 並存回去
+		UserVerify userVerify = new UserVerify();
+		userVerify.setToken(token);
+		userVerify.setExpiryTime(expiryTime);
+		userVerify.setUsers(users);
+		userVerify.setNewEmailTarget(newEmail);
+		
+		usersVerifyRepository.save(userVerify);
+		
+		// 3. 寄出驗證信
+		// 根據不同 api 導向 不同用途 (1. 驗證帳號 2. 忘記密碼)
+		String verificationLink = "http://localhost:8080/api/users/" + apiName + "?token=" + userVerify.getToken();			
+		emailServiceImpl.sendVerificationEmail(newEmail, subject, verificationLink);
+	}
 
 	@Override
 	public <T extends PasswordAwareDTO> Boolean checkPassword(T userDto, Users tableUser) {
@@ -321,8 +463,4 @@ public class UserServiceImpl implements UserService{
 		return passwordSecurity.verifyPassword(rawPassword, encodedPassword);
 	}
 
-	
-
-	
-	
 }

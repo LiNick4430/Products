@@ -26,31 +26,35 @@ public interface UserService {
 	// 註冊帳號
 	ApiResponse<UserRegisterDTO> registerUser(UserRegisterDTO userRegisterDTO);
 	// 驗證帳號
-	ApiResponse<Void> veriftyUser(UserVerifyDTO userVerifyDTO) throws TokenFailureException;
+	ApiResponse<UserVerifyDTO> veriftyUser(UserVerifyDTO userVerifyDTO) throws TokenFailureException;
 	// 登陸帳號
 	ApiResponse<UserLoginDTO> loginUser(UserLoginDTO userLoginDTO) throws UserNoFoundException;
 	
 	// 忘卻密碼 三步驟
 	// 發送驗證信
-	ApiResponse<Void> forgetPasswordSendEmail(UserForgetPasswordDTO userForgetPasswordDTO) throws UserNoFoundException;
+	ApiResponse<UserForgetPasswordDTO> forgetPasswordSendEmail(UserForgetPasswordDTO userForgetPasswordDTO) throws UserNoFoundException;
 	// token 驗證
-	ApiResponse<Void> forgetPasswordVerifty(UserForgetPasswordDTO userForgetPasswordDTO) throws TokenFailureException;
+	ApiResponse<UserForgetPasswordDTO> forgetPasswordVerifty(UserForgetPasswordDTO userForgetPasswordDTO) throws TokenFailureException;
 	// 通過驗證信後 修改密碼
-	ApiResponse<Void> forgetPasswordUpdatePassword(UserForgetPasswordDTO userForgetPasswordDTO) throws TokenFailureException, UserNoFoundException;
+	ApiResponse<UserForgetPasswordDTO> forgetPasswordUpdatePassword(UserForgetPasswordDTO userForgetPasswordDTO) throws TokenFailureException, UserNoFoundException;
 	
-	// 修改帳號資料 二步驟
+	// 修改帳號資料
 	// 確認密碼
-	ApiResponse<Void> updateUserCheckPassword(UserUpdateDTO userUpdateDTO);
+	ApiResponse<UserUpdateDTO> updateUserCheckPassword(UserUpdateDTO userUpdateDTO);
 	// 假設要 更新信箱 的 信箱驗證方法
-	ApiResponse<Void> updateUserVeriftyEmail(UserUpdateDTO userUpdateDTO);
+	ApiResponse<UserUpdateDTO> updateUserSendEmail(UserUpdateDTO userUpdateDTO);
+	// 假設要 更新信箱 的 信箱驗證方法
+	ApiResponse<UserUpdateDTO> updateUserVeriftyEmail(UserUpdateDTO userUpdateDTO);
 	// update 資料
-	ApiResponse<Void> updateUser(UserUpdateDTO userUpdateDTO);
+	ApiResponse<UserUpdateDTO> updateUser(UserUpdateDTO userUpdateDTO);
 	
 	// 刪除帳號
 	ApiResponse<Void> deleteUser(UserDeleteDTO userDeleteDTO) throws UserNoFoundException;
 	
-	// 產生 帳號驗證碼 同時寄出驗證信
+	// 產生 帳號驗證碼 同時 寄出驗證信
 	void generateUserToken(Users users, String subject, String apiName);
+	// 產生 帳號驗證碼(新信箱) 同時 寄出驗證信
+	void generateUserTokenByNewEmail(Users users, String subject, String apiName, String newEmail);
 	
 	// 密碼驗證, 泛型 T 必須是 PasswordAwareDTO 或其子類
 	<T extends PasswordAwareDTO> Boolean checkPassword (T userDto, Users tableUser);
