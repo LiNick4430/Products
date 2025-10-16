@@ -285,6 +285,8 @@ public class UserServiceImpl implements UserService{
 		    userUpdateDTO.setNewEmail(newEmail);
 		    userUpdateDTO.setToken(null);
 		    userUpdateDTO.setMailIsActive(true); 	// 因為 信箱 一樣 預設通過驗證
+		    
+		    return new ApiResponse<>(true, "新信箱與舊信箱相同，無需重新驗證", userUpdateDTO);
 		}
 	    
 	    // 3. 檢查 新信箱 是否 已被 其他用戶使用
