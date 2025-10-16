@@ -47,7 +47,10 @@ public interface UsersRepository extends JpaRepository<Users, Long> {
 			, nativeQuery = true)
 	Optional<Users> findActiveAdminUserById(@Param("id") Long id);
 	
-	// 尋找 目標帳號
+	// 查詢 目標 帳號 用帳號名
 	Optional<Users> findByAccount(String account);
+	
+	// 查詢 目標 帳號 用信箱
+	Optional<Users> findByEmail(String email);
 	
 }

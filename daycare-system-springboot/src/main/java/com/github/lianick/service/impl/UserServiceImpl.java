@@ -274,13 +274,34 @@ public class UserServiceImpl implements UserService{
 	    Users tableUser = usersRepository.findByAccount(userUpdateDTO.getUsername())
 	        .orElseThrow(() -> new UserNoFoundException("帳號或密碼錯誤"));
 	    
-	    // 2. 寄出驗證信
+	    // 1. 假設 新信箱 和 舊信箱一樣
+	    if (tableUser.getEmail().equalsIgnoreCase(newEmail)) {
+	    	// Entity 轉 DTO(獲取舊 Email/PhoneNumber 資訊)
+		    userUpdateDTO = modelMapper.map(tableUser, UserUpdateDTO.class);
+		    
+		    // 返回處理
+		    userUpdateDTO.setPassword(null);
+		    userUpdateDTO.setNewPassword(null);
+		    userUpdateDTO.setNewEmail(newEmail);
+		    userUpdateDTO.setToken(null);
+		    userUpdateDTO.setMailIsActive(true); 	// 因為 信箱 一樣 預設通過驗證
+		}
+	    
+	    // 3. 檢查 新信箱 是否 已被 其他用戶使用
+	    Optional<Users> existingOptUser = usersRepository.findByEmail(newEmail);
+	    if (existingOptUser.isPresent() && !existingOptUser.get().getUserId().equals(tableUser.getUserId())) {
+			
+	    	// 模糊錯誤, 防止惡意使用者偵測哪些 Email 已被註冊
+	    	throw new UserNoFoundException("新信箱或帳號資訊錯誤");
+		}
+	    
+	    // 4. 寄出驗證信
 	    generateUserTokenByNewEmail(tableUser, "新信箱驗證信", "reset-email", newEmail);
 	    
-	    // 3. Entity 轉 DTO
+	    // 5. Entity 轉 DTO
 	    userUpdateDTO = modelMapper.map(tableUser, UserUpdateDTO.class);
 	    
-	    // 4. 返回處理
+	    // 6. 返回處理
 	    userUpdateDTO.setPassword(null);
 	    userUpdateDTO.setNewPassword(null);
 	    userUpdateDTO.setNewEmail(newEmail);
