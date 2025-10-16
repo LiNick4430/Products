@@ -441,7 +441,7 @@ public class UserServiceImpl implements UserService{
 		usersVerifyRepository.save(userVerify);
 		
 		// 3. 寄出驗證信
-		// 根據不同 api 導向 不同用途 (1. 驗證帳號 2. 忘記密碼)
+		// 根據不同 api 導向 不同用途 (1. verify 2. reset-password)
 		String verificationLink = "http://localhost:8080/api/users/" + apiName + "?token=" + userVerify.getToken();			
 		emailServiceImpl.sendVerificationEmail(email, subject, verificationLink);
 	}
@@ -467,7 +467,7 @@ public class UserServiceImpl implements UserService{
 		usersVerifyRepository.save(userVerify);
 		
 		// 3. 寄出驗證信
-		// 根據不同 api 導向 不同用途 (1. 驗證帳號 2. 忘記密碼)
+		// 根據不同 api 導向 不同用途 (3. reset-email)
 		String verificationLink = "http://localhost:8080/api/users/" + apiName + "?token=" + userVerify.getToken();			
 		emailServiceImpl.sendVerificationEmail(newEmail, subject, verificationLink);
 	}

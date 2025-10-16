@@ -1,0 +1,5 @@
+
+發送認證信
+GET 	帳號驗證		/api/users/verify?token= + token碼
+GET 	忘記密碼驗證	/api/users/reset-password?token= + token碼
+GET 	新信箱驗證		/api/users/reset-email?token= + token碼
