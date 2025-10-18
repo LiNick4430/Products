@@ -11,6 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class UserVerifyDTO {	// 帳號 認證用
 	private Long id;			// 回傳用
+	private String username;	// 回傳用 
 	
 	private String token;		// 認證碼
 }

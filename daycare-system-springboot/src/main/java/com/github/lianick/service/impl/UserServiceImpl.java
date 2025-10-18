@@ -104,6 +104,12 @@ public class UserServiceImpl implements UserService{
 		
 		// 3. 判斷 Users 狀態 以防止重複使用
 		if (users.getIsActive()) {
+			// Entity 轉 DTO
+			userVerifyDTO = modelMapper.map(users, UserVerifyDTO.class);
+			
+			// 返回處理: 清空 token
+			userVerifyDTO.setToken(null);
+			
 			// return new ApiResponse<UserVerifyDTO>(true, "帳號已經是啟用狀態", null);
 			return userVerifyDTO;
 		}

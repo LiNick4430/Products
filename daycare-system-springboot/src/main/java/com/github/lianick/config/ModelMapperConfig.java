@@ -25,9 +25,11 @@ public class ModelMapperConfig {
 		// Entity -> DTO
 		modelMapper.typeMap(Users.class, UserRegisterDTO.class).addMappings(mapper -> {
 			mapper.map(Users::getUserId, UserRegisterDTO::setId);
+			mapper.map(Users::getAccount, UserRegisterDTO::setUsername);
 		});
 		modelMapper.typeMap(Users.class, UserVerifyDTO.class).addMappings(mapper -> {
 			mapper.map(Users::getUserId, UserVerifyDTO::setId);
+			mapper.map(Users::getAccount, UserVerifyDTO::setUsername);
 		});
 		modelMapper.typeMap(Users.class, UserLoginDTO.class).addMappings(mapper -> {
 			mapper.map(Users::getUserId, UserLoginDTO::setId);
