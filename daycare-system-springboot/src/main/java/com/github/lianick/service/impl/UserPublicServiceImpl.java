@@ -74,7 +74,7 @@ public class UserPublicServiceImpl implements UserPublicService{
 		UserPublic userPublic = userPublicRepository.findByUsers(tableUser)
 				.orElseThrow(() -> new UserNoFoundException("帳號錯誤"));
 		
-		// 2. Entity 轉 DTO
+		// 2. Entity 轉 DTO (回傳給前端當作表單預填資料)
 		userPublicDTO = modelMapper.map(userPublic, UserPublicDTO.class);
 		
 		// 3. 返回處理
@@ -181,7 +181,7 @@ public class UserPublicServiceImpl implements UserPublicService{
 	    UserPublic userPublic = userPublicRepository.findByUsers(tableUser)
 	    		.orElseThrow(() -> new UserNoFoundException("帳號錯誤"));
 		
-		// 3. 更新 民眾基本資料
+		// 3. 更新 民眾基本資料 (僅更新允許修改的欄位：姓名、地址)
 		if (userPublicUpdateDTO.getNewName() != null && !userPublicUpdateDTO.getNewName().isBlank() ) {
 			userPublic.setName(userPublicUpdateDTO.getNewName());
 		}
@@ -223,7 +223,7 @@ public class UserPublicServiceImpl implements UserPublicService{
 	    UserPublic userPublic = userPublicRepository.findByUsers(tableUser)
 	    		.orElseThrow(() -> new UserNoFoundException(ERROR_MESSAGE));
 	    
-		// 4. 執行 軟刪除
+		// 4. 執行 軟刪除 (核心 Entity)
 	    userPublic.setDeleteAt(deleteTime);
 	    tableUser.setDeleteAt(deleteTime);
 	    
@@ -247,7 +247,7 @@ public class UserPublicServiceImpl implements UserPublicService{
 			});
 		}
 		
-		// 回存
+		// 6. 回存
 		userPublicRepository.save(userPublic);
 	    
 		// return new ApiResponse<Void>(true, "民眾帳號刪除成功", null);
