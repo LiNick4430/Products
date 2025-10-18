@@ -21,6 +21,10 @@ public class SecurityConfig {
 			// 定義請求的授權規則
 			.authorizeHttpRequests(authorize -> authorize
 					
+					// 測試環境 使用 全部通過
+					.anyRequest().permitAll()
+					
+					/*	正式環境 使用 有權限設定
 					// 1. 公開端點：允許任何人存取以下路徑
 					.requestMatchers(
 							"/user/register/",			// 註冊
@@ -32,6 +36,7 @@ public class SecurityConfig {
 					
 					// 2. 其他所有請求：都必須經過身份驗證
 					.anyRequest().authenticated()
+					*/
 			);
 		
 		return http.build();

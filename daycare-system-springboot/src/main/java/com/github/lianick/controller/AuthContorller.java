@@ -40,13 +40,13 @@ public class AuthContorller {
 	}
 	
 	@GetMapping("/logout/")
-	public ApiResponse<Void> getMethodName(HttpSession httpSession) {
+	public ApiResponse<Void> logout (HttpSession httpSession) {
 		httpSession.invalidate();
-		return new ApiResponse<Void>(HttpStatus.OK.value(), "登陸成功", null);
+		return new ApiResponse<Void>(HttpStatus.OK.value(), "登出成功", null);
 	}
 	
 	@PostMapping("/check/password/")
-	public ApiResponse<UserUpdateDTO> login (@RequestBody UserUpdateDTO userUpdateDTO) {
+	public ApiResponse<UserUpdateDTO> updateCheckPassword (@RequestBody UserUpdateDTO userUpdateDTO) {
 		userUpdateDTO = userService.updateUserCheckPassword(userUpdateDTO);
 		return new ApiResponse<UserUpdateDTO>(HttpStatus.OK.value(), "密碼確認成功, 進入修改資料網頁", userUpdateDTO);
 	}

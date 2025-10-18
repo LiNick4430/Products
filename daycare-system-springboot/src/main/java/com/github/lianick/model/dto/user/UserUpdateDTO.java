@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserUpdateDTO implements PasswordAwareDTO{	// 更新資料用
+public class UserUpdateDTO implements PasswordAwareDTO {	// 更新資料用
 	private Long id;
 
 	private String email;				// 從資料庫取出的 舊信箱

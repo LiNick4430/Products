@@ -27,7 +27,7 @@ public class EmailServiceImpl implements EmailService {
 		message.setSubject(subject);
 		
 		String mailContext = 
-				"您好，請點擊請點擊以下連結已啟用帳號:\n\n"
+				"您好，請點擊請點擊以下連結:\n\n"
 				+ verificationLink
 				+ "\n\n此連結將在 15 分鐘後失效。";
 		

@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  * */
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/email")
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 public class EmailController {
 
