@@ -42,7 +42,7 @@ public class GlobalExceptionHandler {
 	
 	// 角色(Role) 相關 的 異常 (401)
 	@ExceptionHandler(RoleFailureException.class) 	
-	@ResponseStatus(HttpStatus.UNAUTHORIZED)     			// 401
+	@ResponseStatus(HttpStatus.UNAUTHORIZED)     		// 401
     @ResponseBody                                	
 	public ApiResponse<?> handleRoleFailureException(RoleFailureException ex) {
 		int statusCode = HttpStatus.UNAUTHORIZED.value();
@@ -67,7 +67,7 @@ public class GlobalExceptionHandler {
 		return new ApiResponse<>(statusCode, ex.getMessage() , null);
 	}
 	
-	// 回報數值缺少 相關 的 錯誤 
+	// 回報數值缺少 相關 的 錯誤 (400)
 	@ExceptionHandler(ValueMissException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)   			// 400
     @ResponseBody                                		
@@ -76,12 +76,21 @@ public class GlobalExceptionHandler {
 		return new ApiResponse<>(statusCode, ex.getMessage() , null);
 	}
 	
-	// 格式 相關 的 錯誤 
+	// 格式 相關 的 錯誤 (400)
 	@ExceptionHandler(FormatterFailureException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)   			// 400
     @ResponseBody                                		
-	public ApiResponse<?> handleFormatterMissException(FormatterFailureException ex) {
+	public ApiResponse<?> handleFormatterFailureException(FormatterFailureException ex) {
 		int statusCode = HttpStatus.BAD_REQUEST.value();
 		return new ApiResponse<>(statusCode, ex.getMessage() , null);
+	}
+	
+	// 處理所有未被明確定義的 RuntimeException (預防萬一, 最終保護)
+	@ExceptionHandler(RuntimeException.class)
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR) 	// 500
+	@ResponseBody
+	public ApiResponse<?> handleGenericRuntimeException(RuntimeException ex) {
+		int statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+		return new ApiResponse<>(statusCode, "發生未預期的伺服器錯誤，請聯繫管理員。" , null);
 	}
 }
