@@ -13,4 +13,6 @@ import java.util.Optional;
 public interface UserPublicRepository extends JpaRepository<UserPublic, Long>{
 
 	Optional<UserPublic> findByUsers(Users users);
+	
+	Optional<UserPublic> findByNationalIdNo(String nationalIdNo);
 }

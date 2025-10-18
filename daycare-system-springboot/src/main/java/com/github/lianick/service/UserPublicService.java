@@ -26,7 +26,10 @@ public interface UserPublicService {
 	// 根據 username 填寫 基本資料
 	UserPublicCreateDTO createUserPublic(UserPublicCreateDTO userPublicSaveDTO);
 	
-	// 根據 username 修正 基本資料
+	// 根據 username 更新 基本資料
+	// 密碼檢查
+	UserPublicUpdateDTO updateUserPublicCheckPassword(UserPublicUpdateDTO userPublicUpdateDTO);
+	// 正式更新
 	UserPublicUpdateDTO updateUserPublic(UserPublicUpdateDTO userPublicUpdateDTO);
 	
 	// 根據 username 刪除 民眾帳號

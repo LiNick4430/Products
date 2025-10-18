@@ -11,6 +11,7 @@ import com.github.lianick.model.dto.user.UserRegisterDTO;
 import com.github.lianick.model.dto.user.UserUpdateDTO;
 import com.github.lianick.model.dto.user.UserVerifyDTO;
 import com.github.lianick.model.dto.userPublic.UserPublicDTO;
+import com.github.lianick.model.dto.userPublic.UserPublicUpdateDTO;
 import com.github.lianick.model.dto.userPublic.UserPublicCreateDTO;
 import com.github.lianick.model.eneity.UserPublic;
 import com.github.lianick.model.eneity.Users;
@@ -54,6 +55,9 @@ public class ModelMapperConfig {
 		});
 		modelMapper.typeMap(UserPublic.class, UserPublicCreateDTO.class).addMappings(mapper -> {
 			mapper.map(UserPublic::getPublicId, UserPublicCreateDTO::setId);
+		});
+		modelMapper.typeMap(UserPublic.class, UserPublicUpdateDTO.class).addMappings(mapper -> {
+			mapper.map(UserPublic::getPublicId, UserPublicUpdateDTO::setId);
 		});
 		
 		// ------------------------------------------------------------------------------------

@@ -63,7 +63,7 @@ public class UserPublicServiceImpl implements UserPublicService{
 	@Override
 	public UserPublicDTO findByUsername(UserPublicDTO userPublicDTO) {
 		// 0. 檢查數值完整性
-		if (userPublicDTO.getUsername().isBlank() || userPublicDTO.getUsername() == null) {
+		if (userPublicDTO.getUsername() == null || userPublicDTO.getUsername().isBlank()) {
 			throw new ValueMissException("缺少帳號");
 		}
 		
@@ -95,13 +95,17 @@ public class UserPublicServiceImpl implements UserPublicService{
 			throw new ValueMissException("缺少特定資料(帳號 角色 民眾姓名 生日 身分證字號 戶籍地址 實際地址)");
 		}
 		
-		// 1. 檢查 角色 是否 為 民眾 和 生日 是否符合 格式
+		// 1. 檢查 角色 是否 為 民眾 / 生日 是否符合 格式 / 身分證字號 是否 已經被使用
 		if (userPublicCreateDTO.getRoleNumber() != 1L) {
 			throw new RoleFailureException("角色錯誤");
 		}
 		// 是否 "yyyy-MM-dd"
 		if (!dateValidationUtil.isValidLocalDate(userPublicCreateDTO.getBirthdate())) {
 			throw new FormatterFailureException("生日格式錯誤，必須是 yyyy-MM-dd 格式");
+		}
+		// 檢查 身分證字號 是否 已經被使用
+		if (userPublicRepository.findByNationalIdNo(userPublicCreateDTO.getNationalIdNo()).isPresent()) {
+			throw new UserExistException("基本資料填寫：身份證字號已經使用");
 		}
 		
 		// 2. 找尋資料庫 對應的帳號
@@ -133,29 +137,66 @@ public class UserPublicServiceImpl implements UserPublicService{
 	}
 
 	@Override
+	public UserPublicUpdateDTO updateUserPublicCheckPassword(UserPublicUpdateDTO userPublicUpdateDTO) {
+		// 0. 檢查數值完整性
+		if (userPublicUpdateDTO.getUsername() == null || userPublicUpdateDTO.getUsername().isBlank() || 
+				userPublicUpdateDTO.getPassword() == null || userPublicUpdateDTO.getPassword().isBlank()) {
+			throw new ValueMissException("缺少帳號或密碼");
+		}
+		
+		// 1. 找尋資料庫 對應的帳號
+	    Users tableUser = usersRepository.findByAccount(userPublicUpdateDTO.getUsername())
+	        .orElseThrow(() -> new UserNoFoundException("帳號或密碼錯誤"));
+	    
+	    // 2. 使用 checkPassword 方法 複查 密碼是否相同
+	    if (!userService.checkPassword(userPublicUpdateDTO, tableUser)) {
+	    	throw new UserNoFoundException("帳號或密碼錯誤");
+	    }
+	    
+	    // 3. 找到對應的 userPublic
+	    UserPublic userPublic = userPublicRepository.findByUsers(tableUser)
+	    		.orElseThrow(() -> new UserNoFoundException("帳號或密碼錯誤"));
+	    
+	    // 4. Entity 轉 DTO
+	    userPublicUpdateDTO = modelMapper.map(userPublic, UserPublicUpdateDTO.class);
+	    
+	    // 5. 返回處理: 清空 password
+	    userPublicUpdateDTO.setPassword(null);
+	    
+		return userPublicUpdateDTO;
+	}
+	
+	@Override
 	public UserPublicUpdateDTO updateUserPublic(UserPublicUpdateDTO userPublicUpdateDTO) {
 		// 0. 檢查數值完整性
 		if (userPublicUpdateDTO.getUsername() == null || userPublicUpdateDTO.getUsername().isBlank() ) {
-			throw new ValueMissException("缺少帳號資訊");
+			throw new ValueMissException("缺少帳號");
 		}
 		
-		// 2. 找尋資料庫 對應的帳號
+		// 1. 找尋資料庫 對應的帳號
 		Users tableUser = usersRepository.findByAccount(userPublicUpdateDTO.getUsername())
 		        .orElseThrow(() -> new UserNoFoundException("帳號錯誤"));
 		
-		// 3. 找到對應的 userPublic
+		// 2. 找到對應的 userPublic
 	    UserPublic userPublic = userPublicRepository.findByUsers(tableUser)
 	    		.orElseThrow(() -> new UserNoFoundException("帳號錯誤"));
 		
-		// 4. 存入民眾基本資料
+		// 3. 更新 民眾基本資料
+		if (userPublicUpdateDTO.getNewName() != null && !userPublicUpdateDTO.getNewName().isBlank() ) {
+			userPublic.setName(userPublicUpdateDTO.getNewName());
+		}
+		if (userPublicUpdateDTO.getNewRegisteredAddress() != null && !userPublicUpdateDTO.getNewRegisteredAddress().isBlank() ) {
+			userPublic.setRegisteredAddress(userPublicUpdateDTO.getNewRegisteredAddress());
+		}
+		if (userPublicUpdateDTO.getNewMailingAddress() != null && !userPublicUpdateDTO.getNewMailingAddress().isBlank() ) {
+			userPublic.setMailingAddress(userPublicUpdateDTO.getNewMailingAddress());
+		}
 		
+		// 4. 儲存 修改
+		userPublic = userPublicRepository.save(userPublic);
 		
-		// 5. Entity 轉 DTO
-		
-		
-		// 6. 返回處理
-		
-		return userPublicUpdateDTO;
+		// 5. Entity 轉 DTO 並返回 (回傳新的 DTO 實例)
+		return modelMapper.map(userPublic, UserPublicUpdateDTO.class);
 	}
 
 	@Override
@@ -211,5 +252,4 @@ public class UserPublicServiceImpl implements UserPublicService{
 	    
 		// return new ApiResponse<Void>(true, "民眾帳號刪除成功", null);
 	}
-
 }
