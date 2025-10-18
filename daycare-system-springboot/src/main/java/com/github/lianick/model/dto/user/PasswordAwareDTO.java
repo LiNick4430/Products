@@ -1,4 +1,4 @@
-package com.github.lianick.model.dto;
+package com.github.lianick.model.dto.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

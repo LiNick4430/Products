@@ -10,6 +10,9 @@ import com.github.lianick.model.dto.user.UserLoginDTO;
 import com.github.lianick.model.dto.user.UserRegisterDTO;
 import com.github.lianick.model.dto.user.UserUpdateDTO;
 import com.github.lianick.model.dto.user.UserVerifyDTO;
+import com.github.lianick.model.dto.userPublic.UserPublicDTO;
+import com.github.lianick.model.dto.userPublic.UserPublicSaveDTO;
+import com.github.lianick.model.eneity.UserPublic;
 import com.github.lianick.model.eneity.Users;
 
 @Configuration
@@ -23,6 +26,7 @@ public class ModelMapperConfig {
 		ModelMapper modelMapper = new ModelMapper();
 		
 		// Entity -> DTO
+		// User 相關
 		modelMapper.typeMap(Users.class, UserRegisterDTO.class).addMappings(mapper -> {
 			mapper.map(Users::getUserId, UserRegisterDTO::setId);
 			mapper.map(Users::getAccount, UserRegisterDTO::setUsername);
@@ -44,8 +48,17 @@ public class ModelMapperConfig {
 			mapper.map(Users::getAccount, UserUpdateDTO::setUsername);
 		});
 		
+		// UserPublic 相關
+		modelMapper.typeMap(UserPublic.class, UserPublicDTO.class).addMappings(mapper -> {
+			mapper.map(UserPublic::getPublicId, UserPublicDTO::setId);
+		});
+		modelMapper.typeMap(UserPublic.class, UserPublicSaveDTO.class).addMappings(mapper -> {
+			mapper.map(UserPublic::getPublicId, UserPublicSaveDTO::setId);
+		});
+		
 		// ------------------------------------------------------------------------------------
 		// DTO -> Entity		
+		// User 相關
 		modelMapper.typeMap(UserRegisterDTO.class, Users.class).addMappings(mapper -> {
 			mapper.map(UserRegisterDTO::getUsername, Users::setAccount);
 			// 使用自定義 Converter 進行映射

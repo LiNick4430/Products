@@ -6,7 +6,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.http.HttpStatus;
 
+import com.github.lianick.exception.FormatterFailureException;
 import com.github.lianick.exception.MailSendFailureException;
+import com.github.lianick.exception.RoleFailureException;
 import com.github.lianick.exception.TokenFailureException;
 import com.github.lianick.exception.UserExistException;
 import com.github.lianick.exception.UserNoFoundException;
@@ -38,6 +40,15 @@ public class GlobalExceptionHandler {
 		return new ApiResponse<>(statusCode, ex.getMessage(), null);
 	}
 	
+	// 角色(Role) 相關 的 異常 (401)
+	@ExceptionHandler(RoleFailureException.class) 	
+	@ResponseStatus(HttpStatus.UNAUTHORIZED)     			// 401
+    @ResponseBody                                	
+	public ApiResponse<?> handleRoleFailureException(RoleFailureException ex) {
+		int statusCode = HttpStatus.UNAUTHORIZED.value();
+		return new ApiResponse<>(statusCode, ex.getMessage(), null);
+	}
+	
 	// 無法發送電子信箱 的 異常 (500)
 	@ExceptionHandler(MailSendFailureException.class) 		
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)   // 500
@@ -61,6 +72,15 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.BAD_REQUEST)   			// 400
     @ResponseBody                                		
 	public ApiResponse<?> handleValueMissException(ValueMissException ex) {
+		int statusCode = HttpStatus.BAD_REQUEST.value();
+		return new ApiResponse<>(statusCode, ex.getMessage() , null);
+	}
+	
+	// 格式 相關 的 錯誤 
+	@ExceptionHandler(FormatterFailureException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)   			// 400
+    @ResponseBody                                		
+	public ApiResponse<?> handleFormatterMissException(FormatterFailureException ex) {
 		int statusCode = HttpStatus.BAD_REQUEST.value();
 		return new ApiResponse<>(statusCode, ex.getMessage() , null);
 	}

@@ -12,7 +12,7 @@ import com.github.lianick.exception.TokenFailureException;
 import com.github.lianick.exception.UserExistException;
 import com.github.lianick.exception.UserNoFoundException;
 import com.github.lianick.exception.ValueMissException;
-import com.github.lianick.model.dto.PasswordAwareDTO;
+import com.github.lianick.model.dto.user.PasswordAwareDTO;
 import com.github.lianick.model.dto.user.UserDeleteDTO;
 import com.github.lianick.model.dto.user.UserForgetPasswordDTO;
 import com.github.lianick.model.dto.user.UserLoginDTO;
@@ -375,21 +375,21 @@ public class UserServiceImpl implements UserService{
 		    throw new ValueMissException("缺少帳號資訊");
 		}
 		
-		// 找尋資料庫 對應的帳號
+		// 1. 找尋資料庫 對應的帳號
 	    Users tableUser = usersRepository.findByAccount(userDeleteDTO.getUsername())
 	        .orElseThrow(() -> new UserNoFoundException("帳號或密碼錯誤"));
 
-	    // 使用 checkPassword 方法 複查 密碼是否相同
+	    // 2. 使用 checkPassword 方法 複查 密碼是否相同
 	    if (!checkPassword(userDeleteDTO, tableUser)) {
 	    	throw new UserNoFoundException("帳號或密碼錯誤");
 	    }
 	    
-	    // 建立 變數
+	    // 3. 建立 變數
 	    LocalDateTime deleteTime = LocalDateTime.now();
 	    
-		// 執行 軟刪除
+		// 4. 執行 軟刪除
 	    tableUser.setDeleteAt(deleteTime);
-		// 關聯欄位
+		// 5. 關聯欄位
 		List<UserVerify> userVerifies = tableUser.getUserVerifies();
 		if (userVerifies != null) {
 			userVerifies.forEach(userVerify -> {

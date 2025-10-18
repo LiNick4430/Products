@@ -1,7 +1,5 @@
 package com.github.lianick.model.dto.user;
 
-import com.github.lianick.model.dto.PasswordAwareDTO;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
