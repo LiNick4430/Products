@@ -26,17 +26,17 @@ public interface UserService {
 	// 註冊帳號
 	UserRegisterDTO registerUser(UserRegisterDTO userRegisterDTO);
 	// 驗證帳號
-	UserVerifyDTO veriftyUser(UserVerifyDTO userVerifyDTO) throws TokenFailureException;
+	UserVerifyDTO veriftyUser(String token);
 	// 登陸帳號
-	UserLoginDTO loginUser(UserLoginDTO userLoginDTO) throws UserNoFoundException;
+	UserLoginDTO loginUser(UserLoginDTO userLoginDTO);
 	
 	// 忘卻密碼 三步驟
 	// 發送驗證信
-	UserForgetPasswordDTO forgetPasswordSendEmail(UserForgetPasswordDTO userForgetPasswordDTO) throws UserNoFoundException;
+	UserForgetPasswordDTO forgetPasswordSendEmail(UserForgetPasswordDTO userForgetPasswordDTO);
 	// token 驗證
-	UserForgetPasswordDTO forgetPasswordVerifty(UserForgetPasswordDTO userForgetPasswordDTO) throws TokenFailureException;
+	UserForgetPasswordDTO forgetPasswordVerifty(String token);
 	// 通過驗證信後 修改密碼
-	UserForgetPasswordDTO forgetPasswordUpdatePassword(UserForgetPasswordDTO userForgetPasswordDTO) throws TokenFailureException, UserNoFoundException;
+	UserForgetPasswordDTO forgetPasswordUpdatePassword(UserForgetPasswordDTO userForgetPasswordDTO);
 	
 	// 修改帳號資料
 	// 確認密碼
@@ -45,7 +45,7 @@ public interface UserService {
 	UserUpdateDTO updateUser(UserUpdateDTO userUpdateDTO);
 	
 	// 刪除帳號
-	void deleteUser(UserDeleteDTO userDeleteDTO) throws UserNoFoundException;
+	void deleteUser(UserDeleteDTO userDeleteDTO);
 	
 	// 產生 帳號驗證碼 同時 寄出驗證信
 	void generateUserToken(Users users, String subject, String apiName);

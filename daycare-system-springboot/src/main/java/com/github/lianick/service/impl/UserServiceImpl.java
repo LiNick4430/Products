@@ -81,9 +81,8 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public UserVerifyDTO veriftyUser(UserVerifyDTO userVerifyDTO) throws TokenFailureException {
+	public UserVerifyDTO veriftyUser(String token){
 		// 0. 取出/建立 所需資料
-		String token = userVerifyDTO.getToken();
 		LocalDateTime now = LocalDateTime.now();
 		
 		// 1. 使用 Token 紀錄 找尋 UsersVerify 紀錄
@@ -105,7 +104,7 @@ public class UserServiceImpl implements UserService{
 		// 3. 判斷 Users 狀態 以防止重複使用
 		if (users.getIsActive()) {
 			// Entity 轉 DTO
-			userVerifyDTO = modelMapper.map(users, UserVerifyDTO.class);
+			UserVerifyDTO userVerifyDTO = modelMapper.map(users, UserVerifyDTO.class);
 			
 			// 返回處理: 清空 token
 			userVerifyDTO.setToken(null);
@@ -123,7 +122,7 @@ public class UserServiceImpl implements UserService{
 		users = usersRepository.save(users);
 		
 		// 5. Entity 轉 DTO
-		userVerifyDTO = modelMapper.map(users, UserVerifyDTO.class);
+		UserVerifyDTO userVerifyDTO = modelMapper.map(users, UserVerifyDTO.class);
 		
 		// 6. 返回處理: 清空 token
 		userVerifyDTO.setToken(null);
@@ -133,7 +132,7 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public UserLoginDTO loginUser(UserLoginDTO userLoginDTO) throws UserNoFoundException {
+	public UserLoginDTO loginUser(UserLoginDTO userLoginDTO){
 		// 1. 找尋資料庫 對應的帳號
 	    Users tableUser = usersRepository.findByAccount(userLoginDTO.getUsername())
 	        .orElseThrow(() -> new UserNoFoundException("帳號或密碼錯誤"));
@@ -158,7 +157,7 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public UserForgetPasswordDTO forgetPasswordSendEmail(UserForgetPasswordDTO userForgetPasswordDTO) throws UserNoFoundException{
+	public UserForgetPasswordDTO forgetPasswordSendEmail(UserForgetPasswordDTO userForgetPasswordDTO){
 		// 1. 找尋資料庫 對應的帳號
 	    Users tableUser = usersRepository.findByAccount(userForgetPasswordDTO.getUsername())
 	        .orElseThrow(() -> new UserNoFoundException("帳號或密碼錯誤"));
@@ -178,9 +177,8 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	@Override
-	public UserForgetPasswordDTO forgetPasswordVerifty(UserForgetPasswordDTO userForgetPasswordDTO) throws TokenFailureException {
+	public UserForgetPasswordDTO forgetPasswordVerifty(String token){
 		// 0. 取出/建立 所需資料
-		String token = userForgetPasswordDTO.getToken();
 		LocalDateTime now = LocalDateTime.now();
 		
 		// 1. 使用 Token 紀錄 找尋 UsersVerify 紀錄
@@ -202,7 +200,7 @@ public class UserServiceImpl implements UserService{
 		Users tableUser = userVerify.getUsers();
 		
 		// 4. Entity 轉 DTO
-	    userForgetPasswordDTO = modelMapper.map(tableUser, UserForgetPasswordDTO.class);
+	    UserForgetPasswordDTO userForgetPasswordDTO = modelMapper.map(tableUser, UserForgetPasswordDTO.class);
 	    
 	    // 5. 返回處理: 清空 敏感數值
 	    userForgetPasswordDTO.setToken(null);
@@ -213,7 +211,7 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	@Override
-	public UserForgetPasswordDTO forgetPasswordUpdatePassword(UserForgetPasswordDTO userForgetPasswordDTO) throws TokenFailureException, UserNoFoundException{
+	public UserForgetPasswordDTO forgetPasswordUpdatePassword(UserForgetPasswordDTO userForgetPasswordDTO){
 		// 1. 取出/建立 所需資料
 		Users tableUser = usersRepository.findByAccount(userForgetPasswordDTO.getUsername())
 			        .orElseThrow(() -> new UserNoFoundException("帳號或密碼錯誤"));
@@ -321,7 +319,7 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	@Override
-	public void deleteUser(UserDeleteDTO userDeleteDTO) throws UserNoFoundException{
+	public void deleteUser(UserDeleteDTO userDeleteDTO){
 		// 找尋資料庫 對應的帳號
 	    Users tableUser = usersRepository.findByAccount(userDeleteDTO.getUsername())
 	        .orElseThrow(() -> new UserNoFoundException("帳號或密碼錯誤"));
