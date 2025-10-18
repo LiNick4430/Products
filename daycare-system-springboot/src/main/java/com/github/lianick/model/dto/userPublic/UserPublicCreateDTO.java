@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserPublicSaveDTO {	// 創建 民眾資料的時候用的
+public class UserPublicCreateDTO {	// 創建 民眾資料的時候用的
 
 	private Long id;						// 帳號ID/民眾ID
 	private String username;				// 帳號名

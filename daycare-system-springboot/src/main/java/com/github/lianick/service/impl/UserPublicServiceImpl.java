@@ -16,7 +16,7 @@ import com.github.lianick.exception.UserNoFoundException;
 import com.github.lianick.exception.ValueMissException;
 import com.github.lianick.model.dto.user.UserDeleteDTO;
 import com.github.lianick.model.dto.userPublic.UserPublicDTO;
-import com.github.lianick.model.dto.userPublic.UserPublicSaveDTO;
+import com.github.lianick.model.dto.userPublic.UserPublicCreateDTO;
 import com.github.lianick.model.dto.userPublic.UserPublicUpdateDTO;
 import com.github.lianick.model.eneity.ChildInfo;
 import com.github.lianick.model.eneity.DocumentPublic;
@@ -83,29 +83,29 @@ public class UserPublicServiceImpl implements UserPublicService{
 	}
 
 	@Override
-	public UserPublicSaveDTO create(UserPublicSaveDTO userPublicSaveDTO) {
+	public UserPublicCreateDTO createUserPublic(UserPublicCreateDTO userPublicCreateDTO) {
 		// 0. 檢查數值完整性
-		if (userPublicSaveDTO.getUsername() == null || userPublicSaveDTO.getUsername().isBlank() ||
-			userPublicSaveDTO.getRoleNumber() == null ||
-			userPublicSaveDTO.getName() == null || userPublicSaveDTO.getName().isBlank() || 
-			userPublicSaveDTO.getNationalIdNo() == null || userPublicSaveDTO.getNationalIdNo().isBlank() || 
-			userPublicSaveDTO.getBirthdate() == null || userPublicSaveDTO.getBirthdate().isBlank() || 
-			userPublicSaveDTO.getRegisteredAddress() == null || userPublicSaveDTO.getRegisteredAddress().isBlank() || 
-			userPublicSaveDTO.getMailingAddress() == null || userPublicSaveDTO.getMailingAddress().isBlank() ) {
+		if (userPublicCreateDTO.getUsername() == null || userPublicCreateDTO.getUsername().isBlank() ||
+			userPublicCreateDTO.getRoleNumber() == null ||
+			userPublicCreateDTO.getName() == null || userPublicCreateDTO.getName().isBlank() || 
+			userPublicCreateDTO.getNationalIdNo() == null || userPublicCreateDTO.getNationalIdNo().isBlank() || 
+			userPublicCreateDTO.getBirthdate() == null || userPublicCreateDTO.getBirthdate().isBlank() || 
+			userPublicCreateDTO.getRegisteredAddress() == null || userPublicCreateDTO.getRegisteredAddress().isBlank() || 
+			userPublicCreateDTO.getMailingAddress() == null || userPublicCreateDTO.getMailingAddress().isBlank() ) {
 			throw new ValueMissException("缺少特定資料(帳號 角色 民眾姓名 生日 身分證字號 戶籍地址 實際地址)");
 		}
 		
 		// 1. 檢查 角色 是否 為 民眾 和 生日 是否符合 格式
-		if (userPublicSaveDTO.getRoleNumber() != 1L) {
+		if (userPublicCreateDTO.getRoleNumber() != 1L) {
 			throw new RoleFailureException("角色錯誤");
 		}
 		// 是否 "yyyy-MM-dd"
-		if (!dateValidationUtil.isValidLocalDate(userPublicSaveDTO.getBirthdate())) {
+		if (!dateValidationUtil.isValidLocalDate(userPublicCreateDTO.getBirthdate())) {
 			throw new FormatterFailureException("生日格式錯誤，必須是 yyyy-MM-dd 格式");
 		}
 		
 		// 2. 找尋資料庫 對應的帳號
-		Users tableUser = usersRepository.findByAccount(userPublicSaveDTO.getUsername())
+		Users tableUser = usersRepository.findByAccount(userPublicCreateDTO.getUsername())
 		        .orElseThrow(() -> new UserNoFoundException("帳號錯誤"));
 		
 		// 3. 檢查是否 重複創建
@@ -116,20 +116,20 @@ public class UserPublicServiceImpl implements UserPublicService{
 		// 4. 存入民眾基本資料
 		UserPublic userPublic = new UserPublic();
 		userPublic.setUsers(tableUser);
-		userPublic.setName(userPublicSaveDTO.getName());
-		userPublic.setNationalIdNo(userPublicSaveDTO.getNationalIdNo());
-		userPublic.setBirthdate(LocalDate.parse(userPublicSaveDTO.getBirthdate()));
-		userPublic.setRegisteredAddress(userPublicSaveDTO.getRegisteredAddress());
-		userPublic.setMailingAddress(userPublicSaveDTO.getMailingAddress());
+		userPublic.setName(userPublicCreateDTO.getName());
+		userPublic.setNationalIdNo(userPublicCreateDTO.getNationalIdNo());
+		userPublic.setBirthdate(LocalDate.parse(userPublicCreateDTO.getBirthdate()));
+		userPublic.setRegisteredAddress(userPublicCreateDTO.getRegisteredAddress());
+		userPublic.setMailingAddress(userPublicCreateDTO.getMailingAddress());
 		
 		userPublic = userPublicRepository.save(userPublic);
 		
 		// 5. Entity 轉 DTO
-		userPublicSaveDTO = modelMapper.map(userPublic, UserPublicSaveDTO.class);
+		userPublicCreateDTO = modelMapper.map(userPublic, UserPublicCreateDTO.class);
 		
 		// 6. 返回處理
 		
-		return userPublicSaveDTO;
+		return userPublicCreateDTO;
 	}
 
 	@Override
@@ -143,6 +143,9 @@ public class UserPublicServiceImpl implements UserPublicService{
 		Users tableUser = usersRepository.findByAccount(userPublicUpdateDTO.getUsername())
 		        .orElseThrow(() -> new UserNoFoundException("帳號錯誤"));
 		
+		// 3. 找到對應的 userPublic
+	    UserPublic userPublic = userPublicRepository.findByUsers(tableUser)
+	    		.orElseThrow(() -> new UserNoFoundException("帳號錯誤"));
 		
 		// 4. 存入民眾基本資料
 		
