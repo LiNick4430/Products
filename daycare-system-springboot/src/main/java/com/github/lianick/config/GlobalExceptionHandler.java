@@ -18,20 +18,22 @@ public class GlobalExceptionHandler {
 	// @ResponseStatus(HttpStatus.UNAUTHORIZED)     	設定響應的 HTTP 狀態碼
     // @ResponseBody                                	告訴 Spring 將返回值（ApiResponse）直接寫入 HTTP 響應體
 
-	// 處理找不到使用者異常 (401 或 404)
+	// 處理找不到使用者異常 (401)
 	@ExceptionHandler(UserNoFoundException.class) 	
-	@ResponseStatus(HttpStatus.UNAUTHORIZED)     		// 401 或 404
+	@ResponseStatus(HttpStatus.UNAUTHORIZED)     		// 401
     @ResponseBody                                	
 	public ApiResponse<?> handleUserNoFoundException(UserNoFoundException ex) {
-		return new ApiResponse<>(false, ex.getMessage(), null);
+		int statusCode = HttpStatus.UNAUTHORIZED.value();
+		return new ApiResponse<>(statusCode, ex.getMessage(), null);
 	}
 	
-	// 無法發送電子信箱的異常 (401 或 404)
+	// 無法發送電子信箱的異常 (500)
 	@ExceptionHandler(MailSendFailureException.class) 		
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)   // 500
     @ResponseBody                                		
 	public ApiResponse<?> handleMailSendFailureException(MailSendFailureException ex) {
-		return new ApiResponse<>(false, "服務器內部錯誤：無法發送電子郵件，請稍後重試。" , null);
+		int statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+		return new ApiResponse<>(statusCode, "服務器內部錯誤：無法發送電子郵件，請稍後重試。" , null);
 	}
 	
 	// token 驗證相關 的 錯誤 (1. 無效不存在 2. 過期 3. 已經被使用)
@@ -39,6 +41,7 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.BAD_REQUEST)   			// 400
     @ResponseBody                                		
 	public ApiResponse<?> handleTokenFailureException(TokenFailureException ex) {
-		return new ApiResponse<>(false, ex.getMessage() , null);
+		int statusCode = HttpStatus.BAD_REQUEST.value();
+		return new ApiResponse<>(statusCode, ex.getMessage() , null);
 	}
 }

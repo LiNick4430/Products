@@ -12,8 +12,8 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class ApiResponse<T> {
 
-	private boolean success;	// 成功與否
-	// private int code;		// HTTP 定義碼
+	// private boolean success;	// 成功與否
+	private int code;			// HTTP 定義碼
 	private String message;		// 訊息
 	private T data;				// 回傳的資料 通常是 json
 }
