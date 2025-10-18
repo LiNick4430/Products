@@ -29,7 +29,7 @@ import com.github.lianick.service.UserService;
 @RestController
 @RequestMapping("/user")
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
-public class UserController extends BaseController{
+public class UserController{
 	
 	@Autowired
 	private UserService userService;
@@ -37,25 +37,25 @@ public class UserController extends BaseController{
 	@PostMapping("/register/")
 	public ApiResponse<UserRegisterDTO> register(@RequestBody UserRegisterDTO userRegisterDTO) {
 		userRegisterDTO = userService.registerUser(userRegisterDTO);
-		return new ApiResponse<UserRegisterDTO>(successStatus, "帳號建立成功, 請驗證信箱", userRegisterDTO);
+		return new ApiResponse<UserRegisterDTO>(HttpStatus.OK.value(), "帳號建立成功, 請驗證信箱", userRegisterDTO);
 	}
 	
 	@PostMapping("/reset/password/")
 	public ApiResponse<UserForgetPasswordDTO> resetPassword(@RequestBody UserForgetPasswordDTO userForgetPasswordDTO) {
 		userForgetPasswordDTO = userService.forgetPasswordUpdatePassword(userForgetPasswordDTO);
-		return new ApiResponse<UserForgetPasswordDTO>(successStatus, "密碼更新完成, 請使用新密碼登入", userForgetPasswordDTO);
+		return new ApiResponse<UserForgetPasswordDTO>(HttpStatus.OK.value(), "密碼更新完成, 請使用新密碼登入", userForgetPasswordDTO);
 	}
 	
 	@PostMapping("/update/")
 	public ApiResponse<UserUpdateDTO> update(@RequestBody UserUpdateDTO userUpdateDTO) {
 		userUpdateDTO = userService.updateUser(userUpdateDTO);
-		return new ApiResponse<UserUpdateDTO>(successStatus, "資料更新完成 請重新登入", userUpdateDTO);
+		return new ApiResponse<UserUpdateDTO>(HttpStatus.OK.value(), "資料更新完成 請重新登入", userUpdateDTO);
 	}
 	
 	@DeleteMapping("/delete/")
 	public ApiResponse<Void> delete(@RequestBody UserDeleteDTO userDeleteDTO) {
 		userService.deleteUser(userDeleteDTO);
-		return new ApiResponse<Void>(successStatus, "帳號刪除成功", null);
+		return new ApiResponse<Void>(HttpStatus.OK.value(), "帳號刪除成功", null);
 	}
 	
 }
