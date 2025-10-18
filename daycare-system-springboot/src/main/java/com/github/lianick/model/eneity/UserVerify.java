@@ -47,7 +47,4 @@ public class UserVerify extends BaseEntity {
 	@JoinColumn(name = "user_id", nullable = false)
 	private Users users;				// 認證 帳號
 	
-	@Column(name = "verify_user_new_email_target")
-	private String newEmailTarget;		// 認證 新信箱 使用的 
-	
 }

@@ -1,6 +1,7 @@
 package com.github.lianick.util;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 /**
@@ -10,14 +11,16 @@ import org.springframework.stereotype.Component;
 @Component
 public class PasswordSecurity {
 
-	private final BCryptPasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
+	// 透過 @Autowired 注入 SecurityConfig 中定義的 PasswordEncoder Bean(BCryptPasswordEncoder)
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 	
 	// 產生密碼的雜湊值 (含 salt) BCrypt
 	// 演算法會自動處理 salt 的產生與雜湊運算。
 	// @param rawPassword 未加密的明文密碼
 	// @return 雜湊後的密碼字串
 	public String hashPassword(String rawPassword) {
-		return PASSWORD_ENCODER.encode(rawPassword);
+		return passwordEncoder.encode(rawPassword);
 	}
 	
 	// 驗證密碼是否正確
@@ -25,7 +28,7 @@ public class PasswordSecurity {
 	// @param encodedPassword  	資料庫中儲存的雜湊密碼
 	// @return 是否相符 True=相符 False=不相符
 	public boolean verifyPassword(String rawPassword, String encodedPassword) {
-		return PASSWORD_ENCODER.matches(rawPassword, encodedPassword);
+		return passwordEncoder.matches(rawPassword, encodedPassword);
 	}
 	
 	// 測試用
