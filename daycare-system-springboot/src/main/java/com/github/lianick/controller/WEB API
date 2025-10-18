@@ -16,7 +16,6 @@ POST	"/check/password/"	修改前確認密碼	"/auth/check/password/"
 
 EmailController
 Request Mapping: "/email"
----------------------------------------------------------------------------------------------------
 GET 	"/verify"			帳號驗證		"/email/verify?token=" + token碼
 
 POST	"/send/password/"	密碼驗證信		"/email/send/password/"
