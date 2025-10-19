@@ -35,3 +35,8 @@ vite.config.js 中 defineConfig 底下加入
     }
   }
   // **********************************************
+
+
+4. 在目錄底下的 cmd 執行
+docker build -t daycare-system-react .
+建立 Image
