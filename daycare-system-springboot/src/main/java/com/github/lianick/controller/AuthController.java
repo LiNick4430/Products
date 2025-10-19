@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @RestController
 @RequestMapping("/auth")
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
-public class AuthContorller {
+public class AuthController {
 
 	@Autowired
 	private UserService userService;
