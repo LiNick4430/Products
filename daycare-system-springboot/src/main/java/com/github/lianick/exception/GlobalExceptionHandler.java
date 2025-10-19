@@ -48,7 +48,7 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)   // 500
 	public ApiResponse<?> handleMailSendFailureException(MailSendFailureException ex) {
 		// 明確記錄錯誤，並包含完整的異常物件 ex
-		logger.error("服務器內部錯誤：無法發送電子郵件", ex.getMessage(), ex);
+		logger.error("服務器內部錯誤：無法發送電子郵件", ex);
 		
 		int statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
 		return new ApiResponse<>(statusCode, "服務器內部錯誤：無法發送電子郵件，請稍後重試。" , null);
@@ -83,7 +83,7 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR) 	// 500
 	public ApiResponse<?> handleGenericRuntimeException(RuntimeException ex) {
 		// 明確記錄錯誤，並包含完整的異常物件 ex
-		logger.error("發生未預期的伺服器錯誤！", ex.getMessage(), ex);
+		logger.error("發生未預期的伺服器錯誤！", ex);
 		
 		int statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
 		return new ApiResponse<>(statusCode, "發生未預期的伺服器錯誤，請聯繫管理員。" , null);
