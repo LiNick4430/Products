@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import com.github.lianick.converter.RoleNumberToRoleConveter;
+import com.github.lianick.converter.UsersToUsernameConveter;
 import com.github.lianick.model.dto.user.UserForgetPasswordDTO;
 import com.github.lianick.model.dto.user.UserLoginDTO;
 import com.github.lianick.model.dto.user.UserRegisterDTO;
@@ -20,7 +21,10 @@ import com.github.lianick.model.eneity.Users;
 public class ModelMapperConfig {
 
 	@Autowired
-    private  RoleNumberToRoleConveter roleTypeToRoleConveter;
+    private RoleNumberToRoleConveter roleTypeToRoleConveter;
+	
+	@Autowired
+	private UsersToUsernameConveter usersToUsernameConveter;
 
 	@Bean
 	public ModelMapper modelMapper() {
@@ -52,12 +56,18 @@ public class ModelMapperConfig {
 		// UserPublic 相關
 		modelMapper.typeMap(UserPublic.class, UserPublicDTO.class).addMappings(mapper -> {
 			mapper.map(UserPublic::getPublicId, UserPublicDTO::setId);
+			mapper.using(usersToUsernameConveter)
+					.map(UserPublic::getUsers, UserPublicDTO::setUsername);
 		});
 		modelMapper.typeMap(UserPublic.class, UserPublicCreateDTO.class).addMappings(mapper -> {
 			mapper.map(UserPublic::getPublicId, UserPublicCreateDTO::setId);
+			mapper.using(usersToUsernameConveter)
+					.map(UserPublic::getUsers, UserPublicCreateDTO::setUsername);
 		});
 		modelMapper.typeMap(UserPublic.class, UserPublicUpdateDTO.class).addMappings(mapper -> {
 			mapper.map(UserPublic::getPublicId, UserPublicUpdateDTO::setId);
+			mapper.using(usersToUsernameConveter)
+					.map(UserPublic::getUsers, UserPublicUpdateDTO::setUsername);
 		});
 		
 		// ------------------------------------------------------------------------------------

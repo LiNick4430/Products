@@ -29,7 +29,10 @@ import com.github.lianick.service.UserPublicService;
 import com.github.lianick.service.UserService;
 import com.github.lianick.util.DateValidationUtil;
 
+import jakarta.transaction.Transactional;
+
 @Service
+@Transactional				// 確保 完整性 
 public class UserPublicServiceImpl implements UserPublicService{
 
 	@Autowired
@@ -196,7 +199,12 @@ public class UserPublicServiceImpl implements UserPublicService{
 		userPublic = userPublicRepository.save(userPublic);
 		
 		// 5. Entity 轉 DTO 並返回 (回傳新的 DTO 實例)
-		return modelMapper.map(userPublic, UserPublicUpdateDTO.class);
+		userPublicUpdateDTO = modelMapper.map(userPublic, UserPublicUpdateDTO.class);
+		
+		// 5. 返回處理:
+	    userPublicUpdateDTO.setPassword(null);
+		
+		return userPublicUpdateDTO;
 	}
 
 	@Override
