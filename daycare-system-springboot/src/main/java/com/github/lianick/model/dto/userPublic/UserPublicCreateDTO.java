@@ -21,4 +21,5 @@ public class UserPublicCreateDTO {	// 創建 民眾資料的時候用的
 	private String birthdate;
 	private String registeredAddress;
 	private String mailingAddress;
+	
 }

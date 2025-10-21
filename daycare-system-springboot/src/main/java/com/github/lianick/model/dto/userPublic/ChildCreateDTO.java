@@ -2,7 +2,7 @@ package com.github.lianick.model.dto.userPublic;
 
 import java.time.LocalDate;
 
-public class ChildDTO {
+public class ChildCreateDTO {
 
 	private Long id;						// 兒童ID
 	private String username;				// 帳號名

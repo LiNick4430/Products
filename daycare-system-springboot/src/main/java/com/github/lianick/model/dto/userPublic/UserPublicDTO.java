@@ -1,10 +1,7 @@
 package com.github.lianick.model.dto.userPublic;
 
 import java.time.LocalDate;
-import java.util.Set;
-
-import com.github.lianick.model.eneity.ChildInfo;
-import com.github.lianick.model.eneity.DocumentPublic;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,6 +25,6 @@ public class UserPublicDTO {	// 搜尋 該民眾 的時候用的
 	private String mailingAddress;
 	
 	// TODO 子表格 之後需要補充
-	private Set<ChildInfo> children;
-	private Set<DocumentPublic> documents;
+	private List<ChildDTO> childDTOs;
+	// private Set<DocumentPublic> documents;
 }
