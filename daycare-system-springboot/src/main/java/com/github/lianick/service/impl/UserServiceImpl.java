@@ -176,6 +176,7 @@ public class UserServiceImpl implements UserService{
 	    
 	    // 5. 返回處理: 清空 password
     	userLoginDTO.setPassword(null);
+    	userLoginDTO.setRoleNumber(tableUser.getRole().getRoleId());
     	
         // return new ApiResponse<UserLoginDTO>(true, "登陸成功", userLoginDTO);
         return userLoginDTO;

@@ -45,7 +45,27 @@
 	        <groupId>org.springframework.boot</groupId>
 	        <artifactId>spring-boot-starter-mail</artifactId>
     	</dependency>
-		
+
+		<!-- JWT Dependencies (jjwt) -->
+		<dependency>
+		    <groupId>io.jsonwebtoken</groupId>
+		    <artifactId>jjwt-api</artifactId> <!-- 包含 JJWT 的主要 API -->
+		    <version>0.11.5</version>
+		</dependency>
+		<dependency>
+		    <groupId>io.jsonwebtoken</groupId>
+		    <artifactId>jjwt-impl</artifactId> <!-- JJWT 的實作部分，包含實際處理邏輯 -->
+		    <version>0.11.5</version>
+		    <scope>runtime</scope>	<!-- runtime 是因為你不會直接調用它，只有在執行時需要。 -->
+		</dependency>
+		<dependency>
+		    <groupId>io.jsonwebtoken</groupId>	<!-- 提供與 JSON 的互動（序列化/反序列化）。 -->
+		    <artifactId>jjwt-jackson</artifactId>  <!-- JJWT 支援不同的 JSON 處理器（Jackson、Gson、org.json），這裡選的是 Jackson，跟 Spring Boot 相容性高。 -->
+		    <version>0.11.5</version>
+		    <scope>runtime</scope>
+		</dependency>
+		<!-- JWT Dependencies (jjwt) -->
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -79,6 +99,14 @@
 			<artifactId>mysql-connector-j</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+		
+		<!-- 使用 @ConfigurationProperties 讓 IDE（例如 IntelliJ 或 Eclipse）可以提示自訂屬性的 key-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<optional>true</optional> <!-- 避免被打包進去 -->
+		</dependency>
+		
 	</dependencies>
 
 	<build>

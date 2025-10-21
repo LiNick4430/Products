@@ -14,6 +14,7 @@ import com.github.lianick.model.dto.userPublic.UserPublicUpdateDTO;
 import com.github.lianick.response.ApiResponse;
 import com.github.lianick.service.UserPublicService;
 import com.github.lianick.service.UserService;
+import com.github.lianick.util.JwtUtil;
 
 import jakarta.servlet.http.HttpSession;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,10 +39,24 @@ public class AuthController {
 	@Autowired
 	private UserPublicService userPublicService;
 	
+	@Autowired
+	private JwtUtil jwtUtil;	// 注入 JWT 工具
+	
 	@PostMapping("/login/")
-	public ApiResponse<UserLoginDTO> login (@RequestBody UserLoginDTO userLoginDTO, HttpSession httpSession) {
+	public ApiResponse<UserLoginDTO> login (@RequestBody UserLoginDTO userLoginDTO) {
+		// 1. 執行登入驗證
 		userLoginDTO = userService.loginUser(userLoginDTO);
-		httpSession.setAttribute("userLoginDTO", userLoginDTO);
+		
+		// 2. 生成 JWT Token
+		String token = jwtUtil.generateToken(
+				userLoginDTO.getUsername(), 
+				userLoginDTO.getId(), 
+				userLoginDTO.getRoleNumber());
+		
+		// 3. 將生成的 Token 設置到 DTO
+		userLoginDTO.setToken(token);
+		
+		// 4. 回傳包含 Token 的 DTO
 		return new ApiResponse<>(HttpStatus.OK.value(), "登陸成功", userLoginDTO);
 	}
 	
