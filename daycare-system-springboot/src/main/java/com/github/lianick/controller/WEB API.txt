@@ -1,0 +1,30 @@
+WEB API 規格
+方法		網址		說明		實際位置
+
+UserController
+Request Mapping: "/user"
+POST	"/register/"				註冊	帳號			"/user/register/"
+POST	"/reset/password/"			重設	密碼			"/user/reset/password/"
+POST	"/update/"					更新	帳號			"/user/update/"
+DELETE	"/delete/"					刪除	帳號			"/user/delete/"
+
+CitizenProfileController
+Request Mapping: "/public"
+GET		"/find/all/"		尋找	全部民眾帳號	"/public/find/all/"
+POST	"/find/"			尋找	特定民眾帳號	"/public/find/"
+POST	"/information/"		設定 民眾基本資料		"/public/set/information/"
+POST	"/update/"			更新 民眾基本資料		"/public/update/"
+DELETE	"/delete/"			刪除	帳號			"/public/delete/"
+
+AuthContorller
+Request Mapping: "/auth"
+POST	"/login/"					登入					"/auth/login/"
+GET  	"/logout/"					登出					"/auth/logout/"
+POST	"/check/password/"			修改前		確認密碼	"/auth/check/password/"
+POST	"/public/check/password/"	民眾資料修改前	確認密碼	"/auth/public/check/password/"
+
+EmailController
+Request Mapping: "/email"
+GET 	"/verify"			帳號驗證		"/email/verify?token=" + token碼
+POST	"/send/password/"	密碼驗證信		"/email/send/password/"
+GET 	"/reset/password"	忘記密碼驗證	"/email/reset/password?token=" + token碼
