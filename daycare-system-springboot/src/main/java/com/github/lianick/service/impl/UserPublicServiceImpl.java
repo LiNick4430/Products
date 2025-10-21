@@ -54,7 +54,7 @@ public class UserPublicServiceImpl implements UserPublicService{
 	private UserService userService;
 	
 	@Override
-	@PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")
+	@PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")		// 只能 這兩個 角色 的 JWT 才能使用
 	public List<UserPublicDTO> findAllUserPublic() {
 		List<UserPublicDTO> userPublicDTOs = userPublicRepository.findAll()
 																.stream()
@@ -68,7 +68,7 @@ public class UserPublicServiceImpl implements UserPublicService{
 	}
 
 	@Override
-	@PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")
+	@PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")		// 只能 這兩個 角色 的 JWT 才能使用
 	public UserPublicDTO findByUsername(UserPublicDTO userPublicDTO) {
 		// 0. 檢查數值完整性
 		if (userPublicDTO.getUsername() == null || userPublicDTO.getUsername().isBlank()) {
