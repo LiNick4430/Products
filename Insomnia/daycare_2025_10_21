@@ -1,0 +1,664 @@
+type: collection.insomnia.rest/5.0
+name: Scratch Pad
+meta:
+  id: wrk_scratchpad
+  created: 1757225504635
+  modified: 1757225504635
+  description: ""
+collection:
+  - name: RESTful
+    meta:
+      id: fld_ba8eca836f214c03a02ea0429b3b3162
+      created: 1757225585378
+      modified: 1758665371842
+      sortKey: -1757225585378
+      description: ""
+  - name: Book
+    meta:
+      id: fld_38c6a0837dc54c09ba808310b813ba6e
+      created: 1758209585687
+      modified: 1760763300689
+      sortKey: -1758209585687
+      description: ""
+  - name: Daycare
+    meta:
+      id: fld_4efcb1b2e5154ac6b087f7e33590fb36
+      created: 1760759629968
+      modified: 1760759629968
+      sortKey: -1760759629968
+      description: ""
+    children:
+      - name: User
+        meta:
+          id: fld_045d67b5e6504bcb803e2b82a3acc1db
+          created: 1760759637170
+          modified: 1760771772664
+          sortKey: -1760759637170
+          description: ""
+        children:
+          - url: http://localhost:8080/user/register/
+            name: /user/register/ 註冊帳號
+            meta:
+              id: req_add64b41df884cea9f481ae0597c5212
+              created: 1760761401888
+              modified: 1761032485843
+              isPrivate: false
+              description: |
+                # 回傳 的 Json 規格
+
+                ## Json參數說明：
+                | 變數名 | 類型 | 說明 | 必填 |
+                | :--- | :--- | :--- | :--- |
+                | "username" | String | 帳號(唯一) | Y |
+                | "password" | String | 密碼 | Y |
+                | "email" | String | 信箱唯一 | Y |
+                | "phoneNumber" | String | 電話號碼 | Y |
+                | "roleNumber" | Integer | 角色ID: 1(民眾), 2(基層), 或 3(管理) | Y |
+
+                ## 回傳範例：
+                ```json
+                {
+                	"username": "test01",
+                	"password": "123456",
+                	"email": "test01@xxx.com",
+                	"phoneNumber": "0900111222",
+                	"roleNumber" : 1
+                }
+                ```
+              sortKey: -1760761401888
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"username": "test05",
+                	"password": "123456",
+                	"email": "test05@xxx.com",
+                	"phoneNumber": "0900111222",
+                	"roleNumber" : 1
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/11.6.1
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/auth/login/
+            name: /auth/login/ 登入帳號
+            meta:
+              id: req_1818b711ce0c4220856eaf85870b44f9
+              created: 1760765216903
+              modified: 1761032707674
+              isPrivate: false
+              description: |-
+                # 回傳 的 Json 規格
+
+                ## Json參數說明：
+                | 變數名 | 類型 | 說明 | 必填 |
+                | :--- | :--- | :--- | :--- |
+                | "username" | String | 帳號 | Y |
+                | "password" | String | 密碼 | Y |
+
+                ## 回傳範例：
+                ```json
+                {
+                	"username": "test01",
+                	"password": "123456"
+                }
+                ```
+              sortKey: -1759485495223
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"username": "test03",
+                	"password": "123456"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/11.6.1
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/auth/logout/
+            name: /auth/logout/ 登出帳號
+            meta:
+              id: req_008ccdbe403845d0853ab93f1cb551a1
+              created: 1760765304908
+              modified: 1760765722570
+              isPrivate: false
+              description: ""
+              sortKey: -1758847541890.5
+            method: GET
+            headers:
+              - name: User-Agent
+                value: insomnia/11.6.1
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/email/send/password/
+            name: /email/send/password/ 忘記密碼 認證信
+            meta:
+              id: req_091efff47542417794c207efa8979b1a
+              created: 1760765790027
+              modified: 1761032687032
+              isPrivate: false
+              description: |-
+                # 回傳 的 Json 規格
+
+                ## Json參數說明：
+                | 變數名 | 類型 | 說明 | 必填 |
+                | :--- | :--- | :--- | :--- |
+                | "username" | String | 帳號 | Y |
+
+                ## 回傳範例：
+                ```json
+                {
+                	"username": "test03"
+                }
+                ```
+              sortKey: -1760123448555.5
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"username": "test03"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/11.6.1
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/user/reset/password/
+            name: /user/reset/password/ 重設密碼
+            meta:
+              id: req_3c7e786f69c84f6db130aa4a21b5a6f5
+              created: 1760766048663
+              modified: 1761032649301
+              isPrivate: false
+              description: |-
+                # 回傳 的 Json 規格
+
+                ## Json參數說明：
+                | 變數名 | 類型 | 說明 | 必填 |
+                | :--- | :--- | :--- | :--- |
+                | "username" | String | 帳號 | Y |
+                | "password" | String | 密碼 | Y |
+                | "token" | String | 驗證碼 | Y |
+
+                ## 回傳範例：
+                ```json
+                {
+                	"username": "test03",
+                	"password": "123456",
+                	"token": "ec409e47c2654288a08378cb523f30e8"
+                }
+                ```
+              sortKey: -1760442425221.75
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"username": "test03",
+                	"password": "123456",
+                	"token": "ec409e47c2654288a08378cb523f30e8"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/11.6.1
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/auth/check/password/
+            name: /auth/check/password/ 更新資料前 密碼驗證
+            meta:
+              id: req_f62bbf0a4927430a83360a45a3a53457
+              created: 1760766426302
+              modified: 1761032722883
+              isPrivate: false
+              description: |-
+                # 回傳 的 Json 規格
+
+                ## Json參數說明：
+                | 變數名 | 類型 | 說明 | 必填 |
+                | :--- | :--- | :--- | :--- |
+                | "username" | String | 帳號 | Y |
+                | "password" | String | 密碼 | Y |
+
+                ## 回傳範例：
+                ```json
+                {
+                	"username": "test01",
+                	"password": "123456"
+                }
+                ```
+              sortKey: -1759166518556.75
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"username": "test03",
+                	"password": "123456"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/11.6.1
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/user/update/
+            name: /user/update/ 更新帳號
+            meta:
+              id: req_f074fb0d8f104eb99f122f72519ce429
+              created: 1760766720177
+              modified: 1761032581657
+              isPrivate: false
+              description: |-
+                # 回傳 的 Json 規格
+
+                ## Json參數說明：
+                | 變數名 | 類型 | 說明 | 必填 |
+                | :--- | :--- | :--- | :--- |
+                | "username" | String | 帳號 | Y |
+                | "newPassword" | String | 新密碼 | Y |
+                | "newPhoneNumber" | String | 新電話號碼 | Y |
+
+                ## 回傳範例：
+                ```json
+                {
+                	"username": "test03",
+                	"newPassword": "123456",
+                	"newPhoneNumber": "0900111222"
+                }
+                ```
+              sortKey: -1760601913554.875
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"username": "test03",
+                	"newPassword": "123456",
+                	"newPhoneNumber": "0900111222"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/11.6.1
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/user/delete/
+            name: /user/delete/ 刪除帳號
+            meta:
+              id: req_b32424913e3c43eead889e420d665771
+              created: 1760766899045
+              modified: 1761032591184
+              isPrivate: false
+              description: |-
+                # 回傳 的 Json 規格
+
+                ## Json參數說明：
+                | 變數名 | 類型 | 說明 | 必填 |
+                | :--- | :--- | :--- | :--- |
+                | "username" | String | 帳號 | Y |
+                | "password" | String | 密碼 | Y |
+
+                ## 回傳範例：
+                ```json
+                {
+                	"username": "test01",
+                	"password": "123456"
+                }
+                ```
+              sortKey: -1760681657721.4375
+            method: DELETE
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"username": "test03",
+                	"password": "123456"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/11.6.1
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/auth/public/check/password/
+            name: /auth/public/check/password/  民眾資料修改前 確認密碼
+            meta:
+              id: req_8f8d1a0e8e8a4479a3b3bd2ae2d47f37
+              created: 1761029735966
+              modified: 1761032737869
+              isPrivate: false
+              description: |-
+                # 回傳 的 Json 規格
+
+                ## Json參數說明：
+                | 變數名 | 類型 | 說明 | 必填 |
+                | :--- | :--- | :--- | :--- |
+                | "username" | String | 帳號 | Y |
+                | "password" | String | 密碼 | Y |
+
+                ## 回傳範例：
+                ```json
+                {
+                	"username": "test01",
+                	"password": "123456"
+                }
+                ```
+              sortKey: -1759007030223.625
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"username": "test04",
+                	"password": "123456"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/11.6.1
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+      - name: UserPublic
+        meta:
+          id: fld_25e29320684f4a359bfd23f8df72dd5d
+          created: 1761027630244
+          modified: 1761027630244
+          sortKey: -1761027630244
+          description: ""
+        children:
+          - url: http://localhost:8080/public/information/
+            name: /public/information/  設定 民眾基本資料
+            meta:
+              id: req_0ba2630cec7f4abe9879fe0aa217706e
+              created: 1761027649934
+              modified: 1761032421772
+              isPrivate: false
+              description: |-
+                # 回傳 的 Json 規格
+
+                ## Json參數說明：
+                | 變數名 | 類型 | 說明 | 必填 |
+                | :--- | :--- | :--- | :--- |
+                | "username" | String | 帳號(唯一) | Y |
+                | "roleNumber" | Integer | 必須是 1 (民眾) | Y |
+                | "name" | String | 民眾姓名 | Y |
+                | "nationalIdNo" | String |  身分證字號(唯一) | Y |
+                | "birthdate" | String | 生日 必須是 yyyy-MM-dd 格式 | Y |
+                | "registeredAddress" | String | 戶籍地址 | Y |
+                | "mailingAddress" | String | 通訊地址 | Y |
+
+                ## 回傳範例：
+                ```json
+                {
+                	"username": "test01",
+                	"roleNumber" : 1,
+                	
+                	"name" : "民眾B",
+                	"nationalIdNo" : "B100000001",
+                	"birthdate" : "1992-01-01",
+                	"registeredAddress" : "台中市南區",
+                	"mailingAddress" : "台中市南區"
+                }
+                ```
+              sortKey: -1761027649935
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"username": "test05",
+                	"roleNumber" : 1,
+                	
+                	"name" : "民眾B",
+                	"nationalIdNo" : "B100000002",
+                	"birthdate" : "1992-01-01",
+                	"registeredAddress" : "台中市南區",
+                	"mailingAddress" : "台中市南區"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/11.6.1
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/public/find/
+            name: /public/find/  尋找	特定民眾帳號
+            meta:
+              id: req_85aaba08c1b1480c8c7fc32abf6ee157
+              created: 1761028356938
+              modified: 1761032771485
+              isPrivate: false
+              description: |-
+                # 回傳 的 Json 規格
+
+                ## Json參數說明：
+                | 變數名 | 類型 | 說明 | 必填 |
+                | :--- | :--- | :--- | :--- |
+                | "username" | String | 帳號 | Y |
+
+                ## 回傳範例：
+                ```json
+                {
+                	"username": "test01"
+                }
+                ```
+              sortKey: -1760894525911.5
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"username": "test04"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/11.6.1
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/public/update/
+            name: /public/update/ 更新 民眾基本資料
+            meta:
+              id: req_ad4b217fb4f7448cb5d55d768453f91a
+              created: 1761029822076
+              modified: 1761032832818
+              isPrivate: false
+              description: |-
+                # 回傳 的 Json 規格
+
+                ## Json參數說明：
+                | 變數名 | 類型 | 說明 | 必填 |
+                | :--- | :--- | :--- | :--- |
+                | "username" | String | 帳號 | Y |
+                | "newName" | String | 新民眾姓名 | Y |
+                | "newRegisteredAddress" | String | 新戶籍地址 | Y |
+                | "newMailingAddress" | String | 新通訊地址 | Y |
+
+                ## 回傳範例：
+                ```json
+                {
+                	"username": "test04",
+                	
+                	"newName" : "民眾A的老公",
+                	"newRegisteredAddress" : "台中市北區",
+                	"newMailingAddress" : "台中市北區"
+                }
+                ```
+              sortKey: -1760961087923.25
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"username": "test04",
+                	
+                	"newName" : "民眾A的老公",
+                	"newRegisteredAddress" : "台中市北區",
+                	"newMailingAddress" : "台中市北區"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/11.6.1
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/public/delete/
+            name: /public/delete/  刪除	民眾帳號
+            meta:
+              id: req_a284002f356d49e2bf614a9ce5e56b72
+              created: 1761029932922
+              modified: 1761032762152
+              isPrivate: false
+              description: |-
+                # 回傳 的 Json 規格
+
+                ## Json參數說明：
+                | 變數名 | 類型 | 說明 | 必填 |
+                | :--- | :--- | :--- | :--- |
+                | "username" | String | 帳號 | Y |
+                | "password" | String | 密碼 | Y |
+
+                ## 回傳範例：
+                ```json
+                {
+                	"username": "test01",
+                	"password": "123456"
+                }
+                ```
+              sortKey: -1760994368929.125
+            method: DELETE
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"username": "test04",
+                	"password": "123456"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/11.6.1
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_99d30891da4bdcebc63947a8fc17f076de878684
+    created: 1757225513401
+    modified: 1760765601096
+  cookies:
+    - key: JSESSIONID
+      value: 77BF162DBB137AB5E2DA0927D11A4E76
+      domain: localhost
+      path: /
+      httpOnly: true
+      hostOnly: true
+      creation: 2025-10-18T04:53:46.560Z
+      lastAccessed: 2025-10-18T05:33:21.095Z
+      id: a893e8a5-e45d-48b3-879d-1b9ea8ecaeac
+environments:
+  name: Base Environment
+  meta:
+    id: env_99d30891da4bdcebc63947a8fc17f076de878684
+    created: 1757225513376
+    modified: 1757225513376
+    isPrivate: false
