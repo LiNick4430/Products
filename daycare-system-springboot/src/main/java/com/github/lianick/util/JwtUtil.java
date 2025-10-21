@@ -34,10 +34,11 @@ public class JwtUtil {
      * @param userId 用戶ID
      * @return JWT 字串
      */
-	public String generateToken(String username, Long userId, Long roleNumber) {
+	public String generateToken(String username, Long userId, Long roleNumber, String roleName) {
 		Map<String, Object> claims = new HashMap<>();
 		claims.put("userId", userId);
 		claims.put("roleNumber", roleNumber);
+		claims.put("roleName", roleName);
 		
 		return Jwts.builder()
 				.setClaims(claims)														// 自訂資料（userId, roleNumber）

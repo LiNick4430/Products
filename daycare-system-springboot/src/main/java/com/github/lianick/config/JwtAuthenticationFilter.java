@@ -63,12 +63,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{	// OncePerReq
 			// 由於我們是無狀態認證，不需要從 DB 重新查詢 UserDetails，
 			// 只需要從 Claims 中獲取足夠的資訊來創建身份驗證物件。
 			Claims claims = jwtUtil.extractAllClaims(authToken);
-			Long userId = claims.get("userId", Long.class);
-			Long roleNumber = claims.get("roleNumber", Long.class);
+			// Long userId = claims.get("userId", Long.class);
+			// Long roleNumber = claims.get("roleNumber", Long.class);
+			String roleName = claims.get("roleName", String.class);
 
 			// 將角色轉換為 Spring Security 的權限格式
 			List<SimpleGrantedAuthority> authorities = Collections.singletonList(
-					new SimpleGrantedAuthority("ROLE_" + roleNumber)	// 假設您的角色是數字，並前綴 ROLE_
+					new SimpleGrantedAuthority(roleName)
 					);
 
 			// 創建 Spring Security 的身份驗證物件

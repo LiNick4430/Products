@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -14,6 +15,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity(prePostEnabled = true)	// 保持 @PreAuthorize 和 @PostAuthorize 的功能
 public class SecurityConfig {
 
 	@Autowired
@@ -42,6 +44,7 @@ public class SecurityConfig {
 					// 1. 公開端點：允許任何人存取以下路徑
 					.requestMatchers(
 							"/user/register/",			// 註冊
+							"/user/reset/password/",	// (忘記密碼)重設密碼
 							"/auth/login/",				// 登入
 							"/email/verify",			// 帳號驗證
 							"/email/send/password/",	// 發送忘記密碼信

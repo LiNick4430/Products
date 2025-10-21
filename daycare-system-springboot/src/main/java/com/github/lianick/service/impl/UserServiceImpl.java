@@ -6,6 +6,9 @@ import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.github.lianick.exception.TokenFailureException;
@@ -177,6 +180,7 @@ public class UserServiceImpl implements UserService{
 	    // 5. 返回處理: 清空 password
     	userLoginDTO.setPassword(null);
     	userLoginDTO.setRoleNumber(tableUser.getRole().getRoleId());
+    	userLoginDTO.setRoleName(tableUser.getRole().getName());
     	
         // return new ApiResponse<UserLoginDTO>(true, "登陸成功", userLoginDTO);
         return userLoginDTO;
@@ -301,20 +305,24 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
+	@PreAuthorize("isAuthenticated()")	// 確保只有持有有效 JWT 的用戶才能存取
 	public UserUpdateDTO updateUserCheckPassword(UserUpdateDTO userUpdateDTO) {
-		// 0. 檢查數值完整性
-		if (userUpdateDTO.getUsername() == null || userUpdateDTO.getUsername().isBlank() ||
-				userUpdateDTO.getPassword() == null || userUpdateDTO.getPassword().isBlank()) {
-			throw new ValueMissException("缺少帳號或密碼");
+		// **從 JWT 獲取身份：確認操作者身份**
+	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	    String currentUsername = authentication.getName(); // JWT 中解析出來的帳號
+		
+		// 0. 檢查數值完整性 (這裡只檢查 password 即可，因為 username 已經從 JWT 獲得並驗證)
+		if (userUpdateDTO.getPassword() == null || userUpdateDTO.getPassword().isBlank()) {
+			throw new ValueMissException("缺少舊密碼");
 		}
 		
-		// 1. 找尋資料庫 對應的帳號
-	    Users tableUser = usersRepository.findByAccount(userUpdateDTO.getUsername())
+		// 1. 找尋資料庫 對應的帳號(使用 JWT 提供的 currentUsername 進行查詢)
+	    Users tableUser = usersRepository.findByAccount(currentUsername)
 	        .orElseThrow(() -> new UserNoFoundException("帳號或密碼錯誤"));
 	    
 	    // 2. 使用 checkPassword 方法 複查 密碼是否相同
 	    if (!checkPassword(userUpdateDTO, tableUser)) {
-	    	throw new UserNoFoundException("帳號或密碼錯誤");
+	    	throw new UserNoFoundException("密碼錯誤");
 	    }
 	    
 	    // 3. Entity 轉 DTO
@@ -329,14 +337,14 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
+	@PreAuthorize("isAuthenticated()")	// 確保只有持有有效 JWT 的用戶才能存取
 	public UserUpdateDTO updateUser(UserUpdateDTO userUpdateDTO) {
-		// 0. 檢查數值完整性
-		if (userUpdateDTO.getUsername() == null || userUpdateDTO.getUsername().isBlank()) {
-		    throw new ValueMissException("缺少帳號資訊");
-		}
+		// **從 JWT 獲取身份：確認操作者身份**
+	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	    String currentUsername = authentication.getName(); // JWT 中解析出來的帳號
 		
 		// 1. 複查一次 
-	    Users tableUser = usersRepository.findByAccount(userUpdateDTO.getUsername())
+	    Users tableUser = usersRepository.findByAccount(currentUsername)
 	        .orElseThrow(() -> new UserNoFoundException("帳號不存在或已被刪除"));
 	    
 	    // 2. 更新資料, 同時檢查 null、空字串、和空白字元
@@ -365,19 +373,25 @@ public class UserServiceImpl implements UserService{
 	    userUpdateDTO.setPassword(null);
 	    userUpdateDTO.setNewPassword(null);
 	    
+	    // 如果密碼被修改，強制使用者登出 (清空 JWT 狀態)
+	    if (rawPassword != null && !rawPassword.isBlank()) {
+	        // 立即清空 Security Context，強制要求用戶使用新密碼重新登入
+	        SecurityContextHolder.clearContext(); 
+	    }
+	    
 	    // return new ApiResponse<>(true, "資料更新完成 請重新登入", userUpdateDTO);
 	    return userUpdateDTO;
 	}
 	
 	@Override
+	@PreAuthorize("isAuthenticated()")	// 確保只有持有有效 JWT 的用戶才能存取
 	public void deleteUser(UserDeleteDTO userDeleteDTO){
-		// 0. 檢查數值完整性
-		if (userDeleteDTO.getUsername() == null || userDeleteDTO.getUsername().isBlank()) {
-		    throw new ValueMissException("缺少帳號資訊");
-		}
+		// **從 JWT 獲取身份：確認操作者身份**
+	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	    String currentUsername = authentication.getName(); // JWT 中解析出來的帳號
 		
 		// 1. 找尋資料庫 對應的帳號
-	    Users tableUser = usersRepository.findByAccount(userDeleteDTO.getUsername())
+	    Users tableUser = usersRepository.findByAccount(currentUsername)
 	        .orElseThrow(() -> new UserNoFoundException("帳號或密碼錯誤"));
 
 	    // 2. 使用 checkPassword 方法 複查 密碼是否相同
@@ -400,6 +414,9 @@ public class UserServiceImpl implements UserService{
 		
 		// 回存
 		usersRepository.save(tableUser);
+		
+		// 安全強化：帳號刪除後，強制登出
+		SecurityContextHolder.clearContext();
 	    
 		// return new ApiResponse<Void>(true, "帳號刪除成功", null);
 	}

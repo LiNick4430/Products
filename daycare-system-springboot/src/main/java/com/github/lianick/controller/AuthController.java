@@ -16,7 +16,6 @@ import com.github.lianick.service.UserPublicService;
 import com.github.lianick.service.UserService;
 import com.github.lianick.util.JwtUtil;
 
-import jakarta.servlet.http.HttpSession;
 import org.springframework.web.bind.annotation.GetMapping;
 
 /**
@@ -51,7 +50,9 @@ public class AuthController {
 		String token = jwtUtil.generateToken(
 				userLoginDTO.getUsername(), 
 				userLoginDTO.getId(), 
-				userLoginDTO.getRoleNumber());
+				userLoginDTO.getRoleNumber(),
+				userLoginDTO.getRoleName()
+				);
 		
 		// 3. 將生成的 Token 設置到 DTO
 		userLoginDTO.setToken(token);
@@ -61,9 +62,15 @@ public class AuthController {
 	}
 	
 	@GetMapping("/logout/")
-	public ApiResponse<Void> logout (HttpSession httpSession) {
-		httpSession.invalidate();
-		return new ApiResponse<>(HttpStatus.OK.value(), "登出成功", null);
+	public ApiResponse<Void> logout () {
+		// 在 JWT 架構中，登出行為由前端負責銷毀 Token。
+	    // 對於大多數應用來說，只需讓前端銷毀 Token 即可。
+	    
+	    // 如果您想強制清空當前的 Spring Security Context (雖然 Token 仍然有效，但可以強制當前請求失效):
+	    // SecurityContextHolder.clearContext();
+	    
+	    // 只是返回成功訊息，告訴前端可以安全地刪除其儲存的 Token 了
+		return new ApiResponse<>(HttpStatus.OK.value(), "登出成功，請清除客戶端 Token", null);
 	}
 	
 	@PostMapping("/check/password/")
