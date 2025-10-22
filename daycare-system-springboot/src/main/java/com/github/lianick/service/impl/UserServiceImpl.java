@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -305,7 +304,6 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	@PreAuthorize("isAuthenticated()")	// 確保只有持有有效 JWT 的用戶才能存取
 	public UserUpdateDTO updateUserCheckPassword(UserUpdateDTO userUpdateDTO) {
 		// **從 JWT 獲取身份：確認操作者身份**
 	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -337,7 +335,6 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	@PreAuthorize("isAuthenticated()")	// 確保只有持有有效 JWT 的用戶才能存取
 	public UserUpdateDTO updateUser(UserUpdateDTO userUpdateDTO) {
 		// **從 JWT 獲取身份：確認操作者身份**
 	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -384,7 +381,6 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	@Override
-	@PreAuthorize("isAuthenticated()")	// 確保只有持有有效 JWT 的用戶才能存取
 	public void deleteUser(UserDeleteDTO userDeleteDTO){
 		// **從 JWT 獲取身份：確認操作者身份**
 	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

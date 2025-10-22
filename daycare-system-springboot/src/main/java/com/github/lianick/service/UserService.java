@@ -1,5 +1,7 @@
 package com.github.lianick.service;
 
+import org.springframework.security.access.prepost.PreAuthorize;
+
 import com.github.lianick.model.dto.user.PasswordAwareDTO;
 import com.github.lianick.model.dto.user.UserDeleteDTO;
 import com.github.lianick.model.dto.user.UserForgetPasswordDTO;
@@ -16,6 +18,8 @@ import com.github.lianick.model.eneity.Users;
 		如果 role 是民眾 → 呼叫 UserPublicService.createUserPublic() → 成功創建 UserPublic。
 		如果 role 是員工 → 呼叫 UserAdminService.createUserAdmin() → 成功創建 UserAdmin。
 	防護： 如果 Service 層有人試圖對一個已是民眾的帳號創建員工紀錄，admin_user 表會因為 Primary Key 衝突而拋出資料庫錯誤（如果 Service 層沒有提前檢查的話）。
+	
+	在 Service Interface 上加上 @PreAuthorize 是良好的實踐，它定義了服務的安全契約。
  * */
 
 public interface UserService {
@@ -37,11 +41,14 @@ public interface UserService {
 	
 	// 修改帳號資料
 	// 確認密碼
+	@PreAuthorize("isAuthenticated()")	// 確保只有持有有效 JWT 的用戶才能存取
 	UserUpdateDTO updateUserCheckPassword(UserUpdateDTO userUpdateDTO);
 	// update 資料
+	@PreAuthorize("isAuthenticated()")	// 確保只有持有有效 JWT 的用戶才能存取
 	UserUpdateDTO updateUser(UserUpdateDTO userUpdateDTO);
 	
 	// 刪除帳號
+	@PreAuthorize("isAuthenticated()")	// 確保只有持有有效 JWT 的用戶才能存取
 	void deleteUser(UserDeleteDTO userDeleteDTO);
 	
 	// 產生 帳號驗證碼 同時 寄出驗證信
