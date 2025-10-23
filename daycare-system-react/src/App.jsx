@@ -1,16 +1,32 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import Navbar from "./components/NavBar"
+import Footer from "./components/Footer"
+import Home from "./pages/Home"
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+} from "react-router-dom";
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
-    <>
-      <h1>在 Docker 上 執行 React</h1>
-      <h2>更新版V3</h2>
-    </>
+    <Router>
+      {/* 上方 導覽列 */}
+      <Navbar />
+
+      {/* 中間 內容 */}
+      <div className='content'>
+        <Routes>
+          {/* 首頁路由 */}
+          <Route path="/" element={<Home />} />
+        </Routes>
+      </div>
+
+      {/* 下方 頁尾 */}
+      <Footer />
+    </Router>
   )
 }
 
