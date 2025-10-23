@@ -21,6 +21,9 @@ public class SecurityConfig {
 	@Autowired
 	private JwtAuthenticationFilter jwtAuthenticationFilter;
 	
+	@Autowired
+	private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+	
 	/**
      * 將 BCryptPasswordEncoder 註冊為 Spring Bean
      */
@@ -37,6 +40,9 @@ public class SecurityConfig {
 			
 			// 2. CORS 設定（使用預設）
 			.cors(Customizer.withDefaults())
+			
+			// 【新】401 錯誤處理：將認證失敗/未認證的錯誤交給 EntryPoint 處理
+            .exceptionHandling(e -> e.authenticationEntryPoint(jwtAuthenticationEntryPoint))
 			
 			// 3. 設置授權規則
 			.authorizeHttpRequests(authorize -> authorize
@@ -63,9 +69,7 @@ public class SecurityConfig {
 			// 5. 加入 JWT 過濾器
 			.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
-		
 		return http.build();
 	}
-	
 	
 }

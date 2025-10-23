@@ -173,7 +173,7 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public UserLoginDTO loginUser(UserLoginDTO userLoginDTO){
+	public Users loginUser(UserLoginDTO userLoginDTO){
 		// 0. 檢查數值完整性
 		if(userLoginDTO.getUsername() == null || userLoginDTO.getUsername().isBlank() ||
 				userLoginDTO.getPassword() == null || userLoginDTO.getPassword().isBlank()) {
@@ -192,18 +192,9 @@ public class UserServiceImpl implements UserService{
 	    
 	    // 3. 登入成功 打上時間
 	    tableUser.setLoginDate(LocalDateTime.now());	// 登入時間
-    	usersRepository.save(tableUser);
-	    
-	    // 4. Entity 轉 DTO
-	    userLoginDTO = modelMapper.map(tableUser, UserLoginDTO.class);
-	    
-	    // 5. 返回處理: 清空 password
-    	userLoginDTO.setPassword(null);
-    	userLoginDTO.setRoleNumber(tableUser.getRole().getRoleId());
-    	userLoginDTO.setRoleName(tableUser.getRole().getName());
+    	tableUser = usersRepository.save(tableUser);
     	
-        // return new ApiResponse<UserLoginDTO>(true, "登陸成功", userLoginDTO);
-        return userLoginDTO;
+    	return tableUser;
 	}
 
 	@Override
@@ -443,7 +434,7 @@ public class UserServiceImpl implements UserService{
 		// 1. 取出/建立 所需資料
 		String account = users.getAccount();
 		String email = users.getEmail();
-		String token = tokenUUID.generateToekn();
+		String token = tokenUUID.generateToken();
 		LocalDateTime expiryTime;
 		// 假設是 重設密碼 
 		if (apiName.equals("reset/password")) {
@@ -451,6 +442,7 @@ public class UserServiceImpl implements UserService{
 		} else {	// 其他
 			expiryTime = LocalDateTime.now().plusMinutes(15);
 		}
+		
 		// 將該帳號所有未使用的舊 Token 標記為「已使用」(isUsed = true)。
 		// 以確保同一時間只存在一個有效的認證 Token，防止使用者誤用或惡意重發。
 		usersVerifyRepository.markAllUnusedTokenAsUsed(account);

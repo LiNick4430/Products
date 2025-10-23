@@ -16,7 +16,7 @@ public class TokenUUID {
 	// 通常用於 Token 時，我們會移除連字號，使其更短、更適合 URL 或資料庫儲存
 	// String token = uuid.toString().replace("-", ""); 
 	
-	public String generateToekn() {
+	public String generateToken() {
 
 		// 產生 UUID 並移除連字號，得到一個 32 個字元的十六進制字串
 		String toekn = UUID.randomUUID().toString().replace("-", "");

@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import com.github.lianick.converter.RoleNumberToRoleConveter;
 import com.github.lianick.converter.UsersToUsernameConveter;
+import com.github.lianick.model.dto.AuthResponseDTO;
 import com.github.lianick.model.dto.user.UserForgetPasswordDTO;
 import com.github.lianick.model.dto.user.UserLoginDTO;
 import com.github.lianick.model.dto.user.UserMeDTO;

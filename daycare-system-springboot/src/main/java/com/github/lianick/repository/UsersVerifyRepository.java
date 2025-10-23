@@ -11,8 +11,6 @@ import org.springframework.stereotype.Repository;
 import com.github.lianick.model.eneity.UserVerify;
 
 import jakarta.transaction.Transactional;
-import java.util.List;
-
 
 @Repository
 public interface UsersVerifyRepository extends JpaRepository<UserVerify, Long> {

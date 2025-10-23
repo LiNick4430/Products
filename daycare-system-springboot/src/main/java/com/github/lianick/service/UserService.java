@@ -33,8 +33,8 @@ public interface UserService {
 	UserRegisterDTO registerUser(UserRegisterDTO userRegisterDTO);
 	// 驗證帳號
 	UserVerifyDTO veriftyUser(String token);
-	// 登陸帳號
-	UserLoginDTO loginUser(UserLoginDTO userLoginDTO);
+	// 登陸帳號 前處理 (後續給 AuthService)
+	Users loginUser(UserLoginDTO userLoginDTO);
 	
 	// 忘卻密碼 三步驟
 	// 發送驗證信

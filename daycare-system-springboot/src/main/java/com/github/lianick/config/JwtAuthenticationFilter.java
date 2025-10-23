@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -24,9 +26,13 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter{	// OncePerRequestFilter：Spring 提供的基礎類別，確保 每個請求只執行一次過濾器。
 
+	// 【新】定義 Logger 實例
+    private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
+	
 	@Autowired
 	private JwtUtil jwtUtil;
 
+	public static final String AUTH_ERROR_ATTRIBUTE = "authError";
 	private static final String HEADER_STRING = "Authorization";	// HTTP 請求中存放 JWT 的 Header 名稱（標準是 Authorization）。
 	private static final String TOKEN_PREFIX = "Bearer";			// JWT 前的前綴詞，通常是 Bearer <token>。
 
@@ -49,9 +55,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{	// OncePerReq
 			} catch (ExpiredJwtException e) {
 				// Token 過期
 				logger.warn("JWT Token 過期: {}", e);
+				
+				// *** 關鍵步驟：將例外存入 Request 屬性中 ***
+				request.setAttribute(AUTH_ERROR_ATTRIBUTE, e);
 			} catch (JwtException | IllegalArgumentException e) {
 				// Token 簽名錯誤、格式錯誤等
 				logger.error("JWT Token 驗證失敗: {}", e);
+				
+				// *** 關鍵步驟：將例外存入 Request 屬性中 ***
+				request.setAttribute(AUTH_ERROR_ATTRIBUTE, e);
 			}
 		} else {
 			logger.warn("缺少 Authorization Header 或 Token 格式錯誤");

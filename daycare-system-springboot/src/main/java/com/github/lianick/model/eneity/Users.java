@@ -8,6 +8,7 @@ import jakarta.persistence.OneToOne;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.annotations.SQLRestriction;
 
@@ -81,4 +82,8 @@ public class Users extends BaseEntity {
 	// 反向關聯：一個 Users 對應一個 User_Admin
 	@OneToOne(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private UserAdmin adminInfo;
+	
+	// 用於 登入的 refresh token(JWT)
+	@OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private Set<RefreshToken> refreshTokens;
 }

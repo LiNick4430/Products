@@ -58,7 +58,7 @@ public class CreateUser {
 		String rawPassword = "123456";
 		String hashPassord = passwordSecurity.hashPassword(rawPassword);
 		// 認證碼
-		String token = tokenUUID.generateToekn(); 
+		String token = tokenUUID.generateToken(); 
 		// 驗證碼時間
 		LocalDateTime now = LocalDateTime.now();
 		LocalDateTime expiryTime = now.plusMinutes(15);		// 過期時間 + 15分
