@@ -20,9 +20,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 /**
  * EmailController
  * Request Mapping: "/email"
- * GET 	"/verify"			帳號驗證		"/email/verify?token=" + token碼				PUBLIC
- * POST	"/send/password/"	密碼驗證信		"/email/send/password/"						PUBLIC
- * GET 	"/reset/password"	忘記密碼驗證	"/email/reset/password?token=" + token碼		PUBLIC
+ * GET 	"/verify"							帳號驗證		"/email/verify?token=" + token碼				PUBLIC
+ * POST	"/send/password", "/send/password/"	密碼驗證信		"/email/send/password/"						PUBLIC
+ * GET 	"/reset/password"					忘記密碼驗證	"/email/reset/password?token=" + token碼		PUBLIC
  * */
 
 @RestController
@@ -39,7 +39,7 @@ public class EmailController {
 		return new ApiResponse<UserVerifyDTO>(HttpStatus.OK.value(), "帳號啟用成功", userVerifyDTO);
 	}
 	
-	@PostMapping("/send/password/")
+	@PostMapping(value = {"/send/password", "/send/password/"})
 	public ApiResponse<UserForgetPasswordDTO> sendPassword(@RequestBody UserForgetPasswordDTO userForgetPasswordDTO) {
 		userForgetPasswordDTO = userService.forgetPasswordSendEmail(userForgetPasswordDTO);
 		return new ApiResponse<UserForgetPasswordDTO>(HttpStatus.OK.value(), "驗證信寄出成功", userForgetPasswordDTO);

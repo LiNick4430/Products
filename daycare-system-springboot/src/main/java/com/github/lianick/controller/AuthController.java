@@ -21,10 +21,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 /**
  * AuthContorller
  * Request Mapping: "/auth"
- * POST	"/login/"					登入				"/auth/login/"					PUBLIC
- * GET  "/logout/"					登出				"/auth/logout/"					AUTHENTICATED
- * POST	"/check/password/"			修改前      確認密碼	"/auth/check/password/"			AUTHENTICATED
- * POST	"/public/check/password/"	民眾資料修改前 確認密碼	"/auth/public/check/password/"	AUTHENTICATED
+ * POST	"/login", "/login/"									登入					"/auth/login/"					PUBLIC
+ * GET  "/logout", "/logout/"								登出					"/auth/logout/"					AUTHENTICATED
+ * POST	"/check/password", "/check/password/"				修改前		確認密碼	"/auth/check/password/"			AUTHENTICATED
+ * POST	"/public/check/password", "/public/check/password/"	民眾資料修改前	確認密碼	"/auth/public/check/password/"	AUTHENTICATED
  * */
 
 @RestController
@@ -41,7 +41,7 @@ public class AuthController {
 	@Autowired
 	private JwtUtil jwtUtil;	// 注入 JWT 工具
 	
-	@PostMapping("/login/")
+	@PostMapping(value = {"/login", "/login/"})
 	public ApiResponse<UserLoginDTO> login (@RequestBody UserLoginDTO userLoginDTO) {
 		// 1. 執行登入驗證
 		userLoginDTO = userService.loginUser(userLoginDTO);
@@ -61,7 +61,7 @@ public class AuthController {
 		return new ApiResponse<>(HttpStatus.OK.value(), "登陸成功", userLoginDTO);
 	}
 	
-	@GetMapping("/logout/")
+	@GetMapping(value = {"/logout", "/logout/"})
 	public ApiResponse<Void> logout () {
 		// 在 JWT 架構中，登出行為由前端負責銷毀 Token。
 	    // 對於大多數應用來說，只需讓前端銷毀 Token 即可。
@@ -73,13 +73,13 @@ public class AuthController {
 		return new ApiResponse<>(HttpStatus.OK.value(), "登出成功，請清除客戶端 Token", null);
 	}
 	
-	@PostMapping("/check/password/")
+	@PostMapping(value = {"/check/password", "/check/password/"})
 	public ApiResponse<UserUpdateDTO> updateCheckPassword (@RequestBody UserUpdateDTO userUpdateDTO) {
 		userUpdateDTO = userService.updateUserCheckPassword(userUpdateDTO);
 		return new ApiResponse<>(HttpStatus.OK.value(), "密碼確認成功, 進入修改資料網頁", userUpdateDTO);
 	}
 	
-	@PostMapping("/public/check/password/")
+	@PostMapping(value = {"/public/check/password", "/public/check/password/"})
 	public ApiResponse<UserPublicUpdateDTO> updatePublicCheckPassword (@RequestBody UserPublicUpdateDTO userPublicUpdateDTO) {
 		userPublicUpdateDTO = userPublicService.updateUserPublicCheckPassword(userPublicUpdateDTO);
 		return new ApiResponse<>(HttpStatus.OK.value(), "密碼確認成功, 進入修改資料網頁", userPublicUpdateDTO);

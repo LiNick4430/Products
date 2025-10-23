@@ -22,12 +22,11 @@ import com.github.lianick.service.UserPublicService;
 /**
  * CitizenProfileController
  * Request Mapping: "/public"
- * GET		"/find/all/"		尋找	全部民眾帳號	"/public/find/all/"			AUTHENTICATED
- * POST		"/find/"			尋找	特定民眾帳號	"/public/find/"				AUTHENTICATED
- * POST		"/information/"		設定 民眾基本資料		"/public/information/"		AUTHENTICATED
- * POST		"/update/"			更新 民眾基本資料		"/public/update/"			AUTHENTICATED
- * DELETE	"/delete/"			刪除	民眾帳號		"/public/delete/"			AUTHENTICATED
- * 
+ * GET		"/find/all", "/find/all/"		尋找	全部民眾帳號	"/public/find/all/"			AUTHENTICATED
+ * POST		"/find", "/find/"				尋找	特定民眾帳號	"/public/find/"				AUTHENTICATED
+ * POST		"/information", "/information/"	設定 民眾基本資料		"/public/information/"		AUTHENTICATED
+ * POST		"/update", "/update/"			更新 民眾基本資料		"/public/update/"			AUTHENTICATED
+ * DELETE	"/delete", "/delete/"			刪除	帳號			"/public/delete/"			AUTHENTICATED
  * */
 
 @RestController
@@ -38,31 +37,31 @@ public class CitizenProfileController {
 	@Autowired
 	private UserPublicService userPublicService;
 	
-	@GetMapping("/find/all/")
+	@GetMapping(value = {"/find/all", "/find/all/"})
 	public ApiResponse<List<UserPublicDTO>> findAll() {
 		List<UserPublicDTO> userPublicDTOs = userPublicService.findAllUserPublic();
 		return new ApiResponse<>(HttpStatus.OK.value(), "搜尋 全部民眾資料成功", userPublicDTOs);
 	}
 	
-	@PostMapping("/find/")
+	@PostMapping(value = {"/find", "/find/"})
 	public ApiResponse<UserPublicDTO> find(@RequestBody UserPublicDTO userPublicDTO) {
 		userPublicDTO = userPublicService.findByUsername(userPublicDTO);
 		return new ApiResponse<>(HttpStatus.OK.value(), "搜尋 民眾資料成功", userPublicDTO);
 	}
 	
-	@PostMapping("/information/")
+	@PostMapping(value = {"/information", "/information/"})
 	public ApiResponse<UserPublicCreateDTO> information(@RequestBody UserPublicCreateDTO userPublicCreateDTO) {
 		userPublicCreateDTO = userPublicService.createUserPublic(userPublicCreateDTO);
 		return new ApiResponse<>(HttpStatus.OK.value(), "民眾資料 建立成功", userPublicCreateDTO);
 	}
 
-	@PostMapping("/update/")
+	@PostMapping(value = {"/update", "/update/"})
 	public ApiResponse<UserPublicUpdateDTO> update(@RequestBody UserPublicUpdateDTO userPublicUpdateDTO) {
 		userPublicUpdateDTO = userPublicService.updateUserPublic(userPublicUpdateDTO);
 		return new ApiResponse<>(HttpStatus.OK.value(), "民眾資料 更新成功", userPublicUpdateDTO);
 	}
 	
-	@DeleteMapping("/delete/")
+	@DeleteMapping(value = {"/delete", "/delete/"})
 	public ApiResponse<Void> delete(@RequestBody UserDeleteDTO userDeleteDTO) {
 		userPublicService.deleteUserPublic(userDeleteDTO);
 		return new ApiResponse<Void>(HttpStatus.OK.value(), "民眾帳號 刪除成功", null);
