@@ -20,9 +20,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 /**
  * EmailController
  * Request Mapping: "/email"
- * GET 	"/verify"							帳號驗證		"/email/verify?token=" + token碼				PUBLIC
  * POST	"/send/password", "/send/password/"	密碼驗證信		"/email/send/password/"						PUBLIC
- * GET 	"/reset/password"					忘記密碼驗證	"/email/reset/password?token=" + token碼		PUBLIC
+ * GET 	"/verify"							帳號驗證		"/email/verify?token=" + token碼				PUBLIC	(信件內附超連結使用)
+ * GET 	"/reset/password"					忘記密碼驗證	"/email/reset/password?token=" + token碼		PUBLIC	(信件內附超連結使用)
  * */
 
 @RestController
