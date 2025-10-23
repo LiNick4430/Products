@@ -18,6 +18,7 @@ import com.github.lianick.model.dto.user.PasswordAwareDTO;
 import com.github.lianick.model.dto.user.UserDeleteDTO;
 import com.github.lianick.model.dto.user.UserForgetPasswordDTO;
 import com.github.lianick.model.dto.user.UserLoginDTO;
+import com.github.lianick.model.dto.user.UserMeDTO;
 import com.github.lianick.model.dto.user.UserRegisterDTO;
 import com.github.lianick.model.dto.user.UserUpdateDTO;
 import com.github.lianick.model.dto.user.UserVerifyDTO;
@@ -56,7 +57,27 @@ public class UserServiceImpl implements UserService{
 	public Users convertToUser(UserRegisterDTO userRegisterDTO) {
 		return modelMapper.map(userRegisterDTO, Users.class);
 	}
-
+	
+	@Override
+	public UserMeDTO getUserDetails() {
+		// **從 JWT 獲取身份：確認操作者身份**
+	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	    String currentUsername = authentication.getName(); // JWT 中解析出來的帳號
+	    
+	    // 1. 找尋資料庫 對應的帳號(使用 JWT 提供的 currentUsername 進行查詢)
+	    Users tableUser = usersRepository.findByAccount(currentUsername)
+	        .orElseThrow(() -> new UserNoFoundException("帳號或密碼錯誤"));
+	    
+	    // 2. Entity 轉 DTO
+	    UserMeDTO userMeDTO = modelMapper.map(tableUser, UserMeDTO.class);
+	    
+	    // 3. 返回處理
+	    userMeDTO.setRoleNumber(tableUser.getRole().getRoleId());
+	    userMeDTO.setRoleName(tableUser.getRole().getName());
+	    
+		return userMeDTO;
+	}
+	
 	@Override
 	public UserRegisterDTO registerUser(UserRegisterDTO userRegisterDTO) {
 		// 0. 檢查數值完整性

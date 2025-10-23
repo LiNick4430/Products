@@ -6,6 +6,7 @@ import com.github.lianick.model.dto.user.PasswordAwareDTO;
 import com.github.lianick.model.dto.user.UserDeleteDTO;
 import com.github.lianick.model.dto.user.UserForgetPasswordDTO;
 import com.github.lianick.model.dto.user.UserLoginDTO;
+import com.github.lianick.model.dto.user.UserMeDTO;
 import com.github.lianick.model.dto.user.UserRegisterDTO;
 import com.github.lianick.model.dto.user.UserUpdateDTO;
 import com.github.lianick.model.dto.user.UserVerifyDTO;
@@ -23,7 +24,11 @@ import com.github.lianick.model.eneity.Users;
  * */
 
 public interface UserService {
-
+	
+	// 獲取個人訊息
+	@PreAuthorize("isAuthenticated()")	// 確保只有持有有效 JWT 的用戶才能存取
+	UserMeDTO getUserDetails();
+	
 	// 註冊帳號
 	UserRegisterDTO registerUser(UserRegisterDTO userRegisterDTO);
 	// 驗證帳號

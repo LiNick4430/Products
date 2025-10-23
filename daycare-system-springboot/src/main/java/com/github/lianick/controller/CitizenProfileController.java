@@ -22,11 +22,11 @@ import com.github.lianick.service.UserPublicService;
 /**
  * CitizenProfileController
  * Request Mapping: "/public"
- * GET		"/find/all/"		尋找	全部民眾帳號	"/public/find/all/"
- * POST		"/find/"			尋找	特定民眾帳號	"/public/find/"
- * POST		"/information/"		設定 民眾基本資料		"/public/information/"
- * POST		"/update/"			更新 民眾基本資料		"/public/update/"
- * DELETE	"/delete/"			刪除	民眾帳號		"/public/delete/"
+ * GET		"/find/all/"		尋找	全部民眾帳號	"/public/find/all/"			AUTHENTICATED
+ * POST		"/find/"			尋找	特定民眾帳號	"/public/find/"				AUTHENTICATED
+ * POST		"/information/"		設定 民眾基本資料		"/public/information/"		AUTHENTICATED
+ * POST		"/update/"			更新 民眾基本資料		"/public/update/"			AUTHENTICATED
+ * DELETE	"/delete/"			刪除	民眾帳號		"/public/delete/"			AUTHENTICATED
  * 
  * */
 

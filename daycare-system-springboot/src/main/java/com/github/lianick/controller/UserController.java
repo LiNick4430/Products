@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,17 +14,18 @@ import com.github.lianick.model.dto.user.UserRegisterDTO;
 import com.github.lianick.model.dto.user.UserUpdateDTO;
 import com.github.lianick.model.dto.user.UserDeleteDTO;
 import com.github.lianick.model.dto.user.UserForgetPasswordDTO;
-
+import com.github.lianick.model.dto.user.UserMeDTO;
 import com.github.lianick.response.ApiResponse;
 import com.github.lianick.service.UserService;
 
 /**
  * UserController
  * Request Mapping: "/user"
- * POST		"/register/"			註冊		"/user/register/"
- * POST		"/reset/password/"		修改密碼	"/user/reset/password/"
- * POST		"/update/"				更新帳號	"/user/update/"
- * DELETE	"/delete/"				刪除帳號	"/user/delete/"
+ * POST		"/register/"			註冊				"/user/register/"			PUBLIC
+ * POST		"/reset/password/"		修改密碼			"/user/reset/password/"		PUBLIC
+ * POST		"/update/"				更新帳號			"/user/update/"				AUTHENTICATED
+ * DELETE	"/delete/"				刪除帳			"/user/delete/"				AUTHENTICATED
+ * GET		"/me/"					從JWT獲得基本資料	"/user/me/"					AUTHENTICATED
  * */
 
 @RestController
@@ -56,6 +58,12 @@ public class UserController{
 	public ApiResponse<Void> delete(@RequestBody UserDeleteDTO userDeleteDTO) {
 		userService.deleteUser(userDeleteDTO);
 		return new ApiResponse<Void>(HttpStatus.OK.value(), "帳號刪除成功", null);
+	}
+	
+	@GetMapping("/me/")
+	public ApiResponse<UserMeDTO> getUserDetails() {
+		UserMeDTO userMeDTO = userService.getUserDetails();
+		return new ApiResponse<>(HttpStatus.OK.value(), "獲取登入資料 成功", userMeDTO);
 	}
 	
 }

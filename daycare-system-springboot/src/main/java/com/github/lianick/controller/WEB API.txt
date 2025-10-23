@@ -7,6 +7,7 @@ POST	"/register/"				註冊	帳號			"/user/register/"			PUBLIC
 POST	"/reset/password/"			重設	密碼			"/user/reset/password/"		PUBLIC
 POST	"/update/"					更新	帳號			"/user/update/"				AUTHENTICATED
 DELETE	"/delete/"					刪除	帳號			"/user/delete/"				AUTHENTICATED
+GET		"/me/"						從JWT獲得基本資料	"/user/me/"					AUTHENTICATED
 
 CitizenProfileController
 Request Mapping: "/public"

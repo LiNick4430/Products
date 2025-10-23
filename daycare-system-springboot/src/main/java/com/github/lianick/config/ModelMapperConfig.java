@@ -8,6 +8,7 @@ import com.github.lianick.converter.RoleNumberToRoleConveter;
 import com.github.lianick.converter.UsersToUsernameConveter;
 import com.github.lianick.model.dto.user.UserForgetPasswordDTO;
 import com.github.lianick.model.dto.user.UserLoginDTO;
+import com.github.lianick.model.dto.user.UserMeDTO;
 import com.github.lianick.model.dto.user.UserRegisterDTO;
 import com.github.lianick.model.dto.user.UserUpdateDTO;
 import com.github.lianick.model.dto.user.UserVerifyDTO;
@@ -51,6 +52,10 @@ public class ModelMapperConfig {
 		modelMapper.typeMap(Users.class, UserUpdateDTO.class).addMappings(mapper -> {
 			mapper.map(Users::getUserId, UserUpdateDTO::setId);
 			mapper.map(Users::getAccount, UserUpdateDTO::setUsername);
+		});
+		modelMapper.typeMap(Users.class, UserMeDTO.class).addMappings(mapper -> {
+			mapper.map(Users::getUserId, UserMeDTO::setId);
+			mapper.map(Users::getAccount, UserMeDTO::setUsername);
 		});
 		
 		// UserPublic 相關

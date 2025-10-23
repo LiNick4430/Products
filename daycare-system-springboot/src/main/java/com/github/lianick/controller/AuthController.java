@@ -21,10 +21,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 /**
  * AuthContorller
  * Request Mapping: "/auth"
- * POST	"/login/"					登入				"/auth/login/"
- * GET  "/logout/"					登出				"/auth/logout/"
- * POST	"/check/password/"			修改前      確認密碼	"/auth/check/password/"
- * POST	"/public/check/password/"	民眾資料修改前 確認密碼	"/auth/public/check/password/"
+ * POST	"/login/"					登入				"/auth/login/"					PUBLIC
+ * GET  "/logout/"					登出				"/auth/logout/"					AUTHENTICATED
+ * POST	"/check/password/"			修改前      確認密碼	"/auth/check/password/"			AUTHENTICATED
+ * POST	"/public/check/password/"	民眾資料修改前 確認密碼	"/auth/public/check/password/"	AUTHENTICATED
  * */
 
 @RestController
