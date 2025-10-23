@@ -49,11 +49,12 @@ public class SecurityConfig {
 				
 					// 1. 公開端點：允許任何人存取以下路徑
 					.requestMatchers(
-							"/user/register/",			// 註冊
-							"/user/reset/password/",	// (忘記密碼)重設密碼
-							"/auth/login/",				// 登入
+							"/user/register/", "/user/register",	// 註冊
+							"/user/reset/password/", "/user/reset/password",	// (忘記密碼)重設密碼
+							"/auth/login/",	"/auth/login",	// 登入
+							"/auth/access/token/refresh/", "/auth/access/token/refresh",	// access token 刷新
+							"/email/send/password/", "/email/send/password",	// 發送忘記密碼信
 							"/email/verify",			// 帳號驗證
-							"/email/send/password/",	// 發送忘記密碼信
 							"/email/reset/password"		// 忘記密碼驗證
 					).permitAll()
 					

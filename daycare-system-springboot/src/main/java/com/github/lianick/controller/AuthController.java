@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.GetMapping;
  * GET  "/logout", "/logout/"								登出					"/auth/logout/"					AUTHENTICATED
  * POST	"/check/password", "/check/password/"				修改前		確認密碼	"/auth/check/password/"			AUTHENTICATED
  * POST	"/public/check/password", "/public/check/password/"	民眾資料修改前	確認密碼	"/auth/public/check/password/"	AUTHENTICATED
- * POST	"/access/token/refresh", "/access/token/refresh/"	access token 刷新		"/auth/access/token/refresh/"	PUBLIC
+ * POST	"/access/token/refresh", "/access/token/refresh/"	access token 刷新		"/auth/access/token/refresh/"	PUBLIC(當前端收到 "JWT_EXPIRED" "Access Token is expired" 時使用)
  * */
 
 @RestController
