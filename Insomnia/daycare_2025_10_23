@@ -95,7 +95,7 @@ collection:
             meta:
               id: req_1818b711ce0c4220856eaf85870b44f9
               created: 1760765216903
-              modified: 1761176953127
+              modified: 1761204260599
               isPrivate: false
               description: |
                 # 回傳 的 Json 規格
@@ -115,16 +115,7 @@ collection:
                 ```
               sortKey: -1759485495223
             method: POST
-            body:
-              mimeType: application/json
-              text: |-
-                {
-                	"username": "test06",
-                	"password": "123456"
-                }
             headers:
-              - name: Content-Type
-                value: application/json
               - name: User-Agent
                 value: insomnia/11.6.1
             authentication:
@@ -142,7 +133,7 @@ collection:
             meta:
               id: req_008ccdbe403845d0853ab93f1cb551a1
               created: 1760765304908
-              modified: 1761176955357
+              modified: 1761204388744
               isPrivate: false
               description: |-
                 ## Auth -> Bearer Token
@@ -158,6 +149,7 @@ collection:
             authentication:
               type: bearer
               prefix: Bearer
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfUFVCTElDIiwidXNlcklkIjo2LCJyb2xlTnVtYmVyIjoxLCJzdWIiOiJ0ZXN0MDYiLCJpYXQiOjE3NjEyMDQyMTgsImV4cCI6MTc2MTIwNjAxOH0.xKQBDg3f61fXJ0ppFDAEALhSfJCzQ_IfKLfcGv26xqk
             settings:
               renderRequestBody: true
               encodeUrl: true
@@ -469,6 +461,50 @@ collection:
                 send: true
                 store: true
               rebuildPath: true
+          - url: http://localhost:8080/auth/access/token/refresh/
+            name: /auth/access/token/refresh/ access token 刷新
+            meta:
+              id: req_29d3da7e668e42fc9377837e57349c1f
+              created: 1761204174504
+              modified: 1761204314831
+              isPrivate: false
+              description: |
+                # 回傳 的 Json 規格
+
+                ## Json參數說明：
+                | 變數名 | 類型 | 說明 | 必填 |
+                | :--- | :--- | :--- | :--- |
+                | "refreshToken" | String | Refresh Token | Y |
+
+                ## 回傳範例：
+                ```json
+                {
+                	"refreshToken": "7ffd77f914054001bc6c54e872c062ba"
+                }
+                ```
+              sortKey: -1759326006889.875
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"refreshToken": "7ffd77f914054001bc6c54e872c062ba"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/11.6.1
+            authentication:
+              type: none
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
       - name: UserPublic
         meta:
           id: fld_25e29320684f4a359bfd23f8df72dd5d
@@ -482,7 +518,7 @@ collection:
             meta:
               id: req_0ba2630cec7f4abe9879fe0aa217706e
               created: 1761027649934
-              modified: 1761176845875
+              modified: 1761204466537
               isPrivate: false
               description: |-
                 # 回傳 的 Json 規格
@@ -552,7 +588,7 @@ collection:
             meta:
               id: req_85aaba08c1b1480c8c7fc32abf6ee157
               created: 1761028356938
-              modified: 1761176866377
+              modified: 1761204470556
               isPrivate: false
               description: |-
                 # 回傳 的 Json 規格
@@ -610,7 +646,7 @@ collection:
             meta:
               id: req_ad4b217fb4f7448cb5d55d768453f91a
               created: 1761029822076
-              modified: 1761176808599
+              modified: 1761204476049
               isPrivate: false
               description: |-
                 # 回傳 的 Json 規格
@@ -669,7 +705,7 @@ collection:
             meta:
               id: req_a284002f356d49e2bf614a9ce5e56b72
               created: 1761029932922
-              modified: 1761176749511
+              modified: 1761204471908
               isPrivate: false
               description: |-
                 # 回傳 的 Json 規格
