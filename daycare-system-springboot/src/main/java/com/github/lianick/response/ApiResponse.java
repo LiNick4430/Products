@@ -3,13 +3,9 @@ package com.github.lianick.response;
 import org.springframework.http.HttpStatus;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
+@Getter	// JSON 序列化（將 Java 物件轉為 JSON）依賴於 Getter 方法
 //建立 Server 與 Client 在傳遞資料上的統一結構與標準(含錯誤)
-@Getter
-@Setter
-@NoArgsConstructor
 public class ApiResponse<T> {
 
 	// private boolean success;	// 成功與否
@@ -18,11 +14,18 @@ public class ApiResponse<T> {
 	private String message;		// 錯誤訊息
 	private T data;				// 回傳的資料(200 才有)
 	
-	// 200 成功的建構式 
+	// 200 成功 的 建構式 
 	public ApiResponse (int code, String message, T data) {
 		this.code = code;
 		this.message = message;
 		this.data = data;
+	}
+	
+	// 其他 錯誤 的 建構式
+	public ApiResponse (int code, String errorCode, String message) {
+		this.code = code;
+		this.errorCode = errorCode;
+		this.message = message;
 	}
 	
 	// 成功 回應的方法
@@ -32,12 +35,6 @@ public class ApiResponse<T> {
 	
 	// 錯誤 回應的方法
 	public static <T> ApiResponse<T> error(int code, String errorCode, String message) {
-		ApiResponse<T> response = new ApiResponse<>();
-        response.setCode(code);
-        response.setErrorCode(errorCode);
-        response.setMessage(message);
-        return response;
+        return new ApiResponse<T>(code, errorCode, message);
 	}
 }
-
-
