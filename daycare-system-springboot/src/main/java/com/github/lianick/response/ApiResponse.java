@@ -15,14 +15,14 @@ public class ApiResponse<T> {
 	private T data;				// 回傳的資料(200 才有)
 	
 	// 200 成功 的 建構式 
-	public ApiResponse (int code, String message, T data) {
+	private ApiResponse (int code, String message, T data) {
 		this.code = code;
 		this.message = message;
 		this.data = data;
 	}
 	
 	// 其他 錯誤 的 建構式
-	public ApiResponse (int code, String errorCode, String message) {
+	private ApiResponse (int code, String errorCode, String message) {
 		this.code = code;
 		this.errorCode = errorCode;
 		this.message = message;
