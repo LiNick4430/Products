@@ -14,8 +14,8 @@ public class ApiResponse<T> {
 
 	// private boolean success;	// 成功與否
 	private int code;			// 使用 HTTP Status Code (例如 401, 403, 200)
-	private String message;		// 錯誤訊息
 	private String errorCode;	// 自定義的 程式錯誤碼
+	private String message;		// 錯誤訊息
 	private T data;				// 回傳的資料(200 才有)
 	
 	// 200 成功的建構式 
