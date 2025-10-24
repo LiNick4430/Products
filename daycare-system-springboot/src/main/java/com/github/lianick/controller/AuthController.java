@@ -1,7 +1,6 @@
 package com.github.lianick.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -50,31 +49,36 @@ public class AuthController {
 	@PostMapping(value = {"/login", "/login/"})
 	public ApiResponse<AuthResponseDTO> login (@RequestBody UserLoginDTO userLoginDTO) {		
 		AuthResponseDTO authResponseDTO = authService.login(userLoginDTO);	
-		return new ApiResponse<>(HttpStatus.OK.value(), "登陸成功", authResponseDTO);
+		// return new ApiResponse<>(HttpStatus.OK.value(), "登陸成功", authResponseDTO);
+		return ApiResponse.success("登陸成功", authResponseDTO);
 	}
 	
 	// 在 JWT 架構中，登出行為由前端負責銷毀 Token。
 	@GetMapping(value = {"/logout", "/logout/"})
 	public ApiResponse<Void> logout () {
 		authService.logout();		// 刪除 RefreshToken
-		return new ApiResponse<>(HttpStatus.OK.value(), "登出成功，請清除客戶端 Token", null);	// 只是返回成功訊息，告訴前端可以安全地刪除其儲存的 Token 了
+		// return new ApiResponse<>(HttpStatus.OK.value(), "登出成功，請清除客戶端 Token", null);	// 只是返回成功訊息，告訴前端可以安全地刪除其儲存的 Token 了
+		return ApiResponse.success("登出成功，請清除客戶端 Token", null);
 	}
 	
 	@PostMapping(value = {"/check/password", "/check/password/"})
 	public ApiResponse<UserUpdateDTO> updateCheckPassword (@RequestBody UserUpdateDTO userUpdateDTO) {
 		userUpdateDTO = userService.updateUserCheckPassword(userUpdateDTO);
-		return new ApiResponse<>(HttpStatus.OK.value(), "密碼確認成功, 進入修改資料網頁", userUpdateDTO);
+		// return new ApiResponse<>(HttpStatus.OK.value(), "密碼確認成功, 進入修改資料網頁", userUpdateDTO);
+		return ApiResponse.success("密碼確認成功, 進入修改資料網頁", userUpdateDTO);
 	}
 	
 	@PostMapping(value = {"/public/check/password", "/public/check/password/"})
 	public ApiResponse<UserPublicUpdateDTO> updatePublicCheckPassword (@RequestBody UserPublicUpdateDTO userPublicUpdateDTO) {
 		userPublicUpdateDTO = userPublicService.updateUserPublicCheckPassword(userPublicUpdateDTO);
-		return new ApiResponse<>(HttpStatus.OK.value(), "密碼確認成功, 進入修改資料網頁", userPublicUpdateDTO);
+		// return new ApiResponse<>(HttpStatus.OK.value(), "密碼確認成功, 進入修改資料網頁", userPublicUpdateDTO);
+		return ApiResponse.success("密碼確認成功, 進入修改資料網頁", userPublicUpdateDTO);
 	}
 	
 	@PostMapping(value = {"/access/token/refresh", "/access/token/refresh/"})
 	public ApiResponse<AuthResponseDTO> updateAccessToken(@RequestBody AuthResponseDTO authResponseDTO) {
 		authResponseDTO = refreshTokenService.updateRefreshToken(authResponseDTO.getRefreshToken());
-		return new ApiResponse<AuthResponseDTO>(HttpStatus.OK.value(), "Refresh token 更新成功", authResponseDTO);
+		// return new ApiResponse<AuthResponseDTO>(HttpStatus.OK.value(), "Refresh token 更新成功", authResponseDTO);
+		return ApiResponse.success("Refresh token 更新成功", authResponseDTO);
 	}
 }

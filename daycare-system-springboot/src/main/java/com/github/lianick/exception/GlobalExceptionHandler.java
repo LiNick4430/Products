@@ -24,7 +24,9 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.UNAUTHORIZED)     		// 401
 	public ApiResponse<?> handleUserNoFoundException(UserNoFoundException ex) {
 		int statusCode = HttpStatus.UNAUTHORIZED.value();
-		return new ApiResponse<>(statusCode, ex.getMessage(), null);
+		String errorCode = "USER_NOT_FOUND";
+		// return new ApiResponse<>(statusCode, ex.getMessage(), null);
+		return ApiResponse.error(statusCode, errorCode, ex.getMessage());
 	}
 	
 	// 使用者已經存在 的 異常 (401)
@@ -32,7 +34,9 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.CONFLICT)     			// 409      	
 	public ApiResponse<?> handleUserExistException(UserExistException ex) {
 		int statusCode = HttpStatus.CONFLICT.value();
-		return new ApiResponse<>(statusCode, ex.getMessage(), null);
+		String errorCode = "USER_IS_EXIST";
+		// return new ApiResponse<>(statusCode, ex.getMessage(), null);
+		return ApiResponse.error(statusCode, errorCode, ex.getMessage());
 	}
 	
 	// 角色(Role) 相關 的 異常 (401)
@@ -40,7 +44,9 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.UNAUTHORIZED)     		// 401
 	public ApiResponse<?> handleRoleFailureException(RoleFailureException ex) {
 		int statusCode = HttpStatus.UNAUTHORIZED.value();
-		return new ApiResponse<>(statusCode, ex.getMessage(), null);
+		String errorCode = "ROLE_FAILURE";
+		// return new ApiResponse<>(statusCode, ex.getMessage(), null);
+		return ApiResponse.error(statusCode, errorCode, ex.getMessage());
 	}
 	
 	// 無法發送電子信箱 的 異常 (500)
@@ -51,7 +57,9 @@ public class GlobalExceptionHandler {
 		logger.error("服務器內部錯誤：無法發送電子郵件", ex);
 		
 		int statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
-		return new ApiResponse<>(statusCode, "服務器內部錯誤：無法發送電子郵件，請稍後重試。" , null);
+		String errorCode = "MAIL_SEND_FAILURE";
+		// return new ApiResponse<>(statusCode, "服務器內部錯誤：無法發送電子郵件，請稍後重試。" , null);
+		return ApiResponse.error(statusCode, errorCode, "服務器內部錯誤：無法發送電子郵件，請稍後重試。");
 	}
 	
 	// token 驗證相關 的 錯誤 (1. 無效不存在 2. 過期 3. 已經被使用)
@@ -59,7 +67,9 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.BAD_REQUEST)   			// 400
 	public ApiResponse<?> handleTokenFailureException(TokenFailureException ex) {
 		int statusCode = HttpStatus.BAD_REQUEST.value();
-		return new ApiResponse<>(statusCode, ex.getMessage() , null);
+		String errorCode = "TOKEN_FAILURE";
+		// return new ApiResponse<>(statusCode, ex.getMessage() , null);
+		return ApiResponse.error(statusCode, errorCode, ex.getMessage());
 	}
 	
 	// 回報數值缺少 相關 的 錯誤 (400)
@@ -67,7 +77,9 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.BAD_REQUEST)   			// 400
 	public ApiResponse<?> handleValueMissException(ValueMissException ex) {
 		int statusCode = HttpStatus.BAD_REQUEST.value();
-		return new ApiResponse<>(statusCode, ex.getMessage() , null);
+		String errorCode = "VALUES_MISS";
+		// return new ApiResponse<>(statusCode, ex.getMessage() , null);
+		return ApiResponse.error(statusCode, errorCode, ex.getMessage());
 	}
 	
 	// 格式 相關 的 錯誤 (400)
@@ -75,7 +87,9 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.BAD_REQUEST)   			// 400
 	public ApiResponse<?> handleFormatterFailureException(FormatterFailureException ex) {
 		int statusCode = HttpStatus.BAD_REQUEST.value();
-		return new ApiResponse<>(statusCode, ex.getMessage() , null);
+		String errorCode = "FORMATTER_FAILURE";
+		// return new ApiResponse<>(statusCode, ex.getMessage() , null);
+		return ApiResponse.error(statusCode, errorCode, ex.getMessage());
 	}
 	
 	// 處理所有未被明確定義的 RuntimeException (預防萬一, 最終保護)
@@ -86,6 +100,8 @@ public class GlobalExceptionHandler {
 		logger.error("發生未預期的伺服器錯誤！", ex);
 		
 		int statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
-		return new ApiResponse<>(statusCode, "發生未預期的伺服器錯誤，請聯繫管理員。" , null);
+		String errorCode = "RUNTIME_ERROR";
+		// return new ApiResponse<>(statusCode, "發生未預期的伺服器錯誤，請聯繫管理員。" , null);
+		return ApiResponse.error(statusCode, errorCode, "發生未預期的伺服器錯誤，請聯繫管理員。");
 	}
 }

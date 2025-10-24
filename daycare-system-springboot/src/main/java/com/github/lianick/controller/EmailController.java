@@ -1,7 +1,6 @@
 package com.github.lianick.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,19 +35,22 @@ public class EmailController {
 	@PostMapping(value = {"/send/password", "/send/password/"})
 	public ApiResponse<UserForgetPasswordDTO> sendPassword(@RequestBody UserForgetPasswordDTO userForgetPasswordDTO) {
 		userForgetPasswordDTO = userService.forgetPasswordSendEmail(userForgetPasswordDTO);
-		return new ApiResponse<UserForgetPasswordDTO>(HttpStatus.OK.value(), "驗證信寄出成功", userForgetPasswordDTO);
+		// return new ApiResponse<UserForgetPasswordDTO>(HttpStatus.OK.value(), "驗證信寄出成功", userForgetPasswordDTO);
+		return ApiResponse.success("驗證信寄出成功", userForgetPasswordDTO);
 	}
 	
 	@GetMapping("/verify")
 	public ApiResponse<UserVerifyDTO> verify(@RequestParam String token) {
 		UserVerifyDTO userVerifyDTO = userService.veriftyUser(token);
-		return new ApiResponse<UserVerifyDTO>(HttpStatus.OK.value(), "帳號啟用成功", userVerifyDTO);
+		// return new ApiResponse<UserVerifyDTO>(HttpStatus.OK.value(), "帳號啟用成功", userVerifyDTO);
+		return ApiResponse.success("帳號啟用成功", userVerifyDTO);
 	}
 	
 	@GetMapping("/reset/password")
 	public ApiResponse<UserForgetPasswordDTO> resetPassword(@RequestParam String token) {
 		UserForgetPasswordDTO userForgetPasswordDTO = userService.forgetPasswordVerifty(token);
-		return new ApiResponse<UserForgetPasswordDTO>(HttpStatus.OK.value(), "驗證成功, 進入修改密碼網頁", userForgetPasswordDTO);
+		// return new ApiResponse<UserForgetPasswordDTO>(HttpStatus.OK.value(), "驗證成功, 進入修改密碼網頁", userForgetPasswordDTO);
+		return ApiResponse.success("驗證成功, 進入修改密碼網頁", userForgetPasswordDTO);
 	}
 	
 }

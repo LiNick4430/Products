@@ -1,14 +1,14 @@
 package com.github.lianick.config;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.lianick.response.ApiResponse;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.ServletException;
@@ -38,6 +38,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint{	//
 				errorMessage = "Access Token is expired";
 			}
 			// 3. 如果是 JWT 相關錯誤(格式錯誤 簽名錯誤)
+			// 因為會彈出 JwtException | IllegalArgumentException 用 Exception 接
 			else if (error instanceof Exception) {
 				errorCode = "JWT_INVALID";
                 errorMessage = "Invalid JWT Token or signature";
@@ -45,16 +46,13 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint{	//
 		}
 		
 		// 4. 設定 HTTP 401 狀態碼
-		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+		response.setStatus(HttpStatus.UNAUTHORIZED.value());
 		
 		// 5. 設定 Content Type 為 JSON
 		response.setContentType("application/json;charset=UTF-8");
 		
 		// 6. 寫入 Json 回應
-		Map<String, String> errorResponse = new HashMap<>();
-		errorResponse.put("status", String.valueOf(HttpServletResponse.SC_UNAUTHORIZED));
-		errorResponse.put("code", errorCode);
-		errorResponse.put("message", errorMessage);
+		ApiResponse<?> errorResponse = ApiResponse.error(HttpStatus.UNAUTHORIZED.value(), errorCode, errorMessage);
 		
 		response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
 		response.getWriter().flush();

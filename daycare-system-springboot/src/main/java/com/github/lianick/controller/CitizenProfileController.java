@@ -3,7 +3,6 @@ package com.github.lianick.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,30 +39,35 @@ public class CitizenProfileController {
 	@GetMapping(value = {"/find/all", "/find/all/"})
 	public ApiResponse<List<UserPublicDTO>> findAll() {
 		List<UserPublicDTO> userPublicDTOs = userPublicService.findAllUserPublic();
-		return new ApiResponse<>(HttpStatus.OK.value(), "搜尋 全部民眾資料成功", userPublicDTOs);
+		// return new ApiResponse<>(HttpStatus.OK.value(), "搜尋 全部民眾資料成功", userPublicDTOs);
+		return ApiResponse.success("搜尋 全部民眾資料成功", userPublicDTOs);
 	}
 	
 	@PostMapping(value = {"/find", "/find/"})
 	public ApiResponse<UserPublicDTO> find(@RequestBody UserPublicDTO userPublicDTO) {
 		userPublicDTO = userPublicService.findByUsername(userPublicDTO);
-		return new ApiResponse<>(HttpStatus.OK.value(), "搜尋 民眾資料成功", userPublicDTO);
+		// return new ApiResponse<>(HttpStatus.OK.value(), "搜尋 民眾資料成功", userPublicDTO);
+		return ApiResponse.success("搜尋 民眾資料成功", userPublicDTO);
 	}
 	
 	@PostMapping(value = {"/information", "/information/"})
 	public ApiResponse<UserPublicCreateDTO> information(@RequestBody UserPublicCreateDTO userPublicCreateDTO) {
 		userPublicCreateDTO = userPublicService.createUserPublic(userPublicCreateDTO);
-		return new ApiResponse<>(HttpStatus.OK.value(), "民眾資料 建立成功", userPublicCreateDTO);
+		// return new ApiResponse<>(HttpStatus.OK.value(), "民眾資料 建立成功", userPublicCreateDTO);
+		return ApiResponse.success("民眾資料 建立成功", userPublicCreateDTO);
 	}
 
 	@PostMapping(value = {"/update", "/update/"})
 	public ApiResponse<UserPublicUpdateDTO> update(@RequestBody UserPublicUpdateDTO userPublicUpdateDTO) {
 		userPublicUpdateDTO = userPublicService.updateUserPublic(userPublicUpdateDTO);
-		return new ApiResponse<>(HttpStatus.OK.value(), "民眾資料 更新成功", userPublicUpdateDTO);
+		// return new ApiResponse<>(HttpStatus.OK.value(), "民眾資料 更新成功", userPublicUpdateDTO);
+		return ApiResponse.success("民眾資料 更新成功", userPublicUpdateDTO);
 	}
 	
 	@DeleteMapping(value = {"/delete", "/delete/"})
 	public ApiResponse<Void> delete(@RequestBody UserDeleteDTO userDeleteDTO) {
 		userPublicService.deleteUserPublic(userDeleteDTO);
-		return new ApiResponse<Void>(HttpStatus.OK.value(), "民眾帳號 刪除成功", null);
+		// return new ApiResponse<Void>(HttpStatus.OK.value(), "民眾帳號 刪除成功", null);
+		return ApiResponse.success("民眾帳號 刪除成功", null);
 	}
 }

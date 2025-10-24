@@ -1,7 +1,6 @@
 package com.github.lianick.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,31 +38,36 @@ public class UserController{
 	@PostMapping(value = {"/register", "/register/"})
 	public ApiResponse<UserRegisterDTO> register(@RequestBody UserRegisterDTO userRegisterDTO) {
 		userRegisterDTO = userService.registerUser(userRegisterDTO);
-		return new ApiResponse<UserRegisterDTO>(HttpStatus.OK.value(), "帳號建立成功, 請驗證信箱", userRegisterDTO);
+		// return new ApiResponse<UserRegisterDTO>(HttpStatus.OK.value(), "帳號建立成功, 請驗證信箱", userRegisterDTO);
+		return ApiResponse.success("帳號建立成功, 請驗證信箱", userRegisterDTO);
 	}
 	
 	@PostMapping(value = {"/reset/password", "/reset/password/"})
 	public ApiResponse<UserForgetPasswordDTO> resetPassword(@RequestBody UserForgetPasswordDTO userForgetPasswordDTO) {
 		userForgetPasswordDTO = userService.forgetPasswordUpdatePassword(userForgetPasswordDTO);
-		return new ApiResponse<UserForgetPasswordDTO>(HttpStatus.OK.value(), "密碼更新完成, 請使用新密碼登入", userForgetPasswordDTO);
+		// return new ApiResponse<UserForgetPasswordDTO>(HttpStatus.OK.value(), "密碼更新完成, 請使用新密碼登入", userForgetPasswordDTO);
+		return ApiResponse.success("密碼更新完成, 請使用新密碼登入", userForgetPasswordDTO);
 	}
 	
 	@PostMapping(value = {"/update", "/update/"})
 	public ApiResponse<UserUpdateDTO> update(@RequestBody UserUpdateDTO userUpdateDTO) {
 		userUpdateDTO = userService.updateUser(userUpdateDTO);
-		return new ApiResponse<UserUpdateDTO>(HttpStatus.OK.value(), "資料更新完成 請重新登入", userUpdateDTO);
+		// return new ApiResponse<UserUpdateDTO>(HttpStatus.OK.value(), "資料更新完成 請重新登入", userUpdateDTO);
+		return ApiResponse.success("資料更新完成 請重新登入", userUpdateDTO);
 	}
 	
 	@DeleteMapping(value = {"/delete", "/delete/"})
 	public ApiResponse<Void> delete(@RequestBody UserDeleteDTO userDeleteDTO) {
 		userService.deleteUser(userDeleteDTO);
-		return new ApiResponse<Void>(HttpStatus.OK.value(), "帳號刪除成功", null);
+		// return new ApiResponse<Void>(HttpStatus.OK.value(), "帳號刪除成功", null);
+		return ApiResponse.success("帳號刪除成功", null);
 	}
 	
 	@GetMapping(value = {"/me", "/me/"})
 	public ApiResponse<UserMeDTO> getUserDetails() {
 		UserMeDTO userMeDTO = userService.getUserDetails();
-		return new ApiResponse<>(HttpStatus.OK.value(), "獲取登入資料 成功", userMeDTO);
+		// return new ApiResponse<>(HttpStatus.OK.value(), "獲取登入資料 成功", userMeDTO);
+		return ApiResponse.success("獲取登入資料 成功", userMeDTO);
 	}
 	
 }
