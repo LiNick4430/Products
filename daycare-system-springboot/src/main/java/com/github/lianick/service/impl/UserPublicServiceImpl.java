@@ -30,6 +30,7 @@ import com.github.lianick.repository.UsersRepository;
 import com.github.lianick.service.UserPublicService;
 import com.github.lianick.service.UserService;
 import com.github.lianick.util.DateValidationUtil;
+import com.github.lianick.util.SecurityUtils;
 
 import jakarta.transaction.Transactional;
 
@@ -79,7 +80,7 @@ public class UserPublicServiceImpl implements UserPublicService{
 		UserPublic userPublic = userPublicRepository.findByUsers(tableUser)
 				.orElseThrow(() -> new UserNoFoundException("帳號錯誤"));
 		
-		// 2. Entity 轉 DTO (回傳給前端當作表單預填資料)
+		// 2. Entity 轉 DTO 
 		userPublicDTO = modelMapper.map(userPublic, UserPublicDTO.class);
 		
 		// 3. 返回處理
@@ -89,10 +90,12 @@ public class UserPublicServiceImpl implements UserPublicService{
 
 	@Override
 	public UserPublicCreateDTO createUserPublic(UserPublicCreateDTO userPublicCreateDTO) {
-		// **從 JWT 獲取身份：確認操作者身份**
+		/* 從 JWT 獲取身份：確認操作者身份
 	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 	    String currentUsername = authentication.getName(); // JWT 中解析出來的帳號
-	    
+	    */
+		String currentUsername = SecurityUtils.getCurrentUsername();
+		
 		// 0. 檢查數值完整性
 		if (userPublicCreateDTO.getName() == null || userPublicCreateDTO.getName().isBlank() || 
 			userPublicCreateDTO.getNationalIdNo() == null || userPublicCreateDTO.getNationalIdNo().isBlank() || 
@@ -147,9 +150,11 @@ public class UserPublicServiceImpl implements UserPublicService{
 
 	@Override
 	public UserPublicUpdateDTO updateUserPublicCheckPassword(UserPublicUpdateDTO userPublicUpdateDTO) {
-		// **從 JWT 獲取身份：確認操作者身份**
+		/* 從 JWT 獲取身份：確認操作者身份
 	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 	    String currentUsername = authentication.getName(); // JWT 中解析出來的帳號
+	    */
+		String currentUsername = SecurityUtils.getCurrentUsername();
 		
 		// 0. 檢查數值完整性
 		if (userPublicUpdateDTO.getPassword() == null || userPublicUpdateDTO.getPassword().isBlank()) {
@@ -180,9 +185,11 @@ public class UserPublicServiceImpl implements UserPublicService{
 	
 	@Override
 	public UserPublicUpdateDTO updateUserPublic(UserPublicUpdateDTO userPublicUpdateDTO) {
-		// **從 JWT 獲取身份：確認操作者身份**
+		/* 從 JWT 獲取身份：確認操作者身份
 	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 	    String currentUsername = authentication.getName(); // JWT 中解析出來的帳號
+	    */
+		String currentUsername = SecurityUtils.getCurrentUsername();
 		
 		// 1. 找尋資料庫 對應的帳號
 		Users tableUser = usersRepository.findByAccount(currentUsername)
@@ -217,9 +224,11 @@ public class UserPublicServiceImpl implements UserPublicService{
 
 	@Override
 	public void deleteUserPublic(UserDeleteDTO userDeleteDTO) {
-		// **從 JWT 獲取身份：確認操作者身份**
+		/* 從 JWT 獲取身份：確認操作者身份
 	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 	    String currentUsername = authentication.getName(); // JWT 中解析出來的帳號
+	    */
+		String currentUsername = SecurityUtils.getCurrentUsername();
 		
 		final LocalDateTime deleteTime = LocalDateTime.now();
 		final String ERROR_MESSAGE = "帳號或密碼錯誤";

@@ -19,6 +19,7 @@ import com.github.lianick.model.dto.userPublic.UserPublicUpdateDTO;
 	在 Service Interface 上加上 @PreAuthorize 是良好的實踐，它定義了服務的安全契約。
 * */
 
+// 負責 處理 民眾資料
 public interface UserPublicService {
 
 	// 搜尋 全部 民眾帳號

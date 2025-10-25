@@ -28,6 +28,7 @@ import com.github.lianick.repository.UsersRepository;
 import com.github.lianick.repository.UsersVerifyRepository;
 import com.github.lianick.service.UserService;
 import com.github.lianick.util.PasswordSecurity;
+import com.github.lianick.util.SecurityUtils;
 import com.github.lianick.util.TokenUUID;
 
 import jakarta.transaction.Transactional;
@@ -60,9 +61,11 @@ public class UserServiceImpl implements UserService{
 	
 	@Override
 	public UserMeDTO getUserDetails() {
-		// **從 JWT 獲取身份：確認操作者身份**
+		/* 從 JWT 獲取身份：確認操作者身份
 	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 	    String currentUsername = authentication.getName(); // JWT 中解析出來的帳號
+	    */
+		String currentUsername = SecurityUtils.getCurrentUsername();
 	    
 	    // 1. 找尋資料庫 對應的帳號(使用 JWT 提供的 currentUsername 進行查詢)
 	    Users tableUser = usersRepository.findByAccount(currentUsername)
@@ -317,9 +320,11 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public UserUpdateDTO updateUserCheckPassword(UserUpdateDTO userUpdateDTO) {
-		// **從 JWT 獲取身份：確認操作者身份**
+		/* 從 JWT 獲取身份：確認操作者身份
 	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 	    String currentUsername = authentication.getName(); // JWT 中解析出來的帳號
+	    */
+		String currentUsername = SecurityUtils.getCurrentUsername();
 		
 		// 0. 檢查數值完整性 (這裡只檢查 password 即可，因為 username 已經從 JWT 獲得並驗證)
 		if (userUpdateDTO.getPassword() == null || userUpdateDTO.getPassword().isBlank()) {
@@ -348,9 +353,11 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public UserUpdateDTO updateUser(UserUpdateDTO userUpdateDTO) {
-		// **從 JWT 獲取身份：確認操作者身份**
+		/* 從 JWT 獲取身份：確認操作者身份
 	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 	    String currentUsername = authentication.getName(); // JWT 中解析出來的帳號
+	    */
+		String currentUsername = SecurityUtils.getCurrentUsername();
 		
 		// 1. 複查一次 
 	    Users tableUser = usersRepository.findByAccount(currentUsername)
@@ -394,9 +401,11 @@ public class UserServiceImpl implements UserService{
 	
 	@Override
 	public void deleteUser(UserDeleteDTO userDeleteDTO){
-		// **從 JWT 獲取身份：確認操作者身份**
+		/* 從 JWT 獲取身份：確認操作者身份
 	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 	    String currentUsername = authentication.getName(); // JWT 中解析出來的帳號
+	    */
+		String currentUsername = SecurityUtils.getCurrentUsername();
 		
 		// 1. 找尋資料庫 對應的帳號
 	    Users tableUser = usersRepository.findByAccount(currentUsername)

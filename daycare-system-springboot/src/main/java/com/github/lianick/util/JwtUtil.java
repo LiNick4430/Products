@@ -16,6 +16,9 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
+/**
+ * 負責處理 JWT 生成 解析
+ * */
 @Component
 public class JwtUtil {
 

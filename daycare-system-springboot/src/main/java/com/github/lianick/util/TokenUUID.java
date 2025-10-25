@@ -4,6 +4,9 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Component;
 
+/**
+ * 負責處理 UUID 生成 
+ * */
 @Component
 public class TokenUUID {
 

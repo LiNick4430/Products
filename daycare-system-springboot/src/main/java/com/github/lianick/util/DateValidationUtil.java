@@ -6,6 +6,9 @@ import java.time.format.DateTimeParseException;
 
 import org.springframework.stereotype.Component;
 
+/**
+ * 負責處理 資料格式
+ * */
 @Component
 public class DateValidationUtil {
 

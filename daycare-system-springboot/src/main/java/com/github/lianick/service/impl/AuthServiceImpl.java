@@ -13,6 +13,7 @@ import com.github.lianick.service.AuthService;
 import com.github.lianick.service.RefreshTokenService;
 import com.github.lianick.service.UserService;
 import com.github.lianick.util.JwtUtil;
+import com.github.lianick.util.SecurityUtils;
 
 import jakarta.transaction.Transactional;
 
@@ -57,11 +58,12 @@ public class AuthServiceImpl implements AuthService{
 
 	@Override
 	public void logout() {
-		// **從 JWT 獲取身份：確認操作者身份**
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		// 獲取 JWT 中解析出來的帳號 (Principal Name)
-		String currentUsername = authentication.getName(); // JWT 中解析出來的帳號
-
+		/* 從 JWT 獲取身份：確認操作者身份
+	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	    String currentUsername = authentication.getName(); // JWT 中解析出來的帳號
+	    */
+		String currentUsername = SecurityUtils.getCurrentUsername();
+		
 		refreshTokenService.deleteRefreshToken(currentUsername);
 	}
 
