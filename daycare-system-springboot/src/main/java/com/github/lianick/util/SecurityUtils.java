@@ -31,7 +31,10 @@ public class SecurityUtils {
 		return authentication.getName();
 	}
 	
-	// 獲取整個 Authentication 物件的方法
+	/**
+     * 從當前的 SecurityContext 中獲取 Authentication。
+     * @return 當前登入的 Authentication。
+     */
     public static Authentication getCurrentAuthentication() {
         return SecurityContextHolder.getContext().getAuthentication();
     }
