@@ -91,7 +91,7 @@ public class ChildInfoServiceImpl implements ChildInfoService{
 		// 2. 檢查幼兒ID 是否存在 / 是否 登錄者(民眾) 的幼兒資料
 		ChildInfo childInfo = childInfoRepository.findById(childDTO.getId())
 				.orElseThrow(() -> new ChildNoFoundException("幼兒資料不存在"));
-		if (!childInfo.getUserPublic().equals(userPublic)) {
+		if (!childInfo.getUserPublic().getPublicId().equals(userPublic.getPublicId())) {
 			throw new ChildNoFoundException("幼兒資料不存在");
 		}
 		
@@ -158,7 +158,7 @@ public class ChildInfoServiceImpl implements ChildInfoService{
 		// 2. 檢查幼兒ID 是否存在 / 是否 登錄者(民眾) 的幼兒資料
 		ChildInfo childInfo = childInfoRepository.findById(childUpdateDTO.getId())
 				.orElseThrow(() -> new ChildNoFoundException("幼兒資料不存在"));
-		if (!childInfo.getUserPublic().equals(userPublic)) {
+		if (!childInfo.getUserPublic().getPublicId().equals(userPublic.getPublicId())) {
 			throw new ChildNoFoundException("幼兒資料不存在");
 		}
 		
@@ -187,7 +187,7 @@ public class ChildInfoServiceImpl implements ChildInfoService{
 		// 2. 檢查幼兒ID 是否存在 / 是否 登錄者(民眾) 的幼兒資料
 		ChildInfo childInfo = childInfoRepository.findById(childDeleteDTO.getId())
 				.orElseThrow(() -> new ChildNoFoundException("幼兒資料不存在"));
-		if (!childInfo.getUserPublic().equals(userPublic)) {
+		if (!childInfo.getUserPublic().getPublicId().equals(userPublic.getPublicId())) {
 			throw new ChildNoFoundException("幼兒資料不存在");
 		}
 		
