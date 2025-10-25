@@ -15,7 +15,11 @@ import com.github.lianick.model.dto.user.UserUpdateDTO;
 import com.github.lianick.model.dto.user.UserVerifyDTO;
 import com.github.lianick.model.dto.userPublic.UserPublicDTO;
 import com.github.lianick.model.dto.userPublic.UserPublicUpdateDTO;
+import com.github.lianick.model.dto.userPublic.ChildCreateDTO;
+import com.github.lianick.model.dto.userPublic.ChildDTO;
+import com.github.lianick.model.dto.userPublic.ChildUpdateDTO;
 import com.github.lianick.model.dto.userPublic.UserPublicCreateDTO;
+import com.github.lianick.model.eneity.ChildInfo;
 import com.github.lianick.model.eneity.UserPublic;
 import com.github.lianick.model.eneity.Users;
 
@@ -74,6 +78,17 @@ public class ModelMapperConfig {
 			mapper.map(UserPublic::getPublicId, UserPublicUpdateDTO::setId);
 			mapper.using(usersToUsernameConveter)
 					.map(UserPublic::getUsers, UserPublicUpdateDTO::setUsername);
+		});
+		
+		// ChildInfo 相關
+		modelMapper.typeMap(ChildInfo.class, ChildDTO.class).addMappings(mapper -> {
+			mapper.map(ChildInfo::getChildId, ChildDTO::setId);
+		});
+		modelMapper.typeMap(ChildInfo.class, ChildCreateDTO.class).addMappings(mapper -> {
+			mapper.map(ChildInfo::getChildId, ChildCreateDTO::setId);
+		});
+		modelMapper.typeMap(ChildInfo.class, ChildUpdateDTO.class).addMappings(mapper -> {
+			mapper.map(ChildInfo::getChildId, ChildUpdateDTO::setId);
 		});
 		
 		// ------------------------------------------------------------------------------------

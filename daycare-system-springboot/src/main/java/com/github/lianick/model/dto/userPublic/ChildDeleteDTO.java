@@ -1,8 +1,16 @@
 package com.github.lianick.model.dto.userPublic;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class ChildDeleteDTO {
 
 	private Long id;						// 兒童ID
-	private String username;				// 帳號名
 	
 }

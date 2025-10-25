@@ -2,10 +2,18 @@ package com.github.lianick.model.dto.userPublic;
 
 import java.time.LocalDate;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class ChildUpdateDTO {
 
 	private Long id;						// 兒童ID
-	private String username;				// 帳號名
 	
 	// 基本資料
 	private String name;

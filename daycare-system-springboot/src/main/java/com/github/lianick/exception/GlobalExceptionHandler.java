@@ -29,6 +29,16 @@ public class GlobalExceptionHandler {
 		return ApiResponse.error(statusCode, errorCode, ex.getMessage());
 	}
 	
+	// 處理找不到 幼兒 的 異常 (401)
+	@ExceptionHandler(ChildNoFoundException.class) 	
+	@ResponseStatus(HttpStatus.UNAUTHORIZED)     		// 401
+	public ApiResponse<?> handleChildNoFoundException(ChildNoFoundException ex) {
+		int statusCode = HttpStatus.UNAUTHORIZED.value();
+		String errorCode = "CHILD_NOT_FOUND";
+		// return new ApiResponse<>(statusCode, ex.getMessage(), null);
+		return ApiResponse.error(statusCode, errorCode, ex.getMessage());
+	}
+	
 	// 使用者已經存在 的 異常 (401)
 	@ExceptionHandler(UserExistException.class) 	
 	@ResponseStatus(HttpStatus.CONFLICT)     			// 409      	
