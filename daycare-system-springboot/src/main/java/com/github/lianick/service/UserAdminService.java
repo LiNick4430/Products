@@ -8,7 +8,6 @@ import com.github.lianick.model.dto.user.UserDeleteDTO;
 import com.github.lianick.model.dto.userAdmin.UserAdminCreateDTO;
 import com.github.lianick.model.dto.userAdmin.UserAdminDTO;
 import com.github.lianick.model.dto.userAdmin.UserAdminUpdateDTO;
-import com.github.lianick.model.eneity.UserAdmin;
 
 /*
 	業務流程確認
@@ -23,7 +22,7 @@ public interface UserAdminService {
 
 	// 主管 / 員工 取得自己的 資料
 	@PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")
-	UserAdmin findUserAdmin();
+	UserAdminDTO findUserAdmin();
 	
 	// 主管 尋找 員工們 的資料
 	@PreAuthorize("hasAuthority('ROLE_MANAGER')")

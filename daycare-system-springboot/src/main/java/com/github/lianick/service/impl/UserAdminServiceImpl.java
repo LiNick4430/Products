@@ -58,7 +58,7 @@ public class UserAdminServiceImpl implements UserAdminService{
 	private PasswordSecurity passwordSecurity;
 	
 	@Override
-	public UserAdmin findUserAdmin() {
+	public UserAdminDTO findUserAdmin() {
 		// 0. 從 JWT 獲取 username
 		String currentUsername = SecurityUtils.getCurrentUsername();
 		
@@ -68,7 +68,8 @@ public class UserAdminServiceImpl implements UserAdminService{
 		UserAdmin userAdmin = userAdminRepository.findByUsers(tableUser)
 				.orElseThrow(() -> new UserNoFoundException("帳號錯誤"));
 		
-		return userAdmin;
+		// 2. Entity -> DTO
+		return modelMapper.map(userAdmin, UserAdminDTO.class);
 	}
 	
 	@Override
