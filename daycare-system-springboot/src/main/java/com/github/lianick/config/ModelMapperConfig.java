@@ -124,6 +124,10 @@ public class ModelMapperConfig {
 					.map(UserRegisterDTO::getRoleNumber, Users::setRole);
 		});
 		
+		// ------------------------------------------------------------------------------------
+		// DTO -> DTO
+		// UserAdminCreateDTO -> UserRegisterDTO	(用於 申請 員工帳號)
+		
 		return modelMapper;
 	}
 }

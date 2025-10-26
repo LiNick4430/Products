@@ -54,6 +54,7 @@ public class UserServiceImpl implements UserService{
 	@Autowired
 	private ModelMapper modelMapper;
 	
+	@Override
 	public Users convertToUser(UserRegisterDTO userRegisterDTO) {
 		return modelMapper.map(userRegisterDTO, Users.class);
 	}

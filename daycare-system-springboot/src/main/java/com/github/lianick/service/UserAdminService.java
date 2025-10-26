@@ -30,7 +30,7 @@ public interface UserAdminService {
 	
 	// 主管 創建 自己 的 資料
 	@PreAuthorize("hasAuthority('ROLE_MANAGER')")
-	UserAdminCreateDTO createUserAdmin(UserAdminCreateDTO userAdminCreateDTO);
+	UserAdminDTO createUserAdmin(UserAdminCreateDTO userAdminCreateDTO);
 	
 	// 主管 更新 特定員工 的 資料
 	@PreAuthorize("hasAuthority('ROLE_MANAGER')")

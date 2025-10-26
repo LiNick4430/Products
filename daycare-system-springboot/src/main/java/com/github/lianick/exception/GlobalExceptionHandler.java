@@ -59,6 +59,16 @@ public class GlobalExceptionHandler {
 		return ApiResponse.error(statusCode, errorCode, ex.getMessage());
 	}
 	
+	// 機構(Organization) 相關 的 異常 (401)
+	@ExceptionHandler(OrganizationFailureException.class) 	
+	@ResponseStatus(HttpStatus.UNAUTHORIZED)     		// 401
+	public ApiResponse<?> handleOrganizationFailureException(OrganizationFailureException ex) {
+		int statusCode = HttpStatus.UNAUTHORIZED.value();
+		String errorCode = "ORGANIZATION_FAILURE";
+		// return new ApiResponse<>(statusCode, ex.getMessage(), null);
+		return ApiResponse.error(statusCode, errorCode, ex.getMessage());
+	}
+	
 	// 無法發送電子信箱 的 異常 (500)
 	@ExceptionHandler(MailSendFailureException.class) 		
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)   // 500

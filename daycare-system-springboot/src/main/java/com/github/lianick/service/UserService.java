@@ -25,6 +25,9 @@ import com.github.lianick.model.eneity.Users;
 
 public interface UserService {
 	
+	// 把 註冊資料 轉成 User
+	public Users convertToUser(UserRegisterDTO userRegisterDTO);
+	
 	// 獲取個人訊息
 	@PreAuthorize("isAuthenticated()")	// 確保只有持有有效 JWT 的用戶才能存取
 	UserMeDTO getUserDetails();
