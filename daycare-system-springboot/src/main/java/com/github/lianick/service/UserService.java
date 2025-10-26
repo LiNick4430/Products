@@ -29,7 +29,7 @@ public interface UserService {
 	@PreAuthorize("isAuthenticated()")	// 確保只有持有有效 JWT 的用戶才能存取
 	UserMeDTO getUserDetails();
 	
-	// 註冊帳號
+	// 註冊民眾帳號
 	UserRegisterDTO registerUser(UserRegisterDTO userRegisterDTO);
 	// 驗證帳號
 	UserVerifyDTO veriftyUser(String token);

@@ -31,19 +31,19 @@ public interface UserPublicService {
 	UserPublicDTO findByUsername(UserPublicDTO userPublicDTO);
 	
 	// 根據 username 填寫 基本資料
-	@PreAuthorize("isAuthenticated()")	// 確保只有持有有效 JWT 的用戶才能存取
+	@PreAuthorize("hasAuthority('ROLE_PUBLIC')")	// 確保只有持有有效 JWT 的用戶才能存取
 	UserPublicCreateDTO createUserPublic(UserPublicCreateDTO userPublicSaveDTO);
 	
 	// 根據 username 更新 基本資料
 	// 密碼檢查
-	@PreAuthorize("isAuthenticated()")	// 確保只有持有有效 JWT 的用戶才能存取
+	@PreAuthorize("hasAuthority('ROLE_PUBLIC')")	// 確保只有持有有效 JWT 的用戶才能存取
 	UserPublicUpdateDTO updateUserPublicCheckPassword(UserPublicUpdateDTO userPublicUpdateDTO);
 	// 正式更新
-	@PreAuthorize("isAuthenticated()")	// 確保只有持有有效 JWT 的用戶才能存取
+	@PreAuthorize("hasAuthority('ROLE_PUBLIC')")	// 確保只有持有有效 JWT 的用戶才能存取
 	UserPublicUpdateDTO updateUserPublic(UserPublicUpdateDTO userPublicUpdateDTO);
 	
 	// 根據 username 刪除 民眾帳號
-	@PreAuthorize("isAuthenticated()")	// 確保只有持有有效 JWT 的用戶才能存取
+	@PreAuthorize("hasAuthority('ROLE_PUBLIC')")	// 確保只有持有有效 JWT 的用戶才能存取
 	void deleteUserPublic(UserDeleteDTO userDeleteDTO);
 	
 }

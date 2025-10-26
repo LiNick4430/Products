@@ -9,7 +9,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserRegisterDTO {	// 註冊用
+public class UserRegisterDTO {	// 註冊 民眾帳號
+	
 	private Long id;
 	
 	private String email;

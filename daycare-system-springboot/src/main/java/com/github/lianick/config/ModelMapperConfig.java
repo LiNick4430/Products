@@ -4,15 +4,18 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import com.github.lianick.converter.OrganizationToOrganizationIdConveter;
+import com.github.lianick.converter.OrganizationToOrganizationNameConveter;
 import com.github.lianick.converter.RoleNumberToRoleConveter;
 import com.github.lianick.converter.UsersToUsernameConveter;
-import com.github.lianick.model.dto.AuthResponseDTO;
 import com.github.lianick.model.dto.user.UserForgetPasswordDTO;
 import com.github.lianick.model.dto.user.UserLoginDTO;
 import com.github.lianick.model.dto.user.UserMeDTO;
 import com.github.lianick.model.dto.user.UserRegisterDTO;
 import com.github.lianick.model.dto.user.UserUpdateDTO;
 import com.github.lianick.model.dto.user.UserVerifyDTO;
+import com.github.lianick.model.dto.userAdmin.UserAdminDTO;
 import com.github.lianick.model.dto.userPublic.UserPublicDTO;
 import com.github.lianick.model.dto.userPublic.UserPublicUpdateDTO;
 import com.github.lianick.model.dto.userPublic.ChildCreateDTO;
@@ -20,18 +23,27 @@ import com.github.lianick.model.dto.userPublic.ChildDTO;
 import com.github.lianick.model.dto.userPublic.ChildUpdateDTO;
 import com.github.lianick.model.dto.userPublic.UserPublicCreateDTO;
 import com.github.lianick.model.eneity.ChildInfo;
+import com.github.lianick.model.eneity.UserAdmin;
 import com.github.lianick.model.eneity.UserPublic;
 import com.github.lianick.model.eneity.Users;
 
 @Configuration
 public class ModelMapperConfig {
 
+	// Conveter 們
 	@Autowired
     private RoleNumberToRoleConveter roleTypeToRoleConveter;
 	
 	@Autowired
 	private UsersToUsernameConveter usersToUsernameConveter;
-
+	
+	@Autowired
+	private OrganizationToOrganizationIdConveter organizationIdConveter;
+	
+	@Autowired
+	private OrganizationToOrganizationNameConveter organizationNameConveter;
+	
+	// 主要 邏輯
 	@Bean
 	public ModelMapper modelMapper() {
 		ModelMapper modelMapper = new ModelMapper();
@@ -78,6 +90,17 @@ public class ModelMapperConfig {
 			mapper.map(UserPublic::getPublicId, UserPublicUpdateDTO::setId);
 			mapper.using(usersToUsernameConveter)
 					.map(UserPublic::getUsers, UserPublicUpdateDTO::setUsername);
+		});
+		
+		// UserAdmin 相關
+		modelMapper.typeMap(UserAdmin.class, UserAdminDTO.class).addMappings(mapper -> {
+			mapper.map(UserAdmin::getAdminId, UserAdminDTO::setId);
+			mapper.using(usersToUsernameConveter)
+					.map(UserAdmin::getUsers, UserAdminDTO::setUsername);
+			mapper.using(organizationIdConveter)
+					.map(UserAdmin::getOrganization, UserAdminDTO::setOrganizationId);
+			mapper.using(organizationNameConveter)
+					.map(UserAdmin::getOrganization, UserAdminDTO::setName);
 		});
 		
 		// ChildInfo 相關

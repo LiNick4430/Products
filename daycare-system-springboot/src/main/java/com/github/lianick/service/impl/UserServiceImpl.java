@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -87,9 +86,8 @@ public class UserServiceImpl implements UserService{
 		if(userRegisterDTO.getUsername() == null || userRegisterDTO.getUsername().isBlank() ||
 				userRegisterDTO.getPassword() == null || userRegisterDTO.getPassword().isBlank() ||
 				userRegisterDTO.getEmail() == null || userRegisterDTO.getEmail().isBlank() ||
-				userRegisterDTO.getPhoneNumber() == null || userRegisterDTO.getPhoneNumber().isBlank() ||
-				userRegisterDTO.getRoleNumber() == null ) {
-			throw new ValueMissException("缺少必要的註冊資料 (帳號、密碼、信箱、電話號碼、角色ID)");
+				userRegisterDTO.getPhoneNumber() == null || userRegisterDTO.getPhoneNumber().isBlank()) {
+			throw new ValueMissException("缺少必要的註冊資料 (帳號、密碼、信箱、電話號碼)");
 		}
 		
 		if (usersRepository.findByAccount(userRegisterDTO.getUsername()).isPresent()) {
@@ -100,6 +98,7 @@ public class UserServiceImpl implements UserService{
 		}
 		
 		// 1. DTO 轉 Entity
+		userRegisterDTO.setRoleNumber(1L);	// 這裡的 只能建立 民眾帳號
 		Users users = convertToUser(userRegisterDTO);
 		
 		// 2. 密碼 取出加密處理
