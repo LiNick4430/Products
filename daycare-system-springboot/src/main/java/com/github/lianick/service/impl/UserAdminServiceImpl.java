@@ -170,7 +170,7 @@ public class UserAdminServiceImpl implements UserAdminService{
 			throw new UserExistException("更新失敗：無法通過此管理介面修改自己的帳號資料");
 		}
 		
-		// 1. 檢查數值完整性
+		// 0. 檢查數值完整性
 		Role role = null;
 		Organization organization = null;
 		if (userAdminUpdateDTO.getNewRoleNumber() != null) {
@@ -189,13 +189,13 @@ public class UserAdminServiceImpl implements UserAdminService{
 			organization = organizationRepository.findById(userAdminUpdateDTO.getNewOrganizationId())
 					.orElseThrow(() -> new OrganizationFailureException("更新失敗：機構 設定錯誤"));
 		}
-		// 2. 取出帳號
+		// 1. 取出帳號
 		Users tableUser = usersRepository.findByAccount(userAdminUpdateDTO.getUsername())
 				.orElseThrow(() -> new UserNoFoundException("基礎帳號不存在"));
 		UserAdmin userAdmin = userAdminRepository.findByUsers(tableUser)
 				.orElseThrow(() -> new UserNoFoundException("用戶存在，但非員工帳號"));
 		
-		// 3. 依序檢查 數值 並 存入
+		// 2. 依序檢查 數值 並 存入
 		if (userAdminUpdateDTO.getNewName() != null && !userAdminUpdateDTO.getNewName().isBlank()) {
 			userAdmin.setName(userAdminUpdateDTO.getNewName());
 		}
@@ -209,11 +209,11 @@ public class UserAdminServiceImpl implements UserAdminService{
 			userAdmin.setOrganization(organization);
 		}
 		
-		// 4. 回存
+		// 3. 回存
 		tableUser = usersRepository.save(tableUser);
 		userAdmin = userAdminRepository.save(userAdmin);
 		
-		// 5. Entity 轉 DTO
+		// 4. Entity 轉 DTO
 		UserAdminDTO userAdminDTO = modelMapper.map(userAdmin, UserAdminDTO.class);
 		
 		return userAdminDTO;
@@ -221,19 +221,19 @@ public class UserAdminServiceImpl implements UserAdminService{
 
 	@Override
 	public void deleteUserAdmin(UserDeleteDTO userDeleteDTO) {
-		// 1. 檢查 是否 自己帳號
+		// 0. 檢查 是否 自己帳號
 		String currentUsername = SecurityUtils.getCurrentUsername();
 		if (currentUsername.equals(userDeleteDTO.getUsername())) {
 			throw new UserExistException("刪除失敗：無法通過此管理介面修改自己的帳號資料");
 		}
 		
-		// 2. 查詢帳號是否存在
+		// 1. 查詢帳號是否存在
 		Users tableUser = usersRepository.findByAccount(userDeleteDTO.getUsername())
 				.orElseThrow(() -> new UserNoFoundException("基礎帳號不存在"));
 		UserAdmin userAdmin = userAdminRepository.findByUsers(tableUser)
 				.orElseThrow(() -> new UserNoFoundException("用戶存在，但非員工帳號"));
 		
-		// 3. 進行軟刪除 並且 回存
+		// 2. 進行軟刪除 並且 回存
 		LocalDateTime now = LocalDateTime.now();
 		userAdmin.setDeleteAt(now);
 		tableUser.setDeleteAt(now);
