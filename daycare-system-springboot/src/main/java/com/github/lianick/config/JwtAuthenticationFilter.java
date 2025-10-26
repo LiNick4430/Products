@@ -89,7 +89,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{	// OncePerReq
 					username,		// Principal (通常是 username)
 					null,			// Credentials (Token 驗證模式下通常為 null)
 					authorities		// Authorities (用戶權限)
-					);	
+					);
+			
+			// 將完整的 Claims 存入 Details
+			authentication.setDetails(claims);
 
 			// 4. 將身份設置到 Security Context 中
 			SecurityContextHolder.getContext().setAuthentication(authentication);

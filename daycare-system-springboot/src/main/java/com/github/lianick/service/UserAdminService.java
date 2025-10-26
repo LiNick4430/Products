@@ -8,6 +8,7 @@ import com.github.lianick.model.dto.user.UserDeleteDTO;
 import com.github.lianick.model.dto.userAdmin.UserAdminCreateDTO;
 import com.github.lianick.model.dto.userAdmin.UserAdminDTO;
 import com.github.lianick.model.dto.userAdmin.UserAdminUpdateDTO;
+import com.github.lianick.model.eneity.UserAdmin;
 
 /*
 	業務流程確認
@@ -20,6 +21,10 @@ import com.github.lianick.model.dto.userAdmin.UserAdminUpdateDTO;
 * */
 public interface UserAdminService {
 
+	// 主管 / 員工 取得自己的 資料
+	@PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")
+	UserAdmin findUserAdmin();
+	
 	// 主管 尋找 員工們 的資料
 	@PreAuthorize("hasAuthority('ROLE_MANAGER')")
 	List<UserAdminDTO> findAllUserAdmin();
@@ -28,13 +33,13 @@ public interface UserAdminService {
 	@PreAuthorize("hasAuthority('ROLE_MANAGER')")
 	UserAdminDTO findByUsername(UserAdminDTO userAdminDTO);
 	
-	// 主管 創建 自己 的 資料
+	// 主管 創建 特定員工(非本人) 的 資料
 	@PreAuthorize("hasAuthority('ROLE_MANAGER')")
 	UserAdminDTO createUserAdmin(UserAdminCreateDTO userAdminCreateDTO);
 	
-	// 主管 更新 特定員工 的 資料
+	// 主管 更新 特定員工(非本人) 的 資料
 	@PreAuthorize("hasAuthority('ROLE_MANAGER')")
-	UserAdminUpdateDTO updateUserAdmin(UserAdminUpdateDTO userAdminUpdateDTO);
+	UserAdminDTO updateUserAdmin(UserAdminUpdateDTO userAdminUpdateDTO);
 	
 	// 主管 刪除 特定的員工資料 (非本人)
 	@PreAuthorize("hasAuthority('ROLE_MANAGER')")
