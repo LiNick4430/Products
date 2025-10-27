@@ -20,17 +20,17 @@ import com.github.lianick.service.UserAdminService;
 
 /**
  * UserAdminController
- * Request Mapping: "/admin"
- * GET	"/me/", "/me"					主管/員工 取得 自己的資料	"/admin/me/"			AUTHENTICATED
- * GET	"/find/all", "/find/all/"		主管 尋找 全部員工帳號		"/admin/find/all/"		AUTHENTICATED
- * POST	"/find", "/find/"				主管 尋找 特定員工帳號		"/admin/find/"			AUTHENTICATED
- * POST	"/create", "/create/"			主管 設定 員工基本資料		"/admin/create/"		AUTHENTICATED
- * POST	"/update", "/update/"			主管 更新 員工基本資料		"/admin/update/"		AUTHENTICATED
- * DELETE"/delete", "/delete/"			主管 刪除 特定員工帳號		"/admin/delete/"		AUTHENTICATED
+ * Request Mapping: "/admin/user"
+ * GET	"/me/", "/me"					主管/員工 取得 自己的資料	"/admin/user/me/"			AUTHENTICATED
+ * GET	"/find/all", "/find/all/"		主管 尋找 全部員工帳號		"/admin/user/find/all/"		AUTHENTICATED
+ * POST	"/find", "/find/"				主管 尋找 特定員工帳號		"/admin/user/find/"			AUTHENTICATED
+ * POST	"/create", "/create/"			主管 設定 員工基本資料		"/admin/user/create/"		AUTHENTICATED
+ * POST	"/update", "/update/"			主管 更新 員工基本資料		"/admin/user/update/"		AUTHENTICATED
+ * DELETE"/delete", "/delete/"			主管 刪除 特定員工帳號		"/admin/user/delete/"		AUTHENTICATED
  * */
 
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/admin/user")
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 public class UserAdminController {
 
