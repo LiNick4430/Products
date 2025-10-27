@@ -24,6 +24,9 @@ public class SecurityConfig {
 	@Autowired
 	private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 	
+	@Autowired
+	private CustomAccessDeniedHandler customAccessDeniedHandler;
+	
 	/**
      * 將 BCryptPasswordEncoder 註冊為 Spring Bean
      */
@@ -41,8 +44,13 @@ public class SecurityConfig {
 			// 2. CORS 設定（使用預設）
 			.cors(Customizer.withDefaults())
 			
-			// 【新】401 錯誤處理：將認證失敗/未認證的錯誤交給 EntryPoint 處理
-            .exceptionHandling(e -> e.authenticationEntryPoint(jwtAuthenticationEntryPoint))
+			
+            .exceptionHandling(e -> e
+            		// 401 錯誤處理：將 認證失敗/未認證 的錯誤交給 EntryPoint 處理
+            		.authenticationEntryPoint(jwtAuthenticationEntryPoint)
+            		// 403 錯誤處理：將 權限不足 的錯誤交給 CustomAccessDeniedHandler 處理
+            		.accessDeniedHandler(customAccessDeniedHandler)
+            		)
 			
 			// 3. 設置授權規則
 			.authorizeHttpRequests(authorize -> authorize

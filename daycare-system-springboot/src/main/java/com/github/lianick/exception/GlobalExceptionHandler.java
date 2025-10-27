@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 
 import com.github.lianick.response.ApiResponse;
 
@@ -110,6 +111,17 @@ public class GlobalExceptionHandler {
 		String errorCode = "FORMATTER_FAILURE";
 		// return new ApiResponse<>(statusCode, ex.getMessage() , null);
 		return ApiResponse.error(statusCode, errorCode, ex.getMessage());
+	}
+	
+	// JWT 權限不足的 錯誤
+	@ExceptionHandler(AccessDeniedException.class)
+	@ResponseStatus(HttpStatus.FORBIDDEN) // 返回 403 狀態碼
+	public ApiResponse<Void> handleAccessDeniedException(AccessDeniedException ex) {
+	    return ApiResponse.error(
+	        HttpStatus.FORBIDDEN.value(), 
+	        "ACCESS_DENIED", 
+	        "權限不足，無法訪問此資源" // 自定義的錯誤訊息
+	    );
 	}
 	
 	// 處理所有未被明確定義的 RuntimeException (預防萬一, 最終保護)
