@@ -81,3 +81,6 @@ INSERT INTO admin_user (admin_id, admin_name, admin_job_title, organization_id, 
 (3, '員工乙', '組長', 3 ,NOW(), NOW()),
 -- 4. 員工 C (Staff C)
 (4, '員工丙', '專員', 4 ,NOW(), NOW());
+
+-- 最後的時候 進行存入
+COMMIT;
