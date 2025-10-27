@@ -24,7 +24,7 @@ import com.github.lianick.service.UserAdminService;
  * GET	"/me/", "/me"					主管/員工 取得 自己的資料	"/admin/me/"			AUTHENTICATED
  * GET	"/find/all", "/find/all/"		主管 尋找 全部員工帳號		"/admin/find/all/"		AUTHENTICATED
  * POST	"/find", "/find/"				主管 尋找 特定員工帳號		"/admin/find/"			AUTHENTICATED
- * POST	"/information", "/information/"	主管 設定 員工基本資料		"/admin/information/"	AUTHENTICATED
+ * POST	"/create", "/create/"			主管 設定 員工基本資料		"/admin/create/"		AUTHENTICATED
  * POST	"/update", "/update/"			主管 更新 員工基本資料		"/admin/update/"		AUTHENTICATED
  * DELETE"/delete", "/delete/"			主管 刪除 特定員工帳號		"/admin/delete/"		AUTHENTICATED
  * */
@@ -55,7 +55,7 @@ public class UserAdminController {
 		return ApiResponse.success("尋找 特定員工帳號 成功", userAdminDTO);
 	}
 	
-	@PostMapping(value = {"/information", "/information/"})
+	@PostMapping(value = {"/create", "/create/"})
 	public ApiResponse<UserAdminDTO> createUserAdmin(@RequestBody UserAdminCreateDTO userAdminCreateDTO) {
 		UserAdminDTO userAdminDTO = userAdminService.createUserAdmin(userAdminCreateDTO);
 		return ApiResponse.success("設定 員工基本資料 成功", userAdminDTO);
