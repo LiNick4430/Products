@@ -57,13 +57,13 @@ INSERT INTO organization ( organization_id, organization_name, organization_desc
     
 -- 5. 插入預設帳號 (USERS) 密碼(預設為 123456 的 加密版)
 INSERT INTO users (user_email, user_phone_number, user_account, user_password, user_is_active, role_id, create_date, update_date) VALUES
--- 1. 主管帳號 (ROLE_ID = 3) - 使用 HASH 1
+-- 1. 主管帳號 (ROLE_ID = 3) 
 ('manager@system.com', '0910111111', 'manager', '$2a$10$0PXADQYqxs.AZu/GBr522O5DdO1z2Z6XHlUoNRblyKyW/McKYm1Yq', TRUE, 3,NOW(), NOW()),
--- 2-4. 員工帳號 (ROLE_ID = 2) - 使用 HASH 2, 3, 4
+-- 2-4. 員工帳號 (ROLE_ID = 2) 
 ('staff_a@system.com', '0920222222', 'staff_a', '$2a$10$KNzCjc4S99xTAU8r1OpHLO5qs6GmXQgvdFTlFok3lOToUtiLAAXX.', TRUE, 2,NOW(), NOW()),
 ('staff_b@system.com', '0930333333', 'staff_b', '$2a$10$PZgeOaBXFJsQkIpeZxcoqu88Q/twoGAwT9CviTrxCsI3egT0Kyuqu', TRUE, 2,NOW(), NOW()),
 ('staff_c@system.com', '0940444444', 'staff_c', '$2a$10$tjOGZ4XdcdrVeyYd17yOM.DwFBMSJEpag6W.Aw7gpRf.w/XOEOqcC', TRUE, 2,NOW(), NOW()),
--- 5-10. 民眾帳號 (ROLE_ID = 1) - 使用 HASH 5, 6, 7, 8, 9, 10
+-- 5-10. 民眾帳號 (ROLE_ID = 1)
 ('public_1@system.com', '0950555551', 'public_1', '$2a$10$rP1yhH20.2AA/WlMaNnyTeO2U.tbc0WnORGFWo7anPpColB7NBGrK', TRUE, 1,NOW(), NOW()),
 ('public_2@system.com', '0950555552', 'public_2', '$2a$10$ewjCrApxXBC5CWDjYBQSd.tltdphrqs/bdYIPdcCW5eS7DiSA.Cji', TRUE, 1,NOW(), NOW()),
 ('public_3@system.com', '0950555553', 'public_3', '$2a$10$XxHqW2rKSM/AzI4WP3abYe6aaRMFDDrG04CqvH3QCPKLjMfGkif/i', TRUE, 1,NOW(), NOW()),

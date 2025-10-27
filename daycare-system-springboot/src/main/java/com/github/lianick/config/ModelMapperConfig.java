@@ -44,8 +44,8 @@ public class ModelMapperConfig {
 	private OrganizationToOrganizationNameConveter organizationNameConveter;
 	
 	// 主要 邏輯
-	@Bean
-	public ModelMapper modelMapper() {
+	@Bean	// @Bean 預設 Public
+	ModelMapper modelMapper() {
 		ModelMapper modelMapper = new ModelMapper();
 		
 		// Entity -> DTO

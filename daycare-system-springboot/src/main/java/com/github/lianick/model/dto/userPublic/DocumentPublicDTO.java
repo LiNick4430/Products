@@ -4,6 +4,15 @@ import java.time.LocalDateTime;
 
 import com.github.lianick.model.dto.CaseDTO;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class DocumentPublicDTO {
 
 	private Long id;		// 附件ID

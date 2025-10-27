@@ -30,13 +30,13 @@ public class SecurityConfig {
 	/**
      * 將 BCryptPasswordEncoder 註冊為 Spring Bean
      */
-	@Bean
-	public PasswordEncoder passwordEncoder() {
+	@Bean	// @Bean 預設 Public
+	PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
 	
-	@Bean
-	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+	@Bean	// @Bean 預設 Public
+	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
 		http
 			// 1. 停用 CSRF 保護 (JWT 認證不需要 Session)
 			.csrf(csrf -> csrf.disable())
