@@ -30,7 +30,7 @@ import com.github.lianick.service.UserAdminService;
  * */
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/admin")
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 public class UserAdminController {
 
