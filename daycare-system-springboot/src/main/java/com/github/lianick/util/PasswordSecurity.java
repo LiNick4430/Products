@@ -36,16 +36,16 @@ public class PasswordSecurity {
 		
 		PasswordSecurity passwordSecurity = new PasswordSecurity();
 		
-		String password = "1234";	// 明文 密碼
+		String password = "123456";	// 明文 密碼
 		String hash = passwordSecurity.hashPassword(password);
 		System.out.printf("password: %s, hash: %s%n", password, hash);
 		
-		String password2 = "5678";
+		String password2 = "123456";
 		String hash2 = passwordSecurity.hashPassword(password2);
 		System.out.printf("password2: %s, hash2: %s%n", password2, hash2);
 		
 		// 檢測看看 是否相符
-		System.out.println(String.valueOf(passwordSecurity.verifyPassword(password, hash)));		// true
+		System.out.println(String.valueOf(passwordSecurity.verifyPassword(password, hash)));	// true
 		System.out.println(String.valueOf(passwordSecurity.verifyPassword(password, hash2)));	// false
 		System.out.println(String.valueOf(passwordSecurity.verifyPassword(password2, hash)));	// false
 		System.out.println(String.valueOf(passwordSecurity.verifyPassword(password2, hash2)));	// true
