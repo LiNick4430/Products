@@ -19,7 +19,7 @@ import com.github.lianick.response.ApiResponse;
 import com.github.lianick.service.UserPublicService;
 
 /**
- * CitizenProfileController
+ * UserPublicController
  * Request Mapping: "/public"
  * GET		"/find/all", "/find/all/"		尋找	全部民眾帳號	"/public/find/all/"			AUTHENTICATED
  * POST		"/find", "/find/"				尋找	特定民眾帳號	"/public/find/"				AUTHENTICATED
@@ -31,7 +31,7 @@ import com.github.lianick.service.UserPublicService;
 @RestController
 @RequestMapping("/public")
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
-public class CitizenProfileController {
+public class UserPublicController {
 	
 	@Autowired
 	private UserPublicService userPublicService;

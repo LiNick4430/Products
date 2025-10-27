@@ -9,13 +9,22 @@ POST	"/update", "/update/"					更新	帳號			"/user/update/"				AUTHENTICATED
 DELETE	"/delete", "/delete/"					刪除	帳號			"/user/delete/"				AUTHENTICATED
 GET		"/me", "/me/"							從JWT獲得基本資料	"/user/me/"					AUTHENTICATED
 
-CitizenProfileController
+UserPublicController
 Request Mapping: "/public"
 GET		"/find/all", "/find/all/"		尋找	全部民眾帳號	"/public/find/all/"			AUTHENTICATED
 POST	"/find", "/find/"				尋找	特定民眾帳號	"/public/find/"				AUTHENTICATED
 POST	"/information", "/information/"	設定 民眾基本資料		"/public/information/"		AUTHENTICATED
 POST	"/update", "/update/"			更新 民眾基本資料		"/public/update/"			AUTHENTICATED
 DELETE	"/delete", "/delete/"			刪除	帳號			"/public/delete/"			AUTHENTICATED
+
+UserAdminController
+Request Mapping: "/admin"
+GET		"/me/", "/me"					主管/員工 取得 自己的資料	"/admin/me/"			AUTHENTICATED
+GET		"/find/all", "/find/all/"		主管 尋找 全部員工帳號		"/admin/find/all/"		AUTHENTICATED
+POST	"/find", "/find/"				主管 尋找 特定員工帳號		"/admin/find/"			AUTHENTICATED
+POST	"/information", "/information/"	主管 設定 員工基本資料		"/admin/information/"	AUTHENTICATED
+POST	"/update", "/update/"			主管 更新 員工基本資料		"/admin/update/"		AUTHENTICATED
+DELETE	"/delete", "/delete/"			主管 刪除 員工帳號		"/admin/delete/"		AUTHENTICATED
 
 ChildInfoController
 Request Mapping: "/child"
