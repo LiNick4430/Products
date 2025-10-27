@@ -92,6 +92,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService{
 		authResponseDTO.setUsername(users.getAccount());
 		authResponseDTO.setRefreshToken(newRefreshToken.getToken());
 		authResponseDTO.setAccessToken(newAccessToken);
+		authResponseDTO.setRoleName(users.getRole().getName());
 		
 		return authResponseDTO;
 	}

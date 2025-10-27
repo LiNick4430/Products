@@ -16,5 +16,6 @@ public class AuthResponseDTO {
 	private String refreshToken;	// 新的 Refresh Token 字串 (長效期)
 	private Long id;           	 	// 用戶ID
 	private String username;        // 用戶帳號
+	private String roleName;		// 角色名字
 	
 }

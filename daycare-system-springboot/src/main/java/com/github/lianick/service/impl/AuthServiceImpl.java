@@ -50,6 +50,7 @@ public class AuthServiceImpl implements AuthService{
 		authResponseDTO.setUsername(users.getAccount());
 		authResponseDTO.setRefreshToken(refreshToken.getToken());
 		authResponseDTO.setAccessToken(accessToken);
+		authResponseDTO.setRoleName(users.getRole().getName());
 		
 		return authResponseDTO;
 	}
