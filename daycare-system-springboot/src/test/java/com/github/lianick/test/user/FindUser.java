@@ -20,12 +20,16 @@ public class FindUser {
 	
 	@Test
 	public void findNoActiveAndUnlinkedUser() {
-		
+		/*
 		List<Users> users = usersRepository.findNoActiveAndUnlinkedAllUser();
 		
 		users.forEach(user -> {
 			System.out.println(user.getUserId());
 		});
+		*/
+		
+		Users users2 = usersRepository.findByAccount("manager").get();
+		System.out.println(users2.getAccount());
 		
 	}
 }

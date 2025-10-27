@@ -177,6 +177,9 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public Users loginUser(UserLoginDTO userLoginDTO){
+		System.out.println("傳入的帳號: " + userLoginDTO.getUsername());
+		System.out.println("傳入的密碼 (明文): " + userLoginDTO.getPassword());
+		
 		// 0. 檢查數值完整性
 		if(userLoginDTO.getUsername() == null || userLoginDTO.getUsername().isBlank() ||
 				userLoginDTO.getPassword() == null || userLoginDTO.getPassword().isBlank()) {
@@ -185,12 +188,12 @@ public class UserServiceImpl implements UserService{
 		
 		// 1. 找尋資料庫 對應的帳號
 	    Users tableUser = usersRepository.findByAccount(userLoginDTO.getUsername())
-	        .orElseThrow(() -> new UserNoFoundException("帳號或密碼錯誤"));
+	        .orElseThrow(() -> new UserNoFoundException("帳號錯誤"));
 
 	    // 2. checkPassword 方法 驗證密碼
 	    if (!checkPassword(userLoginDTO, tableUser)) {
 	    	// 如果 密碼不相符, 統一由 UserNoFoundException -> GlobalExceptionHandler 處理回傳
-		    throw new UserNoFoundException("帳號或密碼錯誤");
+		    throw new UserNoFoundException("密碼錯誤");
 	    }
 	    
 	    // 3. 登入成功 打上時間

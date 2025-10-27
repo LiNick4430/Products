@@ -56,94 +56,28 @@ INSERT INTO organization ( organization_id, organization_name, organization_desc
 (4, '台中市豐原區愛心公立幼兒園', '在地深耕，提供親切且互動性高的學習環境，服務豐原家庭。', '台中市豐原區中正路20號', '04-25004444', 'love.fyc@daycare.gov.tw', '04-25004445',NOW(), NOW() );
     
 -- 5. 插入預設帳號 (USERS) 密碼(預設為 123456 的 加密版)
--- 1. 主管帳號 (ROLE_ID = 3)
-INSERT INTO users (user_email, user_phone_number, user_account, user_password, user_is_active, role_id, create_at) 
-VALUES (
-    'manager@system.com', 
-    '0910111111', 
-    'manager', 
-    '$2a$10$P9pQGz7i.xwF/BG7/3MZcuCnnFxzO1Rddze.KOxEpIVHcm/sgjLLe', 
-    TRUE, 
-    3,
-    CURRENT_TIMESTAMP
-);
-
--- 2-4. 員工帳號 (ROLE_ID = 2)
-INSERT INTO users (user_email, user_phone_number, user_account, user_password, user_is_active, role_id, create_at) 
-VALUES (
-    'staff_a@system.com', 
-    '0920222222', 
-    'staff_a', 
-    '$2a$10$OJvIHy1ogR9geNud.YxJx.CQcguboqWgVzZLe2NzW0/dAn3bX2mmO', 
-    TRUE, 
-    2,
-    CURRENT_TIMESTAMP
-);
-INSERT INTO users (user_email, user_phone_number, user_account, user_password, user_is_active, role_id, create_at) 
-VALUES (
-    'staff_b@system.com', 
-    '0930333333', 
-    'staff_b', 
-    '$2a$10$hiByi/BpR0vN.i3vx3h7JurXnL13ONo65BbVaA9GkDP7lJCrTqQ7.', 
-    TRUE, 
-    2,
-    CURRENT_TIMESTAMP
-);
-INSERT INTO users (user_email, user_phone_number, user_account, user_password, user_is_active, role_id, create_at) 
-VALUES (
-    'staff_c@system.com', 
-    '0940444444', 
-    'staff_c', 
-    '$2a$10$LwlXfDCPbqR5NNa7.0gt1u/gLoa/0oDMef8h9Z1OabEkkD6wcVdXi', 
-    TRUE, 
-    2,
-    CURRENT_TIMESTAMP
-);
-
--- 5-10. 民眾帳號 (ROLE_ID = 1)
-INSERT INTO users (user_email, user_phone_number, user_account, user_password, user_is_active, role_id, create_at) 
-VALUES 
-    ('public_1@system.com', '0950555551', 'public_1', '$2a$10$m5eSk2fIECje9gBBpvQmm.xt2WEobhfGzGof5U1fkDf8VOVDNT55G', TRUE, 1, CURRENT_TIMESTAMP),
-    ('public_2@system.com', '0950555552', 'public_2', '$2a$10$Sc6QfhotXDUWYAflizo0VeZkTrz1w75eYTAh0P/brwMKUdSTgpS4i', TRUE, 1, CURRENT_TIMESTAMP),
-    ('public_3@system.com', '0950555553', 'public_3', '$2a$10$cTBsgf7o3QzfebNssn9psOC/.Daw0X7ezHE5CuCGaAuI3BfKPug6W', TRUE, 1, CURRENT_TIMESTAMP),
-    ('public_4@system.com', '0950555554', 'public_4', '$2a$10$Xw3fbw9Ue/bXMeM7ux8qI.Bly/qLLybT1FJIVtFe7yvLaLdZ.FmmC', TRUE, 1, CURRENT_TIMESTAMP),
-    ('public_5@system.com', '0950555555', 'public_5', '$2a$10$G2ttFh5zgf9UOtXdoaTmC.TJ9I.j/2ltv0dfUkA.OfZFQgJ5HF9XS', TRUE, 1, CURRENT_TIMESTAMP),
-    ('public_6@system.com', '0950555556', 'public_6', '$2a$10$ZG01KKYHEdmCB3Y6N8qycODshlsyidna6mgu0W6.JuNvgUfPwOY4i', TRUE, 1, CURRENT_TIMESTAMP);
+INSERT INTO users (user_email, user_phone_number, user_account, user_password, user_is_active, role_id, create_date, update_date) VALUES
+-- 1. 主管帳號 (ROLE_ID = 3) - 使用 HASH 1
+('manager@system.com', '0910111111', 'manager', '$2a$10$0PXADQYqxs.AZu/GBr522O5DdO1z2Z6XHlUoNRblyKyW/McKYm1Yq', TRUE, 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+-- 2-4. 員工帳號 (ROLE_ID = 2) - 使用 HASH 2, 3, 4
+('staff_a@system.com', '0920222222', 'staff_a', '$2a$10$KNzCjc4S99xTAU8r1OpHLO5qs6GmXQgvdFTlFok3lOToUtiLAAXX.', TRUE, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('staff_b@system.com', '0930333333', 'staff_b', '$2a$10$PZgeOaBXFJsQkIpeZxcoqu88Q/twoGAwT9CviTrxCsI3egT0Kyuqu', TRUE, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('staff_c@system.com', '0940444444', 'staff_c', '$2a$10$tjOGZ4XdcdrVeyYd17yOM.DwFBMSJEpag6W.Aw7gpRf.w/XOEOqcC', TRUE, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+-- 5-10. 民眾帳號 (ROLE_ID = 1) - 使用 HASH 5, 6, 7, 8, 9, 10
+('public_1@system.com', '0950555551', 'public_1', '$2a$10$rP1yhH20.2AA/WlMaNnyTeO2U.tbc0WnORGFWo7anPpColB7NBGrK', TRUE, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('public_2@system.com', '0950555552', 'public_2', '$2a$10$ewjCrApxXBC5CWDjYBQSd.tltdphrqs/bdYIPdcCW5eS7DiSA.Cji', TRUE, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('public_3@system.com', '0950555553', 'public_3', '$2a$10$XxHqW2rKSM/AzI4WP3abYe6aaRMFDDrG04CqvH3QCPKLjMfGkif/i', TRUE, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('public_4@system.com', '0950555554', 'public_4', '$2a$10$xP4HKIGKe7OHGKDjY7V0T.vZ4D2BaZmegdcRyf7mbtoXfacoAkqhe', TRUE, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('public_5@system.com', '0950555555', 'public_5', '$2a$10$KDZIFuFWYk8BPuMfL0tAvObjX1pI3k6z84Owb77vSsTuaJnYBlKRC', TRUE, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('public_6@system.com', '0950555556', 'public_6', '$2a$10$mAVVL5uugxz.mYnS1ox2oeE570g8EEhHQScLXHf0VqX7wu4EVZR4.', TRUE, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
     
+-- 預設 員工資料
+INSERT INTO admin_user (admin_id, admin_name, admin_job_title, organization_id, create_date, update_date) VALUES
 -- 1. 主管 (Manager)
-INSERT INTO admin_user (admin_id, admin_name, admin_job_title, organization_id, create_at) 
-VALUES (
-    1,                                  -- 必須與 manager 的 users.user_id 相同
-    '主管A', 
-    '經理', 
-    1,
-    CURRENT_TIMESTAMP
-);
-
+(1, '主管A', '經理', 1,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP),
 -- 2. 員工 A (Staff A)
-INSERT INTO admin_user (admin_id, admin_name, admin_job_title, organization_id, create_at) 
-VALUES (
-    2,                                  -- 必須與 staff_a 的 users.user_id 相同
-    '員工甲', 
-    '專員', 
-    2,
-    CURRENT_TIMESTAMP
-);
+(2, '員工甲', '專員', 2,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP),
 -- 3. 員工 B (Staff B)
-INSERT INTO admin_user (admin_id, admin_name, admin_job_title, organization_id, create_at) 
-VALUES (
-    3,                                  -- 必須與 staff_b 的 users.user_id 相同
-    '員工乙', 
-    '組長', 
-    3,
-    CURRENT_TIMESTAMP
-);
+(3, '員工乙', '組長', 3,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP),
 -- 4. 員工 C (Staff C)
-INSERT INTO admin_user (admin_id, admin_name, admin_job_title, organization_id, create_at) 
-VALUES (
-    4,                                  -- 必須與 staff_c 的 users.user_id 相同
-    '員工丙', 
-    '專員', 
-    4,
-    CURRENT_TIMESTAMP
-);
+(4, '員工丙', '專員', 4,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP);
