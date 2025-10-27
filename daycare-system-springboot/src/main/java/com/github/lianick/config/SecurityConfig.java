@@ -46,9 +46,12 @@ public class SecurityConfig {
 			
 			
             .exceptionHandling(e -> e
-            		// 401 錯誤處理：將 認證失敗/未認證 的錯誤交給 EntryPoint 處理
-            		.authenticationEntryPoint(jwtAuthenticationEntryPoint)
-            		// 403 錯誤處理：將 權限不足 的錯誤交給 CustomAccessDeniedHandler 處理
+            		// 認證失敗
+            		// 401 錯誤處理：將 認證失敗/未認證 的錯誤交給 EntryPoint 處理	(仍然在 Security Filter)
+            		.authenticationEntryPoint(jwtAuthenticationEntryPoint)	
+            		
+            		// 授權失敗
+            		// 403 錯誤處理：將 權限不足 的錯誤交給 CustomAccessDeniedHandler 處理	(已經進入 DispatcherServlet)
             		.accessDeniedHandler(customAccessDeniedHandler)
             		)
 			
