@@ -1,6 +1,7 @@
 package com.github.lianick.service.impl;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
@@ -236,8 +237,13 @@ public class UserAdminServiceImpl implements UserAdminService{
 		
 		// 2. 進行軟刪除 並且 回存
 		LocalDateTime now = LocalDateTime.now();
+	    String deleteSuffix = "_DEL_" + now.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS"));
+	    
 		userAdmin.setDeleteAt(now);
+		
 		tableUser.setDeleteAt(now);
+		tableUser.setEmail(tableUser.getEmail() + deleteSuffix);
+		tableUser.setAccount(tableUser.getAccount() + deleteSuffix);
 		
 		userAdminRepository.save(userAdmin);
 		usersRepository.save(tableUser);

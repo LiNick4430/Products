@@ -2,6 +2,7 @@ package com.github.lianick.service.impl;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
@@ -194,9 +195,12 @@ public class ChildInfoServiceImpl implements ChildInfoService{
 		
 		// 3. 建立 變數
 	    LocalDateTime deleteTime = LocalDateTime.now();
+	    String deleteSuffix = "_DEL_" + deleteTime.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS"));
 		
 		// 4. 執行 軟刪除
 		childInfo.setDeleteAt(deleteTime);
+		childInfo.setNationalIdNo(childInfo.getNationalIdNo() + deleteSuffix);
+		
 		childInfoRepository.save(childInfo);
 	}
 }

@@ -1,6 +1,7 @@
 package com.github.lianick.service.impl;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -419,10 +420,15 @@ public class UserServiceImpl implements UserService{
 	    
 	    // 3. 建立 變數
 	    LocalDateTime deleteTime = LocalDateTime.now();
+	    // 使用精確到毫秒的時間格式，確保尾碼在短時間內也是唯一的
+	    String deleteSuffix = "_DEL_" + deleteTime.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS"));
 	    
-		// 4. 執行 軟刪除
+	    // 4. 執行 軟刪除
 	    tableUser.setDeleteAt(deleteTime);
-		// 5. 關聯欄位
+	    // 破壞 具有 唯一性 的 欄位
+	    tableUser.setEmail(tableUser.getEmail() + deleteSuffix);
+	    tableUser.setAccount(tableUser.getAccount() + deleteSuffix);
+	    // 5. 關聯欄位
 		List<UserVerify> userVerifies = tableUser.getUserVerifies();
 		if (userVerifies != null) {
 			userVerifies.forEach(userVerify -> {

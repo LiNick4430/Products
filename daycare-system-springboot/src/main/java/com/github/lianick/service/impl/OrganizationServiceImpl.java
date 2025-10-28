@@ -1,6 +1,7 @@
 package com.github.lianick.service.impl;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Set;
 
@@ -215,7 +216,12 @@ public class OrganizationServiceImpl implements OrganizationService{
 		
 		// 3. 執行軟刪除(主)
 		LocalDateTime now = LocalDateTime.now();
+		String deleteSuffix = "_DEL_" + now.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS"));
+		
 		organization.setDeleteAt(now);
+		organization.setName(organization.getName() + deleteSuffix);
+		organization.setPhoneNumber(organization.getPhoneNumber() + deleteSuffix);
+		organization.setEmail(organization.getEmail() + deleteSuffix);
 		
 		// 4. 執行軟刪除(副)
 		Set<DocumentAdmin> documentAdmins = organization.getDocuments();
@@ -234,6 +240,7 @@ public class OrganizationServiceImpl implements OrganizationService{
 		if (regulations != null) {
 			regulations.forEach(regulation -> {
 				regulation.setDeleteAt(now);
+				regulation.setType(regulation.getType() + deleteSuffix);
 			});
 		}
 		

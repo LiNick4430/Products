@@ -2,6 +2,7 @@ package com.github.lianick.service.impl;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Set;
 
@@ -229,6 +230,7 @@ public class UserPublicServiceImpl implements UserPublicService{
 		String currentUsername = SecurityUtils.getCurrentUsername();
 		
 		final LocalDateTime deleteTime = LocalDateTime.now();
+		final String deleteSuffix = "_DEL_" + deleteTime.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS"));
 		final String ERROR_MESSAGE = "帳號或密碼錯誤";
 		
 		// 1. 找尋資料庫 對應的帳號
@@ -246,13 +248,18 @@ public class UserPublicServiceImpl implements UserPublicService{
 	    
 		// 4. 執行 軟刪除 (核心 Entity)
 	    userPublic.setDeleteAt(deleteTime);
+	    userPublic.setNationalIdNo(userPublic.getNationalIdNo() + deleteSuffix);
+	    
 	    tableUser.setDeleteAt(deleteTime);
+	    tableUser.setAccount(tableUser.getAccount() + deleteSuffix);
+	    tableUser.setEmail(tableUser.getEmail() + deleteSuffix);
 	    
 		// 5. 關聯欄位
 		Set<ChildInfo> children = userPublic.getChildren();
 		if (children != null) {
 			children.forEach(child -> {
 				child.setDeleteAt(deleteTime);
+				child.setNationalIdNo(child.getNationalIdNo() + deleteSuffix);
 			});
 		}
 		Set<DocumentPublic> documents = userPublic.getDocuments();
