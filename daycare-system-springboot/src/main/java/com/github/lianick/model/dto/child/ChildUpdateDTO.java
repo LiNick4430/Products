@@ -1,4 +1,4 @@
-package com.github.lianick.model.dto.userPublic;
+package com.github.lianick.model.dto.child;
 
 import java.time.LocalDate;
 

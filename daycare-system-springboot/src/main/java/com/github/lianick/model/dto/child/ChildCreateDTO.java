@@ -1,6 +1,4 @@
-package com.github.lianick.model.dto.userPublic;
-
-import java.time.LocalDate;
+package com.github.lianick.model.dto.child;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,14 +9,14 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ChildDTO {
+public class ChildCreateDTO {
 
 	private Long id;						// 兒童ID
 	
 	// 基本資料
 	private String name;
 	private String nationalIdNo;
-	private LocalDate birthdate;
+	private String birthdate;
 	private String gender;
 	
 }

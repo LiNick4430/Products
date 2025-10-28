@@ -1,4 +1,4 @@
-package com.github.lianick.model.dto.userPublic;
+package com.github.lianick.model.dto.child;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,14 +9,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ChildCreateDTO {
+public class ChildDeleteDTO {
 
 	private Long id;						// 兒童ID
-	
-	// 基本資料
-	private String name;
-	private String nationalIdNo;
-	private String birthdate;
-	private String gender;
 	
 }

@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.github.lianick.model.dto.userPublic.ChildCreateDTO;
-import com.github.lianick.model.dto.userPublic.ChildDTO;
-import com.github.lianick.model.dto.userPublic.ChildDeleteDTO;
-import com.github.lianick.model.dto.userPublic.ChildUpdateDTO;
+import com.github.lianick.model.dto.child.ChildCreateDTO;
+import com.github.lianick.model.dto.child.ChildDTO;
+import com.github.lianick.model.dto.child.ChildDeleteDTO;
+import com.github.lianick.model.dto.child.ChildUpdateDTO;
 import com.github.lianick.response.ApiResponse;
 import com.github.lianick.service.ChildInfoService;
 

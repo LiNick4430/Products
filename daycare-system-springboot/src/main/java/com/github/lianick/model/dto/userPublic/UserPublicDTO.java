@@ -3,6 +3,8 @@ package com.github.lianick.model.dto.userPublic;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.github.lianick.model.dto.child.ChildDTO;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
