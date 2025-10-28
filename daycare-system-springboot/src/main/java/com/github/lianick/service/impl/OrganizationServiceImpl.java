@@ -2,6 +2,7 @@ package com.github.lianick.service.impl;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,10 @@ import com.github.lianick.model.dto.organization.OrganizationDTO;
 import com.github.lianick.model.dto.organization.OrganizationDeleteDTO;
 import com.github.lianick.model.dto.organization.OrganizationFindDTO;
 import com.github.lianick.model.dto.organization.OrganizationUpdateDTO;
+import com.github.lianick.model.eneity.Announcements;
+import com.github.lianick.model.eneity.DocumentAdmin;
 import com.github.lianick.model.eneity.Organization;
+import com.github.lianick.model.eneity.Regulations;
 import com.github.lianick.model.eneity.Users;
 import com.github.lianick.repository.OrganizationRepository;
 import com.github.lianick.repository.UserAdminRepository;
@@ -209,9 +213,31 @@ public class OrganizationServiceImpl implements OrganizationService{
 			throw new OrganizationFailureException("此機構 還有 員工 無法刪除");
 		}
 		
-		// 3. 執行軟刪除 + 回存
+		// 3. 執行軟刪除(主)
 		LocalDateTime now = LocalDateTime.now();
 		organization.setDeleteAt(now);
+		
+		// 4. 執行軟刪除(副)
+		Set<DocumentAdmin> documentAdmins = organization.getDocuments();
+		if (documentAdmins != null) {
+			documentAdmins.forEach(documentAdmin -> {
+				documentAdmin.setDeleteAt(now);
+			});
+		}
+		Set<Announcements> announcements = organization.getAnnouncements();
+		if (announcements != null) {
+			announcements.forEach(announcement -> {
+				announcement.setDeleteAt(now);
+			});
+		}
+		Set<Regulations> regulations = organization.getRegulations();
+		if (regulations != null) {
+			regulations.forEach(regulation -> {
+				regulation.setDeleteAt(now);
+			});
+		}
+		
+		// 5. 回存
 		organization = organizationRepository.save(organization);
 	}
 }

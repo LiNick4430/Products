@@ -49,6 +49,13 @@ POST	"/send/password", "/send/password/"	密碼驗證信		"/email/send/password/
 GET 	"/verify"							帳號驗證		"/email/verify?token=" + token碼				PUBLIC	(信件內附超連結使用)
 GET 	"/reset/password"					忘記密碼驗證	"/email/reset/password?token=" + token碼		PUBLIC	(信件內附超連結使用)
 
+OrganizationController
+Request Mapping: "/organization"
+POST	"/find", "/find/"				尋找 特定機構資料			"/organization/find/"			PUBLIC
+POST	"/create", "/create/"			主管 建立 新的機構		"/organization/create/"			AUTHENTICATED
+POST	"/update", "/update/"			主管/員工 更新 機構資料	"/organization/update/"			AUTHENTICATED
+DELETE	"/delete", "/delete/"			主管 刪除 機構資料		"/organization/delete/"			AUTHENTICATED
+
 // 尚未開工
 DocumnetController	
 Request Mapping: "/document"

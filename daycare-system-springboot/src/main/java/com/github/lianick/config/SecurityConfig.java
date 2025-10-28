@@ -67,7 +67,8 @@ public class SecurityConfig {
 							"/auth/access/token/refresh/", "/auth/access/token/refresh",	// access token 刷新
 							"/email/send/password/", "/email/send/password",				// 發送忘記密碼信
 							"/email/verify",			// 帳號驗證
-							"/email/reset/password"		// 忘記密碼驗證
+							"/email/reset/password",		// 忘記密碼驗證
+							"/organization/find/", "/organization/find"	// 尋找 特定機構資料
 					).permitAll()
 					
 					// 2. 其他所有請求：都必須經過身份驗證
