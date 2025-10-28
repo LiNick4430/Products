@@ -236,12 +236,12 @@ public class UserAdminServiceImpl implements UserAdminService{
 				.orElseThrow(() -> new UserNoFoundException("用戶存在，但非員工帳號"));
 		
 		// 2. 進行軟刪除 並且 回存
-		LocalDateTime now = LocalDateTime.now();
-	    String deleteSuffix = "_DEL_" + now.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS"));
+		LocalDateTime deleteTime = LocalDateTime.now();
+	    String deleteSuffix = "_DEL_" + deleteTime.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS"));
 	    
-		userAdmin.setDeleteAt(now);
+		userAdmin.setDeleteAt(deleteTime);
 		
-		tableUser.setDeleteAt(now);
+		tableUser.setDeleteAt(deleteTime);
 		tableUser.setEmail(tableUser.getEmail() + deleteSuffix);
 		tableUser.setAccount(tableUser.getAccount() + deleteSuffix);
 		

@@ -215,10 +215,10 @@ public class OrganizationServiceImpl implements OrganizationService{
 		}
 		
 		// 3. 執行軟刪除(主)
-		LocalDateTime now = LocalDateTime.now();
-		String deleteSuffix = "_DEL_" + now.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS"));
+		LocalDateTime deleteTime = LocalDateTime.now();
+		String deleteSuffix = "_DEL_" + deleteTime.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS"));
 		
-		organization.setDeleteAt(now);
+		organization.setDeleteAt(deleteTime);
 		organization.setName(organization.getName() + deleteSuffix);
 		organization.setPhoneNumber(organization.getPhoneNumber() + deleteSuffix);
 		organization.setEmail(organization.getEmail() + deleteSuffix);
@@ -227,19 +227,19 @@ public class OrganizationServiceImpl implements OrganizationService{
 		Set<DocumentAdmin> documentAdmins = organization.getDocuments();
 		if (documentAdmins != null) {
 			documentAdmins.forEach(documentAdmin -> {
-				documentAdmin.setDeleteAt(now);
+				documentAdmin.setDeleteAt(deleteTime);
 			});
 		}
 		Set<Announcements> announcements = organization.getAnnouncements();
 		if (announcements != null) {
 			announcements.forEach(announcement -> {
-				announcement.setDeleteAt(now);
+				announcement.setDeleteAt(deleteTime);
 			});
 		}
 		Set<Regulations> regulations = organization.getRegulations();
 		if (regulations != null) {
 			regulations.forEach(regulation -> {
-				regulation.setDeleteAt(now);
+				regulation.setDeleteAt(deleteTime);
 				regulation.setType(regulation.getType() + deleteSuffix);
 			});
 		}
