@@ -34,7 +34,7 @@ public class FindOrganization {
 		}
 		System.out.println(optOrganization.get().getName());
 		// 找尋目標機構 包含名字	需要手動在前後加上 %
-		List<Organization> organizations = organizationRepository.findByName("%" + organizationName + "%");
+		List<Organization> organizations = organizationRepository.findByNameLike("%" + organizationName + "%");
 		if (organizations.isEmpty()) {
 			System.out.printf("機構 名稱 不包含 %s, 錯誤", organizationName);
 			return;
@@ -43,7 +43,7 @@ public class FindOrganization {
 			System.out.println(organization.getName());
 		});
 		// 找尋目標機構 包含 地址
-		List<Organization> organizations2 = organizationRepository.findByAddress("%" + organizationAddress + "%");
+		List<Organization> organizations2 = organizationRepository.findByAddressLike("%" + organizationAddress + "%");
 		if (organizations2.isEmpty()) {
 			System.out.printf("機構 地址 不包含 %s, 錯誤", organizationAddress);
 			return;

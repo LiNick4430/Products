@@ -9,15 +9,9 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrganizationDTO {
+public class OrganizationFindDTO {
 
-	private Long id;				// 機構ID
-	
 	private String name;
-	private String description;
 	private String address;
-	private String phoneNumber;
-	private String email;
-	private String fax;
 	
 }

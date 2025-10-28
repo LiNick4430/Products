@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrganizationDTO {
+public class OrganizationCreateDTO {
 
 	private Long id;				// 機構ID
 	

@@ -41,10 +41,10 @@ public class Organization extends BaseEntity {
 	@Column(name = "organization_address", nullable = false)
 	private String address;			// 機構 地址
 	
-	@Column(name = "organization_phone", nullable = false)
+	@Column(name = "organization_phone", unique = true, nullable = false)
 	private String phoneNumber;		// 機構 電話
 	
-	@Column(name = "organization_email", nullable = false)
+	@Column(name = "organization_email", unique = true, nullable = false)
 	private String email;			// 機構 電子信箱
 	
 	@Column(name = "organization_fax")
