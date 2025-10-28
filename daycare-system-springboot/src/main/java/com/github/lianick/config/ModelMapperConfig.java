@@ -38,10 +38,10 @@ public class ModelMapperConfig {
 	private UsersToUsernameConveter usersToUsernameConveter;
 	
 	@Autowired
-	private OrganizationToOrganizationIdConveter organizationIdConveter;
+	private OrganizationToOrganizationIdConveter organizationToOrganizationIdConveter;
 	
 	@Autowired
-	private OrganizationToOrganizationNameConveter organizationNameConveter;
+	private OrganizationToOrganizationNameConveter organizationToOrganizationNameConveter;
 	
 	// 主要 邏輯
 	@Bean	// @Bean 預設 Public
@@ -97,9 +97,9 @@ public class ModelMapperConfig {
 			mapper.map(UserAdmin::getAdminId, UserAdminDTO::setId);
 			mapper.using(usersToUsernameConveter)
 					.map(UserAdmin::getUsers, UserAdminDTO::setUsername);
-			mapper.using(organizationIdConveter)
+			mapper.using(organizationToOrganizationIdConveter)
 					.map(UserAdmin::getOrganization, UserAdminDTO::setOrganizationId);
-			mapper.using(organizationNameConveter)
+			mapper.using(organizationToOrganizationNameConveter)
 					.map(UserAdmin::getOrganization, UserAdminDTO::setName);
 		});
 		
