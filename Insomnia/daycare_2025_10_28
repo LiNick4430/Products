@@ -32,7 +32,7 @@ collection:
         meta:
           id: fld_045d67b5e6504bcb803e2b82a3acc1db
           created: 1760759637170
-          modified: 1761071501720
+          modified: 1761635996410
           sortKey: -1760759637170
           description: ""
         children:
@@ -1193,6 +1193,157 @@ collection:
               type: bearer
               token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfTUFOQUdFUiIsInVzZXJJZCI6MSwicm9sZU51bWJlciI6Mywic3ViIjoibWFuYWdlciIsImlhdCI6MTc2MTU3NTU5NywiZXhwIjoxNzYxNTc3Mzk3fQ.zwOLFnP87QIcC8TdUE8YbvT5sNdBBwqzS9T49VD1SGM
               prefix: Bearer
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+      - name: Organization
+        meta:
+          id: fld_1e8889d2ea904fddb1f05b52f568f8d5
+          created: 1761637307176
+          modified: 1761637307176
+          sortKey: -1761637307176
+          description: ""
+        children:
+          - url: http://localhost:8080/organization/find/
+            name: /organization/find/ 尋找特定機構
+            meta:
+              id: req_b9c7643c4f314efe9016177bc923cebe
+              created: 1761637309793
+              modified: 1761637597495
+              isPrivate: false
+              description: ""
+              sortKey: -1761637309793
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"name" : "幼兒園",
+                	"address" : ""
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/11.6.2
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/organization/create/
+            name: /organization/create/ 主管 建立 新的機構
+            meta:
+              id: req_876587c6e50f4895bbba1b320d4b27ea
+              created: 1761637692401
+              modified: 1761637816139
+              isPrivate: false
+              description: ""
+              sortKey: -1761606404657.5
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"name": "台中市西屯區太陽公立幼兒園",
+                	"description": "結合自然教學法，培養幼兒獨立思考能力，近公園綠地。",
+                	"address": "台中市西屯區台灣大道三段300號",
+                	"phoneNumber": "04-23003333",
+                	"email": "sun.wtc@daycare.gov.tw",
+                	"fax": "04-23003333"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/11.6.2
+            authentication:
+              type: bearer
+              prefix: Bearer
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfTUFOQUdFUiIsInVzZXJJZCI6MSwicm9sZU51bWJlciI6Mywic3ViIjoibWFuYWdlciIsImlhdCI6MTc2MTYzNzc1NCwiZXhwIjoxNzYxNjM5NTU0fQ.PunzjMHiUcdyr-0bjP4ots4NwQSi3CPkf4pAIg73338
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/organization/update/
+            name: /organization/update/ 主管/員工 更新 機構資料
+            meta:
+              id: req_00f11dfc71224a96a7b1263aa8e08355
+              created: 1761637857873
+              modified: 1761637930104
+              isPrivate: false
+              description: ""
+              sortKey: -1761590952089.75
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"id": 5,
+                	"newName": "台中市西屯區太陽公立幼兒園",
+                	"newDescription": "結合自然教學法，培養幼兒獨立思考能力，近公園綠地。",
+                	"newAddress": "台中市西屯區台灣大道三段400號",
+                	"newPhoneNumber": "04-23003333",
+                	"newEmail": "sun.wtc@daycare.gov.tw",
+                	"newFax": "04-23003333"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/11.6.2
+            authentication:
+              type: bearer
+              prefix: Bearer
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfTUFOQUdFUiIsInVzZXJJZCI6MSwicm9sZU51bWJlciI6Mywic3ViIjoibWFuYWdlciIsImlhdCI6MTc2MTYzNzc1NCwiZXhwIjoxNzYxNjM5NTU0fQ.PunzjMHiUcdyr-0bjP4ots4NwQSi3CPkf4pAIg73338
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/organization/delete/
+            name: /organization/delete/ 主管 刪除 機構資料
+            meta:
+              id: req_910482c1fab94149b5674a329b2cecc0
+              created: 1761637957832
+              modified: 1761637999333
+              isPrivate: false
+              description: ""
+              sortKey: -1761583225805.875
+            method: DELETE
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"id": 5,
+                	
+                	"username" : "manager",
+                	"password" : "123456"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/11.6.2
+            authentication:
+              type: bearer
+              prefix: Bearer
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfTUFOQUdFUiIsInVzZXJJZCI6MSwicm9sZU51bWJlciI6Mywic3ViIjoibWFuYWdlciIsImlhdCI6MTc2MTYzNzc1NCwiZXhwIjoxNzYxNjM5NTU0fQ.PunzjMHiUcdyr-0bjP4ots4NwQSi3CPkf4pAIg73338
             settings:
               renderRequestBody: true
               encodeUrl: true
