@@ -1,6 +1,7 @@
 WEB API 規格
 方法		網址		說明		實際位置	PUBLIC/AUTHENTICATED(是否要加入SecurityConfig)
 
+// 已經完成
 UserController
 Request Mapping: "/user"
 POST	"/register", "/register/"				註冊	帳號			"/user/register/"			PUBLIC
@@ -34,19 +35,6 @@ POST	"/information", "/information/"	設定 民眾底下 新幼兒資料		"/chil
 POST	"/update", "/update/"			更新 民眾底下 特定幼兒資料		"/child/update/"			AUTHENTICATED
 DELETE	"/delete", "/delete/"			刪除 民眾底下 特定幼兒資料		"/child/delete/"			AUTHENTICATED
 
-DocumnetController
-Request Mapping: "/document"
-GET 	"/public/find/all", "/public/find/all/"			尋找 民眾底下 全部的附件		"/document/public/find/all/"	AUTHENTICATED
-POST 	"/public/find", "/public/find/"					尋找 民眾底下 特定的附件		"/document/public/find/"		AUTHENTICATED
-POST 	"/public/upload", "/public/upload/"				民眾 建立 新的附件			"/document/public/upload/"		AUTHENTICATED
-POST 	"/public/link/case", "/public/link/case/"		民眾 將 附件 和 案件 建立 關連 	"/document/public/link/case/"	AUTHENTICATED
-POST 	"/public/unlink/case", "/public/unlink/case/"	民眾 將 附件 和 案件 取消 關聯 	"/document/public/unlink/case/"	AUTHENTICATED
-DELETE	"/public/delete", "/public/delete/"				民眾 刪除 特定的附件			"/document/public/delete/"		AUTHENTICATED
-POST 	"/case/upload", "/case/upload/"					案件 建立 新的附件			"/document/case/upload/"		AUTHENTICATED
-POST 	"/case/link/public", "/case/link/public/"		案件 將 附件 和 民眾 建立 關連 	"/document/case/link/public/"	AUTHENTICATED
-DELETE	"/case/delete", "/case/delete/"					案件 刪除 特定的附件			"/document/case/delete/"		AUTHENTICATED
-POST	"/admin/check", "/admin/check/"					員工 審核 特定民眾 的 特定的附件	"/document/admin/check/"		AUTHENTICATED
-
 AuthContorller
 Request Mapping: "/auth"
 POST	"/login", "/login/"									登入					"/auth/login/"					PUBLIC
@@ -61,5 +49,20 @@ POST	"/send/password", "/send/password/"	密碼驗證信		"/email/send/password/
 GET 	"/verify"							帳號驗證		"/email/verify?token=" + token碼				PUBLIC	(信件內附超連結使用)
 GET 	"/reset/password"					忘記密碼驗證	"/email/reset/password?token=" + token碼		PUBLIC	(信件內附超連結使用)
 
+// 尚未開工
+DocumnetController	
+Request Mapping: "/document"
+GET 	"/public/find/all", "/public/find/all/"			尋找 民眾底下 全部的附件		"/document/public/find/all/"	AUTHENTICATED
+POST 	"/public/find", "/public/find/"					尋找 民眾底下 特定的附件		"/document/public/find/"		AUTHENTICATED
+POST 	"/public/upload", "/public/upload/"				民眾 建立 新的附件			"/document/public/upload/"		AUTHENTICATED
+POST 	"/public/link/case", "/public/link/case/"		民眾 將 附件 和 案件 建立 關連 	"/document/public/link/case/"	AUTHENTICATED
+POST 	"/public/unlink/case", "/public/unlink/case/"	民眾 將 附件 和 案件 取消 關聯 	"/document/public/unlink/case/"	AUTHENTICATED
+DELETE	"/public/delete", "/public/delete/"				民眾 刪除 特定的附件			"/document/public/delete/"		AUTHENTICATED
+POST 	"/case/upload", "/case/upload/"					案件 建立 新的附件			"/document/case/upload/"		AUTHENTICATED
+POST 	"/case/link/public", "/case/link/public/"		案件 將 附件 和 民眾 建立 關連 	"/document/case/link/public/"	AUTHENTICATED
+DELETE	"/case/delete", "/case/delete/"					案件 刪除 特定的附件			"/document/case/delete/"		AUTHENTICATED
+POST	"/admin/check", "/admin/check/"					員工 審核 特定民眾 的 特定的附件	"/document/admin/check/"		AUTHENTICATED
+
+// 背景 錯誤捕捉 需要
 CustomErrorController
 REQUEST	"/error/access-denied"	讓 AccessDeniedException 被 CustomAccessDeniedHandler 轉發 到此 後讓 GlobalExceptionHandler 會接管
