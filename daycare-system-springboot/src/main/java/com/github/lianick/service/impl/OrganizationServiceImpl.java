@@ -17,7 +17,6 @@ import com.github.lianick.model.dto.organization.OrganizationDeleteDTO;
 import com.github.lianick.model.dto.organization.OrganizationFindDTO;
 import com.github.lianick.model.dto.organization.OrganizationUpdateDTO;
 import com.github.lianick.model.eneity.Organization;
-import com.github.lianick.model.eneity.UserAdmin;
 import com.github.lianick.model.eneity.Users;
 import com.github.lianick.repository.OrganizationRepository;
 import com.github.lianick.repository.UserAdminRepository;
@@ -122,6 +121,26 @@ public class OrganizationServiceImpl implements OrganizationService{
 
 	@Override
 	public OrganizationDTO updateOrganization(OrganizationUpdateDTO organizationUpdateDTO) {
+		// 0. 判定 是否有權限控制 該機構
+		String currentUsername = SecurityUtils.getCurrentUsername();
+		Users tableUser = usersRepository.findByAccount(currentUsername)
+				.orElseThrow(() -> new UserNoFoundException("查無使用者"));
+		
+		// 判斷是否為主管(最高權限)（角色名稱 = "ROLE_MANAGER"）
+		boolean isManager = tableUser.getRole().getName().equals("ROLE_MANAGER");
+		
+		// 非主管等級 要進一步判斷
+		if (!isManager) {
+			// 民眾帳號，無權執行此操作
+			if (tableUser.getAdminInfo() == null) {
+				throw new AccessDeniedException("權限不足，您非管理層成員。");
+			}
+			// 員工帳號 但 所屬機構 不符 沒有對應權限
+			if (tableUser.getAdminInfo().getOrganization().getOrganizationId() != organizationUpdateDTO.getId()) {
+				throw new AccessDeniedException("操作身份錯誤，您無權修改非所屬機構資料");
+			}
+		}
+		
 		// 1. 取出機構基本資料
 		Long currentId = organizationUpdateDTO.getId();
 		
