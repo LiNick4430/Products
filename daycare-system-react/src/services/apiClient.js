@@ -3,10 +3,10 @@
 const API_BASE_URL = "http://localhost:8080";
 
 /**
- * 建立一個通用的 API 請求客戶端。
- * 它會自動處理錯誤、JSON 解析，並可選地加入 Access Token。
+ * 一個通用的 API 請求客戶端。
+ * 自動處理錯誤、JSON 解析，可選加入 Access Token。
  * @param {string} url - 請求的路徑 (不包含 BASE_URL)。
- * @param {string} method - 請求方法 (預設'GET') ('GET', 'POST', 'PUT', 'DELETE')。
+ * @param {string} method - 請求方法 (預設'GET') ('GET', 'POST', 'DELETE')。
  * @param {object} [data=null] - 請求體 (預設 Null) (適用於 POST/PUT/DELETE)。
  * @param {boolean} [requiresAuth=false] - 是否需要 Access Token (預設 false)。
  * @returns {Promise<Object>} - 伺服器響應的資料物件。
