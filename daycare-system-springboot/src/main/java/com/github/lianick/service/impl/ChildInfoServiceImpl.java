@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import com.github.lianick.exception.ChildNoFoundException;
@@ -50,6 +51,7 @@ public class ChildInfoServiceImpl implements ChildInfoService{
 	private ModelMapper modelMapper;
 
 	@Override
+	@PreAuthorize("hasAuthority('ROLE_PUBLIC')") 
 	public UserPublic findUserPublic() {
 		// 0. 從 JWT 獲取 username
 		String currentUsername = SecurityUtils.getCurrentUsername();
@@ -64,6 +66,7 @@ public class ChildInfoServiceImpl implements ChildInfoService{
 	}
 	
 	@Override
+	@PreAuthorize("hasAuthority('ROLE_PUBLIC')") 
 	public List<ChildDTO> findAllChildByUserPublic() {
 		// 0. 找尋 UserPublic
 		UserPublic userPublic = findUserPublic();
@@ -80,6 +83,7 @@ public class ChildInfoServiceImpl implements ChildInfoService{
 	}
 
 	@Override
+	@PreAuthorize("hasAuthority('ROLE_PUBLIC')") 
 	public ChildDTO findChildByUserPublic(ChildDTO childDTO) {
 		// 0. 找尋 UserPublic
 		UserPublic userPublic = findUserPublic();
@@ -101,6 +105,7 @@ public class ChildInfoServiceImpl implements ChildInfoService{
 	}
 
 	@Override
+	@PreAuthorize("hasAuthority('ROLE_PUBLIC')") 
 	public ChildCreateDTO createChildInfo(ChildCreateDTO childCreateDTO) {
 		// 0. 找尋 UserPublic 
 		UserPublic userPublic = findUserPublic();
@@ -146,6 +151,7 @@ public class ChildInfoServiceImpl implements ChildInfoService{
 	}
 
 	@Override
+	@PreAuthorize("hasAuthority('ROLE_PUBLIC')") 
 	public ChildUpdateDTO updateChildInfo(ChildUpdateDTO childUpdateDTO) {
 		// 0. 找尋 UserPublic
 		UserPublic userPublic = findUserPublic();
@@ -176,6 +182,7 @@ public class ChildInfoServiceImpl implements ChildInfoService{
 	}
 
 	@Override
+	@PreAuthorize("hasAuthority('ROLE_PUBLIC')") 
 	public void deleteChildInfo(ChildDeleteDTO childDeleteDTO) {
 		// 0. 找尋 UserPublic
 		UserPublic userPublic = findUserPublic();

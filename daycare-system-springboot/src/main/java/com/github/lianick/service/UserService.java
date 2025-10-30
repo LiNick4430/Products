@@ -1,7 +1,5 @@
 package com.github.lianick.service;
 
-import org.springframework.security.access.prepost.PreAuthorize;
-
 import com.github.lianick.model.dto.user.PasswordAwareDTO;
 import com.github.lianick.model.dto.user.UserDeleteDTO;
 import com.github.lianick.model.dto.user.UserForgetPasswordDTO;
@@ -25,43 +23,47 @@ import com.github.lianick.model.eneity.Users;
 
 public interface UserService {
 	
-	// 把 註冊資料 轉成 User
+	/** 把 註冊資料 轉成 User */
 	public Users convertToUser(UserRegisterDTO userRegisterDTO);
 	
-	// 獲取個人訊息
-	@PreAuthorize("isAuthenticated()")	// 確保只有持有有效 JWT 的用戶才能存取
+	/** 獲取個人訊息<p>
+	 * 需要 @PreAuthorize("isAuthenticated()")
+	 */
 	UserMeDTO getUserDetails();
 	
-	// 註冊民眾帳號
+	/** 註冊民眾帳號 */
 	UserRegisterDTO registerUser(UserRegisterDTO userRegisterDTO);
-	// 驗證帳號
-	UserVerifyDTO veriftyUser(String token);
-	// 登陸帳號 前處理 (後續給 AuthService)
+	/** 驗證帳號 */
+	UserVerifyDTO verifyUser(String token);
+	/** 登陸帳號 前處理 (後續給 AuthService) */
 	Users loginUser(UserLoginDTO userLoginDTO);
 	
 	// 忘卻密碼 三步驟
-	// 發送驗證信
+	/** 發送驗證信 */
 	UserForgetPasswordDTO forgetPasswordSendEmail(UserForgetPasswordDTO userForgetPasswordDTO);
-	// token 驗證
+	/** token 驗證 */
 	UserForgetPasswordDTO forgetPasswordVerifty(String token);
-	// 通過驗證信後 修改密碼
+	/** 通過驗證信後 修改密碼 */
 	UserForgetPasswordDTO forgetPasswordUpdatePassword(UserForgetPasswordDTO userForgetPasswordDTO);
 	
 	// 修改帳號資料
-	// 確認密碼
-	@PreAuthorize("isAuthenticated()")	// 確保只有持有有效 JWT 的用戶才能存取
+	/** 確認密碼 <p>
+	 * 需要 @PreAuthorize("isAuthenticated()") 
+	 * */
 	UserUpdateDTO updateUserCheckPassword(UserUpdateDTO userUpdateDTO);
-	// update 資料
-	@PreAuthorize("isAuthenticated()")	// 確保只有持有有效 JWT 的用戶才能存取
+	/** update 資料 <p>
+	 * 需要 @PreAuthorize("isAuthenticated()") 
+	 * */
 	UserUpdateDTO updateUser(UserUpdateDTO userUpdateDTO);
 	
-	// 刪除帳號
-	@PreAuthorize("isAuthenticated()")	// 確保只有持有有效 JWT 的用戶才能存取
+	/** 刪除帳號 <p>
+	 * 需要 @PreAuthorize("isAuthenticated()") 
+	 * */
 	void deleteUser(UserDeleteDTO userDeleteDTO);
 	
-	// 產生 帳號驗證碼 同時 寄出驗證信
+	/** 產生 帳號驗證碼 同時 寄出驗證信 */
 	void generateUserToken(Users users, String subject, String apiName);
 	
-	// 密碼驗證, 泛型 T 必須是 PasswordAwareDTO 或其子類
+	/** 密碼驗證, 泛型 T 必須是 PasswordAwareDTO 或其子類 */
 	<T extends PasswordAwareDTO> Boolean checkPassword (T userDto, Users tableUser);
 }

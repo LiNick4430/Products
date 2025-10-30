@@ -1,6 +1,7 @@
 package com.github.lianick.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import com.github.lianick.model.dto.AuthResponseDTO;
@@ -46,7 +47,6 @@ public class AuthServiceImpl implements AuthService{
 		
 		// 4. 整合回應
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
-		authResponseDTO.setId(users.getUserId());
 		authResponseDTO.setUsername(users.getAccount());
 		authResponseDTO.setRefreshToken(refreshToken.getToken());
 		authResponseDTO.setAccessToken(accessToken);
@@ -56,6 +56,7 @@ public class AuthServiceImpl implements AuthService{
 	}
 
 	@Override
+	@PreAuthorize("isAuthenticated()")
 	public void logout() {
 		/* 從 JWT 獲取身份：確認操作者身份
 	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

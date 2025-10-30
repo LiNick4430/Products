@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import com.github.lianick.exception.OrganizationFailureException;
@@ -59,6 +60,7 @@ public class UserAdminServiceImpl implements UserAdminService{
 	private PasswordSecurity passwordSecurity;
 	
 	@Override
+	@PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")
 	public UserAdminDTO findUserAdmin() {
 		// 0. 從 JWT 獲取 username
 		String currentUsername = SecurityUtils.getCurrentUsername();
@@ -74,6 +76,7 @@ public class UserAdminServiceImpl implements UserAdminService{
 	}
 	
 	@Override
+	@PreAuthorize("hasAuthority('ROLE_MANAGER')")
 	public List<UserAdminDTO> findAllUserAdmin() {
 		List<UserAdminDTO> userAdminDTOs = userAdminRepository.findAll()
 															.stream()
@@ -85,6 +88,7 @@ public class UserAdminServiceImpl implements UserAdminService{
 	}
 
 	@Override
+	@PreAuthorize("hasAuthority('ROLE_MANAGER')")
 	public UserAdminDTO findByUsername(UserAdminDTO userAdminDTO) {
 		Users tableUser = usersRepository.findByAccount(userAdminDTO.getUsername())
 				.orElseThrow(() -> new UserNoFoundException("基礎帳號不存在"));
@@ -96,6 +100,7 @@ public class UserAdminServiceImpl implements UserAdminService{
 	}
 
 	@Override
+	@PreAuthorize("hasAuthority('ROLE_MANAGER')")
 	public UserAdminDTO createUserAdmin(UserAdminCreateDTO userAdminCreateDTO) {
 		// 0. 檢查 是否 自己帳號
 		String currentUsername = SecurityUtils.getCurrentUsername();
@@ -165,6 +170,7 @@ public class UserAdminServiceImpl implements UserAdminService{
 	}
 
 	@Override
+	@PreAuthorize("hasAuthority('ROLE_MANAGER')")
 	public UserAdminDTO updateUserAdmin(UserAdminUpdateDTO userAdminUpdateDTO) {
 		// 0. 檢查 是否 自己帳號
 		String currentUsername = SecurityUtils.getCurrentUsername();
@@ -222,6 +228,7 @@ public class UserAdminServiceImpl implements UserAdminService{
 	}
 
 	@Override
+	@PreAuthorize("hasAuthority('ROLE_MANAGER')")
 	public void deleteUserAdmin(UserDeleteDTO userDeleteDTO) {
 		// 0. 檢查 是否 自己帳號
 		String currentUsername = SecurityUtils.getCurrentUsername();

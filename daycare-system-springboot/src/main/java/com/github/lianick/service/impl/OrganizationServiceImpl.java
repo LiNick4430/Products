@@ -8,6 +8,7 @@ import java.util.Set;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import com.github.lianick.exception.OrganizationFailureException;
@@ -93,6 +94,7 @@ public class OrganizationServiceImpl implements OrganizationService{
 	}
 
 	@Override
+	@PreAuthorize("hasAuthority('ROLE_MANAGER')") 
 	public OrganizationDTO createOrganization(OrganizationCreateDTO organizationCreateDTO) {
 		// 0. 檢查資料完整性
 		if (organizationCreateDTO.getName() == null || organizationCreateDTO.getName().isBlank() ||
@@ -125,6 +127,7 @@ public class OrganizationServiceImpl implements OrganizationService{
 	}
 
 	@Override
+	@PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")
 	public OrganizationDTO updateOrganization(OrganizationUpdateDTO organizationUpdateDTO) {
 		// 0. 判定 是否有權限控制 該機構
 		String currentUsername = SecurityUtils.getCurrentUsername();
@@ -195,6 +198,7 @@ public class OrganizationServiceImpl implements OrganizationService{
 	}
 
 	@Override
+	@PreAuthorize("hasAuthority('ROLE_MANAGER')") 
 	public void deleteOrganization(OrganizationDeleteDTO organizationDeleteDTO) {
 		// 1. 檢查是否本人
 		String currentName = SecurityUtils.getCurrentUsername();

@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -61,6 +62,7 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	@Override
+	@PreAuthorize("isAuthenticated()")
 	public UserMeDTO getUserDetails() {
 		/* 從 JWT 獲取身份：確認操作者身份
 	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -126,7 +128,7 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public UserVerifyDTO veriftyUser(String token){
+	public UserVerifyDTO verifyUser(String token){
 		// 0. 取出/建立 所需資料
 		LocalDateTime now = LocalDateTime.now();
 		
@@ -321,6 +323,7 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
+	@PreAuthorize("isAuthenticated()")
 	public UserUpdateDTO updateUserCheckPassword(UserUpdateDTO userUpdateDTO) {
 		/* 從 JWT 獲取身份：確認操作者身份
 	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -354,6 +357,7 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
+	@PreAuthorize("isAuthenticated()")
 	public UserUpdateDTO updateUser(UserUpdateDTO userUpdateDTO) {
 		/* 從 JWT 獲取身份：確認操作者身份
 	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -402,6 +406,7 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	@Override
+	@PreAuthorize("isAuthenticated()")
 	public void deleteUser(UserDeleteDTO userDeleteDTO){
 		/* 從 JWT 獲取身份：確認操作者身份
 	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

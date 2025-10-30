@@ -2,8 +2,6 @@ package com.github.lianick.service;
 
 import java.util.List;
 
-import org.springframework.security.access.prepost.PreAuthorize;
-
 import com.github.lianick.model.dto.user.UserDeleteDTO;
 import com.github.lianick.model.dto.userPublic.UserPublicDTO;
 import com.github.lianick.model.dto.userPublic.UserPublicCreateDTO;
@@ -22,28 +20,34 @@ import com.github.lianick.model.dto.userPublic.UserPublicUpdateDTO;
 // 負責 處理 民眾資料
 public interface UserPublicService {
 
-	// 搜尋 全部 民眾帳號
-	@PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")		// 只能 這兩個 角色 的 JWT 才能使用
+	/** 搜尋 全部 民眾帳號<p>
+	 * 需要 @PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")
+	 *  */
 	List<UserPublicDTO> findAllUserPublic();
 	
-	// 根據 username 搜尋 民眾帳號
-	@PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")		// 只能 這兩個 角色 的 JWT 才能使用
+	/** 根據 username 搜尋 民眾帳號<p>
+	 * 需要 @PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")
+	 *  */
 	UserPublicDTO findByUsername(UserPublicDTO userPublicDTO);
 	
-	// 根據 username 填寫 基本資料
-	@PreAuthorize("hasAuthority('ROLE_PUBLIC')")	// 確保只有持有有效 JWT 的用戶才能存取
+	/** 根據 username 填寫 基本資料<p>
+	 * 需要 @PreAuthorize("hasAuthority('ROLE_PUBLIC')")
+	 *  */
 	UserPublicCreateDTO createUserPublic(UserPublicCreateDTO userPublicSaveDTO);
 	
 	// 根據 username 更新 基本資料
-	// 密碼檢查
-	@PreAuthorize("hasAuthority('ROLE_PUBLIC')")	// 確保只有持有有效 JWT 的用戶才能存取
+	/** 密碼檢查<p>
+	 * 需要 @PreAuthorize("hasAuthority('ROLE_PUBLIC')")
+	 *  */
 	UserPublicUpdateDTO updateUserPublicCheckPassword(UserPublicUpdateDTO userPublicUpdateDTO);
-	// 正式更新
-	@PreAuthorize("hasAuthority('ROLE_PUBLIC')")	// 確保只有持有有效 JWT 的用戶才能存取
+	/** 正式更新<p>
+	 * 需要 @PreAuthorize("hasAuthority('ROLE_PUBLIC')")
+	 *  */
 	UserPublicUpdateDTO updateUserPublic(UserPublicUpdateDTO userPublicUpdateDTO);
 	
-	// 根據 username 刪除 民眾帳號
-	@PreAuthorize("hasAuthority('ROLE_PUBLIC')")	// 確保只有持有有效 JWT 的用戶才能存取
+	/** 根據 username 刪除 民眾帳號<p>
+	 * 需要 @PreAuthorize("hasAuthority('ROLE_PUBLIC')")
+	 *  */
 	void deleteUserPublic(UserDeleteDTO userDeleteDTO);
 	
 }

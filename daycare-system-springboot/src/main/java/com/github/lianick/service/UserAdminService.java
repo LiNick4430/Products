@@ -2,8 +2,6 @@ package com.github.lianick.service;
 
 import java.util.List;
 
-import org.springframework.security.access.prepost.PreAuthorize;
-
 import com.github.lianick.model.dto.user.UserDeleteDTO;
 import com.github.lianick.model.dto.userAdmin.UserAdminCreateDTO;
 import com.github.lianick.model.dto.userAdmin.UserAdminDTO;
@@ -20,28 +18,34 @@ import com.github.lianick.model.dto.userAdmin.UserAdminUpdateDTO;
 * */
 public interface UserAdminService {
 
-	// 主管 / 員工 取得自己的 資料
-	@PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")
+	/** 主管 / 員工 取得自己的 資料<p>
+	 * 需要 @PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')") 
+	 * */
 	UserAdminDTO findUserAdmin();
 	
-	// 主管 尋找 員工們 的資料
-	@PreAuthorize("hasAuthority('ROLE_MANAGER')")
+	/** 主管 尋找 員工們 的資料<p>
+	 * 需要 @PreAuthorize("hasAuthority('ROLE_MANAGER')") 
+	 * */
 	List<UserAdminDTO> findAllUserAdmin();
 	
-	// 主管 尋找 特定 員工 的資料
-	@PreAuthorize("hasAuthority('ROLE_MANAGER')")
+	/** 主管 尋找 特定 員工 的資料<p>
+	 * 需要 @PreAuthorize("hasAuthority('ROLE_MANAGER')") 
+	 * */
 	UserAdminDTO findByUsername(UserAdminDTO userAdminDTO);
 	
-	// 主管 創建 特定員工(非本人) 的 資料
-	@PreAuthorize("hasAuthority('ROLE_MANAGER')")
+	/** 主管 創建 特定員工(非本人) 的 資料<p>
+	 * 需要 @PreAuthorize("hasAuthority('ROLE_MANAGER')") 
+	 * */
 	UserAdminDTO createUserAdmin(UserAdminCreateDTO userAdminCreateDTO);
 	
-	// 主管 更新 特定員工(非本人) 的 資料
-	@PreAuthorize("hasAuthority('ROLE_MANAGER')")
+	/** 主管 更新 特定員工(非本人) 的 資料<p>
+	 * 需要 @PreAuthorize("hasAuthority('ROLE_MANAGER')") 
+	 * */
 	UserAdminDTO updateUserAdmin(UserAdminUpdateDTO userAdminUpdateDTO);
 	
-	// 主管 刪除 特定的員工資料 (非本人)
-	@PreAuthorize("hasAuthority('ROLE_MANAGER')")
+	/** 主管 刪除 特定的員工資料 (非本人)<p>
+	 * 需要 @PreAuthorize("hasAuthority('ROLE_MANAGER')") 
+	 * */
 	void deleteUserAdmin(UserDeleteDTO userDeleteDTO);
 	
 }

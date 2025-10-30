@@ -41,7 +41,7 @@ public class EmailController {
 	
 	@GetMapping("/verify")
 	public ApiResponse<UserVerifyDTO> verify(@RequestParam String token) {
-		UserVerifyDTO userVerifyDTO = userService.veriftyUser(token);
+		UserVerifyDTO userVerifyDTO = userService.verifyUser(token);
 		// return new ApiResponse<UserVerifyDTO>(HttpStatus.OK.value(), "帳號啟用成功", userVerifyDTO);
 		return ApiResponse.success("帳號啟用成功", userVerifyDTO);
 	}

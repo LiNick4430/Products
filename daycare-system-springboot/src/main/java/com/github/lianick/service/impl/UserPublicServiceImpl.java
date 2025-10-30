@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import com.github.lianick.exception.FormatterFailureException;
@@ -53,6 +54,7 @@ public class UserPublicServiceImpl implements UserPublicService{
 	private UserService userService;
 	
 	@Override
+	@PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")
 	public List<UserPublicDTO> findAllUserPublic() {
 		List<UserPublicDTO> userPublicDTOs = userPublicRepository.findAll()
 																.stream()
@@ -66,6 +68,7 @@ public class UserPublicServiceImpl implements UserPublicService{
 	}
 
 	@Override
+	@PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")
 	public UserPublicDTO findByUsername(UserPublicDTO userPublicDTO) {
 		// 0. 檢查數值完整性
 		if (userPublicDTO.getUsername() == null || userPublicDTO.getUsername().isBlank()) {
@@ -88,6 +91,7 @@ public class UserPublicServiceImpl implements UserPublicService{
 	}
 
 	@Override
+	@PreAuthorize("hasAuthority('ROLE_PUBLIC')")
 	public UserPublicCreateDTO createUserPublic(UserPublicCreateDTO userPublicCreateDTO) {
 		/* 從 JWT 獲取身份：確認操作者身份
 	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -148,6 +152,7 @@ public class UserPublicServiceImpl implements UserPublicService{
 	}
 
 	@Override
+	@PreAuthorize("hasAuthority('ROLE_PUBLIC')")
 	public UserPublicUpdateDTO updateUserPublicCheckPassword(UserPublicUpdateDTO userPublicUpdateDTO) {
 		/* 從 JWT 獲取身份：確認操作者身份
 	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -183,6 +188,7 @@ public class UserPublicServiceImpl implements UserPublicService{
 	}
 	
 	@Override
+	@PreAuthorize("hasAuthority('ROLE_PUBLIC')")
 	public UserPublicUpdateDTO updateUserPublic(UserPublicUpdateDTO userPublicUpdateDTO) {
 		/* 從 JWT 獲取身份：確認操作者身份
 	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -222,6 +228,7 @@ public class UserPublicServiceImpl implements UserPublicService{
 	}
 
 	@Override
+	@PreAuthorize("hasAuthority('ROLE_PUBLIC')")
 	public void deleteUserPublic(UserDeleteDTO userDeleteDTO) {
 		/* 從 JWT 獲取身份：確認操作者身份
 	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
