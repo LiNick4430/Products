@@ -20,4 +20,5 @@ public class UserRegisterDTO {	// 註冊 民眾帳號
 	private String password;
 	
 	private Long roleNumber;
+	
 }

@@ -11,6 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.github.lianick.config.FrontendProperties;
 import com.github.lianick.exception.TokenFailureException;
 import com.github.lianick.exception.UserExistException;
 import com.github.lianick.exception.UserNoFoundException;
@@ -55,6 +56,9 @@ public class UserServiceImpl implements UserService{
 	
 	@Autowired
 	private ModelMapper modelMapper;
+	
+	@Autowired
+	private FrontendProperties frontendProperties;
 	
 	@Override
 	public Users convertToUser(UserRegisterDTO userRegisterDTO) {
@@ -478,7 +482,7 @@ public class UserServiceImpl implements UserService{
 		
 		// 3. 寄出驗證信
 		// 根據不同 api 導向 不同用途 (1. verify 2. reset/password)
-		String verificationLink = "http://localhost:8080/email/" + apiName + "?token=" + userVerify.getToken();			
+		String verificationLink = frontendProperties.getUrl() + "/email/" + apiName + "?token=" + userVerify.getToken();			
 		emailServiceImpl.sendVerificationEmail(email, subject, verificationLink);
 	}
 	
