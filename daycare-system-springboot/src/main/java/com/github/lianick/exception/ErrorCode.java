@@ -1,0 +1,24 @@
+package com.github.lianick.exception;
+
+// 錯誤 回應 的時候 所用的 ErrorCode
+public enum ErrorCode {
+	USER_NOT_FOUND,
+	CHILD_NOT_FOUND,
+	
+	USER_IS_EXIST,
+	
+	ROLE_FAILURE,
+	ORGANIZATION_FAILURE,
+	MAIL_SEND_FAILURE,
+	TOKEN_FAILURE,
+	FORMATTER_FAILURE,
+	
+	VALUES_MISS,
+	
+	ACCESS_DENIED,
+	JWT_EXPIRED,
+	JWT_INVALID,
+	UNAUTHORIZED,
+	
+	RUNTIME_ERROR,
+}

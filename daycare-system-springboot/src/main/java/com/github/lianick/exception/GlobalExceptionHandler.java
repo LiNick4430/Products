@@ -25,7 +25,7 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.UNAUTHORIZED)     		// 401
 	public ApiResponse<?> handleUserNoFoundException(UserNoFoundException ex) {
 		int statusCode = HttpStatus.UNAUTHORIZED.value();
-		String errorCode = "USER_NOT_FOUND";
+		ErrorCode errorCode = ErrorCode.USER_NOT_FOUND;
 		// return new ApiResponse<>(statusCode, ex.getMessage(), null);
 		return ApiResponse.error(statusCode, errorCode, ex.getMessage());
 	}
@@ -35,7 +35,7 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.UNAUTHORIZED)     		// 401
 	public ApiResponse<?> handleChildNoFoundException(ChildNoFoundException ex) {
 		int statusCode = HttpStatus.UNAUTHORIZED.value();
-		String errorCode = "CHILD_NOT_FOUND";
+		ErrorCode errorCode = ErrorCode.CHILD_NOT_FOUND;
 		// return new ApiResponse<>(statusCode, ex.getMessage(), null);
 		return ApiResponse.error(statusCode, errorCode, ex.getMessage());
 	}
@@ -45,7 +45,7 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.CONFLICT)     			// 409      	
 	public ApiResponse<?> handleUserExistException(UserExistException ex) {
 		int statusCode = HttpStatus.CONFLICT.value();
-		String errorCode = "USER_IS_EXIST";
+		ErrorCode errorCode = ErrorCode.USER_IS_EXIST;
 		// return new ApiResponse<>(statusCode, ex.getMessage(), null);
 		return ApiResponse.error(statusCode, errorCode, ex.getMessage());
 	}
@@ -55,7 +55,7 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.UNAUTHORIZED)     		// 401
 	public ApiResponse<?> handleRoleFailureException(RoleFailureException ex) {
 		int statusCode = HttpStatus.UNAUTHORIZED.value();
-		String errorCode = "ROLE_FAILURE";
+		ErrorCode errorCode = ErrorCode.ROLE_FAILURE;
 		// return new ApiResponse<>(statusCode, ex.getMessage(), null);
 		return ApiResponse.error(statusCode, errorCode, ex.getMessage());
 	}
@@ -65,7 +65,7 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.UNAUTHORIZED)     		// 401
 	public ApiResponse<?> handleOrganizationFailureException(OrganizationFailureException ex) {
 		int statusCode = HttpStatus.UNAUTHORIZED.value();
-		String errorCode = "ORGANIZATION_FAILURE";
+		ErrorCode errorCode = ErrorCode.ORGANIZATION_FAILURE;
 		// return new ApiResponse<>(statusCode, ex.getMessage(), null);
 		return ApiResponse.error(statusCode, errorCode, ex.getMessage());
 	}
@@ -78,7 +78,7 @@ public class GlobalExceptionHandler {
 		logger.error("服務器內部錯誤：無法發送電子郵件", ex);
 		
 		int statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
-		String errorCode = "MAIL_SEND_FAILURE";
+		ErrorCode errorCode = ErrorCode.MAIL_SEND_FAILURE;
 		// return new ApiResponse<>(statusCode, "服務器內部錯誤：無法發送電子郵件，請稍後重試。" , null);
 		return ApiResponse.error(statusCode, errorCode, "服務器內部錯誤：無法發送電子郵件，請稍後重試。");
 	}
@@ -88,7 +88,7 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.BAD_REQUEST)   			// 400
 	public ApiResponse<?> handleTokenFailureException(TokenFailureException ex) {
 		int statusCode = HttpStatus.BAD_REQUEST.value();
-		String errorCode = "TOKEN_FAILURE";
+		ErrorCode errorCode = ErrorCode.TOKEN_FAILURE;
 		// return new ApiResponse<>(statusCode, ex.getMessage() , null);
 		return ApiResponse.error(statusCode, errorCode, ex.getMessage());
 	}
@@ -98,7 +98,7 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.BAD_REQUEST)   			// 400
 	public ApiResponse<?> handleValueMissException(ValueMissException ex) {
 		int statusCode = HttpStatus.BAD_REQUEST.value();
-		String errorCode = "VALUES_MISS";
+		ErrorCode errorCode = ErrorCode.VALUES_MISS;
 		// return new ApiResponse<>(statusCode, ex.getMessage() , null);
 		return ApiResponse.error(statusCode, errorCode, ex.getMessage());
 	}
@@ -108,7 +108,7 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.BAD_REQUEST)   			// 400
 	public ApiResponse<?> handleFormatterFailureException(FormatterFailureException ex) {
 		int statusCode = HttpStatus.BAD_REQUEST.value();
-		String errorCode = "FORMATTER_FAILURE";
+		ErrorCode errorCode = ErrorCode.FORMATTER_FAILURE;
 		// return new ApiResponse<>(statusCode, ex.getMessage() , null);
 		return ApiResponse.error(statusCode, errorCode, ex.getMessage());
 	}
@@ -117,11 +117,9 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(AccessDeniedException.class)
 	@ResponseStatus(HttpStatus.FORBIDDEN) // 返回 403 狀態碼
 	public ApiResponse<Void> handleAccessDeniedException(AccessDeniedException ex) {
-	    return ApiResponse.error(
-	        HttpStatus.FORBIDDEN.value(), 
-	        "ACCESS_DENIED", 
-	        "權限不足，無法訪問此資源" // 自定義的錯誤訊息
-	    );
+		int statusCode = HttpStatus.FORBIDDEN.value();
+		ErrorCode errorCode = ErrorCode.ACCESS_DENIED;
+		return ApiResponse.error(statusCode, errorCode, "權限不足，無法訪問此資源");	 // 自定義的錯誤訊息
 	}
 	
 	// 處理所有未被明確定義的 RuntimeException (預防萬一, 最終保護)
@@ -132,7 +130,7 @@ public class GlobalExceptionHandler {
 		logger.error("發生未預期的伺服器錯誤！", ex);
 		
 		int statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
-		String errorCode = "RUNTIME_ERROR";
+		ErrorCode errorCode = ErrorCode.RUNTIME_ERROR;
 		// return new ApiResponse<>(statusCode, "發生未預期的伺服器錯誤，請聯繫管理員。" , null);
 		return ApiResponse.error(statusCode, errorCode, "發生未預期的伺服器錯誤，請聯繫管理員。");
 	}

@@ -8,6 +8,7 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.lianick.exception.ErrorCode;
 import com.github.lianick.response.ApiResponse;
 
 import io.jsonwebtoken.ExpiredJwtException;
@@ -28,19 +29,19 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint{	//
 		Object error = request.getAttribute(JwtAuthenticationFilter.AUTH_ERROR_ATTRIBUTE);
 		
 		// 默認錯誤訊息
-		String errorCode = "UNAUTHORIZED";
+		ErrorCode errorCode = ErrorCode.UNAUTHORIZED;
 		String errorMessage = "Access Denied / Not Authenticated";
 		
 		if (error != null) {
 			// 2. 如果是 Access Token 過期
 			if (error instanceof ExpiredJwtException) {
-				errorCode = "JWT_EXPIRED"; // 前端會根據這個代碼觸發 Refresh Token
+				errorCode = ErrorCode.JWT_EXPIRED; // 前端會根據這個代碼觸發 Refresh Token
 				errorMessage = "Access Token is expired";
 			}
 			// 3. 如果是 JWT 相關錯誤(格式錯誤 簽名錯誤)
 			// 因為會彈出 JwtException | IllegalArgumentException 用 Exception 接
 			else if (error instanceof Exception) {
-				errorCode = "JWT_INVALID";
+				errorCode = ErrorCode.JWT_INVALID;
                 errorMessage = "Invalid JWT Token or signature";
 			}
 		}
