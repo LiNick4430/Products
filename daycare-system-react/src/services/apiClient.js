@@ -45,28 +45,40 @@ export async function request(url, method = 'GET', data = null, requiresAuth = f
   // 5. FETCH
   const response = await fetch(`${API_BASE_URL}${url}`, config);
 
-  // 6. 處理網路層面或業務層面的失敗 (如果 HTTP 狀態碼不是 2xx)
+  // 6. 嘗試讀取 Response Body
+  let responseData = null;
+  try {
+    // 嘗試將 Response Body 讀取為 JSON
+    // 注意：如果 Body 為空 (例如 204 No Content)，response.json() 會拋錯
+    responseData = await response.json();
+  } catch (e) {
+    // 如果讀取 JSON 失敗 (e.g., Body 是空的或不是 JSON)，responseData 會保持 null
+    // 這是預期行為，我們讓 responseData 保持 null 或 log 警告，繼續流程
+    console.warn(`URL: ${url} Response Body 無法解析為 JSON 或為空。`, e);
+  }
+
+  // 7. 處理網路層面或業務層面的失敗 (如果 HTTP 狀態碼不是 2xx)
   if (!response.ok) {
-    // 嘗試解析錯誤訊息，後端有返回錯誤JSON
-    try {
-      const errorData = await response.json();
-      // 精準關鍵字 是 讓 後續更容易觸發 刷新 TOKEN
-      if (errorData.errorCode && errorData.errorCode.includes("JWT_EXPIRED")) {
-        throw new Error("JWT_EXPIRED"); // 拋出精確關鍵字
+    // 優先使用後端返回的業務錯誤訊息
+    if (responseData && responseData.message) {
+
+      // 處理 JWT 過期等需要精準關鍵字觸發刷新的錯誤
+      if (responseData.errorCode && responseData.errorCode.includes("JWT_EXPIRED")) {
+        throw new Error("JWT_EXPIRED"); // 拋出精確關鍵字，用於 AuthContext 刷新 Token
       }
-      // 拋出後端返回的 message (例如："帳號或密碼錯誤")
-      throw new Error(`錯誤類型:${errorData.errorCode}, 錯誤訊息:${errorData.message}`);
-    } catch (e) {
-      // 如果解析 JSON 失敗
+
+      // 其他非 JWT_EXPIRED 的錯誤
+      throw new Error(`錯誤類型：${responseData.errorCode}，錯誤訊息：${responseData.message}`);
+
+    } else {
+      // 如果 HTTP 狀態碼不是 2xx，但 Response Body 無法解析或沒有 message
+      // 拋出您看到的通用錯誤，但現在它只會在後端沒有提供 JSON 錯誤體時才會觸發
       throw new Error(`網路錯誤，無法連接伺服器或解析錯誤訊息。狀態碼: ${response.status}`);
     }
   }
 
-  // 7. 如果 HTTP 狀態碼是 2xx (登入成功)
-  // 假設登入成功時，後端會返回包含 Token 的 ApiResponse (code: 200)
-  const responseData = await response.json();
-
-  // 雖然已經是 2xx，但我們仍然可以做一個最終的業務碼檢查 (以防萬一)
+  // 8. 如果 HTTP 狀態碼是 2xx (成功)
+  // 檢查業務碼 (code: 200)
   if (responseData.code !== 200) {
     throw new Error(responseData.message || "登入成功後，業務碼異常。");
   }

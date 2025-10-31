@@ -1,0 +1,91 @@
+/* 基礎顏色定義 */
+:root {
+  --bg-color: #f4f7f6;
+  --card-bg: #ffffff;
+  --primary-color: #007bff;
+  --success-color: #28a745;
+  --danger-color: #dc3545;
+  --text-color: #343a40;
+  --link-color: #0056b3;
+  --loading-color: #ffc107;
+}
+
+/* verify-container 樣式 */
+.verify-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: var(--bg-color);
+  font-family: Arial, sans-serif;
+}
+
+/* verify-card 樣式 */
+.verify-card {
+  width: 90%;
+  max-width: 450px;
+  padding: 40px;
+  background-color: var(--card-bg);
+  border-radius: 10px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  text-align: center;
+}
+
+/* Header 樣式 */
+.verify-card h2 {
+  color: var(--text-color);
+  margin-bottom: 30px;
+  font-size: 2rem;
+  border-bottom: 3px solid var(--primary-color);
+  padding-bottom: 10px;
+}
+
+/* 載入中訊息樣式 */
+.loading-message {
+  font-size: 1.2rem;
+  color: var(--loading-color);
+  font-weight: bold;
+}
+
+/* 狀態框通用樣式 */
+.status-box {
+  padding: 20px;
+  border-radius: 8px;
+}
+
+/* 成功訊息樣式 */
+.success-box {
+  background-color: #e6ffed;
+  border: 1px solid var(--success-color);
+  color: var(--success-color);
+}
+
+/* 錯誤訊息樣式 */
+.error-box {
+  background-color: #ffe6e6;
+  border: 1px solid var(--danger-color);
+  color: var(--danger-color);
+}
+
+/* 狀態文字樣式 */
+.status-message {
+  font-size: 1.1rem;
+  margin: 15px 0;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+/* 連結文字樣式 */
+.link-text {
+  margin-top: 15px;
+  font-size: 0.9rem;
+  color: var(--text-color);
+}
+
+/* 連結樣式 */
+.link {
+  color: var(--link-color);
+  text-decoration: underline;
+  font-weight: bold;
+  cursor: pointer;
+}

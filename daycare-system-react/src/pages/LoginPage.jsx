@@ -1,13 +1,17 @@
 import React, { useState } from "react";
+import { AuthProvider, useAuth } from "../context/AuthContext"
 import "./LoginPage.css";
 
-function LoginPage({ onLogin, isLoggedIn, isLoading, error }) {
+function LoginPage() {
+
+  const { handleLogin, isLoading, error, isLoggedIn } = useAuth();
+
   const [username, setUsername] = useState("manager");
   const [password, setPassword] = useState("123456");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onLogin(username, password); // 呼叫 onLogin 進行登入驗證
+    handleLogin(username, password); // 呼叫 onLogin 進行登入驗證
   };
 
   return (
