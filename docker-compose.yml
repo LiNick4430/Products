@@ -5,15 +5,19 @@ services:
   # 1. React 開發前端服務 (Frontend Development Service)
   # -------------------------------------------------------------------
   frontend-dev:
-    # 使用您已經建置好的映像檔
-    image: daycare-system-react
-    # 設定容器名稱 (方便識別)
+    # 建立 image (假設 未存在)
+    build:
+      context: ./daycare-system-react  # <--- 指向包含 Dockerfile 和程式碼的目錄
+      dockerfile: Dockerfile           # <--- 指明 Dockerfile 名稱 (通常省略，但寫明更清晰)
+      
     container_name: daycare-react-app
+
     # 將容器的 5173 埠口映射到主機的 5173 埠口
     ports:
       - "5173:5173"
-    # 掛載本地程式碼，實現即時熱重載 (HMR)
+    
     volumes:
+      # 掛載本地程式碼，實現即時熱重載 (HMR)
       - ./daycare-system-react:/app
       # ⚠️ 建議加入：將容器內的 node_modules 掛載為一個匿名 Volume
       # 這可以防止 Windows 上的 node_modules 覆蓋容器內正確的 Linux 版本

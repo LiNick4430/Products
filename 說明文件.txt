@@ -34,8 +34,14 @@ mailhog	ccaa1e220832	mailhog/mailhog	1025:1025 8025:8025
 ---------------------------------------------------------------------------------------------------
 執行 Docker Compose
 在包含 docker-compose.yml 檔案的目錄下
-執行 docker compose up -d
+執行 docker compose up -d 建立 新容器群組
 
+
+執行以下操作時，必須強制重建 Image：
+	安裝了新的 React 套件 (變動 package.json)
+	修改了 Dockerfile 或其他核心配置
+執行 docker-compose up -d --build 強制重建
+---------------------------------------------------------------------------------------------------
 使用 Docker Desktop 管理
 使用 Docker Compose 啟動，您就可以在 Docker Desktop 介面的 Containers 區塊中，看到一個名為 專案名稱 的群組。
 

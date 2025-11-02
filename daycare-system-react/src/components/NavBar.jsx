@@ -1,10 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { AuthProvider, useAuth } from "../context/AuthContext"
+import { useAuth } from "../context/AuthContext"
 import "./Navbar.css"; // 引入樣式
 
 function Navbar() {
-  const { username, isLoggedIn, handleLogout } = useAuth();
+  const { username, isLoggedIn, handleLogout, roleName } = useAuth();
 
   // 1. 顯示名稱
   const displayUsername = isLoggedIn ? username : "遊客";
@@ -22,26 +22,35 @@ function Navbar() {
 
         {isLoggedIn ? (
           <>
-            <button onClick={handleLogout}>
-              登出
-            </button>
+            {/* ------------------- 已登入 ------------------- */}
+
+            {/* 管理者 的 連接區域 */}
+            {roleName === "ROLE_MANAGER" && (
+              <>
+              </>
+            )}
+
+            {/* 基層人員 的 連接區域 */}
+            {roleName === "ROLE_STAFF" && (
+              <>
+              </>
+            )}
+
+            {/* 民眾 的 連接區域 */}
+            {roleName === "ROLE_PUBLIC" && (
+              <>
+              </>
+            )}
+
+            {/* 通用 的 連接區域 */}
+            <li><button onClick={handleLogout}>登出</button></li>
           </>
         ) : (
           <>
-            <li>
-              <Link to="/register">
-                <button>
-                  註冊
-                </button>
-              </Link>
-            </li>
-            <li>
-              <Link to="/login">
-                <button>
-                  登入
-                </button>
-              </Link>
-            </li>
+            {/* ------------------- 未登入-------------------  */}
+
+            <li><Link to="/register"><button>註冊</button></Link></li>
+            <li><Link to="/login"><button>登入</button></Link></li>
           </>
         )}
 

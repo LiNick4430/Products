@@ -7,7 +7,7 @@ const API_BASE_URL = "http://localhost:8080";
  * 自動處理錯誤、JSON 解析，可選加入 Access Token。
  * @param {string} url - 請求的路徑 (不包含 BASE_URL)。
  * @param {string} method - 請求方法 (預設'GET') ('GET', 'POST', 'DELETE')。
- * @param {object} [data=null] - 請求體 (預設 Null) (適用於 POST/PUT/DELETE)。
+ * @param {object} [data=null] - 請求體 (預設 Null) (適用於 POST/DELETE)。
  * @param {boolean} [requiresAuth=false] - 是否需要 Access Token (預設 false)。
  * @returns {Promise<Object>} - 伺服器響應的資料物件。
  * @throws {Error} - 拋出包含錯誤訊息或狀態碼的錯誤。
@@ -49,7 +49,7 @@ export async function request(url, method = 'GET', data = null, requiresAuth = f
   let responseData = null;
   try {
     // 嘗試將 Response Body 讀取為 JSON
-    // 注意：如果 Body 為空 (例如 204 No Content)，response.json() 會拋錯
+    // 如果 Body 為空 ，response.json() 會拋錯
     responseData = await response.json();
   } catch (e) {
     // 如果讀取 JSON 失敗 (e.g., Body 是空的或不是 JSON)，responseData 會保持 null
@@ -71,6 +71,7 @@ export async function request(url, method = 'GET', data = null, requiresAuth = f
       throw new Error(`錯誤類型：${responseData.errorCode}，錯誤訊息：${responseData.message}`);
 
     } else {
+
       // 如果 HTTP 狀態碼不是 2xx，但 Response Body 無法解析或沒有 message
       // 拋出您看到的通用錯誤，但現在它只會在後端沒有提供 JSON 錯誤體時才會觸發
       throw new Error(`網路錯誤，無法連接伺服器或解析錯誤訊息。狀態碼: ${response.status}`);
