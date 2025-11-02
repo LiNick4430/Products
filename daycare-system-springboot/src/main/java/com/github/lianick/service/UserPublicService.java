@@ -6,6 +6,7 @@ import com.github.lianick.model.dto.user.UserDeleteDTO;
 import com.github.lianick.model.dto.userPublic.UserPublicDTO;
 import com.github.lianick.model.dto.userPublic.UserPublicCreateDTO;
 import com.github.lianick.model.dto.userPublic.UserPublicUpdateDTO;
+import com.github.lianick.model.eneity.UserPublic;
 
 /*
 	業務流程確認
@@ -19,6 +20,16 @@ import com.github.lianick.model.dto.userPublic.UserPublicUpdateDTO;
 
 // 負責 處理 民眾資料
 public interface UserPublicService {
+	
+	/** 用 JWT 找尋 自己的 public 帳號<p>
+	 * 需要 @PreAuthorize("hasAuthority('ROLE_PUBLIC')") 
+	 * */
+	UserPublic findUserPublic();
+	
+	/** 用 JWT 找尋 自己 返回 DTO。<p>
+	 * 需要 @PreAuthorize("hasAuthority('ROLE_PUBLIC')") 
+	 * */
+	UserPublicDTO findUserPublicDTO();
 
 	/** 搜尋 全部 民眾帳號<p>
 	 * 需要 @PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")

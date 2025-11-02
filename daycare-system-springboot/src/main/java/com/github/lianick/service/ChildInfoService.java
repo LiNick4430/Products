@@ -6,16 +6,9 @@ import com.github.lianick.model.dto.child.ChildCreateDTO;
 import com.github.lianick.model.dto.child.ChildDTO;
 import com.github.lianick.model.dto.child.ChildDeleteDTO;
 import com.github.lianick.model.dto.child.ChildUpdateDTO;
-import com.github.lianick.model.eneity.UserPublic;
 
 // 負責處理 幼兒資料
 public interface ChildInfoService {
-	
-	/** 用 JWT 找尋 自己的 public 帳號<p>
-	 * 需要 @PreAuthorize("hasAuthority('ROLE_PUBLIC')") 
-	 * */
-	UserPublic findUserPublic();
-
 	/** 尋找 全部的幼兒資料<p>
 	 * 需要 @PreAuthorize("hasAuthority('ROLE_PUBLIC')") 
 	 * */

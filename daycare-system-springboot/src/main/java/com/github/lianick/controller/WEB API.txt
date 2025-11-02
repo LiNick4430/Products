@@ -11,12 +11,13 @@ DELETE	"/delete", "/delete/"					刪除	帳號			"/user/delete/"				AUTHENTICATE
 GET		"/me", "/me/"							從JWT獲得基本資料	"/user/me/"					AUTHENTICATED
 
 UserPublicController
-Request Mapping: "/public"
-GET		"/find/all", "/find/all/"		尋找	全部民眾帳號	"/public/find/all/"			AUTHENTICATED
-POST	"/find", "/find/"				尋找	特定民眾帳號	"/public/find/"				AUTHENTICATED
-POST	"/information", "/information/"	設定 民眾基本資料		"/public/information/"		AUTHENTICATED
-POST	"/update", "/update/"			更新 民眾基本資料		"/public/update/"			AUTHENTICATED
-DELETE	"/delete", "/delete/"			刪除	帳號			"/public/delete/"			AUTHENTICATED
+Request Mapping: "/public/user"
+GET		"/me/", "/me"					民眾 取得 自己的資料	"/public/user/me/"				AUTHENTICATED
+GET		"/find/all", "/find/all/"		尋找	全部民眾帳號	"/public/user/find/all/"		AUTHENTICATED
+POST	"/find", "/find/"				尋找	特定民眾帳號	"/public/user/find/"			AUTHENTICATED
+POST	"/information", "/information/"	設定 民眾基本資料		"/public/user/information/"		AUTHENTICATED
+POST	"/update", "/update/"			更新 民眾基本資料		"/public/user/update/"			AUTHENTICATED
+DELETE	"/delete", "/delete/"			刪除	帳號			"/public/user/delete/"			AUTHENTICATED
 
 UserAdminController
 Request Mapping: "/admin/user"

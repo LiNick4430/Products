@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import com.github.lianick.exception.ChildNoFoundException;
 import com.github.lianick.exception.FormatterFailureException;
 import com.github.lianick.exception.UserExistException;
-import com.github.lianick.exception.UserNoFoundException;
 import com.github.lianick.exception.ValueMissException;
 import com.github.lianick.model.dto.child.ChildCreateDTO;
 import com.github.lianick.model.dto.child.ChildDTO;
@@ -21,13 +20,11 @@ import com.github.lianick.model.dto.child.ChildDeleteDTO;
 import com.github.lianick.model.dto.child.ChildUpdateDTO;
 import com.github.lianick.model.eneity.ChildInfo;
 import com.github.lianick.model.eneity.UserPublic;
-import com.github.lianick.model.eneity.Users;
 import com.github.lianick.repository.ChildInfoRepository;
 import com.github.lianick.repository.UserPublicRepository;
-import com.github.lianick.repository.UsersRepository;
 import com.github.lianick.service.ChildInfoService;
+import com.github.lianick.service.UserPublicService;
 import com.github.lianick.util.DateValidationUtil;
-import com.github.lianick.util.SecurityUtils;
 
 import jakarta.transaction.Transactional;
 
@@ -36,10 +33,10 @@ import jakarta.transaction.Transactional;
 public class ChildInfoServiceImpl implements ChildInfoService{
 
 	@Autowired
-	private UsersRepository usersRepository;
-
-	@Autowired
 	private UserPublicRepository userPublicRepository;
+	
+	@Autowired
+	private UserPublicService userPublicService;
 
 	@Autowired
 	private ChildInfoRepository childInfoRepository;
@@ -52,24 +49,9 @@ public class ChildInfoServiceImpl implements ChildInfoService{
 
 	@Override
 	@PreAuthorize("hasAuthority('ROLE_PUBLIC')") 
-	public UserPublic findUserPublic() {
-		// 0. 從 JWT 獲取 username
-		String currentUsername = SecurityUtils.getCurrentUsername();
-
-		// 1. 找尋資料庫 對應的帳號
-		Users tableUser = usersRepository.findByAccount(currentUsername)
-				.orElseThrow(() -> new UserNoFoundException("帳號錯誤"));
-
-		UserPublic userPublic = userPublicRepository.findByUsers(tableUser)
-				.orElseThrow(() -> new UserNoFoundException("帳號錯誤"));
-		return userPublic;
-	}
-	
-	@Override
-	@PreAuthorize("hasAuthority('ROLE_PUBLIC')") 
 	public List<ChildDTO> findAllChildByUserPublic() {
 		// 0. 找尋 UserPublic
-		UserPublic userPublic = findUserPublic();
+		UserPublic userPublic = userPublicService.findUserPublic();
 		
 		// 1. 找尋所有的 幼兒資料
 		List<ChildDTO> childDTOs = childInfoRepository.findByUserPublic(userPublic)
@@ -86,7 +68,7 @@ public class ChildInfoServiceImpl implements ChildInfoService{
 	@PreAuthorize("hasAuthority('ROLE_PUBLIC')") 
 	public ChildDTO findChildByUserPublic(ChildDTO childDTO) {
 		// 0. 找尋 UserPublic
-		UserPublic userPublic = findUserPublic();
+		UserPublic userPublic = userPublicService.findUserPublic();
 		
 		// 1. 檢查資料的完整性
 		if (childDTO.getId() == null ) {
@@ -108,7 +90,7 @@ public class ChildInfoServiceImpl implements ChildInfoService{
 	@PreAuthorize("hasAuthority('ROLE_PUBLIC')") 
 	public ChildCreateDTO createChildInfo(ChildCreateDTO childCreateDTO) {
 		// 0. 找尋 UserPublic 
-		UserPublic userPublic = findUserPublic();
+		UserPublic userPublic = userPublicService.findUserPublic();
 		
 		// 1. 檢查資料的完整性
 		if (childCreateDTO.getName() == null || childCreateDTO.getName().isBlank() || 
@@ -154,7 +136,7 @@ public class ChildInfoServiceImpl implements ChildInfoService{
 	@PreAuthorize("hasAuthority('ROLE_PUBLIC')") 
 	public ChildUpdateDTO updateChildInfo(ChildUpdateDTO childUpdateDTO) {
 		// 0. 找尋 UserPublic
-		UserPublic userPublic = findUserPublic();
+		UserPublic userPublic = userPublicService.findUserPublic();
 		
 		// 1. 檢查資料的完整性
 		if (childUpdateDTO.getNewName() == null || childUpdateDTO.getNewName().isBlank() ||
@@ -185,7 +167,7 @@ public class ChildInfoServiceImpl implements ChildInfoService{
 	@PreAuthorize("hasAuthority('ROLE_PUBLIC')") 
 	public void deleteChildInfo(ChildDeleteDTO childDeleteDTO) {
 		// 0. 找尋 UserPublic
-		UserPublic userPublic = findUserPublic();
+		UserPublic userPublic = userPublicService.findUserPublic();
 
 		// 1. 檢查資料的完整性
 		if (childDeleteDTO.getId() == null ) {

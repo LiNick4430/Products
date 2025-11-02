@@ -54,6 +54,27 @@ public class UserPublicServiceImpl implements UserPublicService{
 	private UserService userService;
 	
 	@Override
+	@PreAuthorize("hasAuthority('ROLE_PUBLIC')") 
+	public UserPublic findUserPublic() {
+		// 0. 從 JWT 獲取 username
+		String currentUsername = SecurityUtils.getCurrentUsername();
+
+		// 1. 找尋資料庫 對應的帳號
+		Users tableUser = usersRepository.findByAccount(currentUsername)
+				.orElseThrow(() -> new UserNoFoundException("帳號錯誤"));
+
+		UserPublic userPublic = userPublicRepository.findByUsers(tableUser)
+				.orElseThrow(() -> new UserNoFoundException("帳號錯誤"));
+		return userPublic;
+	}
+	
+	@Override
+	@PreAuthorize("hasAuthority('ROLE_PUBLIC')") 
+	public UserPublicDTO findUserPublicDTO() {
+		return modelMapper.map(findUserPublic(), UserPublicDTO.class);
+	}
+	
+	@Override
 	@PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")
 	public List<UserPublicDTO> findAllUserPublic() {
 		List<UserPublicDTO> userPublicDTOs = userPublicRepository.findAll()

@@ -20,21 +20,28 @@ import com.github.lianick.service.UserPublicService;
 
 /**
  * UserPublicController
- * Request Mapping: "/public"
- * GET		"/find/all", "/find/all/"		尋找	全部民眾帳號	"/public/find/all/"			AUTHENTICATED
- * POST		"/find", "/find/"				尋找	特定民眾帳號	"/public/find/"				AUTHENTICATED
- * POST		"/information", "/information/"	設定 民眾基本資料		"/public/information/"		AUTHENTICATED
- * POST		"/update", "/update/"			更新 民眾基本資料		"/public/update/"			AUTHENTICATED
- * DELETE	"/delete", "/delete/"			刪除	帳號			"/public/delete/"			AUTHENTICATED
+ * Request Mapping: "/public/user"
+ * GET		"/me/", "/me"					民眾 取得 自己的資料	"/public/user/me/"				AUTHENTICATED
+ * GET		"/find/all", "/find/all/"		尋找	全部民眾帳號	"/public/user/find/all/"		AUTHENTICATED
+ * POST		"/find", "/find/"				尋找	特定民眾帳號	"/public/user/find/"			AUTHENTICATED
+ * POST		"/information", "/information/"	設定 民眾基本資料		"/public/user/information/"		AUTHENTICATED
+ * POST		"/update", "/update/"			更新 民眾基本資料		"/public/user/update/"			AUTHENTICATED
+ * DELETE	"/delete", "/delete/"			刪除	帳號			"/public/user/delete/"			AUTHENTICATED
  * */
 
 @RestController
-@RequestMapping("/public")
+@RequestMapping("/public/user")
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 public class UserPublicController {
 	
 	@Autowired
 	private UserPublicService userPublicService;
+	
+	@GetMapping(value = {"/me/", "/me"})
+	public ApiResponse<UserPublicDTO> me() {
+		UserPublicDTO userPublicDTO = userPublicService.findUserPublicDTO();
+		return ApiResponse.success("找尋自己 成功", userPublicDTO);
+	}
 	
 	@GetMapping(value = {"/find/all", "/find/all/"})
 	public ApiResponse<List<UserPublicDTO>> findAll() {
