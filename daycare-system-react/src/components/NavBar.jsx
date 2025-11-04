@@ -43,6 +43,7 @@ function Navbar() {
             )}
 
             {/* 通用 的 連接區域 */}
+            <li><Link to="/user/me"><button>個人資料</button></Link></li>
             <li><button onClick={handleLogout}>登出</button></li>
           </>
         ) : (

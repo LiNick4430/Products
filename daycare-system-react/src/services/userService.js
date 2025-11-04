@@ -4,10 +4,11 @@ const BASE_SERVICE = "/user";
 
 /**
  * 獲取 帳號 基本資料
+ * @param {String} token - access token
  * @returns {Promise<Object>} message = "獲取登入資料 成功"
  */
-export const getUserDetails = async () => {
-  return request(`${BASE_SERVICE}/me`, "GET", null, true);
+export const getUserDetails = async (token) => {
+  return request(`${BASE_SERVICE}/me`, "GET", null, true, token);
 };
 
 /**

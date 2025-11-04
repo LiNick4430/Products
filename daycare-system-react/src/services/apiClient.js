@@ -9,6 +9,7 @@ const API_BASE_URL = "http://localhost:8080";
  * @param {string} method - 請求方法 (預設'GET') ('GET', 'POST', 'DELETE')。
  * @param {object} [data=null] - 請求體 (預設 Null) (適用於 POST/DELETE)。
  * @param {boolean} [requiresAuth=false] - 是否需要 Access Token (預設 false)。
+ * @param {String} [accessToken=null] - Access Token (預設 Null)。
  * @returns {Promise<Object>} - 伺服器響應的資料物件。
  * @property {Number} code - HTTP 狀態碼
  * @property {string} errorCode - 失敗時 的 編碼
@@ -17,9 +18,12 @@ const API_BASE_URL = "http://localhost:8080";
  * @throws {Error} - 拋出包含錯誤訊息或狀態碼的錯誤。
  */
 
-export async function request(url, method = 'GET', data = null, requiresAuth = false) {
-  // 1. 取得當前儲存的 Access Token
-  const accessToken = localStorage.getItem("accessToken");
+export async function request(url, method = 'GET', data = null, requiresAuth = false, accessToken = null) {
+  // 1. 嘗試取得 Access Token
+  let currentToken = accessToken;
+  if (!currentToken) {
+    currentToken = localStorage.getItem("accessToken");
+  }
 
   // 2. 建立 HEADER
   const headers = {
@@ -28,11 +32,11 @@ export async function request(url, method = 'GET', data = null, requiresAuth = f
 
   // 3. 判斷是否需要認證 (TOKEN 注入)
   if (requiresAuth) {
-    if (!accessToken) {
+    if (!currentToken) {
       // 發現缺少 Access Token 時，立即在前端拋出錯誤，無需連線後端
       throw new Error("AUTH_REQUIRED: 缺少 Access Token，請先登入。");
     }
-    headers['Authorization'] = `Bearer ${accessToken}`;
+    headers['Authorization'] = `Bearer ${currentToken}`;
   }
 
   // 4. 建立請求配置

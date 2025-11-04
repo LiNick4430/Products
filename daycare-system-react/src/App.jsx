@@ -16,6 +16,9 @@ import RegisterEmailVerify from "./pages/RegisterEmailVerify" // 信箱認證頁
 
 import UserForgetPassword from "./pages/UserForgetPassword"  // 忘記密碼
 import UserForgetPasswordVerify from "./pages/UserForgetPasswordVerify";  // 忘記密碼驗證
+import UserMe from "./pages/UserMe"
+
+import UserPublicInformation from './pages/UserPublicInformation';
 
 function App() {
 
@@ -49,7 +52,7 @@ function App() {
           {/* ---------- 受保護路由 ---------- */}
 
           {/* 帳號本人資料 */}
-          <Route path="/user/me" element={<ProtectedRoute element={<></>} />} />
+          <Route path="/user/me" element={<ProtectedRoute element={UserMe} />} />
 
           {/* 更新帳號 基本資料 密碼驗證 */}
 
@@ -59,7 +62,7 @@ function App() {
 
           {/* ---------- 民眾 ---------- */}
           {/* 建立民眾基本資料 */}
-          <Route path="/public/user/information" element={<ProtectedRoute element={<></>} requiredRoles={["ROLE_PUBLIC"]} />} />
+          <Route path="/public/user/information" element={<ProtectedRoute element={UserPublicInformation} requiredRoles={["ROLE_PUBLIC"]} />} />
 
           {/* 更新 民眾基本資料 */}
           <Route path="/public/user/update" element={<ProtectedRoute element={<></>} requiredRoles={["ROLE_PUBLIC"]} />} />

@@ -15,4 +15,7 @@ public class UserMeDTO {	// 從 JWT 獲取資料用
 	private String username;	// 帳號名稱
 	private Long roleNumber;	// 角色ID
 	private String roleName;	// 角色名
+	
+	private String email;
+	private String phoneNumber;
 }

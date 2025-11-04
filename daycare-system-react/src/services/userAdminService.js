@@ -4,10 +4,11 @@ const BASE_SERVICE = "/admin/user";
 
 /**
  * 主管/員工 取得 自己的資料
+ * @param {String} token - access token
  * @returns {Promise<Object>} message = "找尋自己 成功"
  */
-export const getUserAdminDetails = async () => {
-  return request(`${BASE_SERVICE}/me`, "GET", null, true);
+export const getUserAdminDetails = async (token) => {
+  return request(`${BASE_SERVICE}/me`, "GET", null, true, token);
 };
 
 /**

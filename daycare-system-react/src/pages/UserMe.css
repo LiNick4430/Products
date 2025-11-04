@@ -1,0 +1,125 @@
+/* src/pages/UserMe.css */
+
+/* -------------------- 容器和版面 -------------------- */
+.user-me-container {
+  max-width: 750px;
+
+  /* 📌 調整：增加上下邊距，更接近註冊頁面的風格 */
+  margin: 100px auto;
+
+  padding: 30px;
+
+  /* 📌 調整：背景色和陰影更接近範例 */
+  background-color: #f9f9f9;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+
+  border-radius: 8px;
+  line-height: 1.6;
+  text-align: left;
+}
+
+/* 📌 調整：將 H1 改為 H2 的風格（UserMe.jsx 中 H1/H2 混用，這裡統一美化） */
+.user-me-container h1,
+.user-me-container h2 {
+  /* 讓標題顏色更接近範例，並移除底線 */
+  text-align: center;
+  color: #333;
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 25px;
+}
+
+/* 載入/錯誤提示 - 保持警示風格 */
+.error {
+  text-align: center;
+  color: #a94442;
+  /* 深紅色文字 (與您的範例 .error-message 保持一致) */
+  font-weight: bold;
+  padding: 10px;
+  margin-bottom: 15px;
+  /* 與您的範例 .error-message 保持一致 */
+  background-color: #fcebeb;
+  /* 淺紅色背景 (與您的範例 .error-message 保持一致) */
+  border: 1px solid #ebccd1;
+  border-radius: 4px;
+  max-width: 400px;
+  margin: 20px auto;
+}
+
+
+/* -------------------- 角色詳細資料區塊 -------------------- */
+.role-details {
+  margin-top: 25px;
+  padding: 15px;
+  background-color: #ffffff;
+  /* 讓內部區塊顏色更亮 */
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+}
+
+.role-details h3 {
+  margin-top: 0;
+  color: #007bff;
+  /* 讓詳細資料標題保持藍色，有區別度 */
+  font-size: 1.1em;
+  margin-bottom: 10px;
+}
+
+.user-me-container p {
+  margin: 5px 0;
+}
+
+
+/* -------------------- 按鈕與操作區塊 -------------------- */
+.action-buttons {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #eeeeee;
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
+/* 基礎按鈕樣式 - 統一為範例的按鈕大小 */
+.user-me-container button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 16px;
+  /* 保持與範例按鈕相同大小 */
+  transition: background-color 0.3s ease;
+}
+
+/* 主要按鈕 (例如: 前往填寫資料) */
+.btn-primary {
+  /* 使用範例中的藍色 */
+  background-color: #0066cc;
+  color: white;
+}
+
+.btn-primary:hover {
+  /* 使用範例中的 Hover 顏色 */
+  background-color: #004c99;
+}
+
+/* 次要按鈕 (例如: 更新資料) - 保留灰色作為次要操作 */
+.btn-secondary {
+  background-color: #6c757d;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268;
+}
+
+/* 危險按鈕 (例如: 刪除帳號) - 保留紅色 */
+.btn-danger {
+  background-color: #dc3545;
+  color: white;
+}
+
+.btn-danger:hover {
+  background-color: #bd2130;
+}

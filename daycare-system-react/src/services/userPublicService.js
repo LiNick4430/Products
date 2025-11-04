@@ -4,10 +4,11 @@ const BASE_SERVICE = "/public/user";
 
 /**
  * 民眾 取得 自己的資料
+ * @param {String} token - access token
  * @returns {Promise<Object>} message = "找尋自己 成功"
  */
-export const getUserPublicDetails = async () => {
-  return request(`${BASE_SERVICE}/me`, "GET", null, true);
+export const getUserPublicDetails = async (token) => {
+  return request(`${BASE_SERVICE}/me`, "GET", null, true, token);
 };
 
 /**
@@ -34,10 +35,11 @@ export const findUserPublic = async (username) => {
  * @param {String} birthdate - 生日(YYYY-MM-DD)
  * @param {String} registeredAddress - 戶籍地址
  * @param {String} mailingAddress - 通訊地址
+ * @param {String} token - access token
  * @returns {Promise<Object>} message = "民眾資料 建立成功"
  */
-export const setUserPublicInformation = async (name, nationalIdNo, birthdate, registeredAddress, mailingAddress) => {
-  return request(`${BASE_SERVICE}/information`, "POST", { name, nationalIdNo, birthdate, registeredAddress, mailingAddress }, true);
+export const setUserPublicInformation = async (name, nationalIdNo, birthdate, registeredAddress, mailingAddress, token) => {
+  return request(`${BASE_SERVICE}/information`, "POST", { name, nationalIdNo, birthdate, registeredAddress, mailingAddress }, true, token);
 };
 
 /**

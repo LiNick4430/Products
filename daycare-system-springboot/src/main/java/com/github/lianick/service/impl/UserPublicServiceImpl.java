@@ -65,6 +65,7 @@ public class UserPublicServiceImpl implements UserPublicService{
 
 		UserPublic userPublic = userPublicRepository.findByUsers(tableUser)
 				.orElseThrow(() -> new UserNoFoundException("帳號錯誤"));
+		
 		return userPublic;
 	}
 	
