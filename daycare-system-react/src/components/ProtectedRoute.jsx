@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext'; // 引入您的 useAuth Hook
+import { toast } from 'react-toastify';
 
 // 該組件接收它應該渲染的實際頁面組件作為 'element'
 function ProtectedRoute({ element: Component, requiredRoles, ...rest }) {
   // 從 AuthContext 獲取登入狀態和載入狀態
-  const { isLoggedIn, isLoading, roleName } = useAuth();
+  const { isLoggedIn, isLoading, roleName, isLoggingOut } = useAuth();
+
+  const toastShownRef = useRef(false);
 
   // 1. 處理載入狀態：當 App 正在檢查本地 Token 時
   if (isLoading) {
@@ -13,10 +16,18 @@ function ProtectedRoute({ element: Component, requiredRoles, ...rest }) {
     return <div>載入中...</div>;
   }
 
+  // 如果正在登出，則跳過所有 Toast 提示
+  if (isLoggingOut) {
+    // 雖然 isLoggedIn 已經是 false，但我們不希望發出錯誤提示
+    return <Navigate to="/login" replace />;
+  }
+
   // 2. 檢查登入狀態
   if (!isLoggedIn) {
-    // 未登入 -> 導向登入頁面
-    toast.error("請先登入以訪問此頁面。", { position: "top-center", autoClose: 3000 });
+    if (!toastShownRef.current) {
+      toast.error("請先登入以訪問此頁面。", { position: "top-center", autoClose: 3000 });
+      toastShownRef.current = true; // 鎖定：Toast 已顯示
+    }
     return <Navigate to="/login" replace />;
   }
 
@@ -30,8 +41,10 @@ function ProtectedRoute({ element: Component, requiredRoles, ...rest }) {
     const hasPermission = userRoles.some(role => requiredRoles.includes(role));
 
     if (!hasPermission) {
-      // 權限不足 -> 導向首頁或顯示錯誤
-      toast.error("權限不足，無法訪問此頁面。", { position: "top-center", autoClose: 3000 });
+      if (!toastShownRef.current) {
+        toast.error("權限不足，無法訪問此頁面。", { position: "top-center", autoClose: 3000 });
+        toastShownRef.current = true; // 鎖定：Toast 已顯示
+      }
       return <Navigate to="/" replace />;
     }
   }

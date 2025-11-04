@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { AuthProvider, useAuth } from "../context/AuthContext"
+import { useAuth } from "../context/AuthContext"
 import "./Register.css";
 
 function Register() {

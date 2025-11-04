@@ -26,6 +26,7 @@ export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);  // 是否登入
   const [isLoading, setIsLoading] = useState(false);    // 載入狀態
   const [error, setError] = useState(null);             // 錯誤訊息狀態
+  const [isLoggingOut, setIsLoggingOut] = useState(false);  // 正在登出
 
   const [accessToken, setAccessToken] = useState(null);
   const [refreshToken, setRefreshToken] = useState(null);
@@ -87,6 +88,7 @@ export const AuthProvider = ({ children }) => {
   const handleLogout = useCallback(async () => {
     setIsLoading(true); // 開始載入
     setError(null);
+    setIsLoggingOut(true);
 
     try {
       // 呼叫 API 服務
@@ -120,6 +122,10 @@ export const AuthProvider = ({ children }) => {
 
       // 導航到 應用程式的主頁
       navigate("/");
+
+      setTimeout(() => {
+        setIsLoggingOut(false);
+      }, 100);
 
       setIsLoading(false);
     }
@@ -335,6 +341,7 @@ export const AuthProvider = ({ children }) => {
     refreshToken,
     roleName,
     username,
+    isLoggingOut,
 
     // 狀態 Setter (供內部或必要時供外部組件使用)
     setIsLoggedIn,

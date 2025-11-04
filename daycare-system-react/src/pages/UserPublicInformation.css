@@ -1,0 +1,122 @@
+/* src/pages/UserPublicInformation.css */
+
+/* -------------------- 容器和卡片樣式 -------------------- */
+.public-info-container {
+  /* 容器樣式：與您提供的 .register-page 類似 */
+  width: 100%;
+  max-width: 600px;
+  /* 限制最大寬度 */
+  margin: 100px auto;
+  /* 置中並提供上下邊距 */
+  padding: 30px;
+  border-radius: 8px;
+  background-color: #ffffff;
+  /* 使用白色背景讓內容更突出 */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  /* 輕微陰影 */
+}
+
+.public-info-container h2 {
+  text-align: center;
+  color: #007bff;
+  /* 使用主題藍色 */
+  margin-bottom: 5px;
+}
+
+.subtitle {
+  text-align: center;
+  color: #6c757d;
+  margin-bottom: 25px;
+  font-size: 0.95em;
+}
+
+/* -------------------- 表單群組和輸入框 -------------------- */
+.form-group {
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.public-info-form input[type="text"],
+.public-info-form input[type="date"],
+.public-info-form input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ced4da;
+  /* 淺灰色邊框 */
+  border-radius: 4px;
+  box-sizing: border-box;
+  /* 確保 padding 不增加寬度 */
+  transition: border-color 0.3s;
+}
+
+.public-info-form input:focus {
+  border-color: #007bff;
+  /* 聚焦時變為主題藍色 */
+  outline: none;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  /* 輕微藍色光暈 */
+}
+
+/* -------------------- 錯誤提示 -------------------- */
+.error-message {
+  padding: 10px;
+  margin-bottom: 20px;
+  background-color: #fcebeb;
+  color: #dc3545;
+  /* 錯誤紅色 */
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+  text-align: center;
+  font-weight: bold;
+}
+
+/* -------------------- Checkbox 樣式 -------------------- */
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  margin-top: -10px;
+  /* 稍微往上移，減少與上方欄位的距離 */
+  margin-bottom: 25px;
+}
+
+.checkbox-group input[type="checkbox"] {
+  width: auto;
+  margin-right: 10px;
+}
+
+.checkbox-group label {
+  font-weight: normal;
+  /* Checkbox 旁邊的 label 權重低一些 */
+  margin-bottom: 0;
+}
+
+/* -------------------- 提交按鈕 -------------------- */
+.btn-primary {
+  width: 100%;
+  padding: 12px;
+  background-color: #007bff;
+  /* 主題藍色 */
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-weight: bold;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: #0056b3;
+}
+
+.btn-primary:disabled {
+  background-color: #a8b8c5;
+  /* 禁用時變為淺灰色 */
+  cursor: not-allowed;
+}
