@@ -102,7 +102,7 @@ public class ModelMapperConfig {
 			mapper.using(organizationToOrganizationIdConveter)
 					.map(UserAdmin::getOrganization, UserAdminDTO::setOrganizationId);
 			mapper.using(organizationToOrganizationNameConveter)
-					.map(UserAdmin::getOrganization, UserAdminDTO::setName);
+					.map(UserAdmin::getOrganization, UserAdminDTO::setOrganizationName);
 		});
 		
 		// ChildInfo 相關
