@@ -10,6 +10,10 @@ const API_BASE_URL = "http://localhost:8080";
  * @param {object} [data=null] - 請求體 (預設 Null) (適用於 POST/DELETE)。
  * @param {boolean} [requiresAuth=false] - 是否需要 Access Token (預設 false)。
  * @returns {Promise<Object>} - 伺服器響應的資料物件。
+ * @property {Number} code - HTTP 狀態碼
+ * @property {string} errorCode - 失敗時 的 編碼
+ * @property {string} message - "成功訊息" or "錯誤訊息"
+ * @property {Object} data - 成功時 回傳的資料
  * @throws {Error} - 拋出包含錯誤訊息或狀態碼的錯誤。
  */
 

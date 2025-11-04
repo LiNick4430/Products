@@ -1,6 +1,5 @@
 import { request } from "./apiClient"
 
-// services/userService.js
 const BASE_SERVICE = "/public/user";
 
 /**

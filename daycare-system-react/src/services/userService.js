@@ -1,6 +1,5 @@
 import { request } from "./apiClient"
 
-// services/userService.js
 const BASE_SERVICE = "/user";
 
 /**
@@ -53,5 +52,3 @@ export const UserUpdate = async (newPassword, newPhoneNumber) => {
 export const UserDelete = async (password) => {
   return request(`${BASE_SERVICE}/delete`, "DELETE", { password }, true);
 };
-
-
