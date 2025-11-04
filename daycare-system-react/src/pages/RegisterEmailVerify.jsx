@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import "./EmailVerifyPage.css"
+import "./RegisterEmailVerify.css"
 
 // 假設 verifyAccount 來自您的服務層
 import { verifyAccount } from '../services/emailService';
 
-function EmailVerifyPage() {
+function RegisterEmailVerify() {
   // 1. 呼叫 useSearchParams
   // searchParams 是一個 URLSearchParams 實例
   const [searchParams] = useSearchParams();
@@ -99,4 +99,4 @@ function EmailVerifyPage() {
 
 }
 
-export default EmailVerifyPage;
+export default RegisterEmailVerify;

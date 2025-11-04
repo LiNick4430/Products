@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify'
 
 import { login, logout, updateAccessToken } from "../services/authService"
-import { getUserDetails, register } from "../services/userService"
+import { getUserDetails, register, resetPassword } from "../services/userService"
+import { forgetPasswordSendEmail } from "../services/emailService"
 
 // 1. 定義 Context 物件 給它一個預設值，通常是 null 或一個包含預期結構的空物件
 const AuthContext = createContext(null);
@@ -55,6 +56,9 @@ export const AuthProvider = ({ children }) => {
       // 更新登入狀態
       setIsLoggedIn(true);
 
+      // 登入成功後的邏輯
+      console.log(`登入成功訊息: ${response.message}`);
+
       // 登入成功提示
       toast.success(`登入成功，歡迎回來`, {
         position: "top-center",   // 定義位置
@@ -86,11 +90,13 @@ export const AuthProvider = ({ children }) => {
 
     try {
       // 呼叫 API 服務
-      await logout(accessToken);
+      const response = await logout(accessToken);
 
+      // 登出成功後的邏輯
+      console.log(`登出成功訊息: ${response.message}`);
     } catch (e) {
-      // 處理網路錯誤或 API 服務拋出的錯誤
-      console.error("登入時發生錯誤", e);
+      // 僅記錄 API 錯誤，因為無論如何都要清除本地狀態
+      console.error("API 登出時發生錯誤，但仍清除本地狀態。", e);
       setError(e.message || "網路或服務器連接錯誤");
     } finally {
       // 清除 accessToken, refreshToken
@@ -138,7 +144,7 @@ export const AuthProvider = ({ children }) => {
       });
 
       // 導航到 一個提示使用者去檢查信箱的頁面
-      navigate("/register-success");
+      navigate("/register/success");
     } catch (e) {
       // 處理 API 服務拋出的錯誤
       console.error("註冊時發生錯誤", e);
@@ -153,7 +159,7 @@ export const AuthProvider = ({ children }) => {
     } finally {
       setIsLoading(false); // 無論成功失敗，都關閉載入狀態
     }
-  }, []);
+  }, [navigate]);
 
   // Token 檢查與刷新邏輯 Callback
   const checkAndSetAuth = useCallback(async () => {
@@ -232,15 +238,75 @@ export const AuthProvider = ({ children }) => {
       setIsLoading(false);
     }
 
-  }, [
-    handleLogout,
-    setAccessToken,
-    setRefreshToken,
-    setRoleName,
-    setUsername,
-    setIsLoggedIn,
-    setIsLoading
-  ])
+  }, [handleLogout])
+
+  // 忘記密碼 發送信件
+  const handleForgetPassword = useCallback(async (username) => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      // 執行 發信動作
+      const response = await forgetPasswordSendEmail(username);
+
+      // 如果發信成功
+      console.log(`發信成功: ${response.message}`);
+
+      toast.success(`發信成功 請到信箱收取`, {
+        position: "top-center",   // 定義位置
+        autoClose: 3000,          // 3秒後 自動關閉
+      });
+
+      // 跳回 登入頁面
+      navigate("/login");
+
+    } catch (e) {
+      // 處理 API 服務拋出的錯誤
+      console.error("發信時發生錯誤", e);
+      setError(e.message || "網路或服務器連接錯誤");
+
+      // 發信失敗提示
+      toast.error(`發信失敗: ${e.message || "網路錯誤"}`, {
+        position: "top-center",
+        autoClose: 3000,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  }, [navigate]);
+
+  // 忘記密碼 修改密碼
+  const handleForgetPasswordResetPassword = useCallback(async (username, password, token) => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await resetPassword(username, password, token);
+
+      // 如果密碼修改 成功
+      console.log(`密碼修改成功: ${response.message}`);
+
+      toast.success(`密碼修改成功 請到登陸頁面重新登入`, {
+        position: "top-center",   // 定義位置
+        autoClose: 3000,          // 3秒後 自動關閉
+      });
+
+      // 跳回 登入頁面
+      navigate("/login");
+    } catch (e) {
+      // 處理 API 服務拋出的錯誤
+      console.error("修改時發生錯誤", e);
+      setError(e.message || "網路或服務器連接錯誤");
+
+      // 發信失敗提示
+      toast.error(`修改失敗: ${e.message || "網路錯誤"}`, {
+        position: "top-center",
+        autoClose: 3000,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  }, [navigate]);
 
   // 第一次進入頁面 的 預先處理
   useEffect(() => {
@@ -283,6 +349,9 @@ export const AuthProvider = ({ children }) => {
     handleLogin,
     handleLogout,
     handleRegister,
+    handleForgetPassword,
+    handleForgetPasswordResetPassword,
+
   };
 
   return (

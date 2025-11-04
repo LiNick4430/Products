@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { AuthProvider, useAuth } from "../context/AuthContext"
+import { useAuth } from "../context/AuthContext"
+import { useNavigate } from 'react-router-dom';
 import "./LoginPage.css";
 
 function LoginPage() {
@@ -9,10 +10,17 @@ function LoginPage() {
   const [username, setUsername] = useState("manager");
   const [password, setPassword] = useState("123456");
 
+  const navigate = useNavigate(); // 2. 實例化 useNavigate
+
   const handleSubmit = (e) => {
     e.preventDefault();
     handleLogin(username, password); // 呼叫 onLogin 進行登入驗證
   };
+
+  const handleForgetPasswordClick = (e) => {
+    e.preventDefault(); // 防止按鈕觸發表單提交
+    navigate("/forget/password"); // 3. 點擊時跳轉到忘記密碼頁面
+  }
 
   return (
     <div className="login-page">
@@ -46,9 +54,14 @@ function LoginPage() {
                 required
               />
             </div>
-            <button type="submit" className="login-button" disabled={isLoading}>
-              {isLoading ? "登入中..." : "登入"}
-            </button>
+            <div className="button-group">
+              <button type="submit" className="login-button" disabled={isLoading}>
+                {isLoading ? "登入中..." : "登入"}
+              </button>
+              <button type="button" className="forgot-password-button" onClick={handleForgetPasswordClick}>
+                忘記密碼
+              </button>
+            </div>
           </form>
         </>
       )}

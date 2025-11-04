@@ -48,7 +48,7 @@ public class ChildInfoServiceImpl implements ChildInfoService{
 	private ModelMapper modelMapper;
 
 	@Override
-	@PreAuthorize("hasAuthority('ROLE_PUBLIC')") 
+	@PreAuthorize("isAuthenticated()") 
 	public List<ChildDTO> findAllChildByUserPublic() {
 		// 0. 找尋 UserPublic
 		UserPublic userPublic = userPublicService.findUserPublic();

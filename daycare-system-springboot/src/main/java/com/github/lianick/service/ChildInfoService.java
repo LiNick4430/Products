@@ -10,7 +10,7 @@ import com.github.lianick.model.dto.child.ChildUpdateDTO;
 // 負責處理 幼兒資料
 public interface ChildInfoService {
 	/** 尋找 全部的幼兒資料<p>
-	 * 需要 @PreAuthorize("hasAuthority('ROLE_PUBLIC')") 
+	 * 需要 @PreAuthorize("isAuthenticated()")
 	 * */
 	List<ChildDTO> findAllChildByUserPublic();
 	
