@@ -4,8 +4,7 @@ function Home() {
 
   return (
     <div>
-      <h1>在 Docker 上 執行 React</h1>
-      <h2>更新版V3</h2>
+      <h1>預計有 系統公告 + 各機構的介紹</h1>
     </div>
   )
 
