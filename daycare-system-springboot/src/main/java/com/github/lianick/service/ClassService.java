@@ -9,9 +9,9 @@ import com.github.lianick.model.dto.clazz.ClassFindDTO;
 import com.github.lianick.model.dto.clazz.ClassUpdateDTO;
 
 public interface ClassService {
-
-	/** 搜尋 該 機構 中 班級 資料 
-	 * 需要 @PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")
+	
+	/** 用 機構 搜尋 其下 中 班級 資料 
+	 * 需要 @PreAuthorize("isAuthenticated()")
 	 * */
 	List<ClassDTO> findAllClassByOrganization(ClassFindDTO classFindDTO);
 	
