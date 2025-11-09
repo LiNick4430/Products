@@ -10,7 +10,7 @@ function Navbar() {
   const displayUsername = isLoggedIn ? username : "遊客";
 
   // 2. 組合 問候語
-  const greeting = `${displayUsername} 您好`;
+  const greeting = `政府公托系統 ${displayUsername} 您好`;
 
   return (
     <nav className="navbar">
@@ -28,10 +28,13 @@ function Navbar() {
             {roleName === "ROLE_MANAGER" && (
               <>
                 <li><Link to="/"><button>帳號管理</button></Link></li>  {/* 前後台 */}
+
                 <li><Link to="/"><button>公告管理</button></Link></li>
                 <li><Link to="/"><button>規範說明</button></Link></li>
+
                 <li><Link to="/"><button>機構管理</button></Link></li>
                 <li><Link to="/"><button>班級管理</button></Link></li>
+
                 <li><Link to="/"><button>申請審核</button></Link></li>
                 <li><Link to="/"><button>徹銷審核</button></Link></li>
                 <li><Link to="/"><button>補位抽籤</button></Link></li>
@@ -44,8 +47,10 @@ function Navbar() {
             {roleName === "ROLE_STAFF" && (
               <>
                 <li><Link to="/"><button>公告管理</button></Link></li>
+
                 <li><Link to="/"><button>機構管理</button></Link></li>
                 <li><Link to="/"><button>班級管理</button></Link></li>
+
                 <li><Link to="/"><button>申請審核</button></Link></li>
                 <li><Link to="/"><button>徹銷審核</button></Link></li>
                 <li><Link to="/"><button>候補清冊</button></Link></li>
@@ -56,9 +61,9 @@ function Navbar() {
             {/* 民眾 的 連接區域 */}
             {roleName === "ROLE_PUBLIC" && (
               <>
-                <li><Link to="/"><button>幼兒資料</button></Link></li>
-                <li><Link to="/"><button>附件上傳</button></Link></li>
-                <li><Link to="/"><button>線上申辦</button></Link></li>
+                <li><Link to="/child/information"><button>幼兒資料</button></Link></li>
+                <li><Link to="/document/public/information"><button>附件管理</button></Link></li>
+                <li><Link to="/case/public/information"><button>線上申辦</button></Link></li>
               </>
             )}
 

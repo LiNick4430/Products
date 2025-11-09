@@ -6,6 +6,8 @@ import { getUserDetails } from "../services/userService"
 import { getUserPublicDetails } from "../services/userPublicService"
 import { getUserAdminDetails } from "../services/userAdminService"
 
+import usePublicInfoStatus from '../hooks/usePublicInfoStatus'; // 引入 Hook
+
 import "./UserMe.css";
 
 function UserMe() {
@@ -19,15 +21,26 @@ function UserMe() {
 
   // 用於儲存各級別資料的 State
   const [userData, setUserData] = useState(null);
-  const [publicData, setPublicData] = useState(null);
+  // const [publicData, setPublicData] = useState(null);
   const [adminData, setAdminData] = useState(null);
 
+  // 🎯 使用 Hook 獲取民眾相關狀態和資料 🎯
+  const {
+    isPublicInfoSet, // Hook 已經決定是否填寫
+    isLoadingStatus, // Hook 的載入狀態
+    publicDetails // Hook 成功取得的民眾資料
+  } = usePublicInfoStatus();
+
   // 處理民眾帳號是否已設置基本資料的狀態
-  const [isPublicInfoSet, setIsPublicInfoSet] = useState(true);
+  // 將 isPublicInfoSet 狀態的來源改為 Hook 
+  // const [isPublicInfoSet, setIsPublicInfoSet] = useState(isPublicInfoSetFromHook);
 
   useEffect(() => {
     // 檢查是否有 access token，如果沒有，理論上 ProtectedRoute 會先攔截
     if (!accessToken || !roleName) return;
+
+    // 只有當 Hook 已經檢查完畢，我們才能開始載入其他資料
+    if (isLoadingStatus) return;
 
     const fetchUserDetails = async () => {
       setIsFetchingData(true);
@@ -44,39 +57,30 @@ function UserMe() {
         return; // 終止進一步載入
       }
 
-      // 2. 依照角色 載入資料
+      // 2. 依照角色 載入資料 (ROLE_PUBLIC 資料已在 Hook 中處理)
       try {
-        if (roleName === "ROLE_PUBLIC") {
-          const publicResponse = await getUserPublicDetails(accessToken);
-          setPublicData(publicResponse.data);
-          setIsPublicInfoSet(true); // 載入成功
-        } else if (roleName === "ROLE_STAFF" || roleName === "ROLE_MANAGER") {
+        if (roleName === "ROLE_STAFF" || roleName === "ROLE_MANAGER") {
           const adminResponse = await getUserAdminDetails(accessToken);
           setAdminData(adminResponse.data);
         }
       } catch (e) {
-        if (roleName === "ROLE_PUBLIC" && e.message && e.message.includes("USER_NOT_FOUND")) {
-          console.log("民眾基本資料尚未設置。");
-          setPublicData(null);
-          setIsPublicInfoSet(false); // 設置為 false，用於在 UI 上顯示引導按鈕
-        } else {
-          console.error(`載入 ${roleName} 特定資料失敗:`, e);
-          setFetchError(e.message);
-        }
+        // 這裡只處理 Admin/Staff 資料載入失敗的情況
+        console.error(`載入 ${roleName} 特定資料失敗:`, e);
+        setFetchError(e.message);
       } finally {
         setIsFetchingData(false);
       }
     }
 
     fetchUserDetails();
-  }, [accessToken, roleName]);
+  }, [accessToken, roleName, isLoadingStatus]);
 
   // 1. 載入或錯誤提示
   if (isFetchingData) return <div>正在載入您的帳號資料...</div>;
   if (fetchError) return <div className="error">載入失敗: {fetchError}</div>;
 
   // 2. 民眾帳號的特殊處理 (引導至填寫頁面)
-  if (roleName === "ROLE_PUBLIC" && !isPublicInfoSet) {
+  if (roleName === "ROLE_PUBLIC" && isPublicInfoSet === false) {
     return (
       <div className="user-me-container">
         <h2>👋 {username} 您好，請補齊資料</h2>
@@ -101,14 +105,15 @@ function UserMe() {
       <p><strong>電話：</strong> {userData.phoneNumber}</p>
 
       {/* 顯示民眾特定資料 */}
-      {publicData && (
+      {/* 使用 Hook 提供的 publicDetails */}
+      {publicDetails && (
         <div className="role-details">
           <h2>詳細資料</h2>
-          <p>姓名: {publicData.name}</p>
-          <p>身分證字號: {publicData.nationalIdNo}</p>
-          <p>生日: {publicData.birthdate}</p>
-          <p>戶籍地址: {publicData.registeredAddress}</p>
-          <p>通訊地址: {publicData.mailingAddress}</p>
+          <p>姓名: {publicDetails.name}</p>
+          <p>身分證字號: {publicDetails.nationalIdNo}</p>
+          <p>生日: {publicDetails.birthdate}</p>
+          <p>戶籍地址: {publicDetails.registeredAddress}</p>
+          <p>通訊地址: {publicDetails.mailingAddress}</p>
         </div>
       )}
 
