@@ -22,5 +22,6 @@ public class ClassDTO {
 	private Integer serviceEndMonth;		// 服務結束月份
 	
 	private Long organizationId;	// 機構ID
+	private String organizationName;	// 機構名稱
 
 }

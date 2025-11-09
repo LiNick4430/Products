@@ -182,8 +182,8 @@ public class UserAdminServiceImpl implements UserAdminService{
 		Role role = null;
 		Organization organization = null;
 		if (userAdminUpdateDTO.getNewRoleNumber() != null) {
-			if (userAdminUpdateDTO.getNewRoleNumber() != 2L &&
-					userAdminUpdateDTO.getNewRoleNumber() != 3L) {
+			if (userAdminUpdateDTO.getNewRoleNumber().equals(2L) &&
+					userAdminUpdateDTO.getNewRoleNumber().equals(3L)) {
 				throw new RoleFailureException("更新失敗：角色 設定錯誤");
 			}
 			// 目前預設 可以創建 和自己 同權限的 帳號 (3L 可以建立 2L 或 3L)

@@ -12,6 +12,7 @@ import com.github.lianick.converter.UsersToUsernameConveter;
 import com.github.lianick.model.dto.child.ChildCreateDTO;
 import com.github.lianick.model.dto.child.ChildDTO;
 import com.github.lianick.model.dto.child.ChildUpdateDTO;
+import com.github.lianick.model.dto.clazz.ClassDTO;
 import com.github.lianick.model.dto.organization.OrganizationDTO;
 import com.github.lianick.model.dto.user.UserForgetPasswordDTO;
 import com.github.lianick.model.dto.user.UserLoginDTO;
@@ -24,6 +25,7 @@ import com.github.lianick.model.dto.userPublic.UserPublicDTO;
 import com.github.lianick.model.dto.userPublic.UserPublicUpdateDTO;
 import com.github.lianick.model.dto.userPublic.UserPublicCreateDTO;
 import com.github.lianick.model.eneity.ChildInfo;
+import com.github.lianick.model.eneity.Classes;
 import com.github.lianick.model.eneity.Organization;
 import com.github.lianick.model.eneity.UserAdmin;
 import com.github.lianick.model.eneity.UserPublic;
@@ -119,6 +121,15 @@ public class ModelMapperConfig {
 		// Organization 相關
 		modelMapper.typeMap(Organization.class, OrganizationDTO.class).addMappings(mapper -> {
 			mapper.map(Organization::getOrganizationId, OrganizationDTO::setId);
+		});
+		
+		// Class 相關
+		modelMapper.typeMap(Classes.class, ClassDTO.class).addMappings(mapper -> {
+			mapper.map(Classes::getClassId, ClassDTO::setId);
+			mapper.using(organizationToOrganizationIdConveter)
+					.map(Classes::getOrganization, ClassDTO::setOrganizationId);
+			mapper.using(organizationToOrganizationNameConveter)
+					.map(Classes::getOrganization, ClassDTO::setOrganizationName);
 		});
 		
 		// ------------------------------------------------------------------------------------
