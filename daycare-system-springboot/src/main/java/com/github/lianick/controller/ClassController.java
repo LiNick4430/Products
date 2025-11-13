@@ -55,5 +55,5 @@ public class ClassController {
 	public ApiResponse<Void> deleteClass(@RequestBody ClassDeleteDTO classDeleteDTO) {
 		classService.deleteClass(classDeleteDTO);
 		return ApiResponse.success("刪除 	班級", null);
-	}
+	} 
 }
