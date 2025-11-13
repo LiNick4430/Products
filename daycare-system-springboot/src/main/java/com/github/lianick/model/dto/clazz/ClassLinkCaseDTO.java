@@ -9,11 +9,11 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ClassUpdateDTO {
+public class ClassLinkCaseDTO {
 	
 	private Long id;	// 班級 ID
 	
-	private Integer currentCount = 0;	// 班級 目前人數(預設 0)
+	private Long caseId;			// 案件ID
 	
 	private Long organizationId;	// 機構ID
 

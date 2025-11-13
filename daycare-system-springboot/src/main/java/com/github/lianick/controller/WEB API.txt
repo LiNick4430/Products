@@ -57,6 +57,13 @@ POST	"/create", "/create/"			主管 建立 新的機構		"/organization/create/"
 POST	"/update", "/update/"			主管/員工 更新 機構資料	"/organization/update/"			AUTHENTICATED
 DELETE	"/delete", "/delete/"			主管 刪除 機構資料		"/organization/delete/"			AUTHENTICATED
 
+ClassController
+Request Mapping: "/class"
+POST	"/find", "/find/"				尋找 機構旗下班級		"/class/find/"				AUTHENTICATED
+POST	"/create", "/create/"			建立 機構 新班級		"/class/create/"			AUTHENTICATED
+POST	"/link/case", "/link/case/"		和 案件 建立關連		"/class/link/case/"			AUTHENTICATED
+DELETE	"/delete", "/delete/"			刪除 	班級			"/class/delete/"			AUTHENTICATED
+
 // 尚未開工
 DocumnetController	
 Request Mapping: "/document"
