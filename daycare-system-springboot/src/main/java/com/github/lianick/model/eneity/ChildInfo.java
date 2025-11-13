@@ -1,6 +1,7 @@
 package com.github.lianick.model.eneity;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 import org.hibernate.annotations.SQLRestriction;
 
@@ -11,6 +12,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -46,4 +48,7 @@ public class ChildInfo extends BaseEntity{
 	@ManyToOne
 	@JoinColumn(name = "public_id", nullable = false)
 	private UserPublic userPublic;				// 連接到 民眾 ID
+	
+	@OneToMany(mappedBy = "childInfo")
+	private Set<Cases> cases;					// 曾經/現在 所在的 班級
 }

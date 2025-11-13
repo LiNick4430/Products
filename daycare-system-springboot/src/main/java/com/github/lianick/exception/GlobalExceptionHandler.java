@@ -40,6 +40,16 @@ public class GlobalExceptionHandler {
 		return ApiResponse.error(statusCode, errorCode, ex.getMessage());
 	}
 	
+	// 處理 使用 ENUM 卻 找不到 code 的 異常 (401)
+	@ExceptionHandler(EnumNoFoundException.class) 	
+	@ResponseStatus(HttpStatus.UNAUTHORIZED)     		// 401
+	public ApiResponse<?> handleEnumNoFoundException(EnumNoFoundException ex) {
+		int statusCode = HttpStatus.UNAUTHORIZED.value();
+		ErrorCode errorCode = ErrorCode.ENUM_NOT_FOUND;
+		// return new ApiResponse<>(statusCode, ex.getMessage(), null);
+		return ApiResponse.error(statusCode, errorCode, ex.getMessage());
+	}
+	
 	// 使用者已經存在 的 異常 (401)
 	@ExceptionHandler(UserExistException.class) 	
 	@ResponseStatus(HttpStatus.CONFLICT)     			// 409      	
@@ -66,6 +76,26 @@ public class GlobalExceptionHandler {
 	public ApiResponse<?> handleOrganizationFailureException(OrganizationFailureException ex) {
 		int statusCode = HttpStatus.UNAUTHORIZED.value();
 		ErrorCode errorCode = ErrorCode.ORGANIZATION_FAILURE;
+		// return new ApiResponse<>(statusCode, ex.getMessage(), null);
+		return ApiResponse.error(statusCode, errorCode, ex.getMessage());
+	}
+	
+	// 班級(Classes) 相關 的 異常 (401)
+	@ExceptionHandler(ClassesFailureException.class) 	
+	@ResponseStatus(HttpStatus.UNAUTHORIZED)     		// 401
+	public ApiResponse<?> handleClassesFailureException(ClassesFailureException ex) {
+		int statusCode = HttpStatus.UNAUTHORIZED.value();
+		ErrorCode errorCode = ErrorCode.CLASSES_FAILURE;
+		// return new ApiResponse<>(statusCode, ex.getMessage(), null);
+		return ApiResponse.error(statusCode, errorCode, ex.getMessage());
+	}
+	
+	// 案件(Cases) 相關 的 異常 (401)
+	@ExceptionHandler(CaseFailureException.class) 	
+	@ResponseStatus(HttpStatus.UNAUTHORIZED)     		// 401
+	public ApiResponse<?> handleCaseFailureException(CaseFailureException ex) {
+		int statusCode = HttpStatus.UNAUTHORIZED.value();
+		ErrorCode errorCode = ErrorCode.CASE_FAILURE;
 		// return new ApiResponse<>(statusCode, ex.getMessage(), null);
 		return ApiResponse.error(statusCode, errorCode, ex.getMessage());
 	}

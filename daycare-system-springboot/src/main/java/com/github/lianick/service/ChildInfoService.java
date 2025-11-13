@@ -32,5 +32,5 @@ public interface ChildInfoService {
 	/** 刪除 民眾底下 特定幼兒資料<p>
 	 * 需要 @PreAuthorize("hasAuthority('ROLE_PUBLIC')") 
 	 * */
-	void deleteChildInfo(ChildDeleteDTO childDeleteDTO);
+	void deleteChildInfo(ChildDeleteDTO childDeleteDTO);	// TODO 假設在 CASE CLASS 資料有他 可能就不給刪除
 }

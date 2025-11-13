@@ -5,9 +5,13 @@ import java.util.Set;
 
 import org.hibernate.annotations.SQLRestriction;
 
+import com.github.lianick.model.enums.CaseStatus;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -49,8 +53,9 @@ public class Cases extends BaseEntity{
 	private Set<CaseOrganization> organizations;	// 機構(第一 和 第二志願)
 	
 	// 對應前台(申請 退件 通過)
+	@Enumerated(EnumType.STRING)	// 確保資料庫中儲存的是 Enum 的名稱字符串 (e.g., "APPLIED")
 	@Column(name = "case_status", nullable = false)
-	private String status;						// 申請當前狀態
+	private CaseStatus status;						// 申請當前狀態(使用 Enum)
 	
 	/*	可以藉由 幼兒ID -> 民眾ID -> 帳戶ID 反查到
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -61,6 +66,10 @@ public class Cases extends BaseEntity{
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "child_id", nullable = false)
 	private ChildInfo childInfo;				// 幼兒ID
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "class_id")
+	private Classes classes = null;				// 成功之後 對應的 班級ID
 	
 	// 以下 三個 的生命週期 都和 cases 綁定 因此使用 cascade = CascadeType.ALL
 	

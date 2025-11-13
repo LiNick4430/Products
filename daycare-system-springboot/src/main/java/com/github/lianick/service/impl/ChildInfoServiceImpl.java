@@ -180,6 +180,7 @@ public class ChildInfoServiceImpl implements ChildInfoService{
 		if (!childInfo.getUserPublic().getPublicId().equals(userPublic.getPublicId())) {
 			throw new ChildNoFoundException("幼兒資料不存在");
 		}
+		
 		// TODO 假設在 CASE CLASS 資料有他 可能就不給刪除
 		
 		// 3. 建立 變數

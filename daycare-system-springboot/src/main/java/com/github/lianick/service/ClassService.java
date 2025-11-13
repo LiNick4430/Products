@@ -6,7 +6,7 @@ import com.github.lianick.model.dto.clazz.ClassCreateDTO;
 import com.github.lianick.model.dto.clazz.ClassDTO;
 import com.github.lianick.model.dto.clazz.ClassDeleteDTO;
 import com.github.lianick.model.dto.clazz.ClassFindDTO;
-import com.github.lianick.model.dto.clazz.ClassUpdateDTO;
+import com.github.lianick.model.dto.clazz.ClassLinkCaseDTO;
 
 public interface ClassService {
 	
@@ -20,10 +20,10 @@ public interface ClassService {
 	 * */
 	ClassDTO createClass(ClassCreateDTO classCreateDTO);
 	
-	/** 更新 特定班級 的 現有人數<p>
+	/** 班級 和 審核過的案件 建立關連 (同時人數+1) <p>
 	 * 需要 @PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")
 	 * */
-	ClassDTO updateClass(ClassUpdateDTO classUpdateDTO);
+	ClassDTO classLinkCase(ClassLinkCaseDTO classLinkCaseDTO);
 	
 	/** 刪除 特定班級<p>
 	 * 需要 @PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")
