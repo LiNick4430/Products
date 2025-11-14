@@ -2,6 +2,8 @@ package com.github.lianick.service;
 
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.github.lianick.model.dto.documentPublic.DocumentPublicCreateDTO;
 import com.github.lianick.model.dto.documentPublic.DocumentPublicDTO;
 import com.github.lianick.model.dto.documentPublic.DocumentPublicDeleteDTO;
@@ -16,7 +18,7 @@ public interface DocumentPublicService {
 	 * 尋找 該 民眾 底下 所有 的 附件<p>
 	 * 需要 @PreAuthorize("hasAuthority('ROLE_PUBLIC')")
 	 * */
-	List<DocumentPublicDTO> findAllDocByPublic(DocumentPublicFindDTO documentPublicFindDTO);
+	List<DocumentPublicDTO> findAllDocByPublic();
 	
 	/**
 	 * 尋找 該 案件 底下 所有 的 附件<p>
@@ -28,13 +30,13 @@ public interface DocumentPublicService {
 	 * 民眾 建立 新的 附件<p>
 	 * 需要 @PreAuthorize("hasAuthority('ROLE_PUBLIC')")
 	 * */
-	DocumentPublicDTO createDocumentByPublic(DocumentPublicCreateDTO documentPublicCreateDTO);
+	DocumentPublicDTO createDocumentByPublic(DocumentPublicCreateDTO documentPublicCreateDTO, MultipartFile file);
 	
 	/**
 	 * 民眾 為了 案件 建立 新的 附件<p>
 	 * 需要 @PreAuthorize("hasAuthority('ROLE_PUBLIC')")
 	 * */
-	DocumentPublicDTO createDocumentByCase(DocumentPublicCreateDTO documentPublicCreateDTO);
+	DocumentPublicDTO createDocumentByCase(DocumentPublicCreateDTO documentPublicCreateDTO, MultipartFile file);
 	
 	/**
 	 * 民眾 為了 案件 關連 舊有的 附件<p>

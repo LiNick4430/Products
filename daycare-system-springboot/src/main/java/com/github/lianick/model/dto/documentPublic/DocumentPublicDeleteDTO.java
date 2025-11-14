@@ -13,7 +13,4 @@ public class DocumentPublicDeleteDTO {
 
 	private Long id;		// 附件ID
 	
-	private Long userId;		// 帳號 ID
-	private String username;	// 帳號
-	
 }

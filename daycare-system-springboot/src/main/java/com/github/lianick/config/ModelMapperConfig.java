@@ -8,11 +8,13 @@ import org.springframework.context.annotation.Configuration;
 import com.github.lianick.converter.OrganizationToOrganizationIdConveter;
 import com.github.lianick.converter.OrganizationToOrganizationNameConveter;
 import com.github.lianick.converter.RoleNumberToRoleConveter;
+import com.github.lianick.converter.UsersPublicToUseIdConveter;
 import com.github.lianick.converter.UsersToUsernameConveter;
 import com.github.lianick.model.dto.child.ChildCreateDTO;
 import com.github.lianick.model.dto.child.ChildDTO;
 import com.github.lianick.model.dto.child.ChildUpdateDTO;
 import com.github.lianick.model.dto.clazz.ClassDTO;
+import com.github.lianick.model.dto.documentPublic.DocumentPublicDTO;
 import com.github.lianick.model.dto.organization.OrganizationDTO;
 import com.github.lianick.model.dto.user.UserForgetPasswordDTO;
 import com.github.lianick.model.dto.user.UserLoginDTO;
@@ -26,6 +28,7 @@ import com.github.lianick.model.dto.userPublic.UserPublicUpdateDTO;
 import com.github.lianick.model.dto.userPublic.UserPublicCreateDTO;
 import com.github.lianick.model.eneity.ChildInfo;
 import com.github.lianick.model.eneity.Classes;
+import com.github.lianick.model.eneity.DocumentPublic;
 import com.github.lianick.model.eneity.Organization;
 import com.github.lianick.model.eneity.UserAdmin;
 import com.github.lianick.model.eneity.UserPublic;
@@ -40,6 +43,9 @@ public class ModelMapperConfig {
 	
 	@Autowired
 	private UsersToUsernameConveter usersToUsernameConveter;
+	
+	@Autowired
+	private UsersPublicToUseIdConveter usersPublicToUseIdConveter;
 	
 	@Autowired
 	private OrganizationToOrganizationIdConveter organizationToOrganizationIdConveter;
@@ -130,6 +136,13 @@ public class ModelMapperConfig {
 					.map(Classes::getOrganization, ClassDTO::setOrganizationId);
 			mapper.using(organizationToOrganizationNameConveter)
 					.map(Classes::getOrganization, ClassDTO::setOrganizationName);
+		});
+		
+		// DocumentPublic
+		modelMapper.typeMap(DocumentPublic.class, DocumentPublicDTO.class).addMappings(mapper -> {
+			mapper.map(DocumentPublic::getPublicDocId, DocumentPublicDTO::setId);
+			mapper.using(usersPublicToUseIdConveter)
+			.map(DocumentPublic::getUserPublic, DocumentPublicDTO::setUserId);
 		});
 		
 		// ------------------------------------------------------------------------------------

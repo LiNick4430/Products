@@ -143,6 +143,16 @@ public class GlobalExceptionHandler {
 		return ApiResponse.error(statusCode, errorCode, ex.getMessage());
 	}
 	
+	// 檔案 儲存相關 的 錯誤 (400)
+	@ExceptionHandler(FileStorageException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)   			// 400
+	public ApiResponse<?> handleFileStorageException(FileStorageException ex) {
+		int statusCode = HttpStatus.BAD_REQUEST.value();
+		ErrorCode errorCode = ErrorCode.FILE_STORAGE_FAILURE;
+		// return new ApiResponse<>(statusCode, ex.getMessage() , null);
+		return ApiResponse.error(statusCode, errorCode, ex.getMessage());
+	}
+	
 	// JWT 權限不足的 錯誤
 	@ExceptionHandler(AccessDeniedException.class)
 	@ResponseStatus(HttpStatus.FORBIDDEN) // 返回 403 狀態碼

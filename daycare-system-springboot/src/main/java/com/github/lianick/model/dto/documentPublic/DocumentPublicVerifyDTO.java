@@ -12,8 +12,4 @@ import lombok.Setter;
 public class DocumentPublicVerifyDTO {
 
 	private Long id;		// 附件 ID
-	
-	private Long userId;	// 員工 帳號 ID
-	
-	private Boolean isVerified;				// 附件 是否 聽過認證
 }
