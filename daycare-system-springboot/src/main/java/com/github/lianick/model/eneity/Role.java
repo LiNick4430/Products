@@ -38,7 +38,7 @@ public class Role extends BaseEntity{
 	@Column(name = "role_description")
 	private String description;			// 角色 描述
 	
-	@ManyToMany
+	@ManyToMany	
 	@JoinTable(name = "role_permission",									// 指定中間表名稱
 				joinColumns = @JoinColumn(name = "role_id"),				// 本身在中間表的外鍵
 				inverseJoinColumns = @JoinColumn(name = "permission_id"))	// 對方在中間表的外鍵

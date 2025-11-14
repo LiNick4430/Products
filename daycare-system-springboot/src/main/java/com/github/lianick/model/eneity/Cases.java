@@ -17,6 +17,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -76,8 +78,15 @@ public class Cases extends BaseEntity{
 	@OneToMany(mappedBy = "cases", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private Set<CasePriority> priorities;		// 案件 所選擇的 優先條件
 	
-	@OneToMany(mappedBy = "cases", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	// @OneToMany(mappedBy = "cases", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToMany
+	@JoinTable(
+			name = "case_link_document_public",							// 關連表名稱
+			joinColumns = @JoinColumn(name = "case_id"),				// 案件 ID
+			inverseJoinColumns = @JoinColumn(name = "public_doc_id")	// 民眾附件 ID
+			)
 	private Set<DocumentPublic> documents;		// 案件 所使用 附件
+	
 	
 	@OneToMany(mappedBy = "cases", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private Set<ReviewLogs> reviewHistorys;		// 案件 的 審核紀錄

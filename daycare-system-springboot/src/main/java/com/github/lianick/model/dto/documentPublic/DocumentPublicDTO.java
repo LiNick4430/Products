@@ -1,8 +1,9 @@
-package com.github.lianick.model.dto.userPublic;
+package com.github.lianick.model.dto.documentPublic;
 
 import java.time.LocalDateTime;
 
 import com.github.lianick.model.dto.CaseDTO;
+import com.github.lianick.model.dto.userPublic.UserPublicDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

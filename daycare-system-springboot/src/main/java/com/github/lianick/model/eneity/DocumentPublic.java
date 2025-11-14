@@ -1,6 +1,7 @@
 package com.github.lianick.model.eneity;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 import org.hibernate.annotations.SQLRestriction;
 
@@ -11,6 +12,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -32,15 +34,10 @@ public class DocumentPublic extends BaseDocument{
 	@Column(name = "public_doc_id")
 	private Long publicDocId;					// 附件 ID
 	
-	// 核心業務關聯 (至少一個不為 NULL)
-	// 必須在 Service 層或資料庫 CHECK 約束中確保：
-    // (case_id IS NOT NULL OR public_id IS NOT NULL)
-    // 否則文件會成為無主數據。
+	// 案件相關文件 多對多關連
+	@ManyToMany(mappedBy = "documents")
+	private Set<Cases> cases;
 	
-	// 案件相關文件
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "case_id")
-	private Cases cases;
 	// 個人文件庫
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "public_id")
