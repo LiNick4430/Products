@@ -1,9 +1,11 @@
-uploads/
 HELP.md
 target/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+
+### Application Runtime Data ###
+uploads/
 
 ### STS ###
 .apt_generated
@@ -32,3 +34,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Eclipse/STS  ###
+bin/
