@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.github.lianick.exception.CaseFailureException;
 import com.github.lianick.exception.ClassesFailureException;
@@ -33,8 +34,6 @@ import com.github.lianick.repository.OrganizationRepository;
 import com.github.lianick.repository.UsersRepository;
 import com.github.lianick.service.ClassService;
 import com.github.lianick.util.SecurityUtils;
-
-import jakarta.transaction.Transactional;
 
 @Service
 @Transactional				// 確保 完整性 

@@ -3,6 +3,7 @@ package com.github.lianick.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.github.lianick.model.dto.AuthResponseDTO;
 import com.github.lianick.model.dto.user.UserLoginDTO;
@@ -13,8 +14,6 @@ import com.github.lianick.service.RefreshTokenService;
 import com.github.lianick.service.UserService;
 import com.github.lianick.util.JwtUtil;
 import com.github.lianick.util.SecurityUtils;
-
-import jakarta.transaction.Transactional;
 
 @Service
 @Transactional				// 確保 完整性 

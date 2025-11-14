@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.github.lianick.exception.OrganizationFailureException;
 import com.github.lianick.exception.UserNoFoundException;
@@ -30,8 +31,6 @@ import com.github.lianick.repository.UsersRepository;
 import com.github.lianick.service.OrganizationService;
 import com.github.lianick.service.UserService;
 import com.github.lianick.util.SecurityUtils;
-
-import jakarta.transaction.Transactional;
 
 @Service
 @Transactional				// 確保 完整性 

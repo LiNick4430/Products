@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.github.lianick.config.FrontendProperties;
 import com.github.lianick.exception.TokenFailureException;
@@ -32,8 +33,6 @@ import com.github.lianick.service.UserService;
 import com.github.lianick.util.PasswordSecurity;
 import com.github.lianick.util.SecurityUtils;
 import com.github.lianick.util.TokenUUID;
-
-import jakarta.transaction.Transactional;
 
 @Service
 @Transactional				// 確保 完整性 

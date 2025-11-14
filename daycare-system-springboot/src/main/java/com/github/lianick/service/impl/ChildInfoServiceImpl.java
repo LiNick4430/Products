@@ -9,6 +9,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.github.lianick.exception.ChildNoFoundException;
 import com.github.lianick.exception.FormatterFailureException;
@@ -25,8 +26,6 @@ import com.github.lianick.repository.UserPublicRepository;
 import com.github.lianick.service.ChildInfoService;
 import com.github.lianick.service.UserPublicService;
 import com.github.lianick.util.DateValidationUtil;
-
-import jakarta.transaction.Transactional;
 
 @Service
 @Transactional				// 確保 完整性

@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.github.lianick.config.FileProperties;
@@ -38,8 +39,6 @@ import com.github.lianick.repository.UserPublicRepository;
 import com.github.lianick.repository.UsersRepository;
 import com.github.lianick.service.DocumentPublicService;
 import com.github.lianick.util.SecurityUtils;
-
-import jakarta.transaction.Transactional;
 
 @Service
 @Transactional				// 確保 完整性 

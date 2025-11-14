@@ -8,6 +8,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.github.lianick.exception.OrganizationFailureException;
 import com.github.lianick.exception.RoleFailureException;
@@ -31,8 +32,6 @@ import com.github.lianick.service.UserAdminService;
 import com.github.lianick.service.UserService;
 import com.github.lianick.util.PasswordSecurity;
 import com.github.lianick.util.SecurityUtils;
-
-import jakarta.transaction.Transactional;
 
 @Service
 @Transactional				// 確保 完整性 
