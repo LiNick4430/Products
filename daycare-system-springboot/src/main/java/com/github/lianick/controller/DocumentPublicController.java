@@ -45,7 +45,7 @@ public class DocumentPublicController {
 	@Autowired
 	private DocumentPublicService documentPublicService;
 	
-	// 引入 ObjectMapper 進行手動 JSON 轉換
+	// ObjectMapper 進行手動 JSON 轉換
 	@Autowired
 	private ObjectMapper objectMapper;
 
