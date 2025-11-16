@@ -17,6 +17,7 @@ public enum ErrorCode {
 	CASE_FAILURE,
 	
 	FILE_STORAGE_FAILURE,
+	JSON_FAILURE,
 	
 	VALUES_MISS,
 	

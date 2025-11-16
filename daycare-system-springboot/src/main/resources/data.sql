@@ -82,5 +82,15 @@ INSERT INTO admin_user (admin_id, admin_name, admin_job_title, organization_id, 
 -- 4. 員工 C (Staff C)
 (4, '員工丙', '專員', 4 ,NOW(), NOW());
 
+-- 預設 民眾資料
+INSERT INTO public_user (public_id, public_name, public_national_id_no, public_birthdate, public_registered_address, public_mailing_address, create_date, update_date) VALUES
+(5, '陳柏翰', 'A123456781', '1985-11-20', '臺中市西屯區臺灣大道三段88號', '臺中市西屯區福星路500巷1弄1號', NOW(), NOW()),
+(6, '林雅雯', 'B234567892', '1992-05-15', '臺中市北區三民路三段129號', '臺中市北區進化路400號5樓', NOW(), NOW()),
+(7, '黃子軒', 'C345678903', '1978-08-01', '臺中市南屯區公益路二段51號', '臺中市南屯區文心路一段200號10樓', NOW(), NOW()),
+(8, '張靜宜', 'D456789014', '2001-02-28', '臺中市東區復興路四段186號', '臺中市東區大勇街10巷8號', NOW(), NOW()),
+(9, '李冠霖', 'E567890125', '1965-04-10', '臺中市豐原區中正路288號', '臺中市豐原區圓環東路150巷9號', NOW(), NOW()),
+(10, '王怡萱', 'F678901236', '1998-12-05', '臺中市大里區國光路二段710號', '臺中市大里區德芳南路300號', NOW(), NOW());
+
+
 -- 最後的時候 進行存入
 COMMIT;

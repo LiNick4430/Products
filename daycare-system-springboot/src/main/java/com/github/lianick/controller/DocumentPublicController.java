@@ -3,6 +3,7 @@ package com.github.lianick.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.lianick.exception.JsonFailureException;
 import com.github.lianick.model.dto.documentPublic.DocumentPublicCreateDTO;
 import com.github.lianick.model.dto.documentPublic.DocumentPublicDTO;
 import com.github.lianick.model.dto.documentPublic.DocumentPublicDeleteDTO;
@@ -41,6 +44,10 @@ public class DocumentPublicController {
 	
 	@Autowired
 	private DocumentPublicService documentPublicService;
+	
+	// 引入 ObjectMapper 進行手動 JSON 轉換
+	@Autowired
+	private ObjectMapper objectMapper;
 
 	@GetMapping(value = {"/public/find", "/public/find/"})
 	public ApiResponse<List<DocumentPublicDTO>> findAllDocByPublic() {
@@ -54,20 +61,42 @@ public class DocumentPublicController {
 		return ApiResponse.success("尋找 案件 旗下附件 成功", documentPublicDTOs);
 	}
 	
-	@PostMapping(value = {"/public/create", "/public/create/"}, consumes = "multipart/form-data")
+	@PostMapping(value = {"/public/create", "/public/create/"}, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ApiResponse<DocumentPublicDTO> createDocumentByPublic(
 			@RequestPart("file") MultipartFile file,
-			@RequestPart("documentPublicCreateDTO") DocumentPublicCreateDTO documentPublicCreateDTO
+			@RequestPart("data") String json
 			) {
+		
+		DocumentPublicCreateDTO documentPublicCreateDTO = null;
+		try {
+			
+			// 手動將 JSON 字串轉換成 DTO 物件
+            documentPublicCreateDTO = objectMapper.readValue(json, DocumentPublicCreateDTO.class);
+			
+		} catch (Exception e) {
+			throw new JsonFailureException("Json 轉換失敗");
+		}
+		
 		DocumentPublicDTO documentPublicDTO = documentPublicService.createDocumentByPublic(documentPublicCreateDTO, file);
 		return ApiResponse.success("民眾附件 上傳成功", documentPublicDTO);
 	}
 	
-	@PostMapping(value = {"/case/create", "/case/create/"}, consumes = "multipart/form-data")
+	@PostMapping(value = {"/case/create", "/case/create/"}, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ApiResponse<DocumentPublicDTO> createDocumentByCase(
 			@RequestPart("file") MultipartFile file,
-			@RequestPart("documentPublicCreateDTO") DocumentPublicCreateDTO documentPublicCreateDTO
+			@RequestPart("data") String json
 			) {
+		
+		DocumentPublicCreateDTO documentPublicCreateDTO = null;
+		try {
+
+			// 手動將 JSON 字串轉換成 DTO 物件
+			documentPublicCreateDTO = objectMapper.readValue(json, DocumentPublicCreateDTO.class);
+
+		} catch (Exception e) {
+			throw new JsonFailureException("Json 轉換失敗");
+		}
+
 		DocumentPublicDTO documentPublicDTO = documentPublicService.createDocumentByCase(documentPublicCreateDTO, file);
 		return ApiResponse.success("案件用附件 上傳成功", documentPublicDTO);
 	}

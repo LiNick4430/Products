@@ -143,6 +143,16 @@ public class GlobalExceptionHandler {
 		return ApiResponse.error(statusCode, errorCode, ex.getMessage());
 	}
 	
+	// JSON 轉換 相關 的 錯誤 (400)
+	@ExceptionHandler(JsonFailureException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)   			// 400
+	public ApiResponse<?> handleJsonFailureException(JsonFailureException ex) {
+		int statusCode = HttpStatus.BAD_REQUEST.value();
+		ErrorCode errorCode = ErrorCode.JSON_FAILURE;
+		// return new ApiResponse<>(statusCode, ex.getMessage() , null);
+		return ApiResponse.error(statusCode, errorCode, ex.getMessage());
+	}
+	
 	// 檔案 儲存相關 的 錯誤 (400)
 	@ExceptionHandler(FileStorageException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)   			// 400

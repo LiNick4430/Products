@@ -44,10 +44,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{	// OncePerReq
 		String username = null;
 		String authToken = null;
 		
+		System.out.println("header = " + header);
+		
 		// 1. 從 Header 中 提取 Token
 		if (header != null && header.startsWith(TOKEN_PREFIX)) {
 			authToken = header.replace(TOKEN_PREFIX + " ", "");
 
+			System.out.println("authToken = " + authToken);
+			
 			try {
 				// 2. 解析 Token, 提取 Claims
 				Claims claims = jwtUtil.extractAllClaims(authToken);
