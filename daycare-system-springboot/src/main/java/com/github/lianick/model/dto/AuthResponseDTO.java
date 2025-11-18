@@ -5,7 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-//登入或刷新Token後，回傳給前端的標準回應結構
+/**
+ * 登入或刷新Token後，回傳給前端的標準回應結構
+ */
 @Getter
 @Setter
 @AllArgsConstructor

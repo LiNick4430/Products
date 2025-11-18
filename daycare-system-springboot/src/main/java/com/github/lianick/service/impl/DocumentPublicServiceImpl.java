@@ -1,9 +1,5 @@
 package com.github.lianick.service.impl;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -268,7 +264,7 @@ public class DocumentPublicServiceImpl implements DocumentPublicService{
 		DocumentPublic documentPublic = documentPublicRepository.findById(documentPublicDeleteDTO.getId())
 				.orElseThrow(() -> new FileStorageException("附件不存在"));
 		if (!documentPublic.getUserPublic().equals(userPublic)) {
-			throw new AccessDeniedException("附件不存在");
+			throw new AccessDeniedException("您無權限刪除此附件，或附件不存在於您的帳號下。");
 		}
 		
 		// 2. 檢查是否還有關連的
@@ -276,16 +272,11 @@ public class DocumentPublicServiceImpl implements DocumentPublicService{
 			throw new FileStorageException("檔案錯誤：被案件使用 無法刪除");
 		}
 		
-		// 3. 執行軟刪除
-		Path targetLocation = Paths.get(documentPublic.getStoragePath());
+		// 3. 目標檔案 刪除
+		documentUtil.delete(documentPublic.getStoragePath());
+		
+		// 4. 執行軟刪除
 		LocalDateTime now = LocalDateTime.now();
-		
-		try {
-			Files.delete(targetLocation);
-		} catch (IOException e) {
-			throw new FileStorageException("檔案錯誤：刪除失敗", e);
-		}
-		
 		documentPublic.setDeleteAt(now);
 		documentPublic = documentPublicRepository.save(documentPublic);
 	}

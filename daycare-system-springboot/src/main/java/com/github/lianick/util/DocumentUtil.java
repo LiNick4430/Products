@@ -16,7 +16,7 @@ import com.github.lianick.exception.FileStorageException;
 import com.github.lianick.model.dto.DocumentDTO;
 
 /**
- * 負責處 理附件相關 事宜
+ * 負責處理附件相關 事宜
  * */
 
 @Component
@@ -71,4 +71,25 @@ public class DocumentUtil {
 		
 		return document;
 	}
+	
+	/**
+	 * 附件刪除
+	 * */
+	public void delete(String pathString) {
+		
+		Path targetLocation = Paths.get(pathString);
+		
+		try {
+			
+			Boolean isDeleted = Files.deleteIfExists(targetLocation);
+			
+			if (!isDeleted) {
+				//TODO  刪除不存在物件 的 LOG
+			}
+			
+		} catch (IOException e) {
+			throw new FileStorageException("檔案錯誤：刪除失敗", e);
+		}
+	}
+	
 }
