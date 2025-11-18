@@ -4,12 +4,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,11 +16,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.github.lianick.config.FileProperties;
 import com.github.lianick.exception.CaseFailureException;
 import com.github.lianick.exception.FileStorageException;
 import com.github.lianick.exception.UserNoFoundException;
 import com.github.lianick.exception.ValueMissException;
+import com.github.lianick.model.dto.DocumentDTO;
 import com.github.lianick.model.dto.documentPublic.DocumentPublicCreateDTO;
 import com.github.lianick.model.dto.documentPublic.DocumentPublicDTO;
 import com.github.lianick.model.dto.documentPublic.DocumentPublicDeleteDTO;
@@ -39,6 +36,7 @@ import com.github.lianick.repository.DocumentPublicRepository;
 import com.github.lianick.repository.UserPublicRepository;
 import com.github.lianick.repository.UsersRepository;
 import com.github.lianick.service.DocumentPublicService;
+import com.github.lianick.util.DocumentUtil;
 import com.github.lianick.util.SecurityUtils;
 
 @Service
@@ -61,7 +59,7 @@ public class DocumentPublicServiceImpl implements DocumentPublicService{
 	private ModelMapper modelMapper;
 	
 	@Autowired
-	private FileProperties fileProperties;
+	private DocumentUtil documentUtil;
 	
 	@Override
 	@PreAuthorize("hasAuthority('ROLE_PUBLIC')")
@@ -129,34 +127,13 @@ public class DocumentPublicServiceImpl implements DocumentPublicService{
 		}
 		
 		// 2. 檔案儲存
-		// 組合路徑 (基本 + 帳號ID)
-		String uploadDirWithUser = fileProperties.getUploadPath() + userId;
-		Path uploadPath = Paths.get(uploadDirWithUser);
-		Path targetLocation = null;
-		
-		// 建立 唯一的 檔案名稱
-		String orignalFileName = file.getOriginalFilename();
-		String storedFileName = UUID.randomUUID().toString() + "_" + orignalFileName;
-		
-		// I/O 區塊
-		try {
-			// 確認 目標路徑存在(如果不存在，則會自動創建)
-			Files.createDirectories(uploadPath);
-			
-			// 組合最終目標
-			targetLocation = uploadPath.resolve(storedFileName);
-			
-			// 儲存檔案
-			Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
-		} catch (IOException e) {
-			throw new FileStorageException("檔案錯誤：儲存失敗，請檢查伺服器路徑權限或磁碟空間。", e);
-		}
+		DocumentDTO documentDTO = documentUtil.upload(userId, file, false);
 		
 		// 3. 資料庫檔案的建立
 		DocumentPublic documentPublic = new DocumentPublic();
 		documentPublic.setUserPublic(userPublic);
-		documentPublic.setFileName(orignalFileName);
-		documentPublic.setStoragePath(targetLocation.toString());
+		documentPublic.setFileName(documentDTO.getOrignalFileName());
+		documentPublic.setStoragePath(documentDTO.getTargetLocation());
 		documentPublic.setDocType(documentPublicCreateDTO.getType());
 		
 		documentPublic = documentPublicRepository.save(documentPublic);
@@ -194,35 +171,14 @@ public class DocumentPublicServiceImpl implements DocumentPublicService{
 		}
 
 		// 2. 檔案儲存
-		// 組合路徑 (基本 + 帳號ID)
-		String uploadDirWithUser = fileProperties.getUploadPath() + userId;
-		Path uploadPath = Paths.get(uploadDirWithUser);
-		Path targetLocation = null;
-
-		// 建立 唯一的 檔案名稱
-		String orignalFileName = file.getOriginalFilename();
-		String storedFileName = UUID.randomUUID().toString() + "_" + orignalFileName;
-
-		// I/O 區塊
-		try {
-			// 確認 目標路徑存在(如果不存在，則會自動創建)
-			Files.createDirectories(uploadPath);
-
-			// 組合最終目標
-			targetLocation = uploadPath.resolve(storedFileName);
-
-			// 儲存檔案
-			Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
-		} catch (IOException e) {
-			throw new FileStorageException("檔案錯誤：儲存失敗，請檢查伺服器路徑權限或磁碟空間。", e);
-		}
+		DocumentDTO documentDTO = documentUtil.upload(userId, file, false);
 				
 		// 3. 資料庫檔案的建立
 		DocumentPublic documentPublic = new DocumentPublic();
 		documentPublic.setUserPublic(userPublic);
 		documentPublic.getCases().add(cases);
-		documentPublic.setFileName(orignalFileName);
-		documentPublic.setStoragePath(targetLocation.toString());
+		documentPublic.setFileName(documentDTO.getOrignalFileName());
+		documentPublic.setStoragePath(documentDTO.getTargetLocation());
 		documentPublic.setDocType(documentPublicCreateDTO.getType());
 
 		documentPublic = documentPublicRepository.save(documentPublic);

@@ -1,6 +1,9 @@
 package com.github.lianick.model.dto.announcement;
 
 import java.time.LocalDate;
+import java.util.List;
+
+import com.github.lianick.model.dto.documentAdmin.DocumentAnnouncementDTO;
 
 public class AnnouncementDTO {
 
@@ -13,7 +16,7 @@ public class AnnouncementDTO {
 	private LocalDate expiryDate;			// 公告 到期日期 (可為 NULL)
 	
 	private Long organizationId;			// 機構 ID
-	private Long organizationName;			// 機構 名稱
+	private String organizationName;		// 機構 名稱
 	
-	// TODO
+	private List<DocumentAnnouncementDTO> documentAnnouncementDTOs;	// 對應的公告文件
 }

@@ -21,7 +21,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "admin_document")				// 民眾用 附件
+@Table(name = "admin_document")				// 官方 用 附件
 @SQLRestriction("delete_at IS NULL")
 public class DocumentAdmin extends BaseDocument{
 
