@@ -27,6 +27,7 @@ import com.github.lianick.model.eneity.Cases;
 import com.github.lianick.model.eneity.DocumentPublic;
 import com.github.lianick.model.eneity.UserPublic;
 import com.github.lianick.model.eneity.Users;
+import com.github.lianick.model.enums.DocumentScope;
 import com.github.lianick.repository.CasesRepository;
 import com.github.lianick.repository.DocumentPublicRepository;
 import com.github.lianick.repository.UserPublicRepository;
@@ -118,8 +119,11 @@ public class DocumentPublicServiceImpl implements DocumentPublicService{
 		if (file.isEmpty()) {
 			throw new FileStorageException("檔案錯誤：上傳檔案不存在");
 		}
-		if (documentPublicCreateDTO.getType() == null || documentPublicCreateDTO.getType().isBlank()) {
-			throw new ValueMissException("缺少特定資料(檔案類型)");
+		if (documentPublicCreateDTO.getDocType() == null) {
+			throw new ValueMissException("缺少特定資料(附件類型)");
+		}
+		if (documentPublicCreateDTO.getDocType().getScope() != DocumentScope.PUBLIC) {
+			throw new AccessDeniedException("錯誤的附件類型");
 		}
 		
 		// 2. 檔案儲存
@@ -130,7 +134,7 @@ public class DocumentPublicServiceImpl implements DocumentPublicService{
 		documentPublic.setUserPublic(userPublic);
 		documentPublic.setFileName(documentDTO.getOrignalFileName());
 		documentPublic.setStoragePath(documentDTO.getTargetLocation());
-		documentPublic.setDocType(documentPublicCreateDTO.getType());
+		documentPublic.setDocType(documentPublicCreateDTO.getDocType());
 		
 		documentPublic = documentPublicRepository.save(documentPublic);
 		
@@ -155,9 +159,12 @@ public class DocumentPublicServiceImpl implements DocumentPublicService{
 		if (file.isEmpty()) {
 			throw new FileStorageException("檔案錯誤：上傳檔案不存在");
 		}
-		if (documentPublicCreateDTO.getType() == null || documentPublicCreateDTO.getType().isBlank() ||
+		if (documentPublicCreateDTO.getDocType() == null ||
 				documentPublicCreateDTO.getCaseId() == null) {
-			throw new ValueMissException("缺少特定資料(檔案類型, 案件ID)");
+			throw new ValueMissException("缺少特定資料(附件類型, 案件ID)");
+		}
+		if (documentPublicCreateDTO.getDocType().getScope() != DocumentScope.PUBLIC) {
+			throw new AccessDeniedException("錯誤的附件類型");
 		}
 		
 		Cases cases = casesRepository.findById(documentPublicCreateDTO.getCaseId())
@@ -175,7 +182,7 @@ public class DocumentPublicServiceImpl implements DocumentPublicService{
 		documentPublic.getCases().add(cases);
 		documentPublic.setFileName(documentDTO.getOrignalFileName());
 		documentPublic.setStoragePath(documentDTO.getTargetLocation());
-		documentPublic.setDocType(documentPublicCreateDTO.getType());
+		documentPublic.setDocType(documentPublicCreateDTO.getDocType());
 
 		documentPublic = documentPublicRepository.save(documentPublic);
 

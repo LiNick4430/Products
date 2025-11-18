@@ -80,6 +80,16 @@ public class GlobalExceptionHandler {
 		return ApiResponse.error(statusCode, errorCode, ex.getMessage());
 	}
 	
+	// 公告(Announcement) 相關 的 異常 (401)
+	@ExceptionHandler(AnnouncementFailureException.class) 	
+	@ResponseStatus(HttpStatus.UNAUTHORIZED)     		// 401
+	public ApiResponse<?> handleAnnouncementFailureException(AnnouncementFailureException ex) {
+		int statusCode = HttpStatus.UNAUTHORIZED.value();
+		ErrorCode errorCode = ErrorCode.ANNOUNCEMENT_FAILURE;
+		// return new ApiResponse<>(statusCode, ex.getMessage(), null);
+		return ApiResponse.error(statusCode, errorCode, ex.getMessage());
+	}
+	
 	// 班級(Classes) 相關 的 異常 (401)
 	@ExceptionHandler(ClassesFailureException.class) 	
 	@ResponseStatus(HttpStatus.UNAUTHORIZED)     		// 401

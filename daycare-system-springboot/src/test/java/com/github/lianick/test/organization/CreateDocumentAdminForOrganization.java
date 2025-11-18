@@ -54,7 +54,6 @@ public class CreateDocumentAdminForOrganization {
 		DocumentAdmin documentAdmin = new DocumentAdmin();
 		documentAdmin.setFileName("公告文件");
 		documentAdmin.setStoragePath("雲端");
-		documentAdmin.setDocType("公告資料");
 		
 		// 根據需求 建立關聯
 		if (isOrganization) {

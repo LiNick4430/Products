@@ -12,6 +12,5 @@ import java.util.List;
 @Repository
 public interface DocumentPublicRepository extends JpaRepository<DocumentPublic, Long> {
 
-	
 	List<DocumentPublic> findByUserPublic(UserPublic userPublic);
 }

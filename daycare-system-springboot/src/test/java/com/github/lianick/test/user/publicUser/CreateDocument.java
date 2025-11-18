@@ -42,7 +42,6 @@ public class CreateDocument {
 		DocumentPublic documentPublic = new DocumentPublic();
 		documentPublic.setFileName("資料A");
 		documentPublic.setStoragePath("地端");
-		documentPublic.setDocType("戶籍");
 		// 建立關係
 		documentPublic.setUserPublic(userPublic);
 		
