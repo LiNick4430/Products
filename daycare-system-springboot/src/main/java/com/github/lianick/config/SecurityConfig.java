@@ -82,7 +82,6 @@ public class SecurityConfig {
 
 			// 5. 加入 JWT 過濾器
 			.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-			// .addFilterBefore(jwtAuthenticationFilter, org.springframework.security.web.context.SecurityContextHolderFilter.class);
 
 		return http.build();
 	}
