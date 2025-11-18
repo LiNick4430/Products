@@ -2,8 +2,12 @@ package com.github.lianick.model.eneity;
 
 import org.hibernate.annotations.SQLRestriction;
 
+import com.github.lianick.model.enums.CaseOrganizationStatus;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -53,7 +57,8 @@ public class CaseOrganization extends BaseEntity{
 	@Column(name = "case_organization_preference_order", nullable = false)
 	private Integer preferenceOrder;				// 志願序
 
+	@Enumerated(EnumType.STRING)
 	@Column(name = "case_organization_status", nullable = false)
-	private String status;							// 案件 在 機構的 狀態
+	private CaseOrganizationStatus status;			// 案件 在 機構的 狀態
 	
 }
