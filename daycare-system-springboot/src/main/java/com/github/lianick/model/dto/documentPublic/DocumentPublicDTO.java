@@ -1,6 +1,7 @@
 package com.github.lianick.model.dto.documentPublic;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,4 +23,6 @@ public class DocumentPublicDTO {
 	
 	private Boolean isVerified;				// 附件 是否 聽過認證
 	private LocalDateTime verificationDate;	// 附件 認證時間
+	
+	private List<String> caseNumbers;	// 使用 此附件 的 案件
 }

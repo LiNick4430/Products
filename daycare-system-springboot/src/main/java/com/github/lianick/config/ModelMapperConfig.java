@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.github.lianick.converter.CaseSetToCaseNumberListConverter;
 import com.github.lianick.converter.OrganizationToOrganizationIdConveter;
 import com.github.lianick.converter.OrganizationToOrganizationNameConveter;
 import com.github.lianick.converter.RoleNumberToRoleConveter;
@@ -52,6 +53,9 @@ public class ModelMapperConfig {
 	
 	@Autowired
 	private OrganizationToOrganizationNameConveter organizationToOrganizationNameConveter;
+	
+	@Autowired
+	private CaseSetToCaseNumberListConverter caseSetToCaseNumberListConverter;
 	
 	// 主要 邏輯
 	@Bean	// @Bean 預設 Public
@@ -142,7 +146,9 @@ public class ModelMapperConfig {
 		modelMapper.typeMap(DocumentPublic.class, DocumentPublicDTO.class).addMappings(mapper -> {
 			mapper.map(DocumentPublic::getPublicDocId, DocumentPublicDTO::setId);
 			mapper.using(usersPublicToUseIdConveter)
-			.map(DocumentPublic::getUserPublic, DocumentPublicDTO::setUserId);
+				.map(DocumentPublic::getUserPublic, DocumentPublicDTO::setUserId);
+			mapper.using(caseSetToCaseNumberListConverter)
+				.map(DocumentPublic::getCases, DocumentPublicDTO::setCaseNumbers);
 		});
 		
 		// ------------------------------------------------------------------------------------
