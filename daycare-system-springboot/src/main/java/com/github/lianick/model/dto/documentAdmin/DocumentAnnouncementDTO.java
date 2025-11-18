@@ -1,5 +1,14 @@
 package com.github.lianick.model.dto.documentAdmin;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class DocumentAnnouncementDTO {
 	
 private Long id;		// 附件ID

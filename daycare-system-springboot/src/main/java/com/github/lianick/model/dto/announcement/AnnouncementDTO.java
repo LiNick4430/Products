@@ -5,6 +5,15 @@ import java.util.List;
 
 import com.github.lianick.model.dto.documentAdmin.DocumentAnnouncementDTO;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class AnnouncementDTO {
 
 	private Long id;						// 公告 ID
