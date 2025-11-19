@@ -12,11 +12,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.github.lianick.exception.FormatterFailureException;
 import com.github.lianick.exception.RoleFailureException;
 import com.github.lianick.exception.UserExistException;
-import com.github.lianick.exception.UserNoFoundException;
-import com.github.lianick.exception.ValueMissException;
 import com.github.lianick.model.dto.user.UserDeleteDTO;
 import com.github.lianick.model.dto.userPublic.UserPublicDTO;
 import com.github.lianick.model.dto.userPublic.UserPublicCreateDTO;
@@ -27,20 +24,15 @@ import com.github.lianick.model.eneity.UserPublic;
 import com.github.lianick.model.eneity.UserVerify;
 import com.github.lianick.model.eneity.Users;
 import com.github.lianick.repository.UserPublicRepository;
-import com.github.lianick.repository.UsersRepository;
 import com.github.lianick.service.UserPublicService;
 import com.github.lianick.service.UserService;
 import com.github.lianick.util.UserSecurityUtil;
-import com.github.lianick.util.validate.DateValidationUtil;
+import com.github.lianick.util.validate.UserPublicValidationUtil;
 
 @Service
 @Transactional				// 確保 完整性 
 public class UserPublicServiceImpl implements UserPublicService{
 
-	
-	@Autowired
-	private UsersRepository usersRepository;
-	
 	@Autowired
 	private UserPublicRepository userPublicRepository;
 	
@@ -48,10 +40,13 @@ public class UserPublicServiceImpl implements UserPublicService{
 	private ModelMapper modelMapper;
 	
 	@Autowired
-	private DateValidationUtil dateValidationUtil;
+	private UserSecurityUtil userSecurityUtil;
 	
 	@Autowired
-	private UserSecurityUtil userSecurityUtil;
+	private UserPublicValidationUtil userPublicValidationUtil;
+	
+	@Autowired
+	private EntityFetcher entityFetcher;
 	
 	@Autowired 
 	private UserService userService;
@@ -81,16 +76,10 @@ public class UserPublicServiceImpl implements UserPublicService{
 	@PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")
 	public UserPublicDTO findByUsername(UserPublicDTO userPublicDTO) {
 		// 0. 檢查數值完整性
-		if (userPublicDTO.getUsername() == null || userPublicDTO.getUsername().isBlank()) {
-			throw new ValueMissException("缺少帳號");
-		}
+		userPublicValidationUtil.validateUserPublic(userPublicDTO);
 		
 		// 1. 找尋資料庫 對應的帳號
-		Users tableUser = usersRepository.findByAccount(userPublicDTO.getUsername())
-		        .orElseThrow(() -> new UserNoFoundException("帳號錯誤"));
-		
-		UserPublic userPublic = userPublicRepository.findByUsers(tableUser)
-				.orElseThrow(() -> new UserNoFoundException("帳號錯誤"));
+		UserPublic userPublic = entityFetcher.getUsersPublicByUsername(userPublicDTO.getUsername());
 		
 		// 2. Entity 轉 DTO
 		return modelMapper.map(userPublic, UserPublicDTO.class);
@@ -102,26 +91,10 @@ public class UserPublicServiceImpl implements UserPublicService{
 		// 0. 從 JWT 找尋資料庫 對應的帳號
 		Users tableUser = userSecurityUtil.getCurrentUserEntity();
 		
-		// 1. 檢查數值完整性
-		if (userPublicCreateDTO.getName() == null || userPublicCreateDTO.getName().isBlank() || 
-			userPublicCreateDTO.getNationalIdNo() == null || userPublicCreateDTO.getNationalIdNo().isBlank() || 
-			userPublicCreateDTO.getBirthdate() == null || userPublicCreateDTO.getBirthdate().isBlank() || 
-			userPublicCreateDTO.getRegisteredAddress() == null || userPublicCreateDTO.getRegisteredAddress().isBlank() || 
-			userPublicCreateDTO.getMailingAddress() == null || userPublicCreateDTO.getMailingAddress().isBlank() ) {
-			throw new ValueMissException("缺少特定資料(帳號 角色 民眾姓名 生日 身分證字號 戶籍地址 實際地址)");
-		}
+		// 1. 檢查數值完整性 + 唯一性 + 格式
+		userPublicValidationUtil.validateCreateFields(userPublicCreateDTO);
 		
-		// 2. 檢查 生日 是否符合 格式 / 身分證字號 是否 已經被使用
-		
-		// 是否 "yyyy-MM-dd"
-		if (!dateValidationUtil.isValidLocalDate(userPublicCreateDTO.getBirthdate())) {
-			throw new FormatterFailureException("生日格式錯誤，必須是 yyyy-MM-dd 格式");
-		}
-		// 檢查 身分證字號 是否 已經被使用
-		if (userPublicRepository.findByNationalIdNo(userPublicCreateDTO.getNationalIdNo()).isPresent()) {
-			throw new UserExistException("基本資料填寫：身份證字號已經使用");
-		}
-		
+		// 2. 檢查 角色
 		if (tableUser.getRole().getRoleId() != 1L) {
 			throw new RoleFailureException("角色錯誤");
 		}
@@ -153,16 +126,13 @@ public class UserPublicServiceImpl implements UserPublicService{
 	    Users tableUser = userSecurityUtil.getCurrentUserEntity();
 		
 		// 1. 檢查數值完整性
-		if (userPublicUpdateDTO.getPassword() == null || userPublicUpdateDTO.getPassword().isBlank()) {
-			throw new ValueMissException("缺少密碼");
-		}
+		userPublicValidationUtil.validateUpdateCheckPassword(userPublicUpdateDTO);
 		
 	    // 2. 使用 checkPassword 方法 複查 密碼是否相同
 	    userService.checkPassword(userPublicUpdateDTO, tableUser);
 	    
 	    // 3. 找到對應的 userPublic
-	    UserPublic userPublic = userPublicRepository.findByUsers(tableUser)
-	    		.orElseThrow(() -> new UserNoFoundException("帳號或密碼錯誤"));
+	    UserPublic userPublic = entityFetcher.getUsersPublicByUser(tableUser);
 	    
 	    // 4. Entity 轉 DTO
 	    userPublicUpdateDTO = modelMapper.map(userPublic, UserPublicUpdateDTO.class);
@@ -210,15 +180,12 @@ public class UserPublicServiceImpl implements UserPublicService{
 		
 		final LocalDateTime deleteTime = LocalDateTime.now();
 		final String deleteSuffix = "_DEL_" + deleteTime.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS"));
-		final String ERROR_MESSAGE = "帳號或密碼錯誤";
 		
 	    // 2. 使用 checkPassword 方法 複查 密碼是否相同
 	    userService.checkPassword(userDeleteDTO, tableUser);
 	    
 	    // 3. 找到對應的 userPublic
-	    UserPublic userPublic = userPublicRepository.findByUsers(tableUser)
-	    		.orElseThrow(() -> new UserNoFoundException(ERROR_MESSAGE));
-	    
+	    UserPublic userPublic = entityFetcher.getUsersPublicByUser(tableUser);
 		// 4. 執行 軟刪除 (核心 Entity)
 	    userPublic.setDeleteAt(deleteTime);
 	    userPublic.setNationalIdNo(userPublic.getNationalIdNo() + deleteSuffix);

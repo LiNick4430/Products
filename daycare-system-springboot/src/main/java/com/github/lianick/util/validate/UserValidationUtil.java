@@ -23,9 +23,9 @@ public class UserValidationUtil {
 	
 	@Autowired
 	private UsersRepository usersRepository;
-
+	
 	/**
-     * 檢查 RegisterDTO 的 完整性 + 唯一性
+     * 檢查 UserRegisterDTO 的 完整性 + 唯一性
      */
 	public void validateRegistrationFields(UserRegisterDTO userRegisterDTO) {
 		if(userRegisterDTO.getUsername() == null || userRegisterDTO.getUsername().isBlank() ||
@@ -82,7 +82,7 @@ public class UserValidationUtil {
 		}
 	}
     
-    /**
+	/**
      * 用來判斷 驗證碼 的 狀態
      * */
     public void validateToken(UserVerify userVerify, LocalDateTime now) {
@@ -93,5 +93,4 @@ public class UserValidationUtil {
 			throw new TokenFailureException("驗證碼 已經過期");
 		}
     }
-    
 }
