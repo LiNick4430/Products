@@ -28,6 +28,7 @@ import com.github.lianick.model.eneity.DocumentPublic;
 import com.github.lianick.model.eneity.UserPublic;
 import com.github.lianick.model.eneity.Users;
 import com.github.lianick.model.enums.DocumentScope;
+import com.github.lianick.model.enums.EntityType;
 import com.github.lianick.repository.CasesRepository;
 import com.github.lianick.repository.DocumentPublicRepository;
 import com.github.lianick.repository.UserPublicRepository;
@@ -127,7 +128,7 @@ public class DocumentPublicServiceImpl implements DocumentPublicService{
 		}
 		
 		// 2. 檔案儲存
-		DocumentDTO documentDTO = documentUtil.upload(userId, file, false);
+		DocumentDTO documentDTO = documentUtil.upload(userId, EntityType.USER, file, false);
 		
 		// 3. 資料庫檔案的建立
 		DocumentPublic documentPublic = new DocumentPublic();
@@ -174,7 +175,7 @@ public class DocumentPublicServiceImpl implements DocumentPublicService{
 		}
 
 		// 2. 檔案儲存
-		DocumentDTO documentDTO = documentUtil.upload(userId, file, false);
+		DocumentDTO documentDTO = documentUtil.upload(userId, EntityType.USER, file, false);
 				
 		// 3. 資料庫檔案的建立
 		DocumentPublic documentPublic = new DocumentPublic();

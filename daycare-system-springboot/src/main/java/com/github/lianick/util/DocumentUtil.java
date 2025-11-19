@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.github.lianick.config.FileProperties;
 import com.github.lianick.exception.FileStorageException;
 import com.github.lianick.model.dto.DocumentDTO;
+import com.github.lianick.model.enums.EntityType;
 
 /**
  * 負責處理附件相關 事宜
@@ -31,8 +32,10 @@ public class DocumentUtil {
 
 	/**
 	 * 附件上傳
-	 * */
-	public DocumentDTO upload(Long id, MultipartFile file, Boolean isAdmin) {
+	 * @param entityId   -> 實體 ID (user / announcements/ organization ID)
+	 * @param entityType -> 實體類型，使用 ENUM 確保型別安全
+	 */
+	public DocumentDTO upload(Long entityId, EntityType entityType, MultipartFile file, Boolean isAdmin) {
 		
 		// 檢查檔案是否存在
 		if (file.isEmpty()) {
@@ -45,13 +48,15 @@ public class DocumentUtil {
 			throw new FileStorageException("檔案錯誤：上傳檔案格式錯誤");
 		}
 		
-		String idString = String.valueOf(id);
+		String idString = String.valueOf(entityId);
+		String entityString = entityType.toString().toLowerCase();
 		String folderString = isAdmin ? "admin" : "public";
 		
 		// 檔案儲存
 		// 組合路徑 (基本 + 帳號ID)
 		Path uploadPath = Paths.get(
 				fileProperties.getUploadPath(),
+				entityString,
 				folderString,
 				idString
 				);

@@ -18,6 +18,7 @@ import com.github.lianick.model.eneity.Announcements;
 import com.github.lianick.model.eneity.DocumentAdmin;
 import com.github.lianick.model.eneity.Organization;
 import com.github.lianick.model.enums.DocumentType;
+import com.github.lianick.model.enums.EntityType;
 import com.github.lianick.repository.AnnouncementsRepository;
 import com.github.lianick.repository.DocumentAdminRepository;
 import com.github.lianick.repository.OrganizationRepository;
@@ -82,7 +83,7 @@ public class DocumentAdminServiceImpl implements DocumentAdminService{
 				.orElseThrow(() -> new OrganizationFailureException("機構找不到"));
 		
 		// 2. I/O 處理
-		DocumentDTO documentDTO = documentUtil.upload(organization.getOrganizationId(), file, true);
+		DocumentDTO documentDTO = documentUtil.upload(organization.getOrganizationId(), EntityType.ORGANIZATION, file, true);
 		
 		// 3. 資料庫處理
 		DocumentAdmin documentAdmin = new DocumentAdmin();
@@ -109,7 +110,7 @@ public class DocumentAdminServiceImpl implements DocumentAdminService{
 				.orElseThrow(() -> new AnnouncementFailureException("公告找不到"));
 		
 		// 2. I/O 處理
-		DocumentDTO documentDTO = documentUtil.upload(announcements.getAnnouncementId(), file, true);
+		DocumentDTO documentDTO = documentUtil.upload(announcements.getAnnouncementId(), EntityType.ANNOUNCEMENT, file, true);
 		
 		// 3. 資料庫處理
 		DocumentAdmin documentAdmin = new DocumentAdmin();
