@@ -56,8 +56,8 @@ public class DocumentUtil {
 		// 組合路徑 (基本 + 帳號ID)
 		Path uploadPath = Paths.get(
 				fileProperties.getUploadPath(),
-				entityString,
 				folderString,
+				entityString,
 				idString
 				);
 		Path targetLocation = null;

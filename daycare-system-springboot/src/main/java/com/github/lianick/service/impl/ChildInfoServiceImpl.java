@@ -24,8 +24,8 @@ import com.github.lianick.model.eneity.UserPublic;
 import com.github.lianick.repository.ChildInfoRepository;
 import com.github.lianick.repository.UserPublicRepository;
 import com.github.lianick.service.ChildInfoService;
-import com.github.lianick.service.UserPublicService;
 import com.github.lianick.util.DateValidationUtil;
+import com.github.lianick.util.UserSecurityUtil;
 
 @Service
 @Transactional				// 確保 完整性
@@ -33,9 +33,6 @@ public class ChildInfoServiceImpl implements ChildInfoService{
 
 	@Autowired
 	private UserPublicRepository userPublicRepository;
-	
-	@Autowired
-	private UserPublicService userPublicService;
 
 	@Autowired
 	private ChildInfoRepository childInfoRepository;
@@ -44,13 +41,16 @@ public class ChildInfoServiceImpl implements ChildInfoService{
 	private DateValidationUtil dateValidationUtil;
 	
 	@Autowired
+	private UserSecurityUtil userSecurityUtil;
+	
+	@Autowired
 	private ModelMapper modelMapper;
 
 	@Override
 	@PreAuthorize("isAuthenticated()") 
 	public List<ChildDTO> findAllChildByUserPublic() {
 		// 0. 找尋 UserPublic
-		UserPublic userPublic = userPublicService.findUserPublic();
+		UserPublic userPublic = userSecurityUtil.getCurrentUserPublicEntity();
 		
 		// 1. 找尋所有的 幼兒資料
 		List<ChildDTO> childDTOs = childInfoRepository.findByUserPublic(userPublic)
@@ -67,7 +67,7 @@ public class ChildInfoServiceImpl implements ChildInfoService{
 	@PreAuthorize("hasAuthority('ROLE_PUBLIC')") 
 	public ChildDTO findChildByUserPublic(ChildDTO childDTO) {
 		// 0. 找尋 UserPublic
-		UserPublic userPublic = userPublicService.findUserPublic();
+		UserPublic userPublic = userSecurityUtil.getCurrentUserPublicEntity();
 		
 		// 1. 檢查資料的完整性
 		if (childDTO.getId() == null ) {
@@ -89,7 +89,7 @@ public class ChildInfoServiceImpl implements ChildInfoService{
 	@PreAuthorize("hasAuthority('ROLE_PUBLIC')") 
 	public ChildCreateDTO createChildInfo(ChildCreateDTO childCreateDTO) {
 		// 0. 找尋 UserPublic 
-		UserPublic userPublic = userPublicService.findUserPublic();
+		UserPublic userPublic = userSecurityUtil.getCurrentUserPublicEntity();
 		
 		// 1. 檢查資料的完整性
 		if (childCreateDTO.getName() == null || childCreateDTO.getName().isBlank() || 
@@ -135,7 +135,7 @@ public class ChildInfoServiceImpl implements ChildInfoService{
 	@PreAuthorize("hasAuthority('ROLE_PUBLIC')") 
 	public ChildUpdateDTO updateChildInfo(ChildUpdateDTO childUpdateDTO) {
 		// 0. 找尋 UserPublic
-		UserPublic userPublic = userPublicService.findUserPublic();
+		UserPublic userPublic = userSecurityUtil.getCurrentUserPublicEntity();
 		
 		// 1. 檢查資料的完整性
 		if (childUpdateDTO.getNewName() == null || childUpdateDTO.getNewName().isBlank() ||
@@ -166,7 +166,7 @@ public class ChildInfoServiceImpl implements ChildInfoService{
 	@PreAuthorize("hasAuthority('ROLE_PUBLIC')") 
 	public void deleteChildInfo(ChildDeleteDTO childDeleteDTO) {
 		// 0. 找尋 UserPublic
-		UserPublic userPublic = userPublicService.findUserPublic();
+		UserPublic userPublic = userSecurityUtil.getCurrentUserPublicEntity();
 
 		// 1. 檢查資料的完整性
 		if (childDeleteDTO.getId() == null ) {

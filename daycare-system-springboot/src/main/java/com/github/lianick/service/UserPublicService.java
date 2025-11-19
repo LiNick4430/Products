@@ -21,11 +21,6 @@ import com.github.lianick.model.eneity.UserPublic;
 // 負責 處理 民眾資料
 public interface UserPublicService {
 	
-	/** 用 JWT 找尋 自己的 public 帳號<p>
-	 * 需要 @PreAuthorize("hasAuthority('ROLE_PUBLIC')") 
-	 * */
-	UserPublic findUserPublic();
-	
 	/** 用 JWT 找尋 自己 返回 DTO。<p>
 	 * 需要 @PreAuthorize("hasAuthority('ROLE_PUBLIC')") 
 	 * */

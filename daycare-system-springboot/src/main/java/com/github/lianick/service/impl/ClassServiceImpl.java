@@ -16,7 +16,6 @@ import com.github.lianick.exception.CaseFailureException;
 import com.github.lianick.exception.ClassesFailureException;
 import com.github.lianick.exception.OrganizationFailureException;
 import com.github.lianick.exception.RoleFailureException;
-import com.github.lianick.exception.UserNoFoundException;
 import com.github.lianick.exception.ValueMissException;
 import com.github.lianick.model.dto.clazz.ClassCreateDTO;
 import com.github.lianick.model.dto.clazz.ClassDTO;
@@ -31,16 +30,13 @@ import com.github.lianick.model.enums.CaseStatus;
 import com.github.lianick.repository.CasesRepository;
 import com.github.lianick.repository.ClassesRepository;
 import com.github.lianick.repository.OrganizationRepository;
-import com.github.lianick.repository.UsersRepository;
 import com.github.lianick.service.ClassService;
 import com.github.lianick.util.SecurityUtil;
+import com.github.lianick.util.UserSecurityUtil;
 
 @Service
 @Transactional				// 確保 完整性 
 public class ClassServiceImpl implements ClassService{
-	
-	@Autowired
-	private UsersRepository usersRepository;
 	
 	@Autowired
 	private ClassesRepository classesRepository;
@@ -53,6 +49,9 @@ public class ClassServiceImpl implements ClassService{
 	
 	@Autowired
 	private ModelMapper modelMapper;
+	
+	@Autowired
+	private UserSecurityUtil userSecurityUtil;
 
 	@Override
 	@PreAuthorize("isAuthenticated()")	 
@@ -60,9 +59,7 @@ public class ClassServiceImpl implements ClassService{
 		// 0. 取得 使用方法 的 使用者權限
 		Long currentRoleNumber = SecurityUtil.getCurrentRoleNumber();
 		
-		String currentUsername = SecurityUtil.getCurrentUsername();
-		Users tableUser = usersRepository.findByAccount(currentUsername)
-		        .orElseThrow(() -> new UserNoFoundException("帳號不存在或已被刪除"));
+		Users tableUser = userSecurityUtil.getCurrentUserEntity();
 		
 		// 1. 找尋 特定的 機構 
 		List<Organization> organizations = new ArrayList<>();
@@ -136,9 +133,7 @@ public class ClassServiceImpl implements ClassService{
 		// 0. 取得 使用方法 的 使用者權限
 		Long currentRoleNumber = SecurityUtil.getCurrentRoleNumber();
 		
-		String currentUsername = SecurityUtil.getCurrentUsername();
-		Users tableUser = usersRepository.findByAccount(currentUsername)
-		        .orElseThrow(() -> new UserNoFoundException("帳號不存在或已被刪除"));
+		Users tableUser = userSecurityUtil.getCurrentUserEntity();
 		
 		// 1. 檢查是否缺乏必要資料
 		if (classCreateDTO.getName() == null || classCreateDTO.getName().isBlank() ||
@@ -188,9 +183,7 @@ public class ClassServiceImpl implements ClassService{
 		// 0. 取得 使用方法 的 使用者權限
 		Long currentRoleNumber = SecurityUtil.getCurrentRoleNumber();
 		
-		String currentUsername = SecurityUtil.getCurrentUsername();
-		Users tableUser = usersRepository.findByAccount(currentUsername)
-		        .orElseThrow(() -> new UserNoFoundException("帳號不存在或已被刪除"));
+		Users tableUser = userSecurityUtil.getCurrentUserEntity();
 		
 		// 1. 檢查是否缺乏必要資料
 		if (classLinkCaseDTO.getId() == null || classLinkCaseDTO.getCaseId() == null ||
@@ -260,9 +253,7 @@ public class ClassServiceImpl implements ClassService{
 		// 0. 取得 使用方法 的 使用者權限
 		Long currentRoleNumber = SecurityUtil.getCurrentRoleNumber();
 		
-		String currentUsername = SecurityUtil.getCurrentUsername();
-		Users tableUser = usersRepository.findByAccount(currentUsername)
-		        .orElseThrow(() -> new UserNoFoundException("帳號不存在或已被刪除"));
+		Users tableUser = userSecurityUtil.getCurrentUserEntity();
 		
 		// 1. 檢查是否缺乏必要資料
 		if (classDeleteDTO.getId() == null || classDeleteDTO.getOrganizationId() == null ||

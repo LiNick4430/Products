@@ -14,7 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.github.lianick.exception.CaseFailureException;
 import com.github.lianick.exception.FileStorageException;
-import com.github.lianick.exception.UserNoFoundException;
 import com.github.lianick.exception.ValueMissException;
 import com.github.lianick.model.dto.DocumentDTO;
 import com.github.lianick.model.dto.documentPublic.DocumentPublicCreateDTO;
@@ -26,27 +25,18 @@ import com.github.lianick.model.dto.documentPublic.DocumentPublicVerifyDTO;
 import com.github.lianick.model.eneity.Cases;
 import com.github.lianick.model.eneity.DocumentPublic;
 import com.github.lianick.model.eneity.UserPublic;
-import com.github.lianick.model.eneity.Users;
 import com.github.lianick.model.enums.DocumentScope;
 import com.github.lianick.model.enums.EntityType;
 import com.github.lianick.repository.CasesRepository;
 import com.github.lianick.repository.DocumentPublicRepository;
-import com.github.lianick.repository.UserPublicRepository;
-import com.github.lianick.repository.UsersRepository;
 import com.github.lianick.service.DocumentPublicService;
 import com.github.lianick.util.DocumentUtil;
-import com.github.lianick.util.SecurityUtil;
+import com.github.lianick.util.UserSecurityUtil;
 
 @Service
 @Transactional				// 確保 完整性 
 public class DocumentPublicServiceImpl implements DocumentPublicService{
 
-	@Autowired
-	private UsersRepository usersRepository;
-	
-	@Autowired
-	private UserPublicRepository userPublicRepository;
-	
 	@Autowired
 	private DocumentPublicRepository documentPublicRepository;
 	
@@ -59,16 +49,14 @@ public class DocumentPublicServiceImpl implements DocumentPublicService{
 	@Autowired
 	private DocumentUtil documentUtil;
 	
+	@Autowired
+	private UserSecurityUtil userSecurityUtil;
+	
 	@Override
 	@PreAuthorize("hasAuthority('ROLE_PUBLIC')")
 	public List<DocumentPublicDTO> findAllDocByPublic() {
 		// 0. 取得 使用方法 的 使用者權限
-		String currentUsername = SecurityUtil.getCurrentUsername();
-		Users tableUser = usersRepository.findByAccount(currentUsername)
-		        .orElseThrow(() -> new UserNoFoundException("帳號不存在或已被刪除"));
-		
-		UserPublic userPublic = userPublicRepository.findByUsers(tableUser)
-				.orElseThrow(() -> new UserNoFoundException("帳號不存在或已被刪除"));
+		UserPublic userPublic = userSecurityUtil.getCurrentUserPublicEntity();
 		
 		// 1. 
 		List<DocumentPublic> documentPublics = documentPublicRepository.findByUserPublic(userPublic);
@@ -107,14 +95,9 @@ public class DocumentPublicServiceImpl implements DocumentPublicService{
 	@PreAuthorize("hasAuthority('ROLE_PUBLIC')")
 	public DocumentPublicDTO createDocumentByPublic(DocumentPublicCreateDTO documentPublicCreateDTO, MultipartFile file) {
 		// 0. 取得 使用方法 的 使用者權限
-		String currentUsername = SecurityUtil.getCurrentUsername();
-		Users tableUser = usersRepository.findByAccount(currentUsername)
-		        .orElseThrow(() -> new UserNoFoundException("帳號不存在或已被刪除"));
+		UserPublic userPublic = userSecurityUtil.getCurrentUserPublicEntity();
 		
-		UserPublic userPublic = userPublicRepository.findByUsers(tableUser)
-				.orElseThrow(() -> new UserNoFoundException("帳號不存在或已被刪除"));
-		
-		Long userId = tableUser.getUserId();
+		Long userId = userPublic.getUsers().getUserId();
 		
 		// 1. 檢查 傳入的檔案 是否存在 以及 是否缺乏必要資訊
 		if (file.isEmpty()) {
@@ -147,14 +130,9 @@ public class DocumentPublicServiceImpl implements DocumentPublicService{
 	@PreAuthorize("hasAuthority('ROLE_PUBLIC')")
 	public DocumentPublicDTO createDocumentByCase(DocumentPublicCreateDTO documentPublicCreateDTO, MultipartFile file) {
 		// 0. 取得 使用方法 的 使用者權限
-		String currentUsername = SecurityUtil.getCurrentUsername();
-		Users tableUser = usersRepository.findByAccount(currentUsername)
-				.orElseThrow(() -> new UserNoFoundException("帳號不存在或已被刪除"));
-
-		UserPublic userPublic = userPublicRepository.findByUsers(tableUser)
-				.orElseThrow(() -> new UserNoFoundException("帳號不存在或已被刪除"));
-
-		Long userId = tableUser.getUserId();
+		UserPublic userPublic = userSecurityUtil.getCurrentUserPublicEntity();
+		
+		Long userId = userPublic.getUsers().getUserId();
 
 		// 1. 檢查 傳入的檔案 是否存在 以及 是否缺乏必要資訊
 		if (file.isEmpty()) {
@@ -195,12 +173,7 @@ public class DocumentPublicServiceImpl implements DocumentPublicService{
 	@PreAuthorize("hasAuthority('ROLE_PUBLIC')")
 	public DocumentPublicDTO documentLinkCase(DocumentPublicLinkDTO documentPublicLinkDTO) {
 		// 0. 取得 使用方法 的 使用者權限
-		String currentUsername = SecurityUtil.getCurrentUsername();
-		Users tableUser = usersRepository.findByAccount(currentUsername)
-		        .orElseThrow(() -> new UserNoFoundException("帳號不存在或已被刪除"));
-		
-		UserPublic userPublic = userPublicRepository.findByUsers(tableUser)
-				.orElseThrow(() -> new UserNoFoundException("帳號不存在或已被刪除"));
+		UserPublic userPublic = userSecurityUtil.getCurrentUserPublicEntity();
 		
 		// 1. 檢查 資料完整性
 		if (documentPublicLinkDTO.getId() == null || documentPublicLinkDTO.getCaseId() == null) {
@@ -258,11 +231,7 @@ public class DocumentPublicServiceImpl implements DocumentPublicService{
 	@PreAuthorize("hasAuthority('ROLE_PUBLIC')")
 	public void deleteDocument(DocumentPublicDeleteDTO documentPublicDeleteDTO) {
 		// 0. 取得 使用方法 的 使用者權限
-		String currentUsername = SecurityUtil.getCurrentUsername();
-		Users tableUser = usersRepository.findByAccount(currentUsername)
-		        .orElseThrow(() -> new UserNoFoundException("帳號不存在或已被刪除"));
-		UserPublic userPublic = userPublicRepository.findByUsers(tableUser)
-				.orElseThrow(() -> new UserNoFoundException("帳號不存在或已被刪除"));
+		UserPublic userPublic = userSecurityUtil.getCurrentUserPublicEntity();
 		
 		// 1. 檢查完整性
 		if (documentPublicDeleteDTO.getId() == null ) {

@@ -31,6 +31,7 @@ import com.github.lianick.repository.UsersRepository;
 import com.github.lianick.service.OrganizationService;
 import com.github.lianick.service.UserService;
 import com.github.lianick.util.SecurityUtil;
+import com.github.lianick.util.UserSecurityUtil;
 
 @Service
 @Transactional				// 確保 完整性 
@@ -50,6 +51,9 @@ public class OrganizationServiceImpl implements OrganizationService{
 	
 	@Autowired
 	private ModelMapper modelMapper;
+	
+	@Autowired
+	private UserSecurityUtil userSecurityUtil;
 	
 	@Override
 	public List<OrganizationDTO> findOrganization(OrganizationFindDTO organizationFindDTO) {
@@ -129,9 +133,7 @@ public class OrganizationServiceImpl implements OrganizationService{
 	@PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")
 	public OrganizationDTO updateOrganization(OrganizationUpdateDTO organizationUpdateDTO) {
 		// 0. 判定 是否有權限控制 該機構
-		String currentUsername = SecurityUtil.getCurrentUsername();
-		Users tableUser = usersRepository.findByAccount(currentUsername)
-				.orElseThrow(() -> new UserNoFoundException("查無使用者"));
+		Users tableUser = userSecurityUtil.getCurrentUserEntity();
 		
 		// 判斷是否為主管(最高權限)（角色名稱 = "ROLE_MANAGER"）
 		boolean isManager = tableUser.getRole().getName().equals("ROLE_MANAGER");

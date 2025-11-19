@@ -31,7 +31,7 @@ import com.github.lianick.repository.UsersRepository;
 import com.github.lianick.service.UserPublicService;
 import com.github.lianick.service.UserService;
 import com.github.lianick.util.DateValidationUtil;
-import com.github.lianick.util.SecurityUtil;
+import com.github.lianick.util.UserSecurityUtil;
 
 @Service
 @Transactional				// 確保 完整性 
@@ -49,29 +49,17 @@ public class UserPublicServiceImpl implements UserPublicService{
 	@Autowired
 	private DateValidationUtil dateValidationUtil;
 	
+	@Autowired
+	private UserSecurityUtil userSecurityUtil;
+	
 	@Autowired 
 	private UserService userService;
 	
 	@Override
 	@PreAuthorize("hasAuthority('ROLE_PUBLIC')") 
-	public UserPublic findUserPublic() {
-		// 0. 從 JWT 獲取 username
-		String currentUsername = SecurityUtil.getCurrentUsername();
-
-		// 1. 找尋資料庫 對應的帳號
-		Users tableUser = usersRepository.findByAccount(currentUsername)
-				.orElseThrow(() -> new UserNoFoundException("帳號錯誤"));
-
-		UserPublic userPublic = userPublicRepository.findByUsers(tableUser)
-				.orElseThrow(() -> new UserNoFoundException("帳號錯誤"));
-		
-		return userPublic;
-	}
-	
-	@Override
-	@PreAuthorize("hasAuthority('ROLE_PUBLIC')") 
 	public UserPublicDTO findUserPublicDTO() {
-		return modelMapper.map(findUserPublic(), UserPublicDTO.class);
+		UserPublic userPublic = userSecurityUtil.getCurrentUserPublicEntity();
+		return modelMapper.map(userPublic, UserPublicDTO.class);
 	}
 	
 	@Override
@@ -103,24 +91,17 @@ public class UserPublicServiceImpl implements UserPublicService{
 		UserPublic userPublic = userPublicRepository.findByUsers(tableUser)
 				.orElseThrow(() -> new UserNoFoundException("帳號錯誤"));
 		
-		// 2. Entity 轉 DTO 
-		userPublicDTO = modelMapper.map(userPublic, UserPublicDTO.class);
-		
-		// 3. 返回處理
-		
-		return userPublicDTO;
+		// 2. Entity 轉 DTO
+		return modelMapper.map(userPublic, UserPublicDTO.class);
 	}
 
 	@Override
 	@PreAuthorize("hasAuthority('ROLE_PUBLIC')")
 	public UserPublicCreateDTO createUserPublic(UserPublicCreateDTO userPublicCreateDTO) {
-		/* 從 JWT 獲取身份：確認操作者身份
-	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-	    String currentUsername = authentication.getName(); // JWT 中解析出來的帳號
-	    */
-		String currentUsername = SecurityUtil.getCurrentUsername();
+		// 0. 從 JWT 找尋資料庫 對應的帳號 同時檢查角色ID
+		Users tableUser = userSecurityUtil.getCurrentUserEntity();
 		
-		// 0. 檢查數值完整性
+		// 1. 檢查數值完整性
 		if (userPublicCreateDTO.getName() == null || userPublicCreateDTO.getName().isBlank() || 
 			userPublicCreateDTO.getNationalIdNo() == null || userPublicCreateDTO.getNationalIdNo().isBlank() || 
 			userPublicCreateDTO.getBirthdate() == null || userPublicCreateDTO.getBirthdate().isBlank() || 
@@ -129,7 +110,7 @@ public class UserPublicServiceImpl implements UserPublicService{
 			throw new ValueMissException("缺少特定資料(帳號 角色 民眾姓名 生日 身分證字號 戶籍地址 實際地址)");
 		}
 		
-		// 1. 檢查 生日 是否符合 格式 / 身分證字號 是否 已經被使用
+		// 2. 檢查 生日 是否符合 格式 / 身分證字號 是否 已經被使用
 		
 		// 是否 "yyyy-MM-dd"
 		if (!dateValidationUtil.isValidLocalDate(userPublicCreateDTO.getBirthdate())) {
@@ -139,10 +120,6 @@ public class UserPublicServiceImpl implements UserPublicService{
 		if (userPublicRepository.findByNationalIdNo(userPublicCreateDTO.getNationalIdNo()).isPresent()) {
 			throw new UserExistException("基本資料填寫：身份證字號已經使用");
 		}
-		
-		// 2. 找尋資料庫 對應的帳號 同時檢查角色ID
-		Users tableUser = usersRepository.findByAccount(currentUsername)
-		        .orElseThrow(() -> new UserNoFoundException("帳號錯誤"));
 		
 		if (tableUser.getRole().getRoleId() != 1L) {
 			throw new RoleFailureException("角色錯誤");
@@ -165,31 +142,20 @@ public class UserPublicServiceImpl implements UserPublicService{
 		userPublic = userPublicRepository.save(userPublic);
 		
 		// 5. Entity 轉 DTO
-		userPublicCreateDTO = modelMapper.map(userPublic, UserPublicCreateDTO.class);
-		
-		// 6. 返回處理
-		
-		return userPublicCreateDTO;
+		return modelMapper.map(userPublic, UserPublicCreateDTO.class);
 	}
 
 	@Override
 	@PreAuthorize("hasAuthority('ROLE_PUBLIC')")
 	public UserPublicUpdateDTO updateUserPublicCheckPassword(UserPublicUpdateDTO userPublicUpdateDTO) {
-		/* 從 JWT 獲取身份：確認操作者身份
-	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-	    String currentUsername = authentication.getName(); // JWT 中解析出來的帳號
-	    */
-		String currentUsername = SecurityUtil.getCurrentUsername();
+		// 0. 從 JWT 找尋資料庫 對應的帳號
+	    Users tableUser = userSecurityUtil.getCurrentUserEntity();
 		
-		// 0. 檢查數值完整性
+		// 1. 檢查數值完整性
 		if (userPublicUpdateDTO.getPassword() == null || userPublicUpdateDTO.getPassword().isBlank()) {
 			throw new ValueMissException("缺少密碼");
 		}
 		
-		// 1. 找尋資料庫 對應的帳號
-	    Users tableUser = usersRepository.findByAccount(currentUsername)
-	        .orElseThrow(() -> new UserNoFoundException("帳號或密碼錯誤"));
-	    
 	    // 2. 使用 checkPassword 方法 複查 密碼是否相同
 	    if (!userService.checkPassword(userPublicUpdateDTO, tableUser)) {
 	    	throw new UserNoFoundException("帳號或密碼錯誤");
@@ -211,21 +177,10 @@ public class UserPublicServiceImpl implements UserPublicService{
 	@Override
 	@PreAuthorize("hasAuthority('ROLE_PUBLIC')")
 	public UserPublicUpdateDTO updateUserPublic(UserPublicUpdateDTO userPublicUpdateDTO) {
-		/* 從 JWT 獲取身份：確認操作者身份
-	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-	    String currentUsername = authentication.getName(); // JWT 中解析出來的帳號
-	    */
-		String currentUsername = SecurityUtil.getCurrentUsername();
+		// 1. 從 JWT 找到對應的 userPublic
+	    UserPublic userPublic = userSecurityUtil.getCurrentUserPublicEntity();
 		
-		// 1. 找尋資料庫 對應的帳號
-		Users tableUser = usersRepository.findByAccount(currentUsername)
-		        .orElseThrow(() -> new UserNoFoundException("帳號錯誤"));
-		
-		// 2. 找到對應的 userPublic
-	    UserPublic userPublic = userPublicRepository.findByUsers(tableUser)
-	    		.orElseThrow(() -> new UserNoFoundException("帳號錯誤"));
-		
-		// 3. 更新 民眾基本資料 (僅更新允許修改的欄位：姓名、地址)
+		// 2. 更新 民眾基本資料 (僅更新允許修改的欄位：姓名、地址)
 		if (userPublicUpdateDTO.getNewName() != null && !userPublicUpdateDTO.getNewName().isBlank() ) {
 			userPublic.setName(userPublicUpdateDTO.getNewName());
 		}
@@ -236,10 +191,10 @@ public class UserPublicServiceImpl implements UserPublicService{
 			userPublic.setMailingAddress(userPublicUpdateDTO.getNewMailingAddress());
 		}
 		
-		// 4. 儲存 修改
+		// 3. 儲存 修改
 		userPublic = userPublicRepository.save(userPublic);
 		
-		// 5. Entity 轉 DTO 並返回 (回傳新的 DTO 實例)
+		// 4. Entity 轉 DTO 並返回 (回傳新的 DTO 實例)
 		userPublicUpdateDTO = modelMapper.map(userPublic, UserPublicUpdateDTO.class);
 		
 		// 5. 返回處理:
@@ -251,20 +206,13 @@ public class UserPublicServiceImpl implements UserPublicService{
 	@Override
 	@PreAuthorize("hasAuthority('ROLE_PUBLIC')")
 	public void deleteUserPublic(UserDeleteDTO userDeleteDTO) {
-		/* 從 JWT 獲取身份：確認操作者身份
-	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-	    String currentUsername = authentication.getName(); // JWT 中解析出來的帳號
-	    */
-		String currentUsername = SecurityUtil.getCurrentUsername();
+		// 1. 從 JWT 找尋資料庫 對應的帳號
+	    Users tableUser = userSecurityUtil.getCurrentUserEntity();
 		
 		final LocalDateTime deleteTime = LocalDateTime.now();
 		final String deleteSuffix = "_DEL_" + deleteTime.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS"));
 		final String ERROR_MESSAGE = "帳號或密碼錯誤";
 		
-		// 1. 找尋資料庫 對應的帳號
-	    Users tableUser = usersRepository.findByAccount(currentUsername)
-	        .orElseThrow(() -> new UserNoFoundException(ERROR_MESSAGE));
-
 	    // 2. 使用 checkPassword 方法 複查 密碼是否相同
 	    if (!userService.checkPassword(userDeleteDTO, tableUser)) {
 	    	throw new UserNoFoundException(ERROR_MESSAGE);
@@ -305,7 +253,5 @@ public class UserPublicServiceImpl implements UserPublicService{
 		
 		// 6. 回存
 		userPublicRepository.save(userPublic);
-		
-		// return new ApiResponse<Void>(true, "民眾帳號刪除成功", null);
 	}
 }

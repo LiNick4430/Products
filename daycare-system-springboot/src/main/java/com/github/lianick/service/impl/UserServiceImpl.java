@@ -31,8 +31,8 @@ import com.github.lianick.repository.UsersRepository;
 import com.github.lianick.repository.UsersVerifyRepository;
 import com.github.lianick.service.UserService;
 import com.github.lianick.util.PasswordSecurity;
-import com.github.lianick.util.SecurityUtil;
 import com.github.lianick.util.TokenUUID;
+import com.github.lianick.util.UserSecurityUtil;
 
 @Service
 @Transactional				// 確保 完整性 
@@ -57,6 +57,9 @@ public class UserServiceImpl implements UserService{
 	private ModelMapper modelMapper;
 	
 	@Autowired
+	private UserSecurityUtil userSecurityUtil;
+	
+	@Autowired
 	private FrontendProperties frontendProperties;
 	
 	@Override
@@ -67,15 +70,8 @@ public class UserServiceImpl implements UserService{
 	@Override
 	@PreAuthorize("isAuthenticated()")
 	public UserMeDTO getUserDetails() {
-		/* 從 JWT 獲取身份：確認操作者身份
-	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-	    String currentUsername = authentication.getName(); // JWT 中解析出來的帳號
-	    */
-		String currentUsername = SecurityUtil.getCurrentUsername();
-	    
 	    // 1. 找尋資料庫 對應的帳號(使用 JWT 提供的 currentUsername 進行查詢)
-	    Users tableUser = usersRepository.findByAccount(currentUsername)
-	        .orElseThrow(() -> new UserNoFoundException("帳號或密碼錯誤"));
+	    Users tableUser = userSecurityUtil.getCurrentUserEntity();
 	    
 	    // 2. Entity 轉 DTO
 	    UserMeDTO userMeDTO = modelMapper.map(tableUser, UserMeDTO.class);
@@ -328,20 +324,13 @@ public class UserServiceImpl implements UserService{
 	@Override
 	@PreAuthorize("isAuthenticated()")
 	public UserUpdateDTO updateUserCheckPassword(UserUpdateDTO userUpdateDTO) {
-		/* 從 JWT 獲取身份：確認操作者身份
-	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-	    String currentUsername = authentication.getName(); // JWT 中解析出來的帳號
-	    */
-		String currentUsername = SecurityUtil.getCurrentUsername();
+		// 0. 找尋資料庫 對應的帳號(使用 JWT 提供的 currentUsername 進行查詢)
+	    Users tableUser = userSecurityUtil.getCurrentUserEntity();
 		
-		// 0. 檢查數值完整性 (這裡只檢查 password 即可，因為 username 已經從 JWT 獲得並驗證)
+		// 1. 檢查數值完整性 (這裡只檢查 password 即可，因為 username 已經從 JWT 獲得並驗證)
 		if (userUpdateDTO.getPassword() == null || userUpdateDTO.getPassword().isBlank()) {
 			throw new ValueMissException("缺少舊密碼");
 		}
-		
-		// 1. 找尋資料庫 對應的帳號(使用 JWT 提供的 currentUsername 進行查詢)
-	    Users tableUser = usersRepository.findByAccount(currentUsername)
-	        .orElseThrow(() -> new UserNoFoundException("帳號或密碼錯誤"));
 	    
 	    // 2. 使用 checkPassword 方法 複查 密碼是否相同
 	    if (!checkPassword(userUpdateDTO, tableUser)) {
@@ -362,15 +351,8 @@ public class UserServiceImpl implements UserService{
 	@Override
 	@PreAuthorize("isAuthenticated()")
 	public UserUpdateDTO updateUser(UserUpdateDTO userUpdateDTO) {
-		/* 從 JWT 獲取身份：確認操作者身份
-	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-	    String currentUsername = authentication.getName(); // JWT 中解析出來的帳號
-	    */
-		String currentUsername = SecurityUtil.getCurrentUsername();
-		
-		// 1. 複查一次 
-	    Users tableUser = usersRepository.findByAccount(currentUsername)
-	        .orElseThrow(() -> new UserNoFoundException("帳號不存在或已被刪除"));
+		// 1. 找尋資料庫 對應的帳號(使用 JWT 提供的 currentUsername 進行查詢)
+	    Users tableUser = userSecurityUtil.getCurrentUserEntity();
 	    
 	    // 2. 更新資料, 同時檢查 null、空字串、和空白字元
 	    String rawPassword = userUpdateDTO.getNewPassword();
@@ -411,16 +393,9 @@ public class UserServiceImpl implements UserService{
 	@Override
 	@PreAuthorize("isAuthenticated()")
 	public void deleteUser(UserDeleteDTO userDeleteDTO){
-		/* 從 JWT 獲取身份：確認操作者身份
-	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-	    String currentUsername = authentication.getName(); // JWT 中解析出來的帳號
-	    */
-		String currentUsername = SecurityUtil.getCurrentUsername();
-		
 		// 1. 找尋資料庫 對應的帳號
-	    Users tableUser = usersRepository.findByAccount(currentUsername)
-	        .orElseThrow(() -> new UserNoFoundException("帳號或密碼錯誤"));
-
+	    Users tableUser = userSecurityUtil.getCurrentUserEntity();
+	    		
 	    // 2. 使用 checkPassword 方法 複查 密碼是否相同
 	    if (!checkPassword(userDeleteDTO, tableUser)) {
 	    	throw new UserNoFoundException("帳號或密碼錯誤");
