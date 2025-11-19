@@ -92,7 +92,6 @@ public class UserServiceImpl implements UserService{
 	public UserRegisterDTO registerUser(UserRegisterDTO userRegisterDTO) {
 		// 0. 檢查數值完整性 + 唯一性
 		userValidationUtil.validateRegistrationFields(userRegisterDTO);
-		userValidationUtil.validateRegistrationUniqueness(userRegisterDTO.getUsername(), userRegisterDTO.getEmail());
 		
 		// 1. DTO 轉 Entity
 		userRegisterDTO.setRoleNumber(1L);	// 這裡的 只能建立 民眾帳號
