@@ -71,8 +71,15 @@ public class DocumentUtil {
 		// 範例 正常檔名: 公告文件.pdf -> 公告文件.pdf
 		String safeFileName = Paths.get(orignalFileName).getFileName().toString();
 		
+		// 保留所有字母、數字、標點符號，以及所有非控制字符，替換掉其他所有字符
+		// \\p{L}	任何 Unicode 字母（包含中文、日文、韓文等所有文字）。
+		// \\p{Nd}	任何 Unicode 數字。
+		// \\p{Punct}	任何 Unicode 標點符號（例如逗號、句號）。
+		// [^...]	替換掉不在這個集合內的所有字符。
+		String cleanedFileName = safeFileName.replaceAll("[^\\p{L}\\p{Nd}\\p{Punct}_\\- ]", "_");
+		
 		// 組合最終檔名
-		String storedFileName = UUID.randomUUID().toString() + "_" + safeFileName;
+		String storedFileName = UUID.randomUUID().toString() + "_" + cleanedFileName;
 		
 		// I/O 區塊
 		try {
@@ -94,7 +101,7 @@ public class DocumentUtil {
 		}
 		
 		DocumentDTO document = new DocumentDTO();
-		document.setOrignalFileName(orignalFileName);
+		document.setOrignalFileName(cleanedFileName);
 		document.setTargetLocation(absolutePathToStore);
 		
 		return document;
