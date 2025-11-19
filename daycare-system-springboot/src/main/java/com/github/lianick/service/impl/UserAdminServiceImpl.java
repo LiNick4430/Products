@@ -32,6 +32,7 @@ import com.github.lianick.service.UserAdminService;
 import com.github.lianick.service.UserService;
 import com.github.lianick.util.PasswordSecurity;
 import com.github.lianick.util.SecurityUtil;
+import com.github.lianick.util.UserSecurityUtil;
 
 @Service
 @Transactional				// 確保 完整性 
@@ -56,19 +57,16 @@ public class UserAdminServiceImpl implements UserAdminService{
 	private ModelMapper modelMapper;
 	
 	@Autowired
+	private UserSecurityUtil userSecurityUtil;
+	
+	@Autowired
 	private PasswordSecurity passwordSecurity;
 	
 	@Override
 	@PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")
 	public UserAdminDTO findUserAdmin() {
-		// 0. 從 JWT 獲取 username
-		String currentUsername = SecurityUtil.getCurrentUsername();
-		
-		// 1. 找尋資料庫 對應的帳號
-		Users tableUser = usersRepository.findByAccount(currentUsername)
-				.orElseThrow(() -> new UserNoFoundException("帳號錯誤"));
-		UserAdmin userAdmin = userAdminRepository.findByUsers(tableUser)
-				.orElseThrow(() -> new UserNoFoundException("帳號錯誤"));
+		// 1. 從 JWT 取出資料
+		UserAdmin userAdmin = userSecurityUtil.getCurrentUserAdminEntity();
 		
 		// 2. Entity -> DTO
 		return modelMapper.map(userAdmin, UserAdminDTO.class);
@@ -102,10 +100,7 @@ public class UserAdminServiceImpl implements UserAdminService{
 	@PreAuthorize("hasAuthority('ROLE_MANAGER')")
 	public UserAdminDTO createUserAdmin(UserAdminCreateDTO userAdminCreateDTO) {
 		// 0. 檢查 是否 自己帳號
-		String currentUsername = SecurityUtil.getCurrentUsername();
-		if (currentUsername.equals(userAdminCreateDTO.getUsername())) {
-			throw new UserExistException("註冊失敗：無法通過此管理介面修改自己的帳號資料");
-		}
+		isUserMe(userAdminCreateDTO.getUsername());
 		
 		// 0. 檢查數值完整性
 		if(userAdminCreateDTO.getUsername() == null || userAdminCreateDTO.getUsername().isBlank() ||
@@ -172,10 +167,7 @@ public class UserAdminServiceImpl implements UserAdminService{
 	@PreAuthorize("hasAuthority('ROLE_MANAGER')")
 	public UserAdminDTO updateUserAdmin(UserAdminUpdateDTO userAdminUpdateDTO) {
 		// 0. 檢查 是否 自己帳號
-		String currentUsername = SecurityUtil.getCurrentUsername();
-		if (currentUsername.equals(userAdminUpdateDTO.getUsername())) {
-			throw new UserExistException("更新失敗：無法通過此管理介面修改自己的帳號資料");
-		}
+		isUserMe(userAdminUpdateDTO.getUsername());
 		
 		// 0. 檢查數值完整性
 		Role role = null;
@@ -230,10 +222,7 @@ public class UserAdminServiceImpl implements UserAdminService{
 	@PreAuthorize("hasAuthority('ROLE_MANAGER')")
 	public void deleteUserAdmin(UserDeleteDTO userDeleteDTO) {
 		// 0. 檢查 是否 自己帳號
-		String currentUsername = SecurityUtil.getCurrentUsername();
-		if (currentUsername.equals(userDeleteDTO.getUsername())) {
-			throw new UserExistException("刪除失敗：無法通過此管理介面修改自己的帳號資料");
-		}
+		isUserMe(userDeleteDTO.getUsername());
 		
 		// 1. 查詢帳號是否存在
 		Users tableUser = usersRepository.findByAccount(userDeleteDTO.getUsername())
@@ -253,5 +242,16 @@ public class UserAdminServiceImpl implements UserAdminService{
 		
 		userAdminRepository.save(userAdmin);
 		usersRepository.save(tableUser);
+	}
+	
+	
+	/**
+	 * 檢查 是否 自己帳號
+	 * */
+	private void isUserMe(String username) {
+		String currentUsername = SecurityUtil.getCurrentUsername();
+		if (currentUsername.equals(username)) {
+			throw new UserExistException("失敗：無法通過此管理介面修改自己的帳號資料");
+		}
 	}
 }

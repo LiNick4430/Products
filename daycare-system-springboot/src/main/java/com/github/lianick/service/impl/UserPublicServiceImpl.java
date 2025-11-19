@@ -37,14 +37,15 @@ import com.github.lianick.util.UserSecurityUtil;
 @Transactional				// 確保 完整性 
 public class UserPublicServiceImpl implements UserPublicService{
 
-	@Autowired
-	private ModelMapper modelMapper;
 	
 	@Autowired
 	private UsersRepository usersRepository;
 	
 	@Autowired
 	private UserPublicRepository userPublicRepository;
+	
+	@Autowired
+	private ModelMapper modelMapper;
 	
 	@Autowired
 	private DateValidationUtil dateValidationUtil;
@@ -98,7 +99,7 @@ public class UserPublicServiceImpl implements UserPublicService{
 	@Override
 	@PreAuthorize("hasAuthority('ROLE_PUBLIC')")
 	public UserPublicCreateDTO createUserPublic(UserPublicCreateDTO userPublicCreateDTO) {
-		// 0. 從 JWT 找尋資料庫 對應的帳號 同時檢查角色ID
+		// 0. 從 JWT 找尋資料庫 對應的帳號
 		Users tableUser = userSecurityUtil.getCurrentUserEntity();
 		
 		// 1. 檢查數值完整性
