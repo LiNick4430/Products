@@ -13,8 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.github.lianick.exception.OrganizationFailureException;
-import com.github.lianick.exception.UserNoFoundException;
-import com.github.lianick.exception.ValueMissException;
 import com.github.lianick.model.dto.organization.OrganizationCreateDTO;
 import com.github.lianick.model.dto.organization.OrganizationDTO;
 import com.github.lianick.model.dto.organization.OrganizationDeleteDTO;
@@ -27,11 +25,11 @@ import com.github.lianick.model.eneity.Regulations;
 import com.github.lianick.model.eneity.Users;
 import com.github.lianick.repository.OrganizationRepository;
 import com.github.lianick.repository.UserAdminRepository;
-import com.github.lianick.repository.UsersRepository;
 import com.github.lianick.service.OrganizationService;
 import com.github.lianick.service.UserService;
 import com.github.lianick.util.SecurityUtil;
 import com.github.lianick.util.UserSecurityUtil;
+import com.github.lianick.util.validate.OrganizationValidationUtil;
 
 @Service
 @Transactional				// 確保 完整性 
@@ -39,9 +37,6 @@ public class OrganizationServiceImpl implements OrganizationService{
 
 	@Autowired
 	private UserService userService;
-	
-	@Autowired
-	private UsersRepository usersRepository;
 	
 	@Autowired
 	private UserAdminRepository userAdminRepository;
@@ -54,6 +49,12 @@ public class OrganizationServiceImpl implements OrganizationService{
 	
 	@Autowired
 	private UserSecurityUtil userSecurityUtil;
+	
+	@Autowired
+	private OrganizationValidationUtil organizationValidationUtil;
+	
+	@Autowired
+	private EntityFetcher entityFetcher;
 	
 	@Override
 	public List<OrganizationDTO> findOrganization(OrganizationFindDTO organizationFindDTO) {
@@ -100,22 +101,7 @@ public class OrganizationServiceImpl implements OrganizationService{
 	@PreAuthorize("hasAuthority('ROLE_MANAGER')") 
 	public OrganizationDTO createOrganization(OrganizationCreateDTO organizationCreateDTO) {
 		// 0. 檢查資料完整性
-		if (organizationCreateDTO.getName() == null || organizationCreateDTO.getName().isBlank() ||
-				organizationCreateDTO.getAddress() == null || organizationCreateDTO.getAddress().isBlank() ||
-				organizationCreateDTO.getPhoneNumber() == null || organizationCreateDTO.getPhoneNumber().isBlank() ||
-				organizationCreateDTO.getEmail() == null || organizationCreateDTO.getEmail().isBlank() ) {
-			// 敘述 和 傳真號碼 不是必要
-			throw new ValueMissException("缺少必要的機構建立資料 (機構名稱、地址、電話號碼、電子信箱)");
-		}
-		if (organizationRepository.findByName(organizationCreateDTO.getName()).isPresent()) {
-			throw new OrganizationFailureException("建立錯誤:機構名稱 不可以重複");
-		}
-		if (organizationRepository.findByPhoneNumber(organizationCreateDTO.getPhoneNumber()).isPresent()) {
-			throw new OrganizationFailureException("建立錯誤:機構電話 不可以重複");
-		}
-		if (organizationRepository.findByEmail(organizationCreateDTO.getEmail()).isPresent()) {
-			throw new OrganizationFailureException("建立錯誤:機構信箱 不可以重複");
-		}
+		organizationValidationUtil.validateCreateFields(organizationCreateDTO);
 		
 		// 1. 建立機構
 		Organization organization = modelMapper.map(organizationCreateDTO, Organization.class);
@@ -134,27 +120,11 @@ public class OrganizationServiceImpl implements OrganizationService{
 	public OrganizationDTO updateOrganization(OrganizationUpdateDTO organizationUpdateDTO) {
 		// 0. 判定 是否有權限控制 該機構
 		Users tableUser = userSecurityUtil.getCurrentUserEntity();
-		
-		// 判斷是否為主管(最高權限)（角色名稱 = "ROLE_MANAGER"）
-		boolean isManager = tableUser.getRole().getName().equals("ROLE_MANAGER");
-		
-		// 非主管等級 要進一步判斷
-		if (!isManager) {
-			// 民眾帳號，無權執行此操作
-			if (tableUser.getAdminInfo() == null) {
-				throw new AccessDeniedException("權限不足，您非管理層成員。");
-			}
-			// 員工帳號 但 所屬機構 不符 沒有對應權限
-			if (tableUser.getAdminInfo().getOrganization().getOrganizationId() != organizationUpdateDTO.getId()) {
-				throw new AccessDeniedException("操作身份錯誤，您無權修改非所屬機構資料");
-			}
-		}
+		organizationValidationUtil.validateUpdate(tableUser, organizationUpdateDTO);
 		
 		// 1. 取出機構基本資料
 		Long currentId = organizationUpdateDTO.getId();
-		
-		Organization organization = organizationRepository.findById(organizationUpdateDTO.getId())
-				.orElseThrow(() -> new OrganizationFailureException("查無機構"));
+		Organization organization = entityFetcher.getOrganizationById(currentId);
 		
 		// 2. 根據 是否有數值 來更新
 		// Name
@@ -206,15 +176,13 @@ public class OrganizationServiceImpl implements OrganizationService{
 		if (!currentName.equals(organizationDeleteDTO.getUsername())) {
 			throw new AccessDeniedException("操作身份錯誤，您無權以該帳號執行此操作");
 		}
-		Users users = usersRepository.findByAccount(currentName)
-				.orElseThrow(() -> new UserNoFoundException("帳號或密碼錯誤"));
+		Users users = entityFetcher.getUsersByUsername(currentName);
 		
 		// 執行 密碼檢查
 		userService.checkPassword(organizationDeleteDTO, users);
 		
 		// 2. 檢查 是否有 機構 和 機構 相關的 員工
-		Organization organization = organizationRepository.findById(organizationDeleteDTO.getId())
-				.orElseThrow(() -> new OrganizationFailureException("查無機構"));
+		Organization organization = entityFetcher.getOrganizationById(organizationDeleteDTO.getId());
 		if (!userAdminRepository.findByOrganization(organization).isEmpty()) {
 			throw new OrganizationFailureException("此機構 還有 員工 無法刪除");
 		}

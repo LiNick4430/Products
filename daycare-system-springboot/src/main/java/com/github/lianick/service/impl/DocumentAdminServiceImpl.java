@@ -44,6 +44,9 @@ public class DocumentAdminServiceImpl implements DocumentAdminService{
 	@Autowired
 	private AnnouncementsRepository announcementsRepository;
 	
+	@Autowired
+	private EntityFetcher entityFetcher;
+	
 	@Override
 	public List<DocumentAdmin> findByOrganization(Long organizationId) {
 		// 1. 檢查 是否存在
@@ -106,8 +109,7 @@ public class DocumentAdminServiceImpl implements DocumentAdminService{
 		if (announcementId == null) {
 			throw new ValueMissException("缺少特定資料(公告ID)");
 		}
-		Announcements announcements = announcementsRepository.findById(announcementId)
-				.orElseThrow(() -> new AnnouncementFailureException("公告找不到"));
+		Announcements announcements = entityFetcher.getAnnouncementsById(announcementId);
 		
 		// 2. I/O 處理
 		DocumentDTO documentDTO = documentUtil.upload(announcements.getAnnouncementId(), EntityType.ANNOUNCEMENT, file, true);
@@ -141,10 +143,9 @@ public class DocumentAdminServiceImpl implements DocumentAdminService{
 		if (organizationId == null || documentAdminId == null) {
 			throw new ValueMissException("缺少特定資料(機構ID, 附件ID)");
 		}
-		organizationRepository.findById(organizationId).orElseThrow(() -> new OrganizationFailureException("機構找不到"));
 		
-		DocumentAdmin documentAdmin = documentAdminRepository.findByIdAndOrganizationId(documentAdminId, organizationId)
-				.orElseThrow(() -> new FileStorageException("文件找不到"));
+		entityFetcher.getOrganizationById(documentAdminId);
+		DocumentAdmin documentAdmin = entityFetcher.getDocumentAdminByIdAndOrganizationId(documentAdminId, organizationId);
 		
 		// 2. I/O
 		documentUtil.delete(documentAdmin.getStoragePath());
@@ -161,10 +162,9 @@ public class DocumentAdminServiceImpl implements DocumentAdminService{
 		if (announcementId == null || documentAdminId == null) {
 			throw new ValueMissException("缺少特定資料(公告ID, 附件ID)");
 		}
-		announcementsRepository.findById(announcementId).orElseThrow(() -> new AnnouncementFailureException("公告找不到"));
 		
-		DocumentAdmin documentAdmin = documentAdminRepository.findByIdAndAnnouncementId(documentAdminId, announcementId)
-				.orElseThrow(() -> new FileStorageException("文件找不到"));
+		entityFetcher.getAnnouncementsById(documentAdminId);
+		DocumentAdmin documentAdmin = entityFetcher.getDocumentAdminByIdAndAnnouncementId(documentAdminId, announcementId);
 		
 		// 2. I/O
 		documentUtil.delete(documentAdmin.getStoragePath());

@@ -16,7 +16,6 @@ import com.github.lianick.exception.CaseFailureException;
 import com.github.lianick.exception.ClassesFailureException;
 import com.github.lianick.exception.OrganizationFailureException;
 import com.github.lianick.exception.RoleFailureException;
-import com.github.lianick.exception.ValueMissException;
 import com.github.lianick.model.dto.clazz.ClassCreateDTO;
 import com.github.lianick.model.dto.clazz.ClassDTO;
 import com.github.lianick.model.dto.clazz.ClassDeleteDTO;
@@ -33,6 +32,7 @@ import com.github.lianick.repository.OrganizationRepository;
 import com.github.lianick.service.ClassService;
 import com.github.lianick.util.SecurityUtil;
 import com.github.lianick.util.UserSecurityUtil;
+import com.github.lianick.util.validate.ClassValidationUtil;
 
 @Service
 @Transactional				// 確保 完整性 
@@ -53,6 +53,12 @@ public class ClassServiceImpl implements ClassService{
 	@Autowired
 	private UserSecurityUtil userSecurityUtil;
 
+	@Autowired
+	private ClassValidationUtil classValidationUtil;
+	
+	@Autowired
+	private EntityFetcher entityFetcher;
+	
 	@Override
 	@PreAuthorize("isAuthenticated()")	 
 	public List<ClassDTO> findAllClassByOrganization(ClassFindDTO classFindDTO) {
@@ -66,9 +72,8 @@ public class ClassServiceImpl implements ClassService{
 		
 		// 民眾 使用 organizationName 搜尋
 		if (currentRoleNumber.equals(1L)) {
-			if (classFindDTO.getOrganizationName() == null || classFindDTO.getOrganizationName().isBlank()) {
-				throw new ValueMissException("缺少必要的搜尋資料：機構名稱");
-			}
+			classValidationUtil.validateFindByPublic(classFindDTO);
+			
 			// 民眾搜尋時 不是 用 完整名稱 來搜尋
 			String organizationNameLike = "%" +  classFindDTO.getOrganizationName() + "%";
 			
@@ -81,28 +86,22 @@ public class ClassServiceImpl implements ClassService{
 		} 
 		// 基層員工 使用 organizationId 搜尋
 		else if (currentRoleNumber.equals(2L)) {
-			if (classFindDTO.getOrganizationId() == null) {
-				throw new ValueMissException("缺少必要的搜尋資料：機構 ID");
-			}
+			classValidationUtil.validateFindByAdmin(classFindDTO);
 			
 			if (!tableUser.getAdminInfo().getOrganization().getOrganizationId().equals(classFindDTO.getOrganizationId())) {
 				throw new AccessDeniedException("權限不足: 無法搜尋其他機構的班級");
 			}
 			
-			Organization organization = organizationRepository.findById(classFindDTO.getOrganizationId())
-					.orElseThrow(() -> new OrganizationFailureException("機構找不到"));
+			Organization organization = entityFetcher.getOrganizationById(classFindDTO.getOrganizationId());
 			
 			organizations.add(organization);
 		
 		} 
 		// 管理者 使用 organizationId 搜尋
 		else if (currentRoleNumber.equals(3L)) {
-			if (classFindDTO.getOrganizationId() == null) {
-				throw new ValueMissException("缺少必要的搜尋資料：機構 ID");
-			}
+			classValidationUtil.validateFindByAdmin(classFindDTO);
 			
-			Organization organization = organizationRepository.findById(classFindDTO.getOrganizationId())
-					.orElseThrow(() -> new OrganizationFailureException("機構找不到"));
+			Organization organization = entityFetcher.getOrganizationById(classFindDTO.getOrganizationId());
 			
 			organizations.add(organization);
 			
@@ -136,34 +135,13 @@ public class ClassServiceImpl implements ClassService{
 		Users tableUser = userSecurityUtil.getCurrentUserEntity();
 		
 		// 1. 檢查是否缺乏必要資料
-		if (classCreateDTO.getName() == null || classCreateDTO.getName().isBlank() ||
-				classCreateDTO.getMaxCapacity() == null || 
-				classCreateDTO.getAgeMinMonths() == null || 
-				classCreateDTO.getAgeMaxMonths() == null || 
-				classCreateDTO.getServiceStartMonth() == null || 
-				classCreateDTO.getServiceEndMonth() == null || 
-				classCreateDTO.getOrganizationId() == null
-				) {
-			throw new ValueMissException("缺少必要的班級建立資料 (名稱、機構ID、最大人數、公托年齡、服務月份)");
-		}
+		classValidationUtil.validateCreateFields(classCreateDTO);
 		
 		// 檢查 機構 是否 存在
-		Organization organization = organizationRepository.findById(classCreateDTO.getOrganizationId())
-				.orElseThrow(() -> new OrganizationFailureException("機構找不到"));
+		Organization organization = entityFetcher.getOrganizationById(classCreateDTO.getOrganizationId());
 		
 		// 2. 判定 使用者的 權限
-		if (currentRoleNumber.equals(2L)) {
-			// 基層員工 檢查是否為 自己的機構 底下 班級
-			Long tableUserOrganizationId = tableUser.getAdminInfo().getOrganization().getOrganizationId();
-			if (!tableUserOrganizationId.equals(classCreateDTO.getOrganizationId())) {
-				throw new AccessDeniedException("權限不足: 無法建立其他機構的班級");
-			}
-		} else if (currentRoleNumber.equals(3L)) {
-			// 管理員 直接通過
-		} else {
-			// 預防萬一 理論上大部分都會被 @PreAuthorize 擋住
-			throw new AccessDeniedException("權限不足: 無法建立其他機構的班級");
-		}
+		classValidationUtil.validateRoleNumber(currentRoleNumber, tableUser, classCreateDTO.getOrganizationId(), "建立");
 		
 		// 3. 建立班級
 		Classes classes = modelMapper.map(classCreateDTO, Classes.class);
@@ -186,18 +164,12 @@ public class ClassServiceImpl implements ClassService{
 		Users tableUser = userSecurityUtil.getCurrentUserEntity();
 		
 		// 1. 檢查是否缺乏必要資料
-		if (classLinkCaseDTO.getId() == null || classLinkCaseDTO.getCaseId() == null ||
-				classLinkCaseDTO.getOrganizationId() == null ) {
-			throw new ValueMissException("缺少必要的班級連接案件資料 (班級ID、更新人數、機構ID)");
-		}
+		classValidationUtil.validateLinkCase(classLinkCaseDTO);
 		
 		// 檢查 機構 是否 存在
-		Organization organization = organizationRepository.findById(classLinkCaseDTO.getOrganizationId())
-				.orElseThrow(() -> new OrganizationFailureException("查無 機構"));
-		
+		Organization organization = entityFetcher.getOrganizationById(classLinkCaseDTO.getOrganizationId());
 		// 檢查 班級 是否 存在
-		Classes classes = classesRepository.findById(classLinkCaseDTO.getId())
-				.orElseThrow(() -> new ClassesFailureException("查無 班級"));
+		Classes classes = entityFetcher.getClassesById(classLinkCaseDTO.getId());
 		
 		// 檢查 班級 是否在 該機構 底下
 		if (!classes.getOrganization().equals(organization)) {
@@ -205,8 +177,7 @@ public class ClassServiceImpl implements ClassService{
 		}
 		
 		// 檢查 案件 是否 存在 / 通過
-		Cases cases = casesRepository.findById(classLinkCaseDTO.getCaseId())
-				.orElseThrow(() -> new CaseFailureException("查無 案件"));
+		Cases cases = entityFetcher.getCasesById(classLinkCaseDTO.getId());
 		if (!cases.getStatus().equals(CaseStatus.PASSED)) {
 			throw new CaseFailureException("案件 尚未 通過");
 		}
@@ -217,18 +188,7 @@ public class ClassServiceImpl implements ClassService{
 		}
 		
 		// 2. 判定 使用者的 權限
-		if (currentRoleNumber.equals(2L)) {
-			// 基層員工 檢查是否為 自己的機構 底下 班級
-			Long tableUserOrganizationId = tableUser.getAdminInfo().getOrganization().getOrganizationId();
-			if (!tableUserOrganizationId.equals(classLinkCaseDTO.getOrganizationId())) {
-				throw new AccessDeniedException("權限不足: 無法更新其他機構的班級");
-			}
-		} else if (currentRoleNumber.equals(3L)) {
-			// 管理員 直接通過
-		} else {
-			// 預防萬一 理論上大部分都會被 @PreAuthorize 擋住
-			throw new AccessDeniedException("權限不足: 無法更新其他機構的班級");
-		}
+		classValidationUtil.validateRoleNumber(currentRoleNumber, tableUser, classLinkCaseDTO.getOrganizationId(), "更新");
 		
 		// 3. 建立關連 並 新增人數
 		cases.setClasses(classes);
@@ -256,19 +216,13 @@ public class ClassServiceImpl implements ClassService{
 		Users tableUser = userSecurityUtil.getCurrentUserEntity();
 		
 		// 1. 檢查是否缺乏必要資料
-		if (classDeleteDTO.getId() == null || classDeleteDTO.getOrganizationId() == null ||
-				classDeleteDTO.getName() == null || classDeleteDTO.getName().isBlank()) {
-			throw new ValueMissException("缺少必要的班級刪除資料 (班級ID、班級名稱、機構ID)");
-		}
+		classValidationUtil.validateDelete(classDeleteDTO);
 		
 		// 檢查 機構 是否 存在
-		Organization organization = organizationRepository.findById(classDeleteDTO.getOrganizationId())
-				.orElseThrow(() -> new OrganizationFailureException("查無 機構"));
-		
+		Organization organization = entityFetcher.getOrganizationById(classDeleteDTO.getOrganizationId());
 		// 檢查 班級 是否 存在
-		Classes classes = classesRepository.findById(classDeleteDTO.getId())
-				.orElseThrow(() -> new ClassesFailureException("查無 班級"));
-		
+		Classes classes = entityFetcher.getClassesById(classDeleteDTO.getId());
+				
 		// 檢查 班級 是否在 該機構 底下
 		if (!classes.getOrganization().equals(organization)) {
 			throw new OrganizationFailureException("機構 查無 班級");
@@ -280,18 +234,7 @@ public class ClassServiceImpl implements ClassService{
 		}
 		
 		// 2. 判定 使用者的 權限
-		if (currentRoleNumber.equals(2L)) {
-			// 基層員工 檢查是否為 自己的機構 底下 班級
-			Long tableUserOrganizationId = tableUser.getAdminInfo().getOrganization().getOrganizationId();
-			if (!tableUserOrganizationId.equals(classDeleteDTO.getOrganizationId())) {
-				throw new AccessDeniedException("權限不足: 無法刪除其他機構的班級");
-			}
-		} else if (currentRoleNumber.equals(3L)) {
-			// 管理員 直接通過
-		} else {
-			// 預防萬一 理論上大部分都會被 @PreAuthorize 擋住
-			throw new AccessDeniedException("權限不足: 無法刪除其他機構的班級");
-		}
+		classValidationUtil.validateRoleNumber(currentRoleNumber, tableUser, classDeleteDTO.getOrganizationId(), "刪除");
 		
 		// 3. 檢查 是否有關連的 案件
 		Long activeCaseCount = classesRepository.countActiveCasesByClassId(classes.getClassId());

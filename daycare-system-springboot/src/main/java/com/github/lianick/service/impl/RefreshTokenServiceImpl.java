@@ -29,6 +29,9 @@ public class RefreshTokenServiceImpl implements RefreshTokenService{
 	@Autowired
 	private JwtUtil jwtUtil;
 	
+	@Autowired
+	private EntityFetcher entityFetcher;
+	
 	@Override
 	public RefreshToken generateToken(Users users) {
 		// 1. 軟刪除用戶所有現存的有效 Refresh Token (單點登入強制作廢)
@@ -59,8 +62,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService{
 	@Override	// Refresh Token 輪替模式
 	public AuthResponseDTO updateRefreshToken(String oldRefreshTokenString) {
 		// 1. 查找並驗證 Refresh Token 的有效性
-		RefreshToken oldRefreshToken = refreshTokenRepository.findByToken(oldRefreshTokenString)
-				.orElseThrow(() -> new TokenFailureException("Refresh Token 不存在或已被作廢"));
+		RefreshToken oldRefreshToken = entityFetcher.getRefreshTokenByToken(oldRefreshTokenString, "Refresh Token 不存在或已被作廢");
 		
 		// 2. 驗證 Refresh Token 是否過期
 		if (oldRefreshToken.getExpiryTime().isBefore(Instant.now())) {

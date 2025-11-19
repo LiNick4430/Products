@@ -57,10 +57,7 @@ public class AuthServiceImpl implements AuthService{
 	@Override
 	@PreAuthorize("isAuthenticated()")
 	public void logout() {
-		/* 從 JWT 獲取身份：確認操作者身份
-	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-	    String currentUsername = authentication.getName(); // JWT 中解析出來的帳號
-	    */
+		
 		String currentUsername = SecurityUtil.getCurrentUsername();
 		
 		refreshTokenService.deleteRefreshToken(currentUsername);

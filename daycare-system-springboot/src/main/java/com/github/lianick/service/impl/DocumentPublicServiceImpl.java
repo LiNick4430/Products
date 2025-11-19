@@ -6,15 +6,12 @@ import java.util.Set;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.github.lianick.exception.CaseFailureException;
 import com.github.lianick.exception.FileStorageException;
-import com.github.lianick.exception.ValueMissException;
 import com.github.lianick.model.dto.DocumentDTO;
 import com.github.lianick.model.dto.documentPublic.DocumentPublicCreateDTO;
 import com.github.lianick.model.dto.documentPublic.DocumentPublicDTO;
@@ -25,13 +22,12 @@ import com.github.lianick.model.dto.documentPublic.DocumentPublicVerifyDTO;
 import com.github.lianick.model.eneity.Cases;
 import com.github.lianick.model.eneity.DocumentPublic;
 import com.github.lianick.model.eneity.UserPublic;
-import com.github.lianick.model.enums.DocumentScope;
 import com.github.lianick.model.enums.EntityType;
-import com.github.lianick.repository.CasesRepository;
 import com.github.lianick.repository.DocumentPublicRepository;
 import com.github.lianick.service.DocumentPublicService;
 import com.github.lianick.util.DocumentUtil;
 import com.github.lianick.util.UserSecurityUtil;
+import com.github.lianick.util.validate.DocumentPublicValidationUtil;
 
 @Service
 @Transactional				// 確保 完整性 
@@ -41,9 +37,6 @@ public class DocumentPublicServiceImpl implements DocumentPublicService{
 	private DocumentPublicRepository documentPublicRepository;
 	
 	@Autowired
-	private CasesRepository casesRepository;
-	
-	@Autowired
 	private ModelMapper modelMapper;
 	
 	@Autowired
@@ -51,6 +44,12 @@ public class DocumentPublicServiceImpl implements DocumentPublicService{
 	
 	@Autowired
 	private UserSecurityUtil userSecurityUtil;
+	
+	@Autowired
+	private DocumentPublicValidationUtil documentPublicValidationUtil;
+	
+	@Autowired
+	private EntityFetcher entityFetcher;
 	
 	@Override
 	@PreAuthorize("hasAuthority('ROLE_PUBLIC')")
@@ -76,8 +75,7 @@ public class DocumentPublicServiceImpl implements DocumentPublicService{
 	public List<DocumentPublicDTO> findAllDocByCase(DocumentPublicFindDTO documentPublicFindDTO) {
 		
 		// 1. 從 Case 找尋 DocumentPublic
-		Cases cases = casesRepository.findById(documentPublicFindDTO.getCaseId())
-				.orElseThrow(() -> new CaseFailureException("案件不存在"));
+		Cases cases = entityFetcher.getCasesById(documentPublicFindDTO.getCaseId());
 		
 		Set<DocumentPublic> documentPublics = cases.getDocuments();
 				
@@ -100,15 +98,7 @@ public class DocumentPublicServiceImpl implements DocumentPublicService{
 		Long userId = userPublic.getUsers().getUserId();
 		
 		// 1. 檢查 傳入的檔案 是否存在 以及 是否缺乏必要資訊
-		if (file.isEmpty()) {
-			throw new FileStorageException("檔案錯誤：上傳檔案不存在");
-		}
-		if (documentPublicCreateDTO.getDocType() == null) {
-			throw new ValueMissException("缺少特定資料(附件類型)");
-		}
-		if (documentPublicCreateDTO.getDocType().getScope() != DocumentScope.PUBLIC) {
-			throw new AccessDeniedException("錯誤的附件類型");
-		}
+		documentPublicValidationUtil.validateCreatePublicFields(documentPublicCreateDTO, file);
 		
 		// 2. 檔案儲存
 		DocumentDTO documentDTO = documentUtil.upload(userId, EntityType.USER, file, false);
@@ -131,26 +121,13 @@ public class DocumentPublicServiceImpl implements DocumentPublicService{
 	public DocumentPublicDTO createDocumentByCase(DocumentPublicCreateDTO documentPublicCreateDTO, MultipartFile file) {
 		// 0. 取得 使用方法 的 使用者權限
 		UserPublic userPublic = userSecurityUtil.getCurrentUserPublicEntity();
-		
 		Long userId = userPublic.getUsers().getUserId();
 
 		// 1. 檢查 傳入的檔案 是否存在 以及 是否缺乏必要資訊
-		if (file.isEmpty()) {
-			throw new FileStorageException("檔案錯誤：上傳檔案不存在");
-		}
-		if (documentPublicCreateDTO.getDocType() == null ||
-				documentPublicCreateDTO.getCaseId() == null) {
-			throw new ValueMissException("缺少特定資料(附件類型, 案件ID)");
-		}
-		if (documentPublicCreateDTO.getDocType().getScope() != DocumentScope.PUBLIC) {
-			throw new AccessDeniedException("錯誤的附件類型");
-		}
+		documentPublicValidationUtil.validateCreateCaseFields(documentPublicCreateDTO, file);
 		
-		Cases cases = casesRepository.findById(documentPublicCreateDTO.getCaseId())
-				.orElseThrow(() -> new CaseFailureException("案件不存在"));
-		if (!cases.getChildInfo().getUserPublic().equals(userPublic)) {
-			throw new AccessDeniedException("案件不存在");
-		}
+		Cases cases = entityFetcher.getCasesById(documentPublicCreateDTO.getCaseId());
+		documentPublicValidationUtil.validateUserPublicAndCases(userPublic, cases);
 
 		// 2. 檔案儲存
 		DocumentDTO documentDTO = documentUtil.upload(userId, EntityType.USER, file, false);
@@ -176,26 +153,17 @@ public class DocumentPublicServiceImpl implements DocumentPublicService{
 		UserPublic userPublic = userSecurityUtil.getCurrentUserPublicEntity();
 		
 		// 1. 檢查 資料完整性
-		if (documentPublicLinkDTO.getId() == null || documentPublicLinkDTO.getCaseId() == null) {
-			throw new ValueMissException("缺少特定資料(附件ID, 案件ID)");
-		}
+		documentPublicValidationUtil.validatePublicLink(documentPublicLinkDTO);
 		
-		DocumentPublic documentPublic = documentPublicRepository.findById(documentPublicLinkDTO.getId())
-				.orElseThrow(() -> new FileStorageException("附件不存在"));
-		if (!documentPublic.getUserPublic().equals(userPublic)) {
-			throw new AccessDeniedException("附件不存在");
-		}
+		DocumentPublic documentPublic = entityFetcher.getDocumentPublicById(documentPublicLinkDTO.getId());
+		documentPublicValidationUtil.validateUserPublicAndDocumentPublic(userPublic, documentPublic);
 		
-		Cases cases = casesRepository.findById(documentPublicLinkDTO.getCaseId())
-				.orElseThrow(() -> new CaseFailureException("案件不存在"));
-		if (!cases.getChildInfo().getUserPublic().equals(userPublic)) {
-			throw new AccessDeniedException("案件不存在");
-		}
+		Cases cases = entityFetcher.getCasesById(documentPublicLinkDTO.getCaseId());
+		documentPublicValidationUtil.validateUserPublicAndCases(userPublic, cases);
 		
 		if (documentPublic.getIsVerified() == false) {
 			throw new FileStorageException("檔案錯誤：尚未通過驗證");
 		}
-		
 		
 		// 2. 建立關連
 		documentPublic.getCases().add(cases);
@@ -209,12 +177,8 @@ public class DocumentPublicServiceImpl implements DocumentPublicService{
 	@PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")
 	public DocumentPublicDTO verifyDocument(DocumentPublicVerifyDTO documentPublicVerifyDTO) {
 		// 1. 檢查資料完整性
-		if (documentPublicVerifyDTO.getId() == null) {
-			throw new ValueMissException("缺少特定資料(附件ID)");
-		}
-		
-		DocumentPublic documentPublic = documentPublicRepository.findById(documentPublicVerifyDTO.getId())
-				.orElseThrow(() -> new FileStorageException("附件不存在"));
+		documentPublicValidationUtil.validateDocumentVerify(documentPublicVerifyDTO);
+		DocumentPublic documentPublic = entityFetcher.getDocumentPublicById(documentPublicVerifyDTO.getId());
 		
 		// 2. 審核動作 
 		LocalDateTime now = LocalDateTime.now();
@@ -234,15 +198,11 @@ public class DocumentPublicServiceImpl implements DocumentPublicService{
 		UserPublic userPublic = userSecurityUtil.getCurrentUserPublicEntity();
 		
 		// 1. 檢查完整性
-		if (documentPublicDeleteDTO.getId() == null ) {
-			throw new ValueMissException("缺少特定資料(附件ID)");
-		}
+		documentPublicValidationUtil.validateDocumentDelete(documentPublicDeleteDTO);
 		
-		DocumentPublic documentPublic = documentPublicRepository.findById(documentPublicDeleteDTO.getId())
-				.orElseThrow(() -> new FileStorageException("附件不存在"));
-		if (!documentPublic.getUserPublic().equals(userPublic)) {
-			throw new AccessDeniedException("您無權限刪除此附件，或附件不存在於您的帳號下。");
-		}
+		DocumentPublic documentPublic = entityFetcher.getDocumentPublicById(documentPublicDeleteDTO.getId());
+		
+		documentPublicValidationUtil.validateUserPublicAndDocumentPublic(userPublic, documentPublic);
 		
 		// 2. 檢查是否還有關連的
 		if (documentPublic.getCases().size() != 0) {
