@@ -65,5 +65,5 @@ public interface UserService {
 	void generateUserToken(Users users, String subject, String apiName);
 	
 	/** 密碼驗證, 泛型 T 必須是 PasswordAwareDTO 或其子類 */
-	<T extends PasswordAwareDTO> Boolean checkPassword (T userDto, Users tableUser);
+	<T extends PasswordAwareDTO> void checkPassword (T userDto, Users tableUser);
 }

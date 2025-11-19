@@ -6,7 +6,6 @@ import com.github.lianick.model.dto.user.UserDeleteDTO;
 import com.github.lianick.model.dto.userPublic.UserPublicDTO;
 import com.github.lianick.model.dto.userPublic.UserPublicCreateDTO;
 import com.github.lianick.model.dto.userPublic.UserPublicUpdateDTO;
-import com.github.lianick.model.eneity.UserPublic;
 
 /*
 	業務流程確認

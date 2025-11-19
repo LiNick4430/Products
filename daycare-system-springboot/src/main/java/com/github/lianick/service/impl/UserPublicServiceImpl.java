@@ -158,9 +158,7 @@ public class UserPublicServiceImpl implements UserPublicService{
 		}
 		
 	    // 2. 使用 checkPassword 方法 複查 密碼是否相同
-	    if (!userService.checkPassword(userPublicUpdateDTO, tableUser)) {
-	    	throw new UserNoFoundException("帳號或密碼錯誤");
-	    }
+	    userService.checkPassword(userPublicUpdateDTO, tableUser);
 	    
 	    // 3. 找到對應的 userPublic
 	    UserPublic userPublic = userPublicRepository.findByUsers(tableUser)
@@ -215,9 +213,7 @@ public class UserPublicServiceImpl implements UserPublicService{
 		final String ERROR_MESSAGE = "帳號或密碼錯誤";
 		
 	    // 2. 使用 checkPassword 方法 複查 密碼是否相同
-	    if (!userService.checkPassword(userDeleteDTO, tableUser)) {
-	    	throw new UserNoFoundException(ERROR_MESSAGE);
-	    }
+	    userService.checkPassword(userDeleteDTO, tableUser);
 	    
 	    // 3. 找到對應的 userPublic
 	    UserPublic userPublic = userPublicRepository.findByUsers(tableUser)

@@ -208,9 +208,9 @@ public class OrganizationServiceImpl implements OrganizationService{
 		}
 		Users users = usersRepository.findByAccount(currentName)
 				.orElseThrow(() -> new UserNoFoundException("帳號或密碼錯誤"));
-		if (!userService.checkPassword(organizationDeleteDTO, users)) {
-			throw new UserNoFoundException("帳號或密碼錯誤");
-		}
+		
+		// 執行 密碼檢查
+		userService.checkPassword(organizationDeleteDTO, users);
 		
 		// 2. 檢查 是否有 機構 和 機構 相關的 員工
 		Organization organization = organizationRepository.findById(organizationDeleteDTO.getId())

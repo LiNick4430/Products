@@ -192,10 +192,7 @@ public class UserServiceImpl implements UserService{
 	        .orElseThrow(() -> new UserNoFoundException("帳號或密碼錯誤"));
 
 	    // 2. checkPassword 方法 驗證密碼
-	    if (!checkPassword(userLoginDTO, tableUser)) {
-	    	// 如果 密碼不相符, 統一由 UserNoFoundException -> GlobalExceptionHandler 處理回傳
-		    throw new UserNoFoundException("帳號或密碼錯誤");
-	    }
+	    checkPassword(userLoginDTO, tableUser);
 	    
 	    // 3. 登入成功 打上時間
 	    tableUser.setLoginDate(LocalDateTime.now());	// 登入時間
@@ -334,9 +331,7 @@ public class UserServiceImpl implements UserService{
 		}
 	    
 	    // 2. 使用 checkPassword 方法 複查 密碼是否相同
-	    if (!checkPassword(userUpdateDTO, tableUser)) {
-	    	throw new UserNoFoundException("密碼錯誤");
-	    }
+		checkPassword(userUpdateDTO, tableUser);
 	    
 	    // 3. Entity 轉 DTO
 	    userUpdateDTO = modelMapper.map(tableUser, UserUpdateDTO.class);
@@ -398,9 +393,7 @@ public class UserServiceImpl implements UserService{
 	    Users tableUser = userSecurityUtil.getCurrentUserEntity();
 	    		
 	    // 2. 使用 checkPassword 方法 複查 密碼是否相同
-	    if (!checkPassword(userDeleteDTO, tableUser)) {
-	    	throw new UserNoFoundException("帳號或密碼錯誤");
-	    }
+	    checkPassword(userDeleteDTO, tableUser);
 	    
 	    // 3. 建立 變數
 	    LocalDateTime deleteTime = LocalDateTime.now();
@@ -462,7 +455,7 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	@Override
-	public <T extends PasswordAwareDTO> Boolean checkPassword(T userDto, Users tableUser) {
+	public <T extends PasswordAwareDTO> void checkPassword(T userDto, Users tableUser) {
 		// 取出 使用者輸入的 明文密碼
 	    String rawPassword = userDto.getRawPassword(); 		// 使用者輸入的明文密碼
 	    
@@ -470,7 +463,14 @@ public class UserServiceImpl implements UserService{
 	    String encodedPassword = tableUser.getPassword(); 	// 資料庫中儲存的雜湊密碼
 	    
 	    // 進行 密碼比對
-		return passwordSecurity.verifyPassword(rawPassword, encodedPassword);
+		Boolean isMatch = passwordSecurity.verifyPassword(rawPassword, encodedPassword);
+		
+		// 失敗 拋出 例外
+		if (!isMatch) {
+			throw new UserNoFoundException("帳號或密碼錯誤");
+		}
+		
+		// 成功
 	}
 	
 }
