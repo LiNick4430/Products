@@ -3,7 +3,6 @@ package com.github.lianick.service.impl;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.github.lianick.config.FrontendProperties;
 import com.github.lianick.exception.TokenFailureException;
-import com.github.lianick.exception.UserExistException;
 import com.github.lianick.exception.UserNoFoundException;
-import com.github.lianick.exception.ValueMissException;
 import com.github.lianick.model.dto.user.PasswordAwareDTO;
 import com.github.lianick.model.dto.user.UserDeleteDTO;
 import com.github.lianick.model.dto.user.UserForgetPasswordDTO;
@@ -34,6 +31,7 @@ import com.github.lianick.service.UserService;
 import com.github.lianick.util.PasswordSecurity;
 import com.github.lianick.util.TokenUUID;
 import com.github.lianick.util.UserSecurityUtil;
+import com.github.lianick.util.validate.UserValidationUtil;
 
 @Service
 @Transactional				// 確保 完整性 
@@ -52,6 +50,9 @@ public class UserServiceImpl implements UserService{
 	private EmailService emailService;
 	
 	@Autowired
+	private EntityFetcher entityFetcher;
+	
+	@Autowired
 	private TokenUUID tokenUUID;
 	
 	@Autowired
@@ -59,6 +60,9 @@ public class UserServiceImpl implements UserService{
 	
 	@Autowired
 	private UserSecurityUtil userSecurityUtil;
+	
+	@Autowired
+	private UserValidationUtil userValidationUtil;
 	
 	@Autowired
 	private FrontendProperties frontendProperties;
@@ -86,20 +90,9 @@ public class UserServiceImpl implements UserService{
 	
 	@Override
 	public UserRegisterDTO registerUser(UserRegisterDTO userRegisterDTO) {
-		// 0. 檢查數值完整性
-		if(userRegisterDTO.getUsername() == null || userRegisterDTO.getUsername().isBlank() ||
-				userRegisterDTO.getPassword() == null || userRegisterDTO.getPassword().isBlank() ||
-				userRegisterDTO.getEmail() == null || userRegisterDTO.getEmail().isBlank() ||
-				userRegisterDTO.getPhoneNumber() == null || userRegisterDTO.getPhoneNumber().isBlank()) {
-			throw new ValueMissException("缺少必要的註冊資料 (帳號、密碼、信箱、電話號碼)");
-		}
-		
-		if (usersRepository.findByAccount(userRegisterDTO.getUsername()).isPresent()) {
-			throw new UserExistException("註冊失敗：帳號已有人使用");
-		}
-		if (usersRepository.findByEmail(userRegisterDTO.getEmail()).isPresent()) {
-			throw new UserExistException("註冊失敗：信箱已有人使用");
-		}
+		// 0. 檢查數值完整性 + 唯一性
+		userValidationUtil.validateRegistrationFields(userRegisterDTO);
+		userValidationUtil.validateRegistrationUniqueness(userRegisterDTO.getUsername(), userRegisterDTO.getEmail());
 		
 		// 1. DTO 轉 Entity
 		userRegisterDTO.setRoleNumber(1L);	// 這裡的 只能建立 民眾帳號
@@ -133,20 +126,11 @@ public class UserServiceImpl implements UserService{
 		LocalDateTime now = LocalDateTime.now();
 		
 		// 1. 使用 Token 紀錄 找尋 UsersVerify 紀錄
-		Optional<UserVerify> optUserVerify = usersVerifyRepository.findByToken(token);
-		if (optUserVerify.isEmpty()) {
-			throw new TokenFailureException("驗證碼 無效或不存在");
-		}
-		UserVerify userVerify = optUserVerify.get();
+		UserVerify userVerify = entityFetcher.getUserVerifyByToken(token);
 		Users users = userVerify.getUsers();
 		
 		// 2. 判斷 Token 狀態
-		if (userVerify.getIsUsed()) {
-			throw new TokenFailureException("驗證碼 已經被使用");
-		}
-		if (userVerify.getExpiryTime().isBefore(now)) {
-			throw new TokenFailureException("驗證碼 已經過期");
-		}
+		userValidationUtil.validateToken(userVerify, now);
 		
 		// 3. 判斷 Users 狀態 以防止重複使用
 		if (users.getIsActive()) {
@@ -182,14 +166,10 @@ public class UserServiceImpl implements UserService{
 	public Users loginUser(UserLoginDTO userLoginDTO){
 		
 		// 0. 檢查數值完整性
-		if(userLoginDTO.getUsername() == null || userLoginDTO.getUsername().isBlank() ||
-				userLoginDTO.getPassword() == null || userLoginDTO.getPassword().isBlank()) {
-			throw new ValueMissException("缺少帳號或密碼");
-		}
+		userValidationUtil.validateLoginFields(userLoginDTO);
 		
 		// 1. 找尋資料庫 對應的帳號
-	    Users tableUser = usersRepository.findByAccount(userLoginDTO.getUsername())
-	        .orElseThrow(() -> new UserNoFoundException("帳號或密碼錯誤"));
+	    Users tableUser = entityFetcher.getUsersByUsername(userLoginDTO.getUsername());
 
 	    // 2. checkPassword 方法 驗證密碼
 	    checkPassword(userLoginDTO, tableUser);
@@ -204,13 +184,10 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public UserForgetPasswordDTO forgetPasswordSendEmail(UserForgetPasswordDTO userForgetPasswordDTO){
 		// 0. 檢查數值完整性
-		if (userForgetPasswordDTO.getUsername() == null || userForgetPasswordDTO.getUsername().isBlank()) {
-		    throw new ValueMissException("缺少帳號資訊");
-		}
+		userValidationUtil.validateForgetPasswordForSendEmail(userForgetPasswordDTO);
 		
 		// 1. 找尋資料庫 對應的帳號
-	    Users tableUser = usersRepository.findByAccount(userForgetPasswordDTO.getUsername())
-	        .orElseThrow(() -> new UserNoFoundException("帳號不存在或已被刪除"));
+	    Users tableUser = entityFetcher.getUsersByUsername(userForgetPasswordDTO.getUsername());
 	    
 	    // 2. 產生驗證碼 同時 寄出 驗證信
 	    generateUserToken(tableUser, "忘記密碼驗證信件", "reset/password");
@@ -232,19 +209,10 @@ public class UserServiceImpl implements UserService{
 		LocalDateTime now = LocalDateTime.now();
 		
 		// 1. 使用 Token 紀錄 找尋 UsersVerify 紀錄
-		Optional<UserVerify> optUserVerify = usersVerifyRepository.findByToken(token);
-		if (optUserVerify.isEmpty()) {
-			throw new TokenFailureException("驗證碼 無效或不存在");
-		}
-		UserVerify userVerify = optUserVerify.get();
+		UserVerify userVerify = entityFetcher.getUserVerifyByToken(token);
 		
 		// 2. 判斷 Token 狀態
-		if (userVerify.getIsUsed()) {
-			throw new TokenFailureException("驗證碼 已經被使用");
-		}
-		if (userVerify.getExpiryTime().isBefore(now)) {
-			throw new TokenFailureException("驗證碼 已經過期");
-		}
+		userValidationUtil.validateToken(userVerify, now);
 		
 		// 3. 取出 Entity
 		Users tableUser = userVerify.getUsers();
@@ -264,37 +232,21 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public UserForgetPasswordDTO forgetPasswordUpdatePassword(UserForgetPasswordDTO userForgetPasswordDTO){
 		// 0. 檢查數值完整性
-		if (userForgetPasswordDTO.getUsername() == null || userForgetPasswordDTO.getUsername().isBlank() ||
-				userForgetPasswordDTO.getPassword() == null || userForgetPasswordDTO.getPassword().isBlank() ||
-				userForgetPasswordDTO.getToken() == null || userForgetPasswordDTO.getToken().isBlank()) {
-			throw new ValueMissException("缺少特定資料 (帳號、新密碼或Token)");
-		}
+		userValidationUtil.validateForgetPasswordForUpdate(userForgetPasswordDTO);
 		
 		// 1. 取出/建立 所需資料
-		Users tableUser = usersRepository.findByAccount(userForgetPasswordDTO.getUsername())
-			        .orElseThrow(() -> new UserNoFoundException("帳號不存在或已被刪除"));
+		Users tableUser = entityFetcher.getUsersByUsername(userForgetPasswordDTO.getUsername());
 		String token = userForgetPasswordDTO.getToken();
 		String rawPassword = userForgetPasswordDTO.getPassword();
 		LocalDateTime now = LocalDateTime.now();
 		
-		// 2. 驗證 token, 預設已經膯過第二步 這裡將不再驗證 時間
-		Optional<UserVerify> optUserVerify = usersVerifyRepository.findByToken(token);
-		if (optUserVerify.isEmpty()) {
-			throw new TokenFailureException("驗證碼 無效或不存在");
-		}
-		UserVerify userVerify = optUserVerify.get();
+		// 2. 驗證 token
+		UserVerify userVerify = entityFetcher.getUserVerifyByToken(token);
+		userValidationUtil.validateToken(userVerify, now);
 		
 		// 額外的安全性檢查：確保 token 是屬於這個 user 的
         if (!userVerify.getUsers().getAccount().equals(tableUser.getAccount())) {
             throw new TokenFailureException("驗證碼 無效或不存在");
-        }
-		
-        if (userVerify.getIsUsed()) {
-        	throw new TokenFailureException("驗證碼 已經被使用");
-        }
-
-        if (userVerify.getExpiryTime().isBefore(now)) {
-        	throw new TokenFailureException("驗證碼 已過期，請重新申請");
         }
         
 		// 3. 更新密碼
@@ -326,9 +278,7 @@ public class UserServiceImpl implements UserService{
 	    Users tableUser = userSecurityUtil.getCurrentUserEntity();
 		
 		// 1. 檢查數值完整性 (這裡只檢查 password 即可，因為 username 已經從 JWT 獲得並驗證)
-		if (userUpdateDTO.getPassword() == null || userUpdateDTO.getPassword().isBlank()) {
-			throw new ValueMissException("缺少舊密碼");
-		}
+		userValidationUtil.validateUpdateForCheck(userUpdateDTO);
 	    
 	    // 2. 使用 checkPassword 方法 複查 密碼是否相同
 		checkPassword(userUpdateDTO, tableUser);

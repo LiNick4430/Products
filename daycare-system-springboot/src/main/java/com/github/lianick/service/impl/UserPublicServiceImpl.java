@@ -30,8 +30,8 @@ import com.github.lianick.repository.UserPublicRepository;
 import com.github.lianick.repository.UsersRepository;
 import com.github.lianick.service.UserPublicService;
 import com.github.lianick.service.UserService;
-import com.github.lianick.util.DateValidationUtil;
 import com.github.lianick.util.UserSecurityUtil;
+import com.github.lianick.util.validate.DateValidationUtil;
 
 @Service
 @Transactional				// 確保 完整性 

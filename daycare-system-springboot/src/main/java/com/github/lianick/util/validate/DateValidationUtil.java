@@ -1,4 +1,4 @@
-package com.github.lianick.util;
+package com.github.lianick.util.validate;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
