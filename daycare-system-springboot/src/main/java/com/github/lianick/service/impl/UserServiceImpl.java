@@ -29,6 +29,7 @@ import com.github.lianick.model.eneity.UserVerify;
 import com.github.lianick.model.eneity.Users;
 import com.github.lianick.repository.UsersRepository;
 import com.github.lianick.repository.UsersVerifyRepository;
+import com.github.lianick.service.EmailService;
 import com.github.lianick.service.UserService;
 import com.github.lianick.util.PasswordSecurity;
 import com.github.lianick.util.TokenUUID;
@@ -48,7 +49,7 @@ public class UserServiceImpl implements UserService{
 	private UsersVerifyRepository usersVerifyRepository;
 	
 	@Autowired
-	private EmailServiceImpl emailServiceImpl;
+	private EmailService emailService;
 	
 	@Autowired
 	private TokenUUID tokenUUID;
@@ -457,7 +458,7 @@ public class UserServiceImpl implements UserService{
 		// 3. 寄出驗證信
 		// 根據不同 api 導向 不同用途 (1. verify 2. reset/password)
 		String verificationLink = frontendProperties.getUrl() + "/email/" + apiName + "?token=" + userVerify.getToken();			
-		emailServiceImpl.sendVerificationEmail(email, subject, verificationLink);
+		emailService.sendVerificationEmail(email, subject, verificationLink);
 	}
 	
 	@Override
@@ -471,5 +472,5 @@ public class UserServiceImpl implements UserService{
 	    // 進行 密碼比對
 		return passwordSecurity.verifyPassword(rawPassword, encodedPassword);
 	}
-
+	
 }
