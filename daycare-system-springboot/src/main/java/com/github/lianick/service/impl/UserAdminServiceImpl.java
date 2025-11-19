@@ -87,10 +87,7 @@ public class UserAdminServiceImpl implements UserAdminService{
 	@Override
 	@PreAuthorize("hasAuthority('ROLE_MANAGER')")
 	public UserAdminDTO findByUsername(UserAdminDTO userAdminDTO) {
-		Users tableUser = usersRepository.findByAccount(userAdminDTO.getUsername())
-				.orElseThrow(() -> new UserNoFoundException("基礎帳號不存在"));
-		UserAdmin userAdmin = userAdminRepository.findByUsers(tableUser)
-				.orElseThrow(() -> new UserNoFoundException("用戶存在，但非員工帳號"));
+		UserAdmin userAdmin = getUserAdminEntity(userAdminDTO.getUsername());
 
 		userAdminDTO = modelMapper.map(userAdmin, UserAdminDTO.class);
 		return userAdminDTO;
@@ -188,11 +185,11 @@ public class UserAdminServiceImpl implements UserAdminService{
 			organization = organizationRepository.findById(userAdminUpdateDTO.getNewOrganizationId())
 					.orElseThrow(() -> new OrganizationFailureException("更新失敗：機構 設定錯誤"));
 		}
+		
 		// 1. 取出帳號
-		Users tableUser = usersRepository.findByAccount(userAdminUpdateDTO.getUsername())
-				.orElseThrow(() -> new UserNoFoundException("基礎帳號不存在"));
-		UserAdmin userAdmin = userAdminRepository.findByUsers(tableUser)
-				.orElseThrow(() -> new UserNoFoundException("用戶存在，但非員工帳號"));
+		Users users = getUserEntity(userAdminUpdateDTO.getUsername());
+		UserAdmin userAdmin = getUserAdminEntity(userAdminUpdateDTO.getUsername());
+		
 		
 		// 2. 依序檢查 數值 並 存入
 		if (userAdminUpdateDTO.getNewName() != null && !userAdminUpdateDTO.getNewName().isBlank()) {
@@ -202,14 +199,14 @@ public class UserAdminServiceImpl implements UserAdminService{
 			userAdmin.setJobTitle(userAdminUpdateDTO.getNewJobTitle());
 		}
 		if (role != null) {
-			tableUser.setRole(role);
+			users.setRole(role);
 		}
 		if (organization != null) {
 			userAdmin.setOrganization(organization);
 		}
 		
 		// 3. 回存
-		tableUser = usersRepository.save(tableUser);
+		users = usersRepository.save(users);
 		userAdmin = userAdminRepository.save(userAdmin);
 		
 		// 4. Entity 轉 DTO
@@ -225,10 +222,8 @@ public class UserAdminServiceImpl implements UserAdminService{
 		isUserMe(userDeleteDTO.getUsername());
 		
 		// 1. 查詢帳號是否存在
-		Users tableUser = usersRepository.findByAccount(userDeleteDTO.getUsername())
-				.orElseThrow(() -> new UserNoFoundException("基礎帳號不存在"));
-		UserAdmin userAdmin = userAdminRepository.findByUsers(tableUser)
-				.orElseThrow(() -> new UserNoFoundException("用戶存在，但非員工帳號"));
+		Users users = getUserEntity(userDeleteDTO.getUsername());
+		UserAdmin userAdmin = getUserAdminEntity(userDeleteDTO.getUsername());
 		
 		// 2. 進行軟刪除 並且 回存
 		LocalDateTime deleteTime = LocalDateTime.now();
@@ -236,12 +231,12 @@ public class UserAdminServiceImpl implements UserAdminService{
 	    
 		userAdmin.setDeleteAt(deleteTime);
 		
-		tableUser.setDeleteAt(deleteTime);
-		tableUser.setEmail(tableUser.getEmail() + deleteSuffix);
-		tableUser.setAccount(tableUser.getAccount() + deleteSuffix);
+		users.setDeleteAt(deleteTime);
+		users.setEmail(users.getEmail() + deleteSuffix);
+		users.setAccount(users.getAccount() + deleteSuffix);
 		
 		userAdminRepository.save(userAdmin);
-		usersRepository.save(tableUser);
+		usersRepository.save(users);
 	}
 	
 	
@@ -253,5 +248,27 @@ public class UserAdminServiceImpl implements UserAdminService{
 		if (currentUsername.equals(username)) {
 			throw new UserExistException("失敗：無法通過此管理介面修改自己的帳號資料");
 		}
+	}
+	
+	/**
+	 * 使用 username 找到 userAdmin
+	 * */
+	private Users getUserEntity(String username) {
+		Users tableUser = usersRepository.findByAccount(username)
+				.orElseThrow(() -> new UserNoFoundException("基礎帳號不存在"));
+		
+		return tableUser;
+	}
+	
+	/**
+	 * 使用 username 找到 userAdmin
+	 * */
+	private UserAdmin getUserAdminEntity(String username) {
+		Users tableUser = getUserEntity(username);
+		
+		UserAdmin userAdmin = userAdminRepository.findByUsers(tableUser)
+				.orElseThrow(() -> new UserNoFoundException("用戶存在，但非員工帳號"));
+		
+		return userAdmin;
 	}
 }
