@@ -13,7 +13,7 @@ import com.github.lianick.service.AuthService;
 import com.github.lianick.service.RefreshTokenService;
 import com.github.lianick.service.UserService;
 import com.github.lianick.util.JwtUtil;
-import com.github.lianick.util.SecurityUtils;
+import com.github.lianick.util.SecurityUtil;
 
 @Service
 @Transactional				// 確保 完整性 
@@ -61,7 +61,7 @@ public class AuthServiceImpl implements AuthService{
 	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 	    String currentUsername = authentication.getName(); // JWT 中解析出來的帳號
 	    */
-		String currentUsername = SecurityUtils.getCurrentUsername();
+		String currentUsername = SecurityUtil.getCurrentUsername();
 		
 		refreshTokenService.deleteRefreshToken(currentUsername);
 	}

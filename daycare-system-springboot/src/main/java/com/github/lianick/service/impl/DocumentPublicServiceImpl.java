@@ -35,7 +35,7 @@ import com.github.lianick.repository.UserPublicRepository;
 import com.github.lianick.repository.UsersRepository;
 import com.github.lianick.service.DocumentPublicService;
 import com.github.lianick.util.DocumentUtil;
-import com.github.lianick.util.SecurityUtils;
+import com.github.lianick.util.SecurityUtil;
 
 @Service
 @Transactional				// 確保 完整性 
@@ -63,7 +63,7 @@ public class DocumentPublicServiceImpl implements DocumentPublicService{
 	@PreAuthorize("hasAuthority('ROLE_PUBLIC')")
 	public List<DocumentPublicDTO> findAllDocByPublic() {
 		// 0. 取得 使用方法 的 使用者權限
-		String currentUsername = SecurityUtils.getCurrentUsername();
+		String currentUsername = SecurityUtil.getCurrentUsername();
 		Users tableUser = usersRepository.findByAccount(currentUsername)
 		        .orElseThrow(() -> new UserNoFoundException("帳號不存在或已被刪除"));
 		
@@ -107,7 +107,7 @@ public class DocumentPublicServiceImpl implements DocumentPublicService{
 	@PreAuthorize("hasAuthority('ROLE_PUBLIC')")
 	public DocumentPublicDTO createDocumentByPublic(DocumentPublicCreateDTO documentPublicCreateDTO, MultipartFile file) {
 		// 0. 取得 使用方法 的 使用者權限
-		String currentUsername = SecurityUtils.getCurrentUsername();
+		String currentUsername = SecurityUtil.getCurrentUsername();
 		Users tableUser = usersRepository.findByAccount(currentUsername)
 		        .orElseThrow(() -> new UserNoFoundException("帳號不存在或已被刪除"));
 		
@@ -147,7 +147,7 @@ public class DocumentPublicServiceImpl implements DocumentPublicService{
 	@PreAuthorize("hasAuthority('ROLE_PUBLIC')")
 	public DocumentPublicDTO createDocumentByCase(DocumentPublicCreateDTO documentPublicCreateDTO, MultipartFile file) {
 		// 0. 取得 使用方法 的 使用者權限
-		String currentUsername = SecurityUtils.getCurrentUsername();
+		String currentUsername = SecurityUtil.getCurrentUsername();
 		Users tableUser = usersRepository.findByAccount(currentUsername)
 				.orElseThrow(() -> new UserNoFoundException("帳號不存在或已被刪除"));
 
@@ -195,7 +195,7 @@ public class DocumentPublicServiceImpl implements DocumentPublicService{
 	@PreAuthorize("hasAuthority('ROLE_PUBLIC')")
 	public DocumentPublicDTO documentLinkCase(DocumentPublicLinkDTO documentPublicLinkDTO) {
 		// 0. 取得 使用方法 的 使用者權限
-		String currentUsername = SecurityUtils.getCurrentUsername();
+		String currentUsername = SecurityUtil.getCurrentUsername();
 		Users tableUser = usersRepository.findByAccount(currentUsername)
 		        .orElseThrow(() -> new UserNoFoundException("帳號不存在或已被刪除"));
 		
@@ -258,7 +258,7 @@ public class DocumentPublicServiceImpl implements DocumentPublicService{
 	@PreAuthorize("hasAuthority('ROLE_PUBLIC')")
 	public void deleteDocument(DocumentPublicDeleteDTO documentPublicDeleteDTO) {
 		// 0. 取得 使用方法 的 使用者權限
-		String currentUsername = SecurityUtils.getCurrentUsername();
+		String currentUsername = SecurityUtil.getCurrentUsername();
 		Users tableUser = usersRepository.findByAccount(currentUsername)
 		        .orElseThrow(() -> new UserNoFoundException("帳號不存在或已被刪除"));
 		UserPublic userPublic = userPublicRepository.findByUsers(tableUser)

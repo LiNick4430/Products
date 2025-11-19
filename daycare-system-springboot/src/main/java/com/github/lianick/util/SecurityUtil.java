@@ -10,10 +10,10 @@ import io.jsonwebtoken.Claims;
  * 處理 Spring Security 上下文相關操作的工具類別。
  */
 @Component
-public class SecurityUtils {
+public class SecurityUtil {
 
 	// 防止外部實例化
-	private SecurityUtils() {}
+	private SecurityUtil() {}
 	
 	/**
      * 從當前的 SecurityContext 中獲取已認證的使用者帳號。

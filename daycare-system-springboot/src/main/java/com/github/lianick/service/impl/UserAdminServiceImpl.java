@@ -31,7 +31,7 @@ import com.github.lianick.repository.UsersRepository;
 import com.github.lianick.service.UserAdminService;
 import com.github.lianick.service.UserService;
 import com.github.lianick.util.PasswordSecurity;
-import com.github.lianick.util.SecurityUtils;
+import com.github.lianick.util.SecurityUtil;
 
 @Service
 @Transactional				// 確保 完整性 
@@ -62,7 +62,7 @@ public class UserAdminServiceImpl implements UserAdminService{
 	@PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")
 	public UserAdminDTO findUserAdmin() {
 		// 0. 從 JWT 獲取 username
-		String currentUsername = SecurityUtils.getCurrentUsername();
+		String currentUsername = SecurityUtil.getCurrentUsername();
 		
 		// 1. 找尋資料庫 對應的帳號
 		Users tableUser = usersRepository.findByAccount(currentUsername)
@@ -102,7 +102,7 @@ public class UserAdminServiceImpl implements UserAdminService{
 	@PreAuthorize("hasAuthority('ROLE_MANAGER')")
 	public UserAdminDTO createUserAdmin(UserAdminCreateDTO userAdminCreateDTO) {
 		// 0. 檢查 是否 自己帳號
-		String currentUsername = SecurityUtils.getCurrentUsername();
+		String currentUsername = SecurityUtil.getCurrentUsername();
 		if (currentUsername.equals(userAdminCreateDTO.getUsername())) {
 			throw new UserExistException("註冊失敗：無法通過此管理介面修改自己的帳號資料");
 		}
@@ -132,7 +132,7 @@ public class UserAdminServiceImpl implements UserAdminService{
 			throw new RoleFailureException("註冊失敗：角色 設定錯誤");
 		}
 		// 目前預設 可以創建 和自己 同權限的 帳號 (3L 可以建立 2L 或 3L)
-		if (SecurityUtils.getCurrentRoleNumber() < userAdminCreateDTO.getRoleNumber()) {
+		if (SecurityUtil.getCurrentRoleNumber() < userAdminCreateDTO.getRoleNumber()) {
 			throw new RoleFailureException("註冊失敗：角色 設定錯誤");
 		}
 		Organization organization = organizationRepository.findById(userAdminCreateDTO.getOrganizationId())
@@ -172,7 +172,7 @@ public class UserAdminServiceImpl implements UserAdminService{
 	@PreAuthorize("hasAuthority('ROLE_MANAGER')")
 	public UserAdminDTO updateUserAdmin(UserAdminUpdateDTO userAdminUpdateDTO) {
 		// 0. 檢查 是否 自己帳號
-		String currentUsername = SecurityUtils.getCurrentUsername();
+		String currentUsername = SecurityUtil.getCurrentUsername();
 		if (currentUsername.equals(userAdminUpdateDTO.getUsername())) {
 			throw new UserExistException("更新失敗：無法通過此管理介面修改自己的帳號資料");
 		}
@@ -186,7 +186,7 @@ public class UserAdminServiceImpl implements UserAdminService{
 				throw new RoleFailureException("更新失敗：角色 設定錯誤");
 			}
 			// 目前預設 可以創建 和自己 同權限的 帳號 (3L 可以建立 2L 或 3L)
-			if (SecurityUtils.getCurrentRoleNumber() < userAdminUpdateDTO.getNewRoleNumber()) {
+			if (SecurityUtil.getCurrentRoleNumber() < userAdminUpdateDTO.getNewRoleNumber()) {
 				throw new RoleFailureException("更新失敗：角色 設定錯誤");
 			}
 			role = roleRepository.findById(userAdminUpdateDTO.getNewRoleNumber())
@@ -230,7 +230,7 @@ public class UserAdminServiceImpl implements UserAdminService{
 	@PreAuthorize("hasAuthority('ROLE_MANAGER')")
 	public void deleteUserAdmin(UserDeleteDTO userDeleteDTO) {
 		// 0. 檢查 是否 自己帳號
-		String currentUsername = SecurityUtils.getCurrentUsername();
+		String currentUsername = SecurityUtil.getCurrentUsername();
 		if (currentUsername.equals(userDeleteDTO.getUsername())) {
 			throw new UserExistException("刪除失敗：無法通過此管理介面修改自己的帳號資料");
 		}

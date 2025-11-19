@@ -31,7 +31,7 @@ import com.github.lianick.repository.UsersRepository;
 import com.github.lianick.service.UserPublicService;
 import com.github.lianick.service.UserService;
 import com.github.lianick.util.DateValidationUtil;
-import com.github.lianick.util.SecurityUtils;
+import com.github.lianick.util.SecurityUtil;
 
 @Service
 @Transactional				// 確保 完整性 
@@ -56,7 +56,7 @@ public class UserPublicServiceImpl implements UserPublicService{
 	@PreAuthorize("hasAuthority('ROLE_PUBLIC')") 
 	public UserPublic findUserPublic() {
 		// 0. 從 JWT 獲取 username
-		String currentUsername = SecurityUtils.getCurrentUsername();
+		String currentUsername = SecurityUtil.getCurrentUsername();
 
 		// 1. 找尋資料庫 對應的帳號
 		Users tableUser = usersRepository.findByAccount(currentUsername)
@@ -118,7 +118,7 @@ public class UserPublicServiceImpl implements UserPublicService{
 	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 	    String currentUsername = authentication.getName(); // JWT 中解析出來的帳號
 	    */
-		String currentUsername = SecurityUtils.getCurrentUsername();
+		String currentUsername = SecurityUtil.getCurrentUsername();
 		
 		// 0. 檢查數值完整性
 		if (userPublicCreateDTO.getName() == null || userPublicCreateDTO.getName().isBlank() || 
@@ -179,7 +179,7 @@ public class UserPublicServiceImpl implements UserPublicService{
 	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 	    String currentUsername = authentication.getName(); // JWT 中解析出來的帳號
 	    */
-		String currentUsername = SecurityUtils.getCurrentUsername();
+		String currentUsername = SecurityUtil.getCurrentUsername();
 		
 		// 0. 檢查數值完整性
 		if (userPublicUpdateDTO.getPassword() == null || userPublicUpdateDTO.getPassword().isBlank()) {
@@ -215,7 +215,7 @@ public class UserPublicServiceImpl implements UserPublicService{
 	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 	    String currentUsername = authentication.getName(); // JWT 中解析出來的帳號
 	    */
-		String currentUsername = SecurityUtils.getCurrentUsername();
+		String currentUsername = SecurityUtil.getCurrentUsername();
 		
 		// 1. 找尋資料庫 對應的帳號
 		Users tableUser = usersRepository.findByAccount(currentUsername)
@@ -255,7 +255,7 @@ public class UserPublicServiceImpl implements UserPublicService{
 	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 	    String currentUsername = authentication.getName(); // JWT 中解析出來的帳號
 	    */
-		String currentUsername = SecurityUtils.getCurrentUsername();
+		String currentUsername = SecurityUtil.getCurrentUsername();
 		
 		final LocalDateTime deleteTime = LocalDateTime.now();
 		final String deleteSuffix = "_DEL_" + deleteTime.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS"));

@@ -30,7 +30,7 @@ import com.github.lianick.repository.UserAdminRepository;
 import com.github.lianick.repository.UsersRepository;
 import com.github.lianick.service.OrganizationService;
 import com.github.lianick.service.UserService;
-import com.github.lianick.util.SecurityUtils;
+import com.github.lianick.util.SecurityUtil;
 
 @Service
 @Transactional				// 確保 完整性 
@@ -129,7 +129,7 @@ public class OrganizationServiceImpl implements OrganizationService{
 	@PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")
 	public OrganizationDTO updateOrganization(OrganizationUpdateDTO organizationUpdateDTO) {
 		// 0. 判定 是否有權限控制 該機構
-		String currentUsername = SecurityUtils.getCurrentUsername();
+		String currentUsername = SecurityUtil.getCurrentUsername();
 		Users tableUser = usersRepository.findByAccount(currentUsername)
 				.orElseThrow(() -> new UserNoFoundException("查無使用者"));
 		
@@ -200,7 +200,7 @@ public class OrganizationServiceImpl implements OrganizationService{
 	@PreAuthorize("hasAuthority('ROLE_MANAGER')") 
 	public void deleteOrganization(OrganizationDeleteDTO organizationDeleteDTO) {
 		// 1. 檢查是否本人
-		String currentName = SecurityUtils.getCurrentUsername();
+		String currentName = SecurityUtil.getCurrentUsername();
 		if (!currentName.equals(organizationDeleteDTO.getUsername())) {
 			throw new AccessDeniedException("操作身份錯誤，您無權以該帳號執行此操作");
 		}
