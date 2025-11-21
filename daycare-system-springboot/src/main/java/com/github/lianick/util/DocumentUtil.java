@@ -148,6 +148,7 @@ public class DocumentUtil {
 			// 檢查 Resource 是否真的存在且可讀取
 			if (resource.exists() || resource.isReadable()) {
 				
+				// 取得檔案大小
 				Long contentLenth = resource.contentLength();
 				
 				DocumentInfo documentInfo = new DocumentInfo();

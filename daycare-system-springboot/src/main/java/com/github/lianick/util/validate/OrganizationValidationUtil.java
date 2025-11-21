@@ -10,7 +10,6 @@ import com.github.lianick.exception.OrganizationFailureException;
 import com.github.lianick.exception.ValueMissException;
 import com.github.lianick.model.dto.organization.OrganizationCreateDTO;
 import com.github.lianick.model.dto.organization.OrganizationDocumentDTO;
-import com.github.lianick.model.dto.organization.OrganizationUpdateDTO;
 import com.github.lianick.model.eneity.Users;
 import com.github.lianick.repository.OrganizationRepository;
 

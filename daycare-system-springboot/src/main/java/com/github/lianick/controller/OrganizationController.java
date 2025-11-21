@@ -1,14 +1,9 @@
 package com.github.lianick.controller;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -28,19 +23,20 @@ import com.github.lianick.model.dto.organization.OrganizationDocumentDTO;
 import com.github.lianick.model.dto.organization.OrganizationFindDTO;
 import com.github.lianick.model.dto.organization.OrganizationUpdateDTO;
 import com.github.lianick.response.ApiResponse;
+import com.github.lianick.response.DownloadResponse;
 import com.github.lianick.service.OrganizationService;
 import com.github.lianick.util.JsonUtil;
 
 /**
  * OrganizationController
  * Request Mapping: "/organization"
- * POST	"/find", "/find/"				尋找 特定機構資料			"/organization/find/"			PUBLIC
- * POST	"/download/doc/", "/download/doc/"	下載 特定機構附件		"/organization/download/doc/"	AUTHENTICATED
- * POST	"/create", "/create/"			主管 建立 新的機構		"/organization/create/"			AUTHENTICATED
- * POST	"/upload/doc", "/upload/doc/"	主管/員工 上傳 機構附件 	"/organization/upload/doc/"		AUTHENTICATED
- * POST	"/update", "/update/"			主管/員工 更新 機構資料	"/organization/update/"			AUTHENTICATED
- * DELETE	"/delete/doc", "/delete/doc/"	主管 刪除 機構附件 	"/organization/delete/doc/"		AUTHENTICATED
- * DELETE	"/delete", "/delete/"		主管 刪除 機構資料		"/organization/delete/"			AUTHENTICATED
+ * POST	"/find", "/find/"					尋找 特定機構資料			"/organization/find/"			PUBLIC
+ * POST	"/download/doc/", "/download/doc/"	下載 特定機構附件			"/organization/download/doc/"	AUTHENTICATED
+ * POST	"/create", "/create/"				主管 建立 新的機構		"/organization/create/"			AUTHENTICATED
+ * POST	"/upload/doc", "/upload/doc/"		主管/員工 上傳 機構附件 	"/organization/upload/doc/"		AUTHENTICATED
+ * POST	"/update", "/update/"				主管/員工 更新 機構資料	"/organization/update/"			AUTHENTICATED
+ * DELETE	"/delete/doc", "/delete/doc/"	主管 刪除 機構附件 		"/organization/delete/doc/"		AUTHENTICATED
+ * DELETE	"/delete", "/delete/"			主管 刪除 機構資料		"/organization/delete/"			AUTHENTICATED
 
  * */
 
@@ -63,29 +59,11 @@ public class OrganizationController {
 	
 	@PostMapping(value = {"/download/doc/", "/download/doc"})
 	public ResponseEntity<Resource> download(@RequestBody OrganizationDocumentDTO organizationDocumentDTO) {
-		
 		// 1. 獲取所有下載所需資訊
 		DownloadDTO downloadDTO = organizationService.downloadDocument(organizationDocumentDTO);
 		
-		// 2. 檔案名稱：處理編碼以支援中文檔名
-		String encodedFileName = null;
-		try {
-			encodedFileName = URLEncoder.encode(downloadDTO.getName(), StandardCharsets.UTF_8.toString()).replace("+", "%20");
-		} catch (UnsupportedEncodingException e) {
-			// 如果編碼失敗，回退到一個安全的、非中文的檔名
-            encodedFileName = "downloaded_file";
-		}
-		
-		// 3. 構建 Content-Disposition 標頭 (指示瀏覽器強制下載)
-        // 格式: attachment; filename="encoded-name.ext"
-		String headerValue = "attachment; filename=\"" + encodedFileName + "\"";
-		
-		// 4. 構建 ResponseEntity
-		return ResponseEntity.ok()
-				.contentType(MediaType.parseMediaType(downloadDTO.getContentType()))
-				.contentLength(downloadDTO.getContentLength())
-				.header(HttpHeaders.CONTENT_DISPOSITION, headerValue)
-				.body(downloadDTO.getResource());
+		// 2. 構建 DownloadResponse
+		return DownloadResponse.create(downloadDTO);
 	}
 	
 	@PostMapping(value = {"/create", "/create/"})
