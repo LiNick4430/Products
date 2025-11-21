@@ -1,6 +1,7 @@
 package com.github.lianick.util;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -8,7 +9,13 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
+import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -26,9 +33,70 @@ import com.github.lianick.model.enums.EntityType;
 
 @Component
 public class DocumentUtil {
-	
+
+	private static final Tika tika = new Tika();
+
 	@Autowired
 	private FileProperties fileProperties;
+
+	// 使用 tika 分辨 上傳檔案 的 格式方法 
+	private String validateMimeType(MultipartFile file) {
+		// 限制 上傳檔案大小
+		final long MAX_SIZE_BYTES = 10 * 1024 * 1024; // 10MB
+
+		if (file.getSize() > MAX_SIZE_BYTES) {
+			throw new FileStorageException("檔案過大，請勿超過 10MB");
+		}
+
+		// 檔案格式
+		String detectedType;
+		// 設定 Tika 偵測的最大時限，例如 5 秒
+		final long TIKA_TIMEOUT_SECONDS = 5;
+
+		// 建立 單執行緒 來執行 Tika 偵測
+		ExecutorService executor = Executors.newSingleThreadExecutor();
+
+		// Tika 偵測 定義 為一個可執行的任務
+		Future<String> future = executor.submit(() -> {
+			try (InputStream is = file.getInputStream()) {
+				// Tika 偵測操作
+				return tika.detect(is);
+			} catch (IOException e) {
+				
+				throw new FileStorageException("Tika 偵測過程中發生 IO 錯誤", e);
+			}
+		});
+
+		try {
+			// 取得結果，如果超過 5 秒則拋出 TimeoutException
+			detectedType = future.get(TIKA_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+			
+		} catch (TimeoutException e) {
+			// Tika 偵測超時！必須中斷該執行緒
+			future.cancel(true);
+			throw new FileStorageException("檔案格式偵測超時 (" + TIKA_TIMEOUT_SECONDS + "秒)。", e);
+			
+		} catch (InterruptedException | java.util.concurrent.ExecutionException e) {
+			// 處理執行中斷或其他執行錯誤（如上面 Callable 拋出的 RuntimeException）
+			throw new FileStorageException("檔案格式偵測失敗", e);
+			
+		} finally {
+			// 無論成功或失敗，都必須關閉 ExecutorService
+			executor.shutdownNow();
+		}
+
+		List<String> allowed = List.of(
+				"image/jpeg",
+				"image/png",
+				"application/pdf"
+				);
+
+		if (!allowed.contains(detectedType)) {
+			throw new FileStorageException("檔案錯誤：上傳檔案格式不支援");
+		}
+
+		return detectedType;
+	}
 
 	/**
 	 * 附件上傳
@@ -36,22 +104,19 @@ public class DocumentUtil {
 	 * @param entityType -> 實體類型，使用 ENUM 確保型別安全
 	 */
 	public DocumentDTO upload(Long entityId, EntityType entityType, MultipartFile file, Boolean isAdmin) {
-		
+
 		// 檢查檔案是否存在
 		if (file.isEmpty()) {
 			throw new FileStorageException("檔案錯誤：上傳檔案不存在");
 		}
-		
+
 		// 檢查 格式 是否 PDF/PNG/JPG
-		String contentType = file.getContentType();
-		if (!List.of("image/jpeg", "image/png", "application/pdf").contains(contentType)) {
-			throw new FileStorageException("檔案錯誤：上傳檔案格式錯誤");
-		}
-		
+		validateMimeType(file);
+
 		String idString = String.valueOf(entityId);
 		String entityString = entityType.toString().toLowerCase();
 		String folderString = isAdmin ? "admin" : "public";
-		
+
 		// 檔案儲存
 		// 組合路徑 (基本 + 帳號ID)
 		Path uploadPath = Paths.get(
@@ -62,95 +127,95 @@ public class DocumentUtil {
 				);
 		Path targetLocation = null;
 		String absolutePathToStore = null;
-		
+
 		// 建立 唯一的 檔案名稱
 		String orignalFileName = file.getOriginalFilename();
-		
+
 		// 清理檔名: 提取最單純的檔名部分，移除任何惡意的路徑遍歷資訊 (../../) 
 		// 範例 惡意檔名: ../../../../windows/system32/cmd.exe -> cmd.exe
 		// 範例 正常檔名: 公告文件.pdf -> 公告文件.pdf
 		String safeFileName = Paths.get(orignalFileName).getFileName().toString();
-		
+
 		// 保留所有字母、數字、標點符號，以及所有非控制字符，替換掉其他所有字符
 		// \\p{L}	任何 Unicode 字母（包含中文、日文、韓文等所有文字）。
 		// \\p{Nd}	任何 Unicode 數字。
 		// \\p{Punct}	任何 Unicode 標點符號（例如逗號、句號）。
 		// [^...]	替換掉不在這個集合內的所有字符。
 		String cleanedFileName = safeFileName.replaceAll("[^\\p{L}\\p{Nd}\\p{Punct}_\\- ]", "_");
-		
+
 		// 組合最終檔名
 		String storedFileName = UUID.randomUUID().toString() + "_" + cleanedFileName;
-		
+
 		// I/O 區塊
 		try {
 			// 確認 目標路徑存在(如果不存在，則會自動創建)
 			Files.createDirectories(uploadPath);
-			
+
 			// 組合最終目標
 			targetLocation = uploadPath.resolve(storedFileName);
-			
+
 			// 儲存檔案
 			Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
-			
+
 			// 將相對路徑轉換為完整的絕對路徑並標準化 (normalize)
 			absolutePathToStore = targetLocation.toAbsolutePath().normalize().toString();
-			
+
 		} catch (IOException e) {
 			throw new FileStorageException("檔案錯誤：儲存失敗，請檢查伺服器路徑權限。", e);
 			// TODO 檔案錯誤：儲存失敗，請檢查伺服器路徑權限或者儲存空間。
 		}
-		
+
 		DocumentDTO document = new DocumentDTO();
 		document.setOrignalFileName(cleanedFileName);
 		document.setTargetLocation(absolutePathToStore);
-		
+
 		return document;
 	}
-	
+
 	/**
 	 * 附件下載
 	 * */
 	public DocumentInfo download(String pathString) {
-		
+
 		// 1. 路徑的 安全處理
-		
+
 		// 取得檔案儲存的根目錄，並標準化為絕對路徑 
 		// 範例 file.upload-path = uploads/ 			-> /data/uploads/
 		// 範例 file.upload-path = /data/uploads/ 	-> /data/uploads/
-	    Path uploadRootPath = Paths.get(fileProperties.getUploadPath()).toAbsolutePath().normalize();
-		
+		Path uploadRootPath = Paths.get(fileProperties.getUploadPath()).toAbsolutePath().normalize();
+
 		// 將字串路徑轉換為 Path 物件
 		Path targetLocation = Paths.get(pathString);
-		
+
 		// 標準化目標路徑
-	    Path fullTargetPath = targetLocation.toAbsolutePath().normalize();
-	    String contentType;
-	    
-	    try {
-	    	// 使用 Files.probeContentType 根據副檔名猜測 MIME Type
+		Path fullTargetPath = targetLocation.toAbsolutePath().normalize();
+		String contentType;
+
+		try {
+			// 使用 Files.probeContentType 根據副檔名猜測 MIME Type
 			contentType = Files.probeContentType(fullTargetPath);
 		} catch (Exception e) {
 			throw new FileStorageException("檔案錯誤：找不到檔案或無法讀取。");
 		}
-	    
-	    // 檢查 fullTargetPath 是否以 uploadRootPath 開頭
-	    if (!fullTargetPath.startsWith(uploadRootPath)) {
-	        throw new FileStorageException("檔案錯誤：檔案不存在");
-	        // TODO LOG 檔案錯誤：不允許存取指定儲存根目錄外的檔案。
-	    }
-		
-	    // 2. 讀取檔案 並放入 Resource
+
+		// 檢查 fullTargetPath 是否以 uploadRootPath 開頭
+		if (!fullTargetPath.startsWith(uploadRootPath)) {
+			throw new FileStorageException("檔案錯誤：檔案不存在");
+			// TODO LOG 檔案錯誤：不允許存取指定儲存根目錄外的檔案。
+		}
+
+		// 2. 讀取檔案 並放入 Resource
 		try {
 			// 建立 UrlResource 實例：必須使用 Path.toUri() 確保路徑格式正確
-	        // Path.toUri() 會將本地路徑轉換為 file:/// 格式，UrlResource 才能讀取
+			// Path.toUri() 會將本地路徑轉換為 file:/// 格式，UrlResource 才能讀取
 			Resource resource = new UrlResource(fullTargetPath.toUri());
-			
+
 			// 檢查 Resource 是否真的存在且可讀取
 			if (resource.exists() || resource.isReadable()) {
-				
+
 				// 取得檔案大小
 				Long contentLenth = resource.contentLength();
-				
+
 				DocumentInfo documentInfo = new DocumentInfo();
 				documentInfo.setResource(resource);
 				documentInfo.setContentType(contentType);
@@ -159,9 +224,9 @@ public class DocumentUtil {
 				return documentInfo;
 			} else {
 				// 檔案不存在或無法讀取時，拋出業務異常
-	            throw new FileStorageException("檔案錯誤：找不到檔案或無法讀取。");
+				throw new FileStorageException("檔案錯誤：找不到檔案或無法讀取。");
 			}
-			
+
 		} catch (IOException e) {	// 捕獲所有與路徑格式和檔案讀取相關的錯誤
 			String errorMessage;
 
@@ -176,42 +241,42 @@ public class DocumentUtil {
 			throw new FileStorageException(errorMessage, e);
 		} 
 	}
-	
+
 	/**
 	 * 附件刪除
 	 * */
 	public void delete(String pathString) {
-		
+
 		// 路徑的 安全處理
-		
+
 		// 取得檔案儲存的根目錄，並標準化為絕對路徑 
 		// 範例 file.upload-path = uploads/ 			-> /data/uploads/
 		// 範例 file.upload-path = /data/uploads/ 	-> /data/uploads/
-	    Path uploadRootPath = Paths.get(fileProperties.getUploadPath()).toAbsolutePath().normalize();
-		
+		Path uploadRootPath = Paths.get(fileProperties.getUploadPath()).toAbsolutePath().normalize();
+
 		// 將字串路徑轉換為 Path 物件
 		Path targetLocation = Paths.get(pathString);
-		
+
 		// 標準化目標路徑
-	    Path fullTargetPath = targetLocation.toAbsolutePath().normalize();
-	    
-	    // 檢查 fullTargetPath 是否以 uploadRootPath 開頭
-	    if (!fullTargetPath.startsWith(uploadRootPath)) {
-	        throw new FileStorageException("檔案錯誤：檔案不存在");
-	        // TODO LOG 檔案錯誤：不允許存取指定儲存根目錄外的檔案。
-	    }
-		
+		Path fullTargetPath = targetLocation.toAbsolutePath().normalize();
+
+		// 檢查 fullTargetPath 是否以 uploadRootPath 開頭
+		if (!fullTargetPath.startsWith(uploadRootPath)) {
+			throw new FileStorageException("檔案錯誤：檔案不存在");
+			// TODO LOG 檔案錯誤：不允許存取指定儲存根目錄外的檔案。
+		}
+
 		try {
-			
+
 			Boolean isDeleted = Files.deleteIfExists(fullTargetPath);
-			
+
 			if (!isDeleted) {
 				//TODO  刪除不存在物件 的 LOG
 			}
-			
+
 		} catch (IOException e) {
 			throw new FileStorageException("檔案錯誤：刪除失敗", e);
 		}
 	}
-	
+
 }

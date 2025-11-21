@@ -40,6 +40,13 @@
 		    <version>3.2.4</version>
 		</dependency>
 		
+		<!-- https://mvnrepository.com/artifact/org.apache.tika/tika-core -->
+		<dependency>
+		    <groupId>org.apache.tika</groupId>
+		    <artifactId>tika-core</artifactId>
+		    <version>2.9.2</version>
+		</dependency>
+				
 		<!-- 用於 Spring Boot 發送電子郵件 -->
 		<dependency>
 	        <groupId>org.springframework.boot</groupId>
