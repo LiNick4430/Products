@@ -1,4 +1,4 @@
-package com.github.lianick.model.dto.organization;
+package com.github.lianick.model.dto.announcement;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,10 +9,7 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrganizationDocumentDTO {
+public class AnnouncementDeleteDTO {
 
-	private Long id;				// 機構ID
-	
-	private Long documentId;		// 附件ID
-	
+	private Long id;						// 公告 ID
 }

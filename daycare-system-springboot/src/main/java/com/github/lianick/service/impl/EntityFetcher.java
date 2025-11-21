@@ -1,5 +1,7 @@
 package com.github.lianick.service.impl;
 
+import java.time.LocalDateTime;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -175,6 +177,15 @@ public class EntityFetcher {
 	public Announcements getAnnouncementsById(Long id) {
 		Announcements announcements = announcementsRepository.findById(id)
 				.orElseThrow(() -> new AnnouncementFailureException("查無公告"));
+		return announcements;
+	}
+	
+	/**
+	 * 使用 AnnouncementsId 和 now 獲取 Announcements
+	 * */
+	public Announcements getAnnouncementsByIdAndNow(Long id, LocalDateTime now) {
+		Announcements announcements = announcementsRepository.findAllById(id, now)
+				.orElseThrow(() -> new AnnouncementFailureException("公告已過期"));
 		return announcements;
 	}
 	

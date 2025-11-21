@@ -21,7 +21,9 @@ public interface DocumentAdminService {
 	DocumentAdmin uploadByOrganization(Long organizationId, MultipartFile file);
 	DocumentAdmin uploadByAnnouncement(Long announcementId, MultipartFile file);
 	
-	// 下載附件
+	/** 下載附件 <p>
+	 * **注意** 需從 資料庫取出 fileName 補上
+	 */
 	DownloadDTO download(String pathString);
 	
 	// 刪除附件

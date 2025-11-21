@@ -110,7 +110,7 @@ public class OrganizationServiceImpl implements OrganizationService{
 		// 0. 檢查資料完整性
 		organizationValidationUtil.validateDocument(organizationDocumentDTO, null, false);
 		Long organizationId = organizationDocumentDTO.getId();
-		Long documentId = organizationDocumentDTO.getDoucmnetId();
+		Long documentId = organizationDocumentDTO.getDocumentId();
 		
 		// 1. 取出資源
 		DocumentAdmin documentAdmin = entityFetcher.getDocumentAdminByIdAndOrganizationId(documentId, organizationId);
@@ -222,15 +222,15 @@ public class OrganizationServiceImpl implements OrganizationService{
 	public void deleteOrganizationDocument(OrganizationDocumentDTO organizationDocumentDTO) {
 		// 0. 檢查資料完整性
 		organizationValidationUtil.validateDocument(organizationDocumentDTO, null, false);
-		Long organizationId = organizationDocumentDTO.getId();
-		Long documentId = organizationDocumentDTO.getDoucmnetId();
+		Organization organization = entityFetcher.getOrganizationById(organizationDocumentDTO.getId());
+		DocumentAdmin documentAdmin = entityFetcher.getDocumentAdminByIdAndOrganizationId(organizationDocumentDTO.getDocumentId(), organization.getOrganizationId());
 		
 		// 1. 判定 是否有權限控制 該機構
 		Users users = userSecurityUtil.getCurrentUserEntity();
-		organizationValidationUtil.validateOrganizationPermission(users, organizationId);
+		organizationValidationUtil.validateOrganizationPermission(users, organization.getOrganizationId());
 		
 		// 2. I/O 處理
-		documentAdminService.deleteByOrganization(organizationId, documentId);
+		documentAdminService.deleteByOrganization(organization.getOrganizationId(), documentAdmin.getAdminDocId());
 	}
 	
 	@Override

@@ -5,16 +5,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.github.lianick.converter.AnnouncementToAnnouncementIdConveter;
 import com.github.lianick.converter.CaseSetToCaseNumberListConverter;
 import com.github.lianick.converter.OrganizationToOrganizationIdConveter;
 import com.github.lianick.converter.OrganizationToOrganizationNameConveter;
 import com.github.lianick.converter.RoleNumberToRoleConveter;
 import com.github.lianick.converter.UsersPublicToUseIdConveter;
 import com.github.lianick.converter.UsersToUsernameConveter;
+import com.github.lianick.model.dto.announcement.AnnouncementDTO;
 import com.github.lianick.model.dto.child.ChildCreateDTO;
 import com.github.lianick.model.dto.child.ChildDTO;
 import com.github.lianick.model.dto.child.ChildUpdateDTO;
 import com.github.lianick.model.dto.clazz.ClassDTO;
+import com.github.lianick.model.dto.documentAdmin.DocumentAnnouncementDTO;
 import com.github.lianick.model.dto.documentAdmin.DocumentOrganizationDTO;
 import com.github.lianick.model.dto.documentPublic.DocumentPublicDTO;
 import com.github.lianick.model.dto.organization.OrganizationDTO;
@@ -28,6 +31,7 @@ import com.github.lianick.model.dto.userAdmin.UserAdminDTO;
 import com.github.lianick.model.dto.userPublic.UserPublicDTO;
 import com.github.lianick.model.dto.userPublic.UserPublicUpdateDTO;
 import com.github.lianick.model.dto.userPublic.UserPublicCreateDTO;
+import com.github.lianick.model.eneity.Announcements;
 import com.github.lianick.model.eneity.ChildInfo;
 import com.github.lianick.model.eneity.Classes;
 import com.github.lianick.model.eneity.DocumentAdmin;
@@ -58,6 +62,9 @@ public class ModelMapperConfig {
 	
 	@Autowired
 	private CaseSetToCaseNumberListConverter caseSetToCaseNumberListConverter;
+	
+	@Autowired
+	private AnnouncementToAnnouncementIdConveter announcementToAnnouncementIdConveter;
 	
 	// 主要 邏輯
 	@Bean	// @Bean 預設 Public
@@ -144,7 +151,16 @@ public class ModelMapperConfig {
 					.map(Classes::getOrganization, ClassDTO::setOrganizationName);
 		});
 		
-		// DocumentPublic
+		// Announcement 相關
+		modelMapper.typeMap(Announcements.class, AnnouncementDTO.class).addMappings(mapper -> {
+			mapper.map(Announcements::getAnnouncementId, AnnouncementDTO::setId);
+			mapper.using(organizationToOrganizationIdConveter)
+				.map(Announcements::getOrganization, AnnouncementDTO::setOrganizationId);
+			mapper.using(organizationToOrganizationNameConveter)
+				.map(Announcements::getOrganization, AnnouncementDTO::setOrganizationName);
+		});
+		
+		// DocumentPublic 相關
 		modelMapper.typeMap(DocumentPublic.class, DocumentPublicDTO.class).addMappings(mapper -> {
 			mapper.map(DocumentPublic::getPublicDocId, DocumentPublicDTO::setId);
 			mapper.using(usersPublicToUseIdConveter)
@@ -153,13 +169,20 @@ public class ModelMapperConfig {
 				.map(DocumentPublic::getCases, DocumentPublicDTO::setCaseNumbers);
 		});
 		
-		// DocumentAdmin
+		// DocumentAdmin 相關
 		modelMapper.typeMap(DocumentAdmin.class, DocumentOrganizationDTO.class).addMappings(mapper -> {
 			mapper.map(DocumentAdmin::getAdminDocId, DocumentOrganizationDTO::setId);
 			mapper.map(DocumentAdmin::getFileName, DocumentOrganizationDTO::setName);
 			mapper.map(DocumentAdmin::getDocType, DocumentOrganizationDTO::setType);
 			mapper.using(organizationToOrganizationIdConveter)
-					.map(DocumentAdmin::getOrganization, DocumentOrganizationDTO::setOrganizationId);
+				.map(DocumentAdmin::getOrganization, DocumentOrganizationDTO::setOrganizationId);
+		});
+		modelMapper.typeMap(DocumentAdmin.class, DocumentAnnouncementDTO.class).addMappings(mapper -> {
+			mapper.map(DocumentAdmin::getAdminDocId, DocumentAnnouncementDTO::setId);
+			mapper.map(DocumentAdmin::getFileName, DocumentAnnouncementDTO::setName);
+			mapper.map(DocumentAdmin::getDocType, DocumentAnnouncementDTO::setType);
+			mapper.using(announcementToAnnouncementIdConveter)
+				.map(DocumentAdmin::getAnnouncements, DocumentAnnouncementDTO::setAnnouncementId);
 		});
 		
 		// ------------------------------------------------------------------------------------
@@ -169,7 +192,7 @@ public class ModelMapperConfig {
 			mapper.map(UserRegisterDTO::getUsername, Users::setAccount);
 			// 使用自定義 Converter 進行映射
 			mapper.using(roleTypeToRoleConveter)
-					.map(UserRegisterDTO::getRoleNumber, Users::setRole);
+				.map(UserRegisterDTO::getRoleNumber, Users::setRole);
 		});
 		
 		// ------------------------------------------------------------------------------------

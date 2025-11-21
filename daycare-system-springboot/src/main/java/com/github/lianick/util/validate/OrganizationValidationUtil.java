@@ -57,7 +57,7 @@ public class OrganizationValidationUtil {
 				throw new FileStorageException("檔案錯誤：上傳檔案不存在");
 			}
 		} else {
-			if (organizationDocumentDTO.getId() == null || organizationDocumentDTO.getDoucmnetId() == null) {
+			if (organizationDocumentDTO.getId() == null || organizationDocumentDTO.getDocumentId() == null) {
 				throw new ValueMissException("缺少必要的機構上傳資料 (機構ID, 附件ID)");
 			}
 		}
