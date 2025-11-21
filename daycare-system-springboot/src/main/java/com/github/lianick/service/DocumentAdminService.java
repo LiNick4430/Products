@@ -29,5 +29,4 @@ public interface DocumentAdminService {
 	// 刪除附件
 	void deleteByOrganization(Long organizationId, Long documentAdminId);
 	void deleteByAnnouncement(Long announcementId, Long documentAdminId);
-	
 }

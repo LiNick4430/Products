@@ -67,9 +67,13 @@ public class OrganizationValidationUtil {
 	 * Users 的 Organization 權限 的問題
 	 * */
 	public void validateOrganizationPermission(Users users, Long organizationId) {
-		if (organizationId == null) {
-			throw new ValueMissException("缺少必要的判斷資料 (機構ID)");
-		}
+		// 基本檢查
+	    if (organizationId == null) {
+	        throw new ValueMissException("缺少必要的判斷資料 (機構ID)。");
+	    }
+	    if (users == null || users.getRole() == null) {
+	        throw new AccessDeniedException("權限不足，無法獲取用戶角色資訊。");
+	    }
 		
 		// 判斷是否為主管(最高權限)（角色名稱 = "ROLE_MANAGER"）
 		boolean isManager = users.getRole().getName().equals("ROLE_MANAGER");
@@ -81,7 +85,7 @@ public class OrganizationValidationUtil {
 				throw new AccessDeniedException("權限不足，您非管理層成員。");
 			}
 			// 員工帳號 但 所屬機構 不符 沒有對應權限
-			if (users.getAdminInfo().getOrganization().getOrganizationId() != organizationId) {
+			if (!users.getAdminInfo().getOrganization().getOrganizationId().equals(organizationId)) {
 				throw new AccessDeniedException("操作身份錯誤，您無權修改非所屬機構資料");
 			}
 		}
