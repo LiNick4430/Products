@@ -110,7 +110,7 @@ public class DocumentUtil {
 	/**
 	 * 附件下載
 	 * */
-	public Resource download(String pathString) {
+	public DocumentInfo download(String pathString) {
 		
 		// 1. 路徑的 安全處理
 		
@@ -124,6 +124,14 @@ public class DocumentUtil {
 		
 		// 標準化目標路徑
 	    Path fullTargetPath = targetLocation.toAbsolutePath().normalize();
+	    String contentType;
+	    
+	    try {
+	    	// 使用 Files.probeContentType 根據副檔名猜測 MIME Type
+			contentType = Files.probeContentType(fullTargetPath);
+		} catch (Exception e) {
+			throw new FileStorageException("檔案錯誤：找不到檔案或無法讀取。");
+		}
 	    
 	    // 檢查 fullTargetPath 是否以 uploadRootPath 開頭
 	    if (!fullTargetPath.startsWith(uploadRootPath)) {
@@ -139,7 +147,15 @@ public class DocumentUtil {
 			
 			// 檢查 Resource 是否真的存在且可讀取
 			if (resource.exists() || resource.isReadable()) {
-				return resource;
+				
+				Long contentLenth = resource.contentLength();
+				
+				DocumentInfo documentInfo = new DocumentInfo();
+				documentInfo.setResource(resource);
+				documentInfo.setContentType(contentType);
+				documentInfo.setContentLength(contentLenth);
+
+				return documentInfo;
 			} else {
 				// 檔案不存在或無法讀取時，拋出業務異常
 	            throw new FileStorageException("檔案錯誤：找不到檔案或無法讀取。");

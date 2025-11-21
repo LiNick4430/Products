@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.github.lianick.exception.OrganizationFailureException;
+import com.github.lianick.model.dto.DownloadDTO;
 import com.github.lianick.model.dto.organization.OrganizationCreateDTO;
 import com.github.lianick.model.dto.organization.OrganizationDTO;
 import com.github.lianick.model.dto.organization.OrganizationDeleteDTO;
@@ -103,6 +104,24 @@ public class OrganizationServiceImpl implements OrganizationService{
 					.toList();
 	}
 
+	@Override
+	@PreAuthorize("isAuthenticated()")
+	public DownloadDTO downloadDocument(OrganizationDocumentDTO organizationDocumentDTO) {
+		// 0. 檢查資料完整性
+		organizationValidationUtil.validateDocument(organizationDocumentDTO, null, false);
+		Long organizationId = organizationDocumentDTO.getId();
+		Long documentId = organizationDocumentDTO.getDoucmnetId();
+		
+		// 1. 取出資源
+		DocumentAdmin documentAdmin = entityFetcher.getDocumentAdminByIdAndOrganizationId(documentId, organizationId);
+		
+		// 2. 製作 DTO
+		DownloadDTO downloadDTO = documentAdminService.download(documentAdmin.getStoragePath());
+		downloadDTO.setName(documentAdmin.getFileName());
+		
+		return downloadDTO;
+	}
+	
 	@Override
 	@PreAuthorize("hasAuthority('ROLE_MANAGER')") 
 	public OrganizationDTO createOrganization(OrganizationCreateDTO organizationCreateDTO) {

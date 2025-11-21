@@ -2,9 +2,9 @@ package com.github.lianick.service;
 
 import java.util.List;
 
-import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.github.lianick.model.dto.DownloadDTO;
 import com.github.lianick.model.eneity.DocumentAdmin;
 
 /**
@@ -22,7 +22,7 @@ public interface DocumentAdminService {
 	DocumentAdmin uploadByAnnouncement(Long announcementId, MultipartFile file);
 	
 	// 下載附件
-	Resource downloadFromAnnouncement(String pathString);
+	DownloadDTO download(String pathString);
 	
 	// 刪除附件
 	void deleteByOrganization(Long organizationId, Long documentAdminId);

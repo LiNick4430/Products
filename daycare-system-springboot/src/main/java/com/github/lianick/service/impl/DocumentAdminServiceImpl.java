@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,6 +13,7 @@ import com.github.lianick.exception.FileStorageException;
 import com.github.lianick.exception.OrganizationFailureException;
 import com.github.lianick.exception.ValueMissException;
 import com.github.lianick.model.dto.DocumentDTO;
+import com.github.lianick.model.dto.DownloadDTO;
 import com.github.lianick.model.eneity.Announcements;
 import com.github.lianick.model.eneity.DocumentAdmin;
 import com.github.lianick.model.eneity.Organization;
@@ -23,6 +23,7 @@ import com.github.lianick.repository.AnnouncementsRepository;
 import com.github.lianick.repository.DocumentAdminRepository;
 import com.github.lianick.repository.OrganizationRepository;
 import com.github.lianick.service.DocumentAdminService;
+import com.github.lianick.util.DocumentInfo;
 import com.github.lianick.util.DocumentUtil;
 
 /**
@@ -127,14 +128,22 @@ public class DocumentAdminServiceImpl implements DocumentAdminService{
 	}
 
 	@Override
-	public Resource downloadFromAnnouncement(String pathString) {
+	public DownloadDTO download(String pathString) {
 		// 1. 檢查 是否存在
 		if (pathString == null || pathString.isBlank()) {
 			throw new FileStorageException("檔案路徑無效");
 		}
 		
 		// 2. I/O 處理
-		return documentUtil.download(pathString);
+		DocumentInfo documentInfo = documentUtil.download(pathString);
+		
+		// 3. 轉換成 DTO
+		DownloadDTO downloadDTO = new DownloadDTO();
+		downloadDTO.setResource(documentInfo.getResource());
+		downloadDTO.setContentType(documentInfo.getContentType());
+		downloadDTO.setContentLength(documentInfo.getContentLength());
+		
+		return downloadDTO;
 	}
 
 	@Override
