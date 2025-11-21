@@ -15,6 +15,7 @@ import com.github.lianick.model.dto.child.ChildCreateDTO;
 import com.github.lianick.model.dto.child.ChildDTO;
 import com.github.lianick.model.dto.child.ChildUpdateDTO;
 import com.github.lianick.model.dto.clazz.ClassDTO;
+import com.github.lianick.model.dto.documentAdmin.DocumentOrganizationDTO;
 import com.github.lianick.model.dto.documentPublic.DocumentPublicDTO;
 import com.github.lianick.model.dto.organization.OrganizationDTO;
 import com.github.lianick.model.dto.user.UserForgetPasswordDTO;
@@ -29,6 +30,7 @@ import com.github.lianick.model.dto.userPublic.UserPublicUpdateDTO;
 import com.github.lianick.model.dto.userPublic.UserPublicCreateDTO;
 import com.github.lianick.model.eneity.ChildInfo;
 import com.github.lianick.model.eneity.Classes;
+import com.github.lianick.model.eneity.DocumentAdmin;
 import com.github.lianick.model.eneity.DocumentPublic;
 import com.github.lianick.model.eneity.Organization;
 import com.github.lianick.model.eneity.UserAdmin;
@@ -149,6 +151,15 @@ public class ModelMapperConfig {
 				.map(DocumentPublic::getUserPublic, DocumentPublicDTO::setUserId);
 			mapper.using(caseSetToCaseNumberListConverter)
 				.map(DocumentPublic::getCases, DocumentPublicDTO::setCaseNumbers);
+		});
+		
+		// DocumentAdmin
+		modelMapper.typeMap(DocumentAdmin.class, DocumentOrganizationDTO.class).addMappings(mapper -> {
+			mapper.map(DocumentAdmin::getAdminDocId, DocumentOrganizationDTO::setId);
+			mapper.map(DocumentAdmin::getFileName, DocumentOrganizationDTO::setName);
+			mapper.map(DocumentAdmin::getDocType, DocumentOrganizationDTO::setType);
+			mapper.using(organizationToOrganizationIdConveter)
+					.map(DocumentAdmin::getOrganization, DocumentOrganizationDTO::setOrganizationId);
 		});
 		
 		// ------------------------------------------------------------------------------------

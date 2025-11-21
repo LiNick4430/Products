@@ -95,7 +95,7 @@ public class DocumentAdminServiceImpl implements DocumentAdminService{
 		documentAdmin.setOrganization(organization);
 		documentAdmin.setDocType(DocumentType.ORGANIZATION);
 		
-		documentAdmin = documentAdminRepository.save(documentAdmin);
+		// documentAdmin = documentAdminRepository.save(documentAdmin);
 		
 		return documentAdmin;
 	}
@@ -121,7 +121,7 @@ public class DocumentAdminServiceImpl implements DocumentAdminService{
 		documentAdmin.setAnnouncements(announcements);
 		documentAdmin.setDocType(DocumentType.ANNOUNCEMENT);
 
-		documentAdmin = documentAdminRepository.save(documentAdmin);
+		// documentAdmin = documentAdminRepository.save(documentAdmin);
 
 		return documentAdmin;
 	}

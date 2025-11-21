@@ -11,11 +11,13 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.github.lianick.exception.OrganizationFailureException;
 import com.github.lianick.model.dto.organization.OrganizationCreateDTO;
 import com.github.lianick.model.dto.organization.OrganizationDTO;
 import com.github.lianick.model.dto.organization.OrganizationDeleteDTO;
+import com.github.lianick.model.dto.organization.OrganizationDocumentDTO;
 import com.github.lianick.model.dto.organization.OrganizationFindDTO;
 import com.github.lianick.model.dto.organization.OrganizationUpdateDTO;
 import com.github.lianick.model.eneity.Announcements;
@@ -25,6 +27,7 @@ import com.github.lianick.model.eneity.Regulations;
 import com.github.lianick.model.eneity.Users;
 import com.github.lianick.repository.OrganizationRepository;
 import com.github.lianick.repository.UserAdminRepository;
+import com.github.lianick.service.DocumentAdminService;
 import com.github.lianick.service.OrganizationService;
 import com.github.lianick.service.UserService;
 import com.github.lianick.util.SecurityUtil;
@@ -55,6 +58,9 @@ public class OrganizationServiceImpl implements OrganizationService{
 	
 	@Autowired
 	private EntityFetcher entityFetcher;
+	
+	@Autowired
+	private DocumentAdminService documentAdminService;
 	
 	@Override
 	public List<OrganizationDTO> findOrganization(OrganizationFindDTO organizationFindDTO) {
@@ -114,13 +120,37 @@ public class OrganizationServiceImpl implements OrganizationService{
 		
 		return organizationDTO;
 	}
+	
+	@Override
+	@PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")
+	public OrganizationDTO uploadOrganization(OrganizationDocumentDTO organizationDocumentDTO, MultipartFile file) {
+		// 0. 檢查資料完整性
+		organizationValidationUtil.validateDocument(organizationDocumentDTO, file, true);
+		Long organizationId = organizationDocumentDTO.getId();
+		
+		// 1. 判定 是否有權限控制 該機構
+		Users users = userSecurityUtil.getCurrentUserEntity();
+		organizationValidationUtil.validateOrganizationPermission(users, organizationId);
+		
+		// 2. I/O 處理
+		DocumentAdmin documentAdmin = documentAdminService.uploadByOrganization(organizationId, file);
+		
+		// 3. 儲存
+		Organization organization = entityFetcher.getOrganizationById(organizationId);
+		organization.getDocuments().add(documentAdmin);
+		
+		organization = organizationRepository.save(organization);
+		
+		// 4. Entity -> DTO
+		return modelMapper.map(organization, OrganizationDTO.class);
+	}
 
 	@Override
 	@PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")
 	public OrganizationDTO updateOrganization(OrganizationUpdateDTO organizationUpdateDTO) {
 		// 0. 判定 是否有權限控制 該機構
 		Users tableUser = userSecurityUtil.getCurrentUserEntity();
-		organizationValidationUtil.validateUpdate(tableUser, organizationUpdateDTO);
+		organizationValidationUtil.validateOrganizationPermission(tableUser, organizationUpdateDTO.getId());
 		
 		// 1. 取出機構基本資料
 		Long currentId = organizationUpdateDTO.getId();
@@ -168,6 +198,22 @@ public class OrganizationServiceImpl implements OrganizationService{
 		return modelMapper.map(organization, OrganizationDTO.class);
 	}
 
+	@Override
+	@PreAuthorize("hasAuthority('ROLE_MANAGER')")
+	public void deleteOrganizationDocument(OrganizationDocumentDTO organizationDocumentDTO) {
+		// 0. 檢查資料完整性
+		organizationValidationUtil.validateDocument(organizationDocumentDTO, null, false);
+		Long organizationId = organizationDocumentDTO.getId();
+		Long documentId = organizationDocumentDTO.getDoucmnetId();
+		
+		// 1. 判定 是否有權限控制 該機構
+		Users users = userSecurityUtil.getCurrentUserEntity();
+		organizationValidationUtil.validateOrganizationPermission(users, organizationId);
+		
+		// 2. I/O 處理
+		documentAdminService.deleteByOrganization(organizationId, documentId);
+	}
+	
 	@Override
 	@PreAuthorize("hasAuthority('ROLE_MANAGER')") 
 	public void deleteOrganization(OrganizationDeleteDTO organizationDeleteDTO) {
@@ -220,4 +266,5 @@ public class OrganizationServiceImpl implements OrganizationService{
 		// 5. 回存
 		organization = organizationRepository.save(organization);
 	}
+
 }

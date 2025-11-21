@@ -10,8 +10,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DocumentAnnouncementDTO {
-	
-private Long id;		// 附件ID
+	private Long id;		// 附件ID
 	
 	private String name;	// 附件檔名
 	private String type;	// 附件類型	(公告用 / 機構用)

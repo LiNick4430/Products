@@ -3,10 +3,13 @@ package com.github.lianick.util.validate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.github.lianick.exception.FileStorageException;
 import com.github.lianick.exception.OrganizationFailureException;
 import com.github.lianick.exception.ValueMissException;
 import com.github.lianick.model.dto.organization.OrganizationCreateDTO;
+import com.github.lianick.model.dto.organization.OrganizationDocumentDTO;
 import com.github.lianick.model.dto.organization.OrganizationUpdateDTO;
 import com.github.lianick.model.eneity.Users;
 import com.github.lianick.repository.OrganizationRepository;
@@ -43,9 +46,32 @@ public class OrganizationValidationUtil {
 	}
 	
 	/**
-	 * OrganizationUpdateDTO 權限 的問題
+	 * OrganizationDocumentDTO 的 完整性
+	 * @param isUpload = true 需要 OrganizationId(id) + file, false 需要 OrganizationId(id) + DoucmnetId
 	 * */
-	public void validateUpdate(Users users, OrganizationUpdateDTO organizationUpdateDTO) {
+	public void validateDocument(OrganizationDocumentDTO organizationDocumentDTO, MultipartFile file, Boolean isUpload) {
+		if (isUpload) {
+			if (organizationDocumentDTO.getId() == null) {
+				throw new ValueMissException("缺少必要的機構上傳資料 (機構ID)");
+			}
+			if (file.isEmpty()) {
+				throw new FileStorageException("檔案錯誤：上傳檔案不存在");
+			}
+		} else {
+			if (organizationDocumentDTO.getId() == null || organizationDocumentDTO.getDoucmnetId() == null) {
+				throw new ValueMissException("缺少必要的機構上傳資料 (機構ID, 附件ID)");
+			}
+		}
+	}
+	
+	/**
+	 * Users 的 Organization 權限 的問題
+	 * */
+	public void validateOrganizationPermission(Users users, Long organizationId) {
+		if (organizationId == null) {
+			throw new ValueMissException("缺少必要的判斷資料 (機構ID)");
+		}
+		
 		// 判斷是否為主管(最高權限)（角色名稱 = "ROLE_MANAGER"）
 		boolean isManager = users.getRole().getName().equals("ROLE_MANAGER");
 
@@ -56,7 +82,7 @@ public class OrganizationValidationUtil {
 				throw new AccessDeniedException("權限不足，您非管理層成員。");
 			}
 			// 員工帳號 但 所屬機構 不符 沒有對應權限
-			if (users.getAdminInfo().getOrganization().getOrganizationId() != organizationUpdateDTO.getId()) {
+			if (users.getAdminInfo().getOrganization().getOrganizationId() != organizationId) {
 				throw new AccessDeniedException("操作身份錯誤，您無權修改非所屬機構資料");
 			}
 		}

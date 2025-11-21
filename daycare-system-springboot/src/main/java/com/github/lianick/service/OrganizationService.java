@@ -2,11 +2,14 @@ package com.github.lianick.service;
 
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.github.lianick.model.dto.organization.OrganizationCreateDTO;
 import com.github.lianick.model.dto.organization.OrganizationDTO;
 import com.github.lianick.model.dto.organization.OrganizationDeleteDTO;
 import com.github.lianick.model.dto.organization.OrganizationFindDTO;
 import com.github.lianick.model.dto.organization.OrganizationUpdateDTO;
+import com.github.lianick.model.dto.organization.OrganizationDocumentDTO;
 
 public interface OrganizationService {
 
@@ -18,10 +21,20 @@ public interface OrganizationService {
 	 * */
 	OrganizationDTO createOrganization(OrganizationCreateDTO organizationCreateDTO);
 	
+	/** 上傳 機構用 的 附件
+	 * 需要 @PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')") 
+	 * */
+	OrganizationDTO uploadOrganization(OrganizationDocumentDTO organizationDocumentDTO, MultipartFile file);
+	
 	/** 更新 機構 特定資料<p>
 	 * 需要 @PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")
 	 * */
 	OrganizationDTO updateOrganization(OrganizationUpdateDTO organizationUpdateDTO);
+	
+	/** 刪除 機構用 的 附件
+	 * 需要 @PreAuthorize("hasAuthority('ROLE_MANAGER')") 
+	 * */
+	void deleteOrganizationDocument(OrganizationDocumentDTO organizationDocumentDTO);
 	
 	/** 刪除 機構 資料<p>
 	 * 需要 @PreAuthorize("hasAuthority('ROLE_MANAGER')") 
