@@ -36,6 +36,16 @@ POST	"/information", "/information/"	設定 民眾底下 新幼兒資料		"/chil
 POST	"/update", "/update/"			更新 民眾底下 特定幼兒資料		"/child/update/"			AUTHENTICATED
 DELETE	"/delete", "/delete/"			刪除 民眾底下 特定幼兒資料		"/child/delete/"			AUTHENTICATED
 
+DocumentPublicController
+Request Mapping: "/document"
+GET 	"/public/find", "/public/find/"			尋找 民眾底下 所有的附件	"/document/public/find/" 		AUTHENTICATED
+POST 	"/case/find", "/case/find/"				尋找 案件底下 所有的附件	"/document/case/find/" 			AUTHENTICATED
+POST	"/public/create", "/public/create/"		民眾建立 新的附件			"/document/public/create/" 		AUTHENTICATED
+POST	"/case/create", "/case/create/"			民眾為了 案件建立 新的附件	"/document/case/create/" 		AUTHENTICATED
+POST	"/public/link/case", "/public/link/case/"	民眾為了 案件關連 舊有的附件	"/document/public/link/case/" 		AUTHENTICATED
+POST	"/admin/verify", "/admin/verify/"		員工 審核 附件			"/document/admin/verify/" 		AUTHENTICATED
+DELETE 	"/public/delete", "/public/delete/"		民眾刪除 附件			"/document/public/delete/" 		AUTHENTICATED
+
 AuthContorller
 Request Mapping: "/auth"
 POST	"/login", "/login/"									登入					"/auth/login/"					PUBLIC
@@ -67,18 +77,18 @@ POST	"/create", "/create/"			建立 機構 新班級		"/class/create/"			AUTHENT
 POST	"/link/case", "/link/case/"		和 案件 建立關連		"/class/link/case/"			AUTHENTICATED
 DELETE	"/delete", "/delete/"			刪除 	班級			"/class/delete/"			AUTHENTICATED
 
-DocumentPublicController
-Request Mapping: "/document"
-GET 	"/public/find", "/public/find/"			尋找 民眾底下 所有的附件	"/document/public/find/" 		AUTHENTICATED
-POST 	"/case/find", "/case/find/"				尋找 案件底下 所有的附件	"/document/case/find/" 			AUTHENTICATED
-POST	"/public/create", "/public/create/"		民眾建立 新的附件			"/document/public/create/" 		AUTHENTICATED
-POST	"/case/create", "/case/create/"			民眾為了 案件建立 新的附件	"/document/case/create/" 		AUTHENTICATED
-POST	"/public/link/case", "/public/link/case/"	民眾為了 案件關連 舊有的附件	"/document/public/link/case/" 		AUTHENTICATED
-POST	"/admin/verify", "/admin/verify/"		員工 審核 附件			"/document/admin/verify/" 		AUTHENTICATED
-DELETE 	"/public/delete", "/public/delete/"		民眾刪除 附件			"/document/public/delete/" 		AUTHENTICATED
-
-
-
+AnnouncementController
+Request Mapping: "/announcement"
+GET		"/find/all", "/find/all/"				搜尋 全部公告			"/announcement/find/all/"			PUBLIC
+POST 	"/find", "/find/"						搜尋 特定公告			"/announcement/find/"				PUBLIC
+POST 	"/download/doc", "/download/doc/"		下載 公告附件			"/announcement/download/doc/"		PUBLIC
+POST	"/create", "/create/"					建立 公告				"/announcement/create/"				AUTHENTICATED
+POST	"/update", "/update/"					更新 公告				"/announcement/update/"				AUTHENTICATED
+POST	"/upload/doc", "/upload/doc/"			上傳 公告附件			"/announcement/upload/doc/"			AUTHENTICATED
+DELETE	"/delete/doc", "/delete/doc/"			刪除 公告附件			"/announcement/delete/doc/"			AUTHENTICATED
+DELETE	"/delete", "/delete/"					刪除 公告				"/announcement/delete/"				AUTHENTICATED
+GET		"/find/not/publish", "/find/not/publish/"	搜尋 尚未發布公告		"/announcement/find/not/publish/"	AUTHENTICATED
+POST	"/publish", "/publish/"					發布 公告				"/announcement/publish/"			AUTHENTICATED
 
 // 背景 錯誤捕捉 需要
 CustomErrorController
