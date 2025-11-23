@@ -11,6 +11,7 @@ import com.github.lianick.exception.ChildNoFoundException;
 import com.github.lianick.exception.ClassesFailureException;
 import com.github.lianick.exception.FileStorageException;
 import com.github.lianick.exception.OrganizationFailureException;
+import com.github.lianick.exception.RegulationFailureException;
 import com.github.lianick.exception.RoleFailureException;
 import com.github.lianick.exception.TokenFailureException;
 import com.github.lianick.exception.UserNoFoundException;
@@ -22,11 +23,13 @@ import com.github.lianick.model.eneity.DocumentAdmin;
 import com.github.lianick.model.eneity.DocumentPublic;
 import com.github.lianick.model.eneity.Organization;
 import com.github.lianick.model.eneity.RefreshToken;
+import com.github.lianick.model.eneity.Regulations;
 import com.github.lianick.model.eneity.Role;
 import com.github.lianick.model.eneity.UserAdmin;
 import com.github.lianick.model.eneity.UserPublic;
 import com.github.lianick.model.eneity.UserVerify;
 import com.github.lianick.model.eneity.Users;
+import com.github.lianick.model.enums.RegulationType;
 import com.github.lianick.repository.AnnouncementsRepository;
 import com.github.lianick.repository.CasesRepository;
 import com.github.lianick.repository.ChildInfoRepository;
@@ -35,6 +38,7 @@ import com.github.lianick.repository.DocumentAdminRepository;
 import com.github.lianick.repository.DocumentPublicRepository;
 import com.github.lianick.repository.OrganizationRepository;
 import com.github.lianick.repository.RefreshTokenRepository;
+import com.github.lianick.repository.RegulationsRepository;
 import com.github.lianick.repository.RoleRepository;
 import com.github.lianick.repository.UserAdminRepository;
 import com.github.lianick.repository.UserPublicRepository;
@@ -85,6 +89,9 @@ public class EntityFetcher {
 	
 	@Autowired
 	private ChildInfoRepository childInfoRepository;
+	
+	@Autowired
+	private RegulationsRepository regulationsRepository;
 	
 	/**
 	 * 使用 username 獲取 Users
@@ -223,6 +230,15 @@ public class EntityFetcher {
 		Classes classes = classesRepository.findById(id)
 				.orElseThrow(() -> new ClassesFailureException("查無班級"));
 		return classes;
+	}
+	
+	/**
+	 * 使用 RegulationId 獲取 Regulations
+	 * */
+	public Regulations getRegulationsById(Long id) {
+		Regulations regulations = regulationsRepository.findById(id)
+				.orElseThrow(() -> new RegulationFailureException("查無規範"));
+		return regulations;
 	}
 	
 	/**

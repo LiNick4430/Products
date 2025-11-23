@@ -90,6 +90,16 @@ public class GlobalExceptionHandler {
 		return ApiResponse.error(statusCode, errorCode, ex.getMessage());
 	}
 	
+	// 規範(Regulation) 相關 的 異常 (401)
+	@ExceptionHandler(RegulationFailureException.class) 	
+	@ResponseStatus(HttpStatus.UNAUTHORIZED)     		// 401
+	public ApiResponse<?> handleRegulationFailureException(RegulationFailureException ex) {
+		int statusCode = HttpStatus.UNAUTHORIZED.value();
+		ErrorCode errorCode = ErrorCode.REGULATION_FAILURE;
+		// return new ApiResponse<>(statusCode, ex.getMessage(), null);
+		return ApiResponse.error(statusCode, errorCode, ex.getMessage());
+	}
+	
 	// 班級(Classes) 相關 的 異常 (401)
 	@ExceptionHandler(ClassesFailureException.class) 	
 	@ResponseStatus(HttpStatus.UNAUTHORIZED)     		// 401

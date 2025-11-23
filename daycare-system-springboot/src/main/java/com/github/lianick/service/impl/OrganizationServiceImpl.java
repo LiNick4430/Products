@@ -278,7 +278,8 @@ public class OrganizationServiceImpl implements OrganizationService{
 		if (regulations != null) {
 			regulations.forEach(regulation -> {
 				regulation.setDeleteAt(deleteTime);
-				regulation.setType(regulation.getType() + deleteSuffix);
+				// 機構ID 和 規範type 組合唯一值 機構刪除 規範type也不用破壞唯一
+				// regulation.setType(regulation.getType() + deleteSuffix);		
 			});
 		}
 		

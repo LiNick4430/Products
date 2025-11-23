@@ -21,6 +21,7 @@ import com.github.lianick.model.dto.documentAdmin.DocumentAnnouncementDTO;
 import com.github.lianick.model.dto.documentAdmin.DocumentOrganizationDTO;
 import com.github.lianick.model.dto.documentPublic.DocumentPublicDTO;
 import com.github.lianick.model.dto.organization.OrganizationDTO;
+import com.github.lianick.model.dto.regulation.RegulationDTO;
 import com.github.lianick.model.dto.user.UserForgetPasswordDTO;
 import com.github.lianick.model.dto.user.UserLoginDTO;
 import com.github.lianick.model.dto.user.UserMeDTO;
@@ -37,6 +38,7 @@ import com.github.lianick.model.eneity.Classes;
 import com.github.lianick.model.eneity.DocumentAdmin;
 import com.github.lianick.model.eneity.DocumentPublic;
 import com.github.lianick.model.eneity.Organization;
+import com.github.lianick.model.eneity.Regulations;
 import com.github.lianick.model.eneity.UserAdmin;
 import com.github.lianick.model.eneity.UserPublic;
 import com.github.lianick.model.eneity.Users;
@@ -158,6 +160,13 @@ public class ModelMapperConfig {
 				.map(Announcements::getOrganization, AnnouncementDTO::setOrganizationId);
 			mapper.using(organizationToOrganizationNameConveter)
 				.map(Announcements::getOrganization, AnnouncementDTO::setOrganizationName);
+		});
+		
+		// Regulation 相關
+		modelMapper.typeMap(Regulations.class, RegulationDTO.class).addMappings(mapper -> {
+			mapper.map(Regulations::getRegulationId, RegulationDTO::setId);
+			mapper.using(organizationToOrganizationIdConveter)
+				.map(Regulations::getOrganization, RegulationDTO::setOrganizationId);
 		});
 		
 		// DocumentPublic 相關
