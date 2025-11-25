@@ -22,7 +22,7 @@ import com.github.lianick.model.dto.documentPublic.DocumentPublicVerifyDTO;
 import com.github.lianick.model.eneity.Cases;
 import com.github.lianick.model.eneity.DocumentPublic;
 import com.github.lianick.model.eneity.UserPublic;
-import com.github.lianick.model.enums.EntityType;
+import com.github.lianick.model.enums.document.EntityType;
 import com.github.lianick.repository.DocumentPublicRepository;
 import com.github.lianick.service.DocumentPublicService;
 import com.github.lianick.util.DocumentUtil;

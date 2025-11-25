@@ -1,6 +1,6 @@
 package com.github.lianick.model.dto.documentPublic;
 
-import com.github.lianick.model.enums.DocumentType;
+import com.github.lianick.model.enums.document.DocumentType;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

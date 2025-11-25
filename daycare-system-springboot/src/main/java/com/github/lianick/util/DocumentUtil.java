@@ -25,7 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.github.lianick.config.FileProperties;
 import com.github.lianick.exception.FileStorageException;
 import com.github.lianick.model.dto.DocumentDTO;
-import com.github.lianick.model.enums.EntityType;
+import com.github.lianick.model.enums.document.EntityType;
 
 /**
  * 負責處理附件相關 事宜

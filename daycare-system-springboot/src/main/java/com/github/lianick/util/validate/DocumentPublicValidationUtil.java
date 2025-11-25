@@ -13,7 +13,7 @@ import com.github.lianick.model.dto.documentPublic.DocumentPublicVerifyDTO;
 import com.github.lianick.model.eneity.Cases;
 import com.github.lianick.model.eneity.DocumentPublic;
 import com.github.lianick.model.eneity.UserPublic;
-import com.github.lianick.model.enums.DocumentScope;
+import com.github.lianick.model.enums.document.DocumentScope;
 
 /**
  * 負責處理 DocumentPublic 相關的 完整性 檢測

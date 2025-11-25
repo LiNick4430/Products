@@ -1,4 +1,4 @@
-package com.github.lianick.model.enums;
+package com.github.lianick.model.enums.document;
 
 /**
  * 定義檔案上傳所屬的實體類型，用於路徑隔離，防止 ID 衝突。

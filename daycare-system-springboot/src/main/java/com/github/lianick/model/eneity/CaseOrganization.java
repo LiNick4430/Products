@@ -3,6 +3,7 @@ package com.github.lianick.model.eneity;
 import org.hibernate.annotations.SQLRestriction;
 
 import com.github.lianick.model.enums.CaseOrganizationStatus;
+import com.github.lianick.model.enums.PreferenceOrder;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -55,7 +56,7 @@ public class CaseOrganization extends BaseEntity{
 	private Organization organization;				// 機構 ID
 	
 	@Column(name = "case_organization_preference_order", nullable = false)
-	private Integer preferenceOrder;				// 志願序
+	private PreferenceOrder preferenceOrder;		// 志願序
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "case_organization_status", nullable = false)

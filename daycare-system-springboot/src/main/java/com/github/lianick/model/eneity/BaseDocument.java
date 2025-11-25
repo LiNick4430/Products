@@ -1,6 +1,6 @@
 package com.github.lianick.model.eneity;
 
-import com.github.lianick.model.enums.DocumentType;
+import com.github.lianick.model.enums.document.DocumentType;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;

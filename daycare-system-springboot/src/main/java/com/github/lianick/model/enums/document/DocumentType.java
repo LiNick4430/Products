@@ -1,4 +1,4 @@
-package com.github.lianick.model.enums;
+package com.github.lianick.model.enums.document;
 
 import lombok.Getter;
 

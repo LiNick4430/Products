@@ -6,13 +6,20 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.github.lianick.converter.AnnouncementToAnnouncementIdConveter;
+import com.github.lianick.converter.CaseOrganizationSetToOrganizationNameFirstConveter;
+import com.github.lianick.converter.CaseOrganizationSetToOrganizationNameSecondConveter;
+import com.github.lianick.converter.CaseOrganizationSetToOrganizationStatusFirstConveter;
+import com.github.lianick.converter.CaseOrganizationSetToOrganizationStatusSecondConveter;
 import com.github.lianick.converter.CaseSetToCaseNumberListConverter;
+import com.github.lianick.converter.ChildInfoToChildNameConveter;
+import com.github.lianick.converter.ClassToClassNameConveter;
 import com.github.lianick.converter.OrganizationToOrganizationIdConveter;
 import com.github.lianick.converter.OrganizationToOrganizationNameConveter;
 import com.github.lianick.converter.RoleNumberToRoleConveter;
 import com.github.lianick.converter.UsersPublicToUseIdConveter;
 import com.github.lianick.converter.UsersToUsernameConveter;
 import com.github.lianick.model.dto.announcement.AnnouncementDTO;
+import com.github.lianick.model.dto.cases.CaseDTO;
 import com.github.lianick.model.dto.child.ChildCreateDTO;
 import com.github.lianick.model.dto.child.ChildDTO;
 import com.github.lianick.model.dto.child.ChildUpdateDTO;
@@ -33,6 +40,7 @@ import com.github.lianick.model.dto.userPublic.UserPublicDTO;
 import com.github.lianick.model.dto.userPublic.UserPublicUpdateDTO;
 import com.github.lianick.model.dto.userPublic.UserPublicCreateDTO;
 import com.github.lianick.model.eneity.Announcements;
+import com.github.lianick.model.eneity.Cases;
 import com.github.lianick.model.eneity.ChildInfo;
 import com.github.lianick.model.eneity.Classes;
 import com.github.lianick.model.eneity.DocumentAdmin;
@@ -67,6 +75,24 @@ public class ModelMapperConfig {
 	
 	@Autowired
 	private AnnouncementToAnnouncementIdConveter announcementToAnnouncementIdConveter;
+	
+	@Autowired
+	private ClassToClassNameConveter classToClassNameConveter;
+	
+	@Autowired
+	private CaseOrganizationSetToOrganizationNameFirstConveter caseOrganizationSetToOrganizationNameFirstConveter;
+	
+	@Autowired
+	private CaseOrganizationSetToOrganizationNameSecondConveter caseOrganizationSetToOrganizationNameSecondConveter;
+	
+	@Autowired
+	private CaseOrganizationSetToOrganizationStatusFirstConveter caseOrganizationSetToOrganizationStatusFirstConveter;
+	
+	@Autowired
+	private CaseOrganizationSetToOrganizationStatusSecondConveter caseOrganizationSetToOrganizationStatusSecondConveter;
+	
+	@Autowired
+	private ChildInfoToChildNameConveter childInfoToChildNameConveter;
 	
 	// 主要 邏輯
 	@Bean	// @Bean 預設 Public
@@ -192,6 +218,23 @@ public class ModelMapperConfig {
 			mapper.map(DocumentAdmin::getDocType, DocumentAnnouncementDTO::setType);
 			mapper.using(announcementToAnnouncementIdConveter)
 				.map(DocumentAdmin::getAnnouncements, DocumentAnnouncementDTO::setAnnouncementId);
+		});
+		
+		// Cases 相關
+		modelMapper.typeMap(Cases.class, CaseDTO.class).addMappings(mapper -> {
+			mapper.map(Cases::getCaseId, CaseDTO::setId);
+			mapper.using(childInfoToChildNameConveter)
+				.map(Cases::getChildInfo, CaseDTO::setChildName);
+			mapper.using(caseOrganizationSetToOrganizationNameFirstConveter)
+				.map(Cases::getOrganizations, CaseDTO::setOrganizationNameFirst);
+			mapper.using(caseOrganizationSetToOrganizationNameSecondConveter)
+				.map(Cases::getOrganizations, CaseDTO::setOrganizationNameSecond);
+			mapper.using(caseOrganizationSetToOrganizationStatusFirstConveter)
+				.map(Cases::getOrganizations, CaseDTO::setOrganizationNameFirstStatus);
+			mapper.using(caseOrganizationSetToOrganizationStatusSecondConveter)
+				.map(Cases::getOrganizations, CaseDTO::setOrganizationNameSecondStatus);
+			mapper.using(classToClassNameConveter)
+				.map(Cases::getClasses, CaseDTO::setClassName);
 		});
 		
 		// ------------------------------------------------------------------------------------

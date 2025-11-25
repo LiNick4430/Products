@@ -2,9 +2,6 @@ package com.github.lianick.model.dto.cases;
 
 import java.time.LocalDateTime;
 
-import com.github.lianick.model.enums.CaseOrganizationStatus;
-import com.github.lianick.model.enums.CaseStatus;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,12 +21,12 @@ public class CaseDTO {
 	private String childName;				// 申請幼兒姓名
 	
 	private String organizationNameFirst;		// 第一志願
-	private CaseOrganizationStatus organizationNameFirststatus;	// 第一志願狀態
+	private String organizationNameFirstStatus;	// 第一志願狀態
 	
 	private String organizationNameSecond;		// 第二志願
-	private CaseOrganizationStatus organizationNameSecondstatus;// 第二志願狀態
+	private String organizationNameSecondStatus;// 第二志願狀態
 	
-	private CaseStatus status;				// 申請狀態
+	private String status;				// 申請狀態
 	
-	private String className;				// 申請成功 的 班級名稱
+	private String className;			// 申請成功 的 班級名稱
 }
