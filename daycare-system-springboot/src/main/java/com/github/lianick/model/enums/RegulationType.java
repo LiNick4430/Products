@@ -6,7 +6,7 @@ import lombok.Getter;
  * 機構規範 的 規範類型
  * */
 @Getter
-public enum RegulationType {
+public enum RegulationType implements BaseEnum{
 
 	// 幼托類 規範
     FEE_SCHEDULE("費用收費表"),
@@ -20,4 +20,7 @@ public enum RegulationType {
         this.description = description;
     }
 	
+    public static RegulationType formCode(String code) {
+		return BaseEnum.formCode(RegulationType.class, code);
+	}
 }
