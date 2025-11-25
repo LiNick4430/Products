@@ -74,10 +74,13 @@ public class SecurityConfig {
 							"/email/reset/password",		// 忘記密碼驗證
 							// 機構 相關
 							"/organization/find/", "/organization/find",	// 尋找 特定機構資料
-							// 公告相關
+							// 公告 相關
 							"/announcement/find/all/", "/announcement/find/all",		// 搜尋 全部公告
 							"/announcement/find/", "/announcement/find",				// 搜尋 特定公告
-							"/announcement/download/doc/", "/announcement/download/doc"	// 下載 公告附件
+							"/announcement/download/doc/", "/announcement/download/doc",// 下載 公告附件
+							// 規範 相關
+							"/regulation/find/all/", "/regulation/find/all/",	// 搜尋 全部規範
+							"/regulation/find/", "/regulation/find"				// 搜尋 特定規範
 							
 					).permitAll()
 					

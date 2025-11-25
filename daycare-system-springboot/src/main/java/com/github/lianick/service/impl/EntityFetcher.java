@@ -29,7 +29,6 @@ import com.github.lianick.model.eneity.UserAdmin;
 import com.github.lianick.model.eneity.UserPublic;
 import com.github.lianick.model.eneity.UserVerify;
 import com.github.lianick.model.eneity.Users;
-import com.github.lianick.model.enums.RegulationType;
 import com.github.lianick.repository.AnnouncementsRepository;
 import com.github.lianick.repository.CasesRepository;
 import com.github.lianick.repository.ChildInfoRepository;
