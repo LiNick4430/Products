@@ -1,5 +1,7 @@
 package com.github.lianick.model.enums.document;
 
+import com.github.lianick.model.enums.BaseEnum;
+
 import lombok.Getter;
 
 //用於 分類附件 的「細項」類型。
@@ -16,7 +18,7 @@ import lombok.Getter;
  * </ul>
  */
 @Getter
-public enum DocumentType {	
+public enum DocumentType implements BaseEnum{	
 
 	// ADMIN 用
 	ORGANIZATION("機構文件", DocumentScope.ADMIN),
@@ -33,5 +35,10 @@ public enum DocumentType {
     DocumentType(String description, DocumentScope scope) {
     	this.description = description;
     	this.scope = scope;
+    }
+    
+    /** PUBLIC 使用 */
+    public static DocumentType fromCode(String code) {
+    	return BaseEnum.formCode(DocumentType.class, code);
     }
 }

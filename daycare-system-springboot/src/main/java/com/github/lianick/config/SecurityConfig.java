@@ -35,6 +35,10 @@ public class SecurityConfig {
 		return new BCryptPasswordEncoder();
 	}
 	
+	/**
+	 * 集中處理 Controller 上的 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+	 * */
+	
 	@Bean	// @Bean 預設 Public
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
 		http
@@ -60,6 +64,8 @@ public class SecurityConfig {
 				
 					// 1. 公開端點：允許任何人存取以下路徑
 					.requestMatchers(
+							// 前端工程師 用的 ENUM 接口
+							"/enum/**",
 							// 錯誤處理 相關
 							"/error/access-denied",								
 							// 使用者 相關

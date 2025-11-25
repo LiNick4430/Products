@@ -101,3 +101,8 @@ DELETE	"/delete", "/delete/"					刪除 規範				"/regulation/delete/"				AUTHE
 // 背景 錯誤捕捉 需要
 CustomErrorController
 REQUEST	"/error/access-denied"	讓 AccessDeniedException 被 CustomAccessDeniedHandler 轉發 到此 後讓 GlobalExceptionHandler 會接管
+
+// 給前端工程師 用的 ENUM 街口
+EnumController
+Request Mapping: "/enum"
+
