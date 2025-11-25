@@ -90,6 +90,14 @@ DELETE	"/delete", "/delete/"					刪除 公告				"/announcement/delete/"				AUT
 GET		"/find/not/publish", "/find/not/publish/"	搜尋 尚未發布公告		"/announcement/find/not/publish/"	AUTHENTICATED
 POST	"/publish", "/publish/"					發布 公告				"/announcement/publish/"			AUTHENTICATED
 
+RegulationController
+Request Mapping: "/regulation"
+POST	"/find/all", "/find/all/"				搜尋 全部規範			"/regulation/find/all/"				PUBLIC
+POST 	"/find", "/find/"						搜尋 特定規範			"/regulation/find/"					PUBLIC
+POST	"/create", "/create/"					建立 規範				"/regulation/create/"				AUTHENTICATED
+POST	"/update", "/update/"					更新 規範				"/regulation/update/"				AUTHENTICATED
+DELETE	"/delete", "/delete/"					刪除 規範				"/regulation/delete/"				AUTHENTICATED
+
 // 背景 錯誤捕捉 需要
 CustomErrorController
 REQUEST	"/error/access-denied"	讓 AccessDeniedException 被 CustomAccessDeniedHandler 轉發 到此 後讓 GlobalExceptionHandler 會接管
