@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.hibernate.annotations.SQLRestriction;
 
+import com.github.lianick.model.enums.ApplicationMethod;
 import com.github.lianick.model.enums.CaseStatus;
 
 import jakarta.persistence.CascadeType;
@@ -48,8 +49,9 @@ public class Cases extends BaseEntity{
 	@Column(name = "case_application_date", nullable = false)
 	private LocalDateTime applicationDate;	// 申請時間
 	
+	@Enumerated(EnumType.STRING)
 	@Column(name = "case_application_method", nullable = false)
-	private String applicationMethod;		// 申請方式
+	private ApplicationMethod applicationMethod;		// 申請方式
 	
 	@OneToMany(mappedBy = "cases", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private Set<CaseOrganization> organizations;	// 機構(第一 和 第二志願)

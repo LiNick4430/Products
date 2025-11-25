@@ -10,20 +10,26 @@ import lombok.Getter;
 @Getter
 public enum CaseStatus {
 
-	// 申請中 (Pending Review)
-    APPLIED("APPLIED", "申請中"), 
+	// 流程起點
+    APPLIED("APPLIED", "申請中"), // 1. 申請中
     
-    // 審核通過 (Passed Review / Allocation)
-    PASSED("PASSED", "通過"),
+    // 成功流程 (核心審核通過)
+    PASSED("PASSED", "通過"), // 2. 通過
     
-    // 已退件/拒絕 (Rejected)
-    REJECTED("REJECTED", "退件"),
+    // 成功流程 (等待分配/抽籤)
+    PENDING("PENDING", "待分發"), // 3. 待分發 (或待抽籤)
     
-    // 撤回申請 (Withdrawn by Public User)
-    WITHDRAWN("WITHDRAWN", "撤回"),
+    // 成功流程 (已取得名額)
+    ALLOCATED("ALLOCATED", "已分發"), // 4. 已分發
     
-    // 待分發/待抽籤 (Pending Lottery/Allocation) - 根據實際流程可選
-    PENDING_ALLOCATION("PENDING_ALLOCATION", "待分發");
+    // 成功流程 (報到完成，案件結案)
+    COMPLETED("COMPLETED", "已報到/結案"), // 報到結案
+    
+    // 失敗流程 (人工拒絕)
+    REJECTED("REJECTED", "退件"), // 2. 退件
+    
+    // 撤銷流程 (使用者自願)
+    WITHDRAWN("WITHDRAWN", "撤回"); // 2. 撤回
 	
 	private final String code; // 資料庫中儲存的狀態代碼
     private final String description; // 狀態的中文描述

@@ -44,7 +44,6 @@ public class DocumentPublic extends BaseDocument{
 	private UserPublic userPublic;
 	
 	// 民眾 文件 專用
-	
 	@Column(name = "public_doc_is_verified" , nullable = false)
 	private Boolean isVerified = false;			// 文件 是否 通過 後台審核
 	
