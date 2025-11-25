@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,7 +41,6 @@ import com.github.lianick.util.JsonUtil;
 
 @RestController
 @RequestMapping("/organization")
-@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 public class OrganizationController {
 
 	@Autowired

@@ -1,5 +1,7 @@
 package com.github.lianick.config;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +14,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
@@ -38,16 +43,41 @@ public class SecurityConfig {
 	/**
 	 * 集中處理 Controller 上的 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 	 * */
+	@Bean
+	CorsConfigurationSource corsConfigurationSource() {
+		CorsConfiguration configuration = new CorsConfiguration();
+		
+		// 允許前端的來源 ( 前端來源 )
+		configuration.setAllowedOrigins(List.of("http://localhost:5173"));
+		
+		// 允許的方法 (全部)
+		configuration.setAllowedMethods(List.of("*"));
+		
+		// 允許的標頭 (全部)
+		configuration.setAllowedHeaders(List.of("*"));
+		
+		// 允許帶有憑證 為了給 JWT使用
+		configuration.setAllowCredentials(true);
+		
+		// 註冊到所有路徑
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", configuration);
+		
+		return source;
+	}
 	
-	@Bean	// @Bean 預設 Public
+	/**
+	 * 安全設定 過濾使用的方法
+	 * */
+	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
 		http
 			// 1. 停用 CSRF 保護 (JWT 認證不需要 Session)
 			.csrf(csrf -> csrf.disable())
 			
-			// 2. CORS 設定（使用預設）
+			// 2. CORS 設定
+			//	使用上面定義的 corsConfigurationSource() Bean
 			.cors(Customizer.withDefaults())
-			
 			
             .exceptionHandling(e -> e
             		// 認證失敗
