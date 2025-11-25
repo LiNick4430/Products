@@ -1,13 +1,13 @@
 package com.github.lianick.exception;
 
-public class ChildNoFoundException extends RuntimeException{
+public class EnumNotFoundException extends RuntimeException{
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public ChildNoFoundException(String message) {
+	public EnumNotFoundException(String message) {
 		super(message);
 	}
 	

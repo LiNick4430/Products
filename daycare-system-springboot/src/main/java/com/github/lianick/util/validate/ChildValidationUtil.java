@@ -3,7 +3,7 @@ package com.github.lianick.util.validate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.github.lianick.exception.ChildNoFoundException;
+import com.github.lianick.exception.ChildNotFoundException;
 import com.github.lianick.exception.FormatterFailureException;
 import com.github.lianick.exception.UserExistException;
 import com.github.lianick.exception.ValueMissException;
@@ -45,7 +45,7 @@ public class ChildValidationUtil {
 	 * */
 	public void validateChildAndUserPublic(ChildInfo childInfo, UserPublic userPublic) {
 		if (!childInfo.getUserPublic().getPublicId().equals(userPublic.getPublicId())) {
-			throw new ChildNoFoundException("查無幼兒資料");
+			throw new ChildNotFoundException("查無幼兒資料");
 		}
 	}
 	

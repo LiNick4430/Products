@@ -3,7 +3,7 @@ package com.github.lianick.util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.github.lianick.exception.UserNoFoundException;
+import com.github.lianick.exception.UserNotFoundException;
 import com.github.lianick.model.eneity.UserAdmin;
 import com.github.lianick.model.eneity.UserPublic;
 import com.github.lianick.model.eneity.Users;
@@ -35,7 +35,7 @@ public class UserSecurityUtil {
 	    
 	    // 1. 找尋資料庫 對應的帳號(使用 JWT 提供的 currentUsername 進行查詢)
 	    Users tableUser = usersRepository.findByAccount(currentUsername)
-	        .orElseThrow(() -> new UserNoFoundException("帳號或密碼錯誤"));
+	        .orElseThrow(() -> new UserNotFoundException("帳號或密碼錯誤"));
 		
 	    return tableUser;
 	}
@@ -45,7 +45,7 @@ public class UserSecurityUtil {
 	 * */
 	public UserPublic getCurrentUserPublicEntity() {
 		UserPublic userPublic = userPublicRepository.findByUsers(getCurrentUserEntity())
-				.orElseThrow(() -> new UserNoFoundException("帳號錯誤"));
+				.orElseThrow(() -> new UserNotFoundException("帳號錯誤"));
 		
 	    return userPublic;
 	}
@@ -55,7 +55,7 @@ public class UserSecurityUtil {
 	 * */
 	public UserAdmin getCurrentUserAdminEntity() {
 		UserAdmin userAdmin = userAdminRepository.findByUsers(getCurrentUserEntity())
-				.orElseThrow(() -> new UserNoFoundException("帳號錯誤"));
+				.orElseThrow(() -> new UserNotFoundException("帳號錯誤"));
 		
 	    return userAdmin;
 	}

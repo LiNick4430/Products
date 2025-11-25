@@ -5,7 +5,7 @@ import java.net.Authenticator.RequestorType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.github.lianick.exception.EnumNoFoundException;
+import com.github.lianick.exception.EnumNotFoundException;
 import com.github.lianick.exception.RegulationFailureException;
 import com.github.lianick.exception.ValueMissException;
 import com.github.lianick.model.dto.regulation.RegulationCreateDTO;
@@ -57,7 +57,7 @@ public class RegulationValidationUtil {
 		try {
 			return RegulationType.valueOf(regulationCreateDTO.getType());
 		} catch (IllegalArgumentException e) {
-			throw new EnumNoFoundException("規範類型 錯誤");
+			throw new EnumNotFoundException("規範類型 錯誤");
 		}
 	}
 	

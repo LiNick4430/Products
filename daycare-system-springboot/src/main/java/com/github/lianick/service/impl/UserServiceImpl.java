@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.github.lianick.config.FrontendProperties;
 import com.github.lianick.exception.TokenFailureException;
-import com.github.lianick.exception.UserNoFoundException;
+import com.github.lianick.exception.UserNotFoundException;
 import com.github.lianick.model.dto.user.PasswordAwareDTO;
 import com.github.lianick.model.dto.user.UserDeleteDTO;
 import com.github.lianick.model.dto.user.UserForgetPasswordDTO;
@@ -416,7 +416,7 @@ public class UserServiceImpl implements UserService{
 		
 		// 失敗 拋出 例外
 		if (!isMatch) {
-			throw new UserNoFoundException("帳號或密碼錯誤");
+			throw new UserNotFoundException("帳號或密碼錯誤");
 		}
 		
 		// 成功

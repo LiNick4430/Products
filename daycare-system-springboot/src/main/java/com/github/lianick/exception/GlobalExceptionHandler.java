@@ -21,9 +21,9 @@ public class GlobalExceptionHandler {
 	// @ResponseBody                                	告訴 Spring 將返回值（ApiResponse）直接寫入 HTTP 響應體
 	
 	// 處理找不到使用者 的 異常 (401)
-	@ExceptionHandler(UserNoFoundException.class) 	
+	@ExceptionHandler(UserNotFoundException.class) 	
 	@ResponseStatus(HttpStatus.UNAUTHORIZED)     		// 401
-	public ApiResponse<?> handleUserNoFoundException(UserNoFoundException ex) {
+	public ApiResponse<?> handleUserNotFoundException(UserNotFoundException ex) {
 		int statusCode = HttpStatus.UNAUTHORIZED.value();
 		ErrorCode errorCode = ErrorCode.USER_NOT_FOUND;
 		// return new ApiResponse<>(statusCode, ex.getMessage(), null);
@@ -31,9 +31,9 @@ public class GlobalExceptionHandler {
 	}
 	
 	// 處理找不到 幼兒 的 異常 (401)
-	@ExceptionHandler(ChildNoFoundException.class) 	
+	@ExceptionHandler(ChildNotFoundException.class) 	
 	@ResponseStatus(HttpStatus.UNAUTHORIZED)     		// 401
-	public ApiResponse<?> handleChildNoFoundException(ChildNoFoundException ex) {
+	public ApiResponse<?> handleChildNotFoundException(ChildNotFoundException ex) {
 		int statusCode = HttpStatus.UNAUTHORIZED.value();
 		ErrorCode errorCode = ErrorCode.CHILD_NOT_FOUND;
 		// return new ApiResponse<>(statusCode, ex.getMessage(), null);
@@ -41,9 +41,9 @@ public class GlobalExceptionHandler {
 	}
 	
 	// 處理 使用 ENUM 卻 找不到 code 的 異常 (401)
-	@ExceptionHandler(EnumNoFoundException.class) 	
+	@ExceptionHandler(EnumNotFoundException.class) 	
 	@ResponseStatus(HttpStatus.UNAUTHORIZED)     		// 401
-	public ApiResponse<?> handleEnumNoFoundException(EnumNoFoundException ex) {
+	public ApiResponse<?> handleEnumNotFoundException(EnumNotFoundException ex) {
 		int statusCode = HttpStatus.UNAUTHORIZED.value();
 		ErrorCode errorCode = ErrorCode.ENUM_NOT_FOUND;
 		// return new ApiResponse<>(statusCode, ex.getMessage(), null);

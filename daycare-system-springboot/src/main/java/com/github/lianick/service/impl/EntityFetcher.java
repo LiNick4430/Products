@@ -7,14 +7,14 @@ import org.springframework.stereotype.Service;
 
 import com.github.lianick.exception.AnnouncementFailureException;
 import com.github.lianick.exception.CaseFailureException;
-import com.github.lianick.exception.ChildNoFoundException;
+import com.github.lianick.exception.ChildNotFoundException;
 import com.github.lianick.exception.ClassesFailureException;
 import com.github.lianick.exception.FileStorageException;
 import com.github.lianick.exception.OrganizationFailureException;
 import com.github.lianick.exception.RegulationFailureException;
 import com.github.lianick.exception.RoleFailureException;
 import com.github.lianick.exception.TokenFailureException;
-import com.github.lianick.exception.UserNoFoundException;
+import com.github.lianick.exception.UserNotFoundException;
 import com.github.lianick.model.eneity.Announcements;
 import com.github.lianick.model.eneity.Cases;
 import com.github.lianick.model.eneity.ChildInfo;
@@ -97,7 +97,7 @@ public class EntityFetcher {
 	 * */
 	public Users getUsersByUsername(String username) {
 		Users tableUser = usersRepository.findByAccount(username)
-		        .orElseThrow(() -> new UserNoFoundException("帳號或密碼錯誤"));
+		        .orElseThrow(() -> new UserNotFoundException("帳號或密碼錯誤"));
 		return tableUser;
 	}
 	
@@ -108,7 +108,7 @@ public class EntityFetcher {
 		Users tableUser = getUsersByUsername(username);
 		
 		UserPublic userPublic = userPublicRepository.findByUsers(tableUser)
-				.orElseThrow(() -> new UserNoFoundException("帳號錯誤"));
+				.orElseThrow(() -> new UserNotFoundException("帳號錯誤"));
 		return userPublic;
 	}
 	
@@ -117,7 +117,7 @@ public class EntityFetcher {
 	 * */
 	public UserPublic getUsersPublicByUser(Users user) {
 		UserPublic userPublic = userPublicRepository.findByUsers(user)
-				.orElseThrow(() -> new UserNoFoundException("帳號錯誤"));
+				.orElseThrow(() -> new UserNotFoundException("帳號錯誤"));
 		return userPublic;
 	}
 	
@@ -128,7 +128,7 @@ public class EntityFetcher {
 		Users tableUser = getUsersByUsername(username);
 		
 		UserAdmin userAdmin = userAdminRepository.findByUsers(tableUser)
-				.orElseThrow(() -> new UserNoFoundException("用戶存在，但非員工帳號"));
+				.orElseThrow(() -> new UserNotFoundException("用戶存在，但非員工帳號"));
 		return userAdmin;
 	}
 	
@@ -155,7 +155,7 @@ public class EntityFetcher {
 	 * */
 	public ChildInfo getChildInfoById(Long id) {
 		ChildInfo childInfo = childInfoRepository.findById(id)
-				.orElseThrow(() -> new ChildNoFoundException("查無幼兒資料"));
+				.orElseThrow(() -> new ChildNotFoundException("查無幼兒資料"));
 		return childInfo;
 	}
 	

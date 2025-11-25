@@ -1,13 +1,13 @@
 package com.github.lianick.exception;
 
-public class UserNoFoundException extends RuntimeException{
+public class UserNotFoundException extends RuntimeException{
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public UserNoFoundException(String message) {
+	public UserNotFoundException(String message) {
 		super(message);
 	}
 	

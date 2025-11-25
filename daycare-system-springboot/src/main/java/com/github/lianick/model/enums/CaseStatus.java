@@ -1,6 +1,6 @@
 package com.github.lianick.model.enums;
 
-import com.github.lianick.exception.EnumNoFoundException;
+import com.github.lianick.exception.EnumNotFoundException;
 
 import lombok.Getter;
 
@@ -48,6 +48,6 @@ public enum CaseStatus {
 				return status;
 			}
 		}
-		throw new EnumNoFoundException("找不到目標 code");
+		throw new EnumNotFoundException("找不到目標 code");
 	}
 }
