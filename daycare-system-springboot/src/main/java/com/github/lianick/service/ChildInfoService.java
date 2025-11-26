@@ -22,12 +22,12 @@ public interface ChildInfoService {
 	/** 設定 民眾底下 新幼兒資料<p>
 	 * 需要 @PreAuthorize("hasAuthority('ROLE_PUBLIC')") 
 	 * */
-	ChildCreateDTO createChildInfo(ChildCreateDTO childCreateDTO);
+	ChildDTO createChildInfo(ChildCreateDTO childCreateDTO);
 	
 	/** 更新 民眾底下 特定幼兒資料<p>
 	 * 需要 @PreAuthorize("hasAuthority('ROLE_PUBLIC')") 
 	 * */
-	ChildUpdateDTO updateChildInfo(ChildUpdateDTO childUpdateDTO);
+	ChildDTO updateChildInfo(ChildUpdateDTO childUpdateDTO);
 	
 	/** 刪除 民眾底下 特定幼兒資料<p>
 	 * 需要 @PreAuthorize("hasAuthority('ROLE_PUBLIC')") 

@@ -78,7 +78,7 @@ public class ChildInfoServiceImpl implements ChildInfoService{
 
 	@Override
 	@PreAuthorize("hasAuthority('ROLE_PUBLIC')") 
-	public ChildCreateDTO createChildInfo(ChildCreateDTO childCreateDTO) {
+	public ChildDTO createChildInfo(ChildCreateDTO childCreateDTO) {
 		// 0. 找尋 UserPublic 
 		UserPublic userPublic = userSecurityUtil.getCurrentUserPublicEntity();
 		
@@ -96,16 +96,14 @@ public class ChildInfoServiceImpl implements ChildInfoService{
 		childInfo = childInfoRepository.save(childInfo);
 		
 		// 3. Entity 轉 DTO
-		childCreateDTO = modelMapper.map(childInfo, ChildCreateDTO.class);
+		ChildDTO childDTO = modelMapper.map(childInfo, ChildDTO.class);
 		
-		// 4. 返回處理
-		
-		return childCreateDTO;
+		return childDTO;
 	}
 
 	@Override
 	@PreAuthorize("hasAuthority('ROLE_PUBLIC')") 
-	public ChildUpdateDTO updateChildInfo(ChildUpdateDTO childUpdateDTO) {
+	public ChildDTO updateChildInfo(ChildUpdateDTO childUpdateDTO) {
 		// 0. 找尋 UserPublic
 		UserPublic userPublic = userSecurityUtil.getCurrentUserPublicEntity();
 		
@@ -121,11 +119,9 @@ public class ChildInfoServiceImpl implements ChildInfoService{
 		childInfo = childInfoRepository.save(childInfo);
 		
 		// 4. Entity 轉 DTO
-		ChildUpdateDTO newChildUpdateDTO = modelMapper.map(childInfo, ChildUpdateDTO.class);
+		ChildDTO childDTO = modelMapper.map(childInfo, ChildDTO.class);
 		
-		// 5. 返回處理
-		
-		return newChildUpdateDTO;
+		return childDTO;
 	}
 
 	@Override

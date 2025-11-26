@@ -49,15 +49,15 @@ public class ChildInfoController {
 	}
 	
 	@PostMapping(value = {"/information", "/information/"})
-	public ApiResponse<ChildCreateDTO> setNewChild(@RequestBody ChildCreateDTO childCreateDTO) {
-		childCreateDTO = childInfoService.createChildInfo(childCreateDTO);
-		return ApiResponse.success("設定 新幼兒資料 成功", childCreateDTO);
+	public ApiResponse<ChildDTO> setNewChild(@RequestBody ChildCreateDTO childCreateDTO) {
+		ChildDTO childDTO = childInfoService.createChildInfo(childCreateDTO);
+		return ApiResponse.success("設定 新幼兒資料 成功", childDTO);
 	}
 	
 	@PostMapping(value = {"/update", "/update/"})
-	public ApiResponse<ChildUpdateDTO> updateChild(@RequestBody ChildUpdateDTO childUpdateDTO) {
-		childUpdateDTO = childInfoService.updateChildInfo(childUpdateDTO);
-		return ApiResponse.success("更新 幼兒資料 成功", childUpdateDTO);
+	public ApiResponse<ChildDTO> updateChild(@RequestBody ChildUpdateDTO childUpdateDTO) {
+		ChildDTO childDTO = childInfoService.updateChildInfo(childUpdateDTO);
+		return ApiResponse.success("更新 幼兒資料 成功", childDTO);
 	}
 	
 	@DeleteMapping(value = {"/delete", "/delete/"})
