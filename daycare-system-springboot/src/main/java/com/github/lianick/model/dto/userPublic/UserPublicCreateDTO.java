@@ -11,9 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class UserPublicCreateDTO {	// 創建 民眾資料的時候用的
 
-	private Long id;						// 帳號ID/民眾ID
 	private String username;				// 帳號名
-	private Long roleNumber;				// 角色號碼
 	
 	// 基本資料
 	private String name;

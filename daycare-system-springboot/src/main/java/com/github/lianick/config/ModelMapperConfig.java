@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.github.lianick.converter.AnnouncementToAnnouncementIdConveter;
+import com.github.lianick.converter.BaseEnumToDescriptionConveter;
 import com.github.lianick.converter.CaseOrganizationSetToOrganizationNameFirstConveter;
 import com.github.lianick.converter.CaseOrganizationSetToOrganizationNameSecondConveter;
 import com.github.lianick.converter.CaseOrganizationSetToOrganizationStatusFirstConveter;
@@ -94,6 +95,9 @@ public class ModelMapperConfig {
 	@Autowired
 	private ChildInfoToChildNameConveter childInfoToChildNameConveter;
 	
+	@Autowired
+	private BaseEnumToDescriptionConveter baseEnumToDescriptionConveter;
+	
 	// 主要 邏輯
 	@Bean	// @Bean 預設 Public
 	ModelMapper modelMapper() {
@@ -131,11 +135,6 @@ public class ModelMapperConfig {
 			mapper.map(UserPublic::getPublicId, UserPublicDTO::setId);
 			mapper.using(usersToUsernameConveter)
 					.map(UserPublic::getUsers, UserPublicDTO::setUsername);
-		});
-		modelMapper.typeMap(UserPublic.class, UserPublicCreateDTO.class).addMappings(mapper -> {
-			mapper.map(UserPublic::getPublicId, UserPublicCreateDTO::setId);
-			mapper.using(usersToUsernameConveter)
-					.map(UserPublic::getUsers, UserPublicCreateDTO::setUsername);
 		});
 		modelMapper.typeMap(UserPublic.class, UserPublicUpdateDTO.class).addMappings(mapper -> {
 			mapper.map(UserPublic::getPublicId, UserPublicUpdateDTO::setId);
@@ -191,6 +190,8 @@ public class ModelMapperConfig {
 		// Regulation 相關
 		modelMapper.typeMap(Regulations.class, RegulationDTO.class).addMappings(mapper -> {
 			mapper.map(Regulations::getRegulationId, RegulationDTO::setId);
+			mapper.using(baseEnumToDescriptionConveter)
+				.map(Regulations::getType, RegulationDTO::setType);
 			mapper.using(organizationToOrganizationIdConveter)
 				.map(Regulations::getOrganization, RegulationDTO::setOrganizationId);
 		});
@@ -202,20 +203,24 @@ public class ModelMapperConfig {
 				.map(DocumentPublic::getUserPublic, DocumentPublicDTO::setUserId);
 			mapper.using(caseSetToCaseNumberListConverter)
 				.map(DocumentPublic::getCases, DocumentPublicDTO::setCaseNumbers);
+			mapper.using(baseEnumToDescriptionConveter)
+				.map(DocumentPublic::getDocType, DocumentPublicDTO::setType);
 		});
 		
 		// DocumentAdmin 相關
 		modelMapper.typeMap(DocumentAdmin.class, DocumentOrganizationDTO.class).addMappings(mapper -> {
 			mapper.map(DocumentAdmin::getAdminDocId, DocumentOrganizationDTO::setId);
 			mapper.map(DocumentAdmin::getFileName, DocumentOrganizationDTO::setName);
-			mapper.map(DocumentAdmin::getDocType, DocumentOrganizationDTO::setType);
+			mapper.using(baseEnumToDescriptionConveter)
+				.map(DocumentAdmin::getDocType, DocumentOrganizationDTO::setType);
 			mapper.using(organizationToOrganizationIdConveter)
 				.map(DocumentAdmin::getOrganization, DocumentOrganizationDTO::setOrganizationId);
 		});
 		modelMapper.typeMap(DocumentAdmin.class, DocumentAnnouncementDTO.class).addMappings(mapper -> {
 			mapper.map(DocumentAdmin::getAdminDocId, DocumentAnnouncementDTO::setId);
 			mapper.map(DocumentAdmin::getFileName, DocumentAnnouncementDTO::setName);
-			mapper.map(DocumentAdmin::getDocType, DocumentAnnouncementDTO::setType);
+			mapper.using(baseEnumToDescriptionConveter)
+				.map(DocumentAdmin::getDocType, DocumentAnnouncementDTO::setType);
 			mapper.using(announcementToAnnouncementIdConveter)
 				.map(DocumentAdmin::getAnnouncements, DocumentAnnouncementDTO::setAnnouncementId);
 		});

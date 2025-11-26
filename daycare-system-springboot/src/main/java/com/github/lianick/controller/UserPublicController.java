@@ -56,17 +56,17 @@ public class UserPublicController {
 	}
 	
 	@PostMapping(value = {"/information", "/information/"})
-	public ApiResponse<UserPublicCreateDTO> information(@RequestBody UserPublicCreateDTO userPublicCreateDTO) {
-		userPublicCreateDTO = userPublicService.createUserPublic(userPublicCreateDTO);
+	public ApiResponse<UserPublicDTO> information(@RequestBody UserPublicCreateDTO userPublicCreateDTO) {
+		UserPublicDTO userPublicDTO = userPublicService.createUserPublic(userPublicCreateDTO);
 		// return new ApiResponse<>(HttpStatus.OK.value(), "民眾資料 建立成功", userPublicCreateDTO);
-		return ApiResponse.success("民眾資料 建立成功", userPublicCreateDTO);
+		return ApiResponse.success("民眾資料 建立成功", userPublicDTO);
 	}
 
 	@PostMapping(value = {"/update", "/update/"})
-	public ApiResponse<UserPublicUpdateDTO> update(@RequestBody UserPublicUpdateDTO userPublicUpdateDTO) {
-		userPublicUpdateDTO = userPublicService.updateUserPublic(userPublicUpdateDTO);
+	public ApiResponse<UserPublicDTO> update(@RequestBody UserPublicUpdateDTO userPublicUpdateDTO) {
+		UserPublicDTO userPublicDTO = userPublicService.updateUserPublic(userPublicUpdateDTO);
 		// return new ApiResponse<>(HttpStatus.OK.value(), "民眾資料 更新成功", userPublicUpdateDTO);
-		return ApiResponse.success("民眾資料 更新成功", userPublicUpdateDTO);
+		return ApiResponse.success("民眾資料 更新成功", userPublicDTO);
 	}
 	
 	@DeleteMapping(value = {"/delete", "/delete/"})

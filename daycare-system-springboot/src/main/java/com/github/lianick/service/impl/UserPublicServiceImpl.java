@@ -87,7 +87,7 @@ public class UserPublicServiceImpl implements UserPublicService{
 
 	@Override
 	@PreAuthorize("hasAuthority('ROLE_PUBLIC')")
-	public UserPublicCreateDTO createUserPublic(UserPublicCreateDTO userPublicCreateDTO) {
+	public UserPublicDTO createUserPublic(UserPublicCreateDTO userPublicCreateDTO) {
 		// 0. 從 JWT 找尋資料庫 對應的帳號
 		Users tableUser = userSecurityUtil.getCurrentUserEntity();
 		
@@ -116,12 +116,12 @@ public class UserPublicServiceImpl implements UserPublicService{
 		userPublic = userPublicRepository.save(userPublic);
 		
 		// 5. Entity 轉 DTO
-		return modelMapper.map(userPublic, UserPublicCreateDTO.class);
+		return modelMapper.map(userPublic, UserPublicDTO.class);
 	}
 
 	@Override
 	@PreAuthorize("hasAuthority('ROLE_PUBLIC')")
-	public UserPublicUpdateDTO updateUserPublicCheckPassword(UserPublicUpdateDTO userPublicUpdateDTO) {
+	public UserPublicDTO updateUserPublicCheckPassword(UserPublicUpdateDTO userPublicUpdateDTO) {
 		// 0. 從 JWT 找尋資料庫 對應的帳號
 	    Users tableUser = userSecurityUtil.getCurrentUserEntity();
 		
@@ -135,17 +135,14 @@ public class UserPublicServiceImpl implements UserPublicService{
 	    UserPublic userPublic = entityFetcher.getUsersPublicByUser(tableUser);
 	    
 	    // 4. Entity 轉 DTO
-	    userPublicUpdateDTO = modelMapper.map(userPublic, UserPublicUpdateDTO.class);
+	    UserPublicDTO userPublicDTO = modelMapper.map(userPublic, UserPublicDTO.class);
 	    
-	    // 5. 返回處理: 清空 password
-	    userPublicUpdateDTO.setPassword(null);
-	    
-		return userPublicUpdateDTO;
+		return userPublicDTO;
 	}
 	
 	@Override
 	@PreAuthorize("hasAuthority('ROLE_PUBLIC')")
-	public UserPublicUpdateDTO updateUserPublic(UserPublicUpdateDTO userPublicUpdateDTO) {
+	public UserPublicDTO updateUserPublic(UserPublicUpdateDTO userPublicUpdateDTO) {
 		// 1. 從 JWT 找到對應的 userPublic
 	    UserPublic userPublic = userSecurityUtil.getCurrentUserPublicEntity();
 		
@@ -164,12 +161,9 @@ public class UserPublicServiceImpl implements UserPublicService{
 		userPublic = userPublicRepository.save(userPublic);
 		
 		// 4. Entity 轉 DTO 並返回 (回傳新的 DTO 實例)
-		userPublicUpdateDTO = modelMapper.map(userPublic, UserPublicUpdateDTO.class);
+		UserPublicDTO userPublicDTO = modelMapper.map(userPublic, UserPublicDTO.class);
 		
-		// 5. 返回處理:
-	    userPublicUpdateDTO.setPassword(null);
-		
-		return userPublicUpdateDTO;
+		return userPublicDTO;
 	}
 
 	@Override

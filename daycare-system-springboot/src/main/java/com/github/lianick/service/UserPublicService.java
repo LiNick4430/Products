@@ -38,17 +38,17 @@ public interface UserPublicService {
 	/** 根據 username 填寫 基本資料<p>
 	 * 需要 @PreAuthorize("hasAuthority('ROLE_PUBLIC')")
 	 *  */
-	UserPublicCreateDTO createUserPublic(UserPublicCreateDTO userPublicSaveDTO);
+	UserPublicDTO createUserPublic(UserPublicCreateDTO userPublicSaveDTO);
 	
 	// 根據 username 更新 基本資料
 	/** 密碼檢查<p>
 	 * 需要 @PreAuthorize("hasAuthority('ROLE_PUBLIC')")
 	 *  */
-	UserPublicUpdateDTO updateUserPublicCheckPassword(UserPublicUpdateDTO userPublicUpdateDTO);
+	UserPublicDTO updateUserPublicCheckPassword(UserPublicUpdateDTO userPublicUpdateDTO);
 	/** 正式更新<p>
 	 * 需要 @PreAuthorize("hasAuthority('ROLE_PUBLIC')")
 	 *  */
-	UserPublicUpdateDTO updateUserPublic(UserPublicUpdateDTO userPublicUpdateDTO);
+	UserPublicDTO updateUserPublic(UserPublicUpdateDTO userPublicUpdateDTO);
 	
 	/** 根據 username 刪除 民眾帳號<p>
 	 * 需要 @PreAuthorize("hasAuthority('ROLE_PUBLIC')")

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.github.lianick.model.dto.AuthResponseDTO;
 import com.github.lianick.model.dto.user.UserLoginDTO;
 import com.github.lianick.model.dto.user.UserUpdateDTO;
+import com.github.lianick.model.dto.userPublic.UserPublicDTO;
 import com.github.lianick.model.dto.userPublic.UserPublicUpdateDTO;
 import com.github.lianick.response.ApiResponse;
 import com.github.lianick.service.AuthService;
@@ -67,10 +68,10 @@ public class AuthController {
 	}
 	
 	@PostMapping(value = {"/public/check/password", "/public/check/password/"})
-	public ApiResponse<UserPublicUpdateDTO> updatePublicCheckPassword (@RequestBody UserPublicUpdateDTO userPublicUpdateDTO) {
-		userPublicUpdateDTO = userPublicService.updateUserPublicCheckPassword(userPublicUpdateDTO);
+	public ApiResponse<UserPublicDTO> updatePublicCheckPassword (@RequestBody UserPublicUpdateDTO userPublicUpdateDTO) {
+		UserPublicDTO userPublicDTO = userPublicService.updateUserPublicCheckPassword(userPublicUpdateDTO);
 		// return new ApiResponse<>(HttpStatus.OK.value(), "密碼確認成功, 進入修改資料網頁", userPublicUpdateDTO);
-		return ApiResponse.success("密碼確認成功, 進入修改資料網頁", userPublicUpdateDTO);
+		return ApiResponse.success("密碼確認成功, 進入修改資料網頁", userPublicDTO);
 	}
 	
 	@PostMapping(value = {"/access/token/refresh", "/access/token/refresh/"})

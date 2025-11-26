@@ -26,7 +26,6 @@ public class UserPublicDTO {	// 搜尋 該民眾 的時候用的
 	private String registeredAddress;
 	private String mailingAddress;
 	
-	// TODO 子表格 之後需要補充
 	private List<ChildDTO> childDTOs;
 	// private Set<DocumentPublic> documents;
 }
