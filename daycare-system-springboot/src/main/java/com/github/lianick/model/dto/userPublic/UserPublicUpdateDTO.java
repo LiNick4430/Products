@@ -17,13 +17,6 @@ public class UserPublicUpdateDTO implements PasswordAwareDTO{	// 更新 民眾�
 	private String username;				// 帳號名
 	private String password;				// 1. 密碼驗證用
 	
-	// 通過密碼後 資料庫 的 基本資料
-	private String name;
-	private String nationalIdNo;
-	private String birthdate;
-	private String registeredAddress;
-	private String mailingAddress;
-	
 	// 2. 更新 所需要的資料
 	private String newName;
 	private String newRegisteredAddress;
