@@ -136,11 +136,6 @@ public class ModelMapperConfig {
 			mapper.using(usersToUsernameConveter)
 					.map(UserPublic::getUsers, UserPublicDTO::setUsername);
 		});
-		modelMapper.typeMap(UserPublic.class, UserPublicUpdateDTO.class).addMappings(mapper -> {
-			mapper.map(UserPublic::getPublicId, UserPublicUpdateDTO::setId);
-			mapper.using(usersToUsernameConveter)
-					.map(UserPublic::getUsers, UserPublicUpdateDTO::setUsername);
-		});
 		
 		// UserAdmin 相關
 		modelMapper.typeMap(UserAdmin.class, UserAdminDTO.class).addMappings(mapper -> {

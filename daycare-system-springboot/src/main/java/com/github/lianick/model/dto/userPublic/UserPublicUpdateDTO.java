@@ -13,7 +13,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class UserPublicUpdateDTO implements PasswordAwareDTO{	// 更新 民眾資料的時候用的
 
-	private Long id;						// 帳號ID/民眾ID
 	private String username;				// 帳號名
 	private String password;				// 1. 密碼驗證用
 	
