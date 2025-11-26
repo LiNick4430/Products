@@ -22,6 +22,7 @@ import com.github.lianick.model.dto.documentPublic.DocumentPublicVerifyDTO;
 import com.github.lianick.model.eneity.Cases;
 import com.github.lianick.model.eneity.DocumentPublic;
 import com.github.lianick.model.eneity.UserPublic;
+import com.github.lianick.model.enums.document.DocumentType;
 import com.github.lianick.model.enums.document.EntityType;
 import com.github.lianick.repository.DocumentPublicRepository;
 import com.github.lianick.service.DocumentPublicService;
@@ -97,18 +98,19 @@ public class DocumentPublicServiceImpl implements DocumentPublicService{
 		
 		Long userId = userPublic.getUsers().getUserId();
 		
-		// 1. 檢查 傳入的檔案 是否存在 以及 是否缺乏必要資訊
-		documentPublicValidationUtil.validateCreatePublicFields(documentPublicCreateDTO, file);
+		// 1. 檢查 傳入的檔案 是否存在 以及 是否缺乏必要資訊 並獲取 DocumentType
+		DocumentType type = documentPublicValidationUtil.validateCreatePublicFields(documentPublicCreateDTO, file);
 		
 		// 2. 檔案儲存
 		DocumentDTO documentDTO = documentUtil.upload(userId, EntityType.USER, file, false);
 		
 		// 3. 資料庫檔案的建立
 		DocumentPublic documentPublic = new DocumentPublic();
+		
 		documentPublic.setUserPublic(userPublic);
 		documentPublic.setFileName(documentDTO.getOrignalFileName());
 		documentPublic.setStoragePath(documentDTO.getTargetLocation());
-		documentPublic.setDocType(documentPublicCreateDTO.getDocType());
+		documentPublic.setDocType(type);
 		
 		documentPublic = documentPublicRepository.save(documentPublic);
 		
@@ -123,8 +125,8 @@ public class DocumentPublicServiceImpl implements DocumentPublicService{
 		UserPublic userPublic = userSecurityUtil.getCurrentUserPublicEntity();
 		Long userId = userPublic.getUsers().getUserId();
 
-		// 1. 檢查 傳入的檔案 是否存在 以及 是否缺乏必要資訊
-		documentPublicValidationUtil.validateCreateCaseFields(documentPublicCreateDTO, file);
+		// 1. 檢查 傳入的檔案 是否存在 以及 是否缺乏必要資訊 並獲取 DocumentType
+		DocumentType type = documentPublicValidationUtil.validateCreateCaseFields(documentPublicCreateDTO, file);
 		
 		Cases cases = entityFetcher.getCasesById(documentPublicCreateDTO.getCaseId());
 		documentPublicValidationUtil.validateUserPublicAndCases(userPublic, cases);
@@ -134,11 +136,12 @@ public class DocumentPublicServiceImpl implements DocumentPublicService{
 				
 		// 3. 資料庫檔案的建立
 		DocumentPublic documentPublic = new DocumentPublic();
+		
 		documentPublic.setUserPublic(userPublic);
 		documentPublic.getCases().add(cases);
 		documentPublic.setFileName(documentDTO.getOrignalFileName());
 		documentPublic.setStoragePath(documentDTO.getTargetLocation());
-		documentPublic.setDocType(documentPublicCreateDTO.getDocType());
+		documentPublic.setDocType(type);
 
 		documentPublic = documentPublicRepository.save(documentPublic);
 

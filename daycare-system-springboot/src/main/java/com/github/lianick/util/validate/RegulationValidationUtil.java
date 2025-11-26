@@ -1,7 +1,5 @@
 package com.github.lianick.util.validate;
 
-import java.net.Authenticator.RequestorType;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
