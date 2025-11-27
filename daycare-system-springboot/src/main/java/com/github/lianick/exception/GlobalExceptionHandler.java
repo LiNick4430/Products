@@ -3,6 +3,7 @@ package com.github.lianick.exception;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.NoHandlerFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -190,6 +191,15 @@ public class GlobalExceptionHandler {
 		int statusCode = HttpStatus.FORBIDDEN.value();
 		ErrorCode errorCode = ErrorCode.ACCESS_DENIED;
 		return ApiResponse.error(statusCode, errorCode, "權限不足，無法訪問此資源");	 // 自定義的錯誤訊息
+	}
+	
+	// API 網址打錯的 404 回應
+	@ExceptionHandler(NoHandlerFoundException.class)
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	public ApiResponse<Void> handleNoHandlerFoundException(NoHandlerFoundException ex) {
+		int statusCode = HttpStatus.NOT_FOUND.value();
+		ErrorCode errorCode = ErrorCode.NOT_FOUND;
+		return ApiResponse.error(statusCode, errorCode, "API 網址打錯");	 // 自定義的錯誤訊息
 	}
 	
 	// 處理所有未被明確定義的 RuntimeException (預防萬一, 最終保護)

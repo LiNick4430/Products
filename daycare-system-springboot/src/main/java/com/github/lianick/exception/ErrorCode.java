@@ -28,5 +28,6 @@ public enum ErrorCode {
 	JWT_INVALID,
 	UNAUTHORIZED,
 	
+	NOT_FOUND,
 	RUNTIME_ERROR,
 }
