@@ -98,7 +98,6 @@ public class SecurityConfig {
 							"/enum/**",
 							// 錯誤處理 相關
 							"/error/access-denied",
-							"/error",	// 確保 找不到 API 網址的時候 可以正確拋出 404 NOFOUND (Spring Boot 的基本錯誤處理路徑)
 							// 使用者 相關
 							"/user/register/", "/user/register",				// 註冊
 							"/user/reset/password/", "/user/reset/password",	// (忘記密碼)重設密碼
