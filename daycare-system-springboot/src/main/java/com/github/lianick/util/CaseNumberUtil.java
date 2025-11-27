@@ -21,6 +21,7 @@ public class CaseNumberUtil {
 	
 	private static final String COUNTER_KEY = "CASE_DAILY_COUNT";
 	private static final String NUMBER_TOP = "CASE_";
+	private static final Integer MAX_DAILY_COUNT = 999999;
 	
 	@Transactional
 	public String generateNumber() {
@@ -48,7 +49,12 @@ public class CaseNumberUtil {
 				dailyCount.setCurrentDate(today);
 				dailyCount.setCurrentCount(newCount);
 			} else {
-				// 非換日 計數器遞增
+				// 非換日
+				if (dailyCount.getCurrentCount() == MAX_DAILY_COUNT) {
+					throw new RuntimeException("單日案件流量爆滿 請通知管理人員");
+				}
+				
+				// 計數器遞增
 				newCount = dailyCount.getCurrentCount() + 1;
 				dailyCount.setCurrentCount(newCount);
 			}
