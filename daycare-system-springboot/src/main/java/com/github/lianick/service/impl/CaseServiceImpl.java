@@ -117,7 +117,7 @@ public class CaseServiceImpl implements CaseService {
 		ChildInfo childInfo = entityFetcher.getChildInfoById(caseCreateDTO.getChildId());
 		caseValidationUtil.validatePublicAndChildInfo(userPublic, childInfo);
 		
-		// 2. 嘗試建立 必要的資訊
+		// 2. 建立 必要的資訊
 		Organization organizationFirst = entityFetcher.getOrganizationById(caseCreateDTO.getOrganizationIdFirst());
 		Organization organizationSecond = null;
 		if (caseCreateDTO.getOrganizationIdSecond() != null) {
@@ -125,7 +125,7 @@ public class CaseServiceImpl implements CaseService {
 		}
 		LocalDateTime now = LocalDateTime.now();
 		
-		// 3. 嘗試建立 Cases 並儲存
+		// 3. 建立 Cases 並儲存
 		Cases cases = new Cases();
 		
 		cases.setCaseNumber(caseNumberUtil.generateNumber());
