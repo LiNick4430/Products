@@ -11,7 +11,6 @@ import com.github.lianick.model.dto.announcement.AnnouncementDocumnetDTO;
 import com.github.lianick.model.dto.announcement.AnnouncementFindDTO;
 import com.github.lianick.model.dto.announcement.AnnouncementPublishDTO;
 import com.github.lianick.model.dto.announcement.AnnouncementUpdateDTO;
-import com.github.lianick.model.dto.organization.OrganizationDocumentDTO;
 
 /**
  * 負責處理 Announcement 相關的 完整性 檢測
