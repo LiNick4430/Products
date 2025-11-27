@@ -4,6 +4,7 @@ package com.github.lianick.exception;
 public enum ErrorCode {
 	USER_NOT_FOUND,
 	CHILD_NOT_FOUND,
+	PRIORITY_NOT_FOUND,
 	ENUM_NOT_FOUND,
 	
 	USER_IS_EXIST,

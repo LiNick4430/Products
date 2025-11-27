@@ -80,7 +80,6 @@ public class Cases extends BaseEntity{
 	@OneToMany(mappedBy = "cases", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private Set<CasePriority> priorities;		// 案件 所選擇的 優先條件
 	
-	// @OneToMany(mappedBy = "cases", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@ManyToMany
 	@JoinTable(
 			name = "case_link_document_public",							// 關連表名稱

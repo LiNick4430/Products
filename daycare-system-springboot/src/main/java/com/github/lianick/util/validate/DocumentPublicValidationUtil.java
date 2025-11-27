@@ -46,7 +46,7 @@ public class DocumentPublicValidationUtil {
 		DocumentType documentType = null;
 		
 		try {
-			documentType = DocumentType.valueOf(documentPublicCreateDTO.getDocType());
+			documentType = DocumentType.fromCode(documentPublicCreateDTO.getDocType());
 		} catch (IllegalArgumentException e) {
 			throw new EnumNotFoundException("附件類型 錯誤");
 		}

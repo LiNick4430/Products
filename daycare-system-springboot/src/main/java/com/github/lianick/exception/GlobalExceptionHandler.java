@@ -40,6 +40,16 @@ public class GlobalExceptionHandler {
 		return ApiResponse.error(statusCode, errorCode, ex.getMessage());
 	}
 	
+	// 處理找不到 Priority 的 異常 (401)
+	@ExceptionHandler(PriorityNotFoundException.class) 	
+	@ResponseStatus(HttpStatus.UNAUTHORIZED)     		// 401
+	public ApiResponse<?> handlePriorityNotFoundException(PriorityNotFoundException ex) {
+		int statusCode = HttpStatus.UNAUTHORIZED.value();
+		ErrorCode errorCode = ErrorCode.PRIORITY_NOT_FOUND;
+		// return new ApiResponse<>(statusCode, ex.getMessage(), null);
+		return ApiResponse.error(statusCode, errorCode, ex.getMessage());
+	}
+	
 	// 處理 使用 ENUM 卻 找不到 code 的 異常 (401)
 	@ExceptionHandler(EnumNotFoundException.class) 	
 	@ResponseStatus(HttpStatus.UNAUTHORIZED)     		// 401

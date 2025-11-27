@@ -53,7 +53,7 @@ public class RegulationValidationUtil {
 		}
 		
 		try {
-			return RegulationType.valueOf(regulationCreateDTO.getType());
+			return RegulationType.formCode(regulationCreateDTO.getType());
 		} catch (IllegalArgumentException e) {
 			throw new EnumNotFoundException("規範類型 錯誤");
 		}

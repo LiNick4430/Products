@@ -35,10 +35,6 @@ public class CasePriority {
 	@JoinColumn(name = "priority_id", nullable = false)
 	private Priority priority;				// 優先條件 ID
 	
-	@ManyToOne
-	@JoinColumn(name = "organization_id", nullable = false)
-	private Organization organization;		// 機構 ID
-	
 	@JoinColumn(name = "case_priority_hasProof")
 	private Boolean hasProof = false;		// 該條件 是否有上傳文件證明
 }

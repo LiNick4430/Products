@@ -1,5 +1,6 @@
 package com.github.lianick.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -18,11 +19,19 @@ import com.github.lianick.model.dto.cases.CaseFindPublicDTO;
 import com.github.lianick.model.dto.cases.CaseQueneDTO;
 import com.github.lianick.model.dto.cases.CaseVerifyDTO;
 import com.github.lianick.model.dto.cases.CaseWithdrawnDTO;
+import com.github.lianick.model.eneity.CaseOrganization;
+import com.github.lianick.model.eneity.CasePriority;
 import com.github.lianick.model.eneity.Cases;
 import com.github.lianick.model.eneity.ChildInfo;
+import com.github.lianick.model.eneity.Organization;
 import com.github.lianick.model.eneity.UserPublic;
+import com.github.lianick.model.enums.ApplicationMethod;
+import com.github.lianick.model.enums.CaseStatus;
 import com.github.lianick.repository.CasesRepository;
+import com.github.lianick.service.CaseOrganizationService;
+import com.github.lianick.service.CasePriorityService;
 import com.github.lianick.service.CaseService;
+import com.github.lianick.util.CaseNumberUtil;
 import com.github.lianick.util.UserSecurityUtil;
 import com.github.lianick.util.validate.CaseValidationUtil;
 import com.github.lianick.util.validate.OrganizationValidationUtil;
@@ -48,6 +57,15 @@ public class CaseServiceImpl implements CaseService {
 	
 	@Autowired
 	private CaseValidationUtil caseValidationUtil;
+
+	@Autowired
+	private CaseNumberUtil caseNumberUtil;
+	
+	@Autowired
+	private CaseOrganizationService caseOrganizationService;
+	
+	@Autowired
+	private CasePriorityService casePriorityService;
 	
 	@Override
 	@PreAuthorize("hasAuthority('ROLE_PUBLIC')") 
@@ -77,19 +95,63 @@ public class CaseServiceImpl implements CaseService {
 	@PreAuthorize("hasAuthority('ROLE_PUBLIC')") 
 	public CaseDTO findByPublic(CaseFindPublicDTO caseFindPublicDTO) {
 		// 0. 檢查完整性
-		
+		caseValidationUtil.validateFindPublic(caseFindPublicDTO);
 		
 		// 1. 檢查權限
+		Cases cases = entityFetcher.getCasesById(caseFindPublicDTO.getId());
 		UserPublic userPublic = userSecurityUtil.getCurrentUserPublicEntity();
+		caseValidationUtil.validatePublicAndCase(userPublic, cases);
 		
-		return null;
+		// 2. 轉成 DTO 回傳
+		return modelMapper.map(cases, CaseDTO.class);
 	}
 
 	@Override
 	@PreAuthorize("hasAuthority('ROLE_PUBLIC')") 
 	public CaseDTO createNewCase(CaseCreateDTO caseCreateDTO) {
-		// TODO Auto-generated method stub
-		return null;
+		// 0. 檢查完整性 並取出 ApplicationMethod
+		ApplicationMethod applicationMethod = caseValidationUtil.validateCreateFields(caseCreateDTO);
+		
+		// 1. 檢查權限
+		UserPublic userPublic = userSecurityUtil.getCurrentUserPublicEntity();
+		ChildInfo childInfo = entityFetcher.getChildInfoById(caseCreateDTO.getChildId());
+		caseValidationUtil.validatePublicAndChildInfo(userPublic, childInfo);
+		
+		// 2. 嘗試建立 必要的資訊
+		Organization organizationFirst = entityFetcher.getOrganizationById(caseCreateDTO.getOrganizationIdFirst());
+		Organization organizationSecond = null;
+		if (caseCreateDTO.getOrganizationIdSecond() != null) {
+			organizationSecond = entityFetcher.getOrganizationById(caseCreateDTO.getOrganizationIdSecond());
+		}
+		LocalDateTime now = LocalDateTime.now();
+		
+		// 3. 嘗試建立 Cases 並儲存
+		Cases cases = new Cases();
+		
+		cases.setCaseNumber(caseNumberUtil.generateNumber());
+		cases.setApplicationMethod(applicationMethod);
+		cases.setApplicationDate(now);
+		cases.setChildInfo(childInfo);
+		cases.setStatus(CaseStatus.APPLIED);
+		
+		cases = casesRepository.save(cases);
+		
+		// 4. 關聯表的建立
+		CaseOrganization caseOrganizationFirst = caseOrganizationService.createOrganization(cases, organizationFirst, true);
+		cases.getOrganizations().add(caseOrganizationFirst);
+		if (organizationSecond != null) {
+			CaseOrganization caseOrganizationSecond = caseOrganizationService.createOrganization(cases, organizationSecond, false);
+			cases.getOrganizations().add(caseOrganizationSecond);
+		}
+		
+		Set<CasePriority> priorities = casePriorityService.createPriorities(cases, caseCreateDTO.getPriorityIds());
+		cases.setPriorities(priorities);
+		
+		// 5. 最終儲存
+		cases = casesRepository.save(cases);
+		
+		// 6. 回傳
+		return modelMapper.map(cases, CaseDTO.class);
 	}
 
 	@Override

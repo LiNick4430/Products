@@ -11,6 +11,7 @@ import com.github.lianick.exception.ChildNotFoundException;
 import com.github.lianick.exception.ClassesFailureException;
 import com.github.lianick.exception.FileStorageException;
 import com.github.lianick.exception.OrganizationFailureException;
+import com.github.lianick.exception.PriorityNotFoundException;
 import com.github.lianick.exception.RegulationFailureException;
 import com.github.lianick.exception.RoleFailureException;
 import com.github.lianick.exception.TokenFailureException;
@@ -22,6 +23,7 @@ import com.github.lianick.model.eneity.Classes;
 import com.github.lianick.model.eneity.DocumentAdmin;
 import com.github.lianick.model.eneity.DocumentPublic;
 import com.github.lianick.model.eneity.Organization;
+import com.github.lianick.model.eneity.Priority;
 import com.github.lianick.model.eneity.RefreshToken;
 import com.github.lianick.model.eneity.Regulations;
 import com.github.lianick.model.eneity.Role;
@@ -36,6 +38,7 @@ import com.github.lianick.repository.ClassesRepository;
 import com.github.lianick.repository.DocumentAdminRepository;
 import com.github.lianick.repository.DocumentPublicRepository;
 import com.github.lianick.repository.OrganizationRepository;
+import com.github.lianick.repository.PriorityRepository;
 import com.github.lianick.repository.RefreshTokenRepository;
 import com.github.lianick.repository.RegulationsRepository;
 import com.github.lianick.repository.RoleRepository;
@@ -91,6 +94,9 @@ public class EntityFetcher {
 	
 	@Autowired
 	private RegulationsRepository regulationsRepository;
+	
+	@Autowired
+	private PriorityRepository priorityRepository;
 	
 	/**
 	 * 使用 username 獲取 Users
@@ -265,6 +271,15 @@ public class EntityFetcher {
 		RefreshToken refreshToken = refreshTokenRepository.findByToken(token)
 				.orElseThrow(() -> new TokenFailureException(message));
 		return refreshToken;
+	}
+	
+	/**
+	 * 使用 PriorityId 找到 Priority
+	 * */
+	public Priority getPriority(Long id) {
+		Priority priority = priorityRepository.findById(id)
+				.orElseThrow(() -> new PriorityNotFoundException("查無優先度"));
+		return priority;
 	}
 	
 }
