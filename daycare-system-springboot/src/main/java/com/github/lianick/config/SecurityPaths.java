@@ -34,34 +34,74 @@ public class SecurityPaths {
 	
 	public static final List<String> AUTHENTICATED = List.of(
 			// UserController
-			"/user/**",
+			"/user/update/**",
+		    "/user/delete/**",
+		    "/user/me/**",
 			
 			// UserPublicController
-			"/public/user/**",	
+		    "/public/user/me/**",
+		    "/public/user/find/all/**",
+		    "/public/user/find/**",
+		    "/public/user/information/**",
+		    "/public/user/update/**",
+		    "/public/user/delete/**",	
 			
 			// UserAdminController
-			"/admin/user/**",
+		    "/admin/user/me/**",
+		    "/admin/user/find/all/**",
+		    "/admin/user/find/**",
+		    "/admin/user/create/**",
+		    "/admin/user/update/**",
+		    "/admin/user/delete/**",
 			
 			// ChildInfoController
-			"/child/**",
+		    "/child/find/all/**",
+		    "/child/find/**",
+		    "/child/information/**",
+		    "/child/update/**",
+		    "/child/delete/**",
 			
 			// DocumentPublicController
-			"/document/**",
+		    "/document/public/find/**",
+		    "/document/case/find/**",
+		    "/document/public/create/**",
+		    "/document/case/create/**",
+		    "/document/public/link/case/**",
+		    "/document/admin/verify/**",
+		    "/document/public/delete/**",
 			
 			// AuthContorller
-			"/auth/**",
+		    "/auth/logout/**",
+		    "/auth/check/password/**",
+		    "/auth/public/check/password/**",
 			
 			// OrganizationController
-			"/organization/**",
+		    "/organization/download/doc/**",
+		    "/organization/create/**",
+		    "/organization/upload/doc/**",
+		    "/organization/update/**",
+		    "/organization/delete/doc/**",
+		    "/organization/delete/**",
 			
 			// ClassController
-			"/class/**",
+			"/class/find/**",
+		    "/class/create/**",
+		    "/class/link/case/**",
+		    "/class/delete/**",
 			
 			// AnnouncementController
-			"/announcement/**",
+		    "/announcement/create/**",
+		    "/announcement/update/**",
+		    "/announcement/upload/doc/**",
+		    "/announcement/delete/doc/**",
+		    "/announcement/delete/**",
+		    "/announcement/find/not/publish/**",
+		    "/announcement/publish/**",
 			
 			// RegulationController
-			"/regulation/**"
+		    "/regulation/create/**",
+		    "/regulation/update/**",
+		    "/regulation/delete/**"
 			
 			// TODO 新的 Controller 添加
 			
