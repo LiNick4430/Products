@@ -2,6 +2,7 @@ package com.github.lianick.response;
 
 import org.springframework.http.HttpStatus;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.lianick.exception.ErrorCode;
 
 import lombok.Getter;
@@ -10,6 +11,8 @@ import lombok.Getter;
 //建立 Server 與 Client 在傳遞資料上的統一結構與標準(含錯誤)
 public class ApiResponse<T> {
 
+	private static final ObjectMapper objectMapper = new ObjectMapper();
+	
 	// private boolean success;		// 成功與否
 	private int code;				// 使用 HTTP Status Code (例如 401, 403, 200)
 	private ErrorCode errorCode;	// 自定義的 程式錯誤碼 (非 200 才有)
@@ -38,5 +41,17 @@ public class ApiResponse<T> {
 	// 錯誤 回應的方法
 	public static <T> ApiResponse<T> error(int code, ErrorCode errorCode, String message) {
         return new ApiResponse<T>(code, errorCode, message);
+	}
+	
+	// 把 API 錯誤回應 轉成 字串 的方法
+	public static String toErrorJsonString(int code, ErrorCode errorCode, String message) {
+		try {
+			return objectMapper.writeValueAsString(new ApiResponse<>(code, errorCode, message));
+		} catch (Exception e) {
+			return "{\"code\":" + code + 
+		               ",\"errorCode\":\"" + errorCode + 
+		               "\",\"message\":\"" + message + 
+		               "\",\"data\":null}";
+		}
 	}
 }

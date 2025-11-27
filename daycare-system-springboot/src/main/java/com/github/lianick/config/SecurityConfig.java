@@ -92,36 +92,18 @@ public class SecurityConfig {
 			// 3. 設置授權規則
 			.authorizeHttpRequests(authorize -> authorize
 				
-					// 1. 公開端點：允許任何人存取以下路徑
+					// 1. 公開 API ： 允許任何人存取以下路徑
 					.requestMatchers(
-							// 前端工程師 用的 ENUM 接口
-							"/enum/**",
-							// 錯誤處理 相關
-							"/error/access-denied",
-							// 使用者 相關
-							"/user/register/", "/user/register",				// 註冊
-							"/user/reset/password/", "/user/reset/password",	// (忘記密碼)重設密碼
-							// 認證 相關
-							"/auth/login/",	"/auth/login",						// 登入
-							"/auth/access/token/refresh/", "/auth/access/token/refresh",	// access token 刷新
-							// 信箱 相關
-							"/email/send/password/", "/email/send/password",				// 發送忘記密碼信
-							"/email/verify",			// 帳號驗證
-							"/email/reset/password",		// 忘記密碼驗證
-							// 機構 相關
-							"/organization/find/", "/organization/find",	// 尋找 特定機構資料
-							// 公告 相關
-							"/announcement/find/all/", "/announcement/find/all",		// 搜尋 全部公告
-							"/announcement/find/", "/announcement/find",				// 搜尋 特定公告
-							"/announcement/download/doc/", "/announcement/download/doc",// 下載 公告附件
-							// 規範 相關
-							"/regulation/find/all/", "/regulation/find/all/",	// 搜尋 全部規範
-							"/regulation/find/", "/regulation/find"				// 搜尋 特定規範
-							
+							SecurityPaths.PUBLIC.toArray(new String[0])
 					).permitAll()
 					
-					// 2. 其他所有請求：都必須經過身份驗證
-					.anyRequest().authenticated()
+					// 2. 認證 API ： 都必須經過身份驗證
+					.requestMatchers(
+							SecurityPaths.AUTHENTICATED.toArray(new String[0])
+					).authenticated()
+					
+					// 3. 其他未定義路徑
+					.anyRequest().denyAll()
 			)
 			
 			// 4. 設置 Session 為無狀態

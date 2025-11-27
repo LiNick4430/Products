@@ -7,12 +7,16 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.github.lianick.exception.ErrorCode;
+import com.github.lianick.response.ApiResponse;
 import com.github.lianick.util.JwtUtil;
 
 import io.jsonwebtoken.Claims;
@@ -31,7 +35,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{	// OncePerReq
 	
 	@Autowired
 	private JwtUtil jwtUtil;
-
+	
+	@Autowired
+	private AntPathMatcher antPathMatcher;
+	
 	public static final String AUTH_ERROR_ATTRIBUTE = "authError";
 	private static final String HEADER_STRING = "Authorization";	// HTTP 請求中存放 JWT 的 Header 名稱（標準是 Authorization）。
 	private static final String TOKEN_PREFIX = "Bearer";			// JWT 前的前綴詞，通常是 Bearer <token>。
@@ -39,7 +46,32 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{	// OncePerReq
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {	// 過濾器的主體邏輯，在每次請求時被呼叫。
+		
+		//---------------------------------------------------
+		// 判斷是否存在的 API
+		//---------------------------------------------------
+		String path = request.getRequestURI();
+		
+		// 如果是 PUBLIC → 放行
+		boolean isPublic = SecurityPaths.PUBLIC.stream()
+								.anyMatch(pattern -> antPathMatcher.match(pattern, path));
+		boolean isAuthenticatedApi = SecurityPaths.AUTHENTICATED.stream()
+										.anyMatch(pattern -> antPathMatcher.match(pattern, path));
 
+		// 不在任何已知路徑 → 404
+		if (!isPublic && !isAuthenticatedApi) {
+			response.setStatus(HttpStatus.NOT_FOUND.value());
+		    response.setContentType("application/json;charset=UTF-8");
+		    
+		    response.getWriter().write(ApiResponse.toErrorJsonString(HttpStatus.NOT_FOUND.value(), ErrorCode.NOT_FOUND, "API Not Found"));
+		    response.getWriter().flush(); // 確保立即送出
+		    return;
+		}
+		
+		//---------------------------------------------------
+		// JWT 請求
+		//---------------------------------------------------
+		
 		String header = request.getHeader(HEADER_STRING);
 		String username = null;
 		String authToken = null;

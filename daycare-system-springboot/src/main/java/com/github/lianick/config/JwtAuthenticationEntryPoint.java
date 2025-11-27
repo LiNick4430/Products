@@ -7,7 +7,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.lianick.exception.ErrorCode;
 import com.github.lianick.response.ApiResponse;
 
@@ -19,8 +18,6 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint{	// AuthenticationEntryPoint 負責處理 「未經認證的請求」或「認證失敗的請求」。
 
-	private final ObjectMapper objectMapper = new ObjectMapper();
-	
 	@Override
 	public void commence(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException authException) throws IOException, ServletException {
@@ -53,9 +50,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint{	//
 		response.setContentType("application/json;charset=UTF-8");
 		
 		// 6. 寫入 Json 回應
-		ApiResponse<?> errorResponse = ApiResponse.error(HttpStatus.UNAUTHORIZED.value(), errorCode, errorMessage);
-		
-		response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
+		response.getWriter().write(ApiResponse.toErrorJsonString(HttpStatus.UNAUTHORIZED.value(), errorCode, errorMessage));
 		response.getWriter().flush();
 	}
 }
