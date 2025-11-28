@@ -229,9 +229,9 @@ public class CaseServiceImpl implements CaseService {
 	}
 
 	@Override
-	public CaseDTO intoClassCase(CaseClassDTO caseClassDTO) {
+	public void intoClassCase(List<CaseClassDTO> caseClassDTOs) {
 		// TODO Auto-generated method stub
-		return null;
+		
 	}
 
 	@Override

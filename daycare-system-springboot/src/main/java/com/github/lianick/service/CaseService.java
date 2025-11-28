@@ -113,7 +113,7 @@ public interface CaseService {
 	 * 	CASE(PENDING -> ALLOCATED) 進入 有空位的班級
 	 * 需要 @PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')") 
 	 * */
-	CaseDTO intoClassCase(CaseClassDTO caseClassDTO);
+	void intoClassCase(List<CaseClassDTO> caseClassDTOs);
 	
 	/** 幼兒 向 班級 報到 (ALLOCATED -> COMPLETED) 
 	 * 需要 @PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')") 
