@@ -2,8 +2,12 @@ package com.github.lianick.model.eneity;
 
 import org.hibernate.annotations.SQLRestriction;
 
+import com.github.lianick.model.enums.LotteryQueueStatus;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -55,7 +59,8 @@ public class LotteryQueue extends BaseEntity{
 	@Column(name = "lottery_queue_alternate_number")
 	private Integer alternateNumber;		// 候補 排序
 	
+	@Enumerated(EnumType.STRING)
 	@Column(name = "lottery_queue_status", nullable = false)
-	private String status;					// 目前狀態
+	private LotteryQueueStatus status;		// 目前狀態
 	
 }
