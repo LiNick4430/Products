@@ -7,11 +7,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class CaseQueneDTO {
+@NoArgsConstructor
+public class CaseWaitlistDTO {
 
-	private Long id;					// 案件 ID
-	
-	private Long organizationId;		// 申辦的 機構ID
+	private Long id;
+    private Long organizationId; // 標示是哪個機構的備取名單（1st 或 2nd）
 }

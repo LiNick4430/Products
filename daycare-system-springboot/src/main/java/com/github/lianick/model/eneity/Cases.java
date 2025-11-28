@@ -75,7 +75,7 @@ public class Cases extends BaseEntity{
 	@JoinColumn(name = "class_id")
 	private Classes classes = null;				// 成功之後 對應的 班級ID
 	
-	// 以下 三個 的生命週期 都和 cases 綁定 因此使用 cascade = CascadeType.ALL
+	// 以下 生命週期 都和 cases 綁定 因此使用 cascade = CascadeType.ALL
 	
 	@OneToMany(mappedBy = "cases", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private Set<CasePriority> priorities;		// 案件 所選擇的 優先條件
@@ -88,7 +88,10 @@ public class Cases extends BaseEntity{
 			)
 	private Set<DocumentPublic> documents;		// 案件 所使用 附件
 	
-	
 	@OneToMany(mappedBy = "cases", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private Set<ReviewLogs> reviewHistorys;		// 案件 的 審核紀錄
+	
+	@OneToMany(mappedBy = "cases", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private Set<WithdrawalRequests> withdrawalRequests;	// 案件 的 撤銷申請 紀錄 
+	
 }

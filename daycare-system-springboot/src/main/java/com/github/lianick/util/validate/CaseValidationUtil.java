@@ -88,7 +88,7 @@ public class CaseValidationUtil {
 		CaseStatus caseStatus = cases.getStatus();
 		
 		if (caseStatus.equals(CaseStatus.WITHDRAWN)) {
-			throw new CaseFailureException("案件 正在 撤銷中");
+			throw new CaseFailureException("案件 已經被 撤銷");
 		}
 		if (caseStatus.equals(CaseStatus.REJECTED)) {
 			throw new CaseFailureException("案件 已經退件 無法撤銷");

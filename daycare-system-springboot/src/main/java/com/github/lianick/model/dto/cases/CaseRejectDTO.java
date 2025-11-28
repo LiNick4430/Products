@@ -9,9 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CaseQueneDTO {
+public class CaseRejectDTO {
 
 	private Long id;					// 案件 ID
-	
-	private Long organizationId;		// 申辦的 機構ID
 }

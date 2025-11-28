@@ -17,8 +17,12 @@ import com.github.lianick.model.dto.cases.CaseCreateDTO;
 import com.github.lianick.model.dto.cases.CaseDTO;
 import com.github.lianick.model.dto.cases.CaseFindAdminDTO;
 import com.github.lianick.model.dto.cases.CaseFindPublicDTO;
+import com.github.lianick.model.dto.cases.CaseLotteryResultDTO;
+import com.github.lianick.model.dto.cases.CasePendingDTO;
 import com.github.lianick.model.dto.cases.CaseQueneDTO;
+import com.github.lianick.model.dto.cases.CaseRejectDTO;
 import com.github.lianick.model.dto.cases.CaseVerifyDTO;
+import com.github.lianick.model.dto.cases.CaseWaitlistDTO;
 import com.github.lianick.model.dto.cases.CaseWithdrawnDTO;
 import com.github.lianick.model.eneity.CaseOrganization;
 import com.github.lianick.model.eneity.CasePriority;
@@ -203,14 +207,14 @@ public class CaseServiceImpl implements CaseService {
 	}
 
 	@Override
-	@PreAuthorize("hasAuthority('ROLE_MANAGER')")
+	@PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')") 
 	public CaseDTO intoQueueCase(CaseQueneDTO caseQueneDTO) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	@PreAuthorize("hasAuthority('ROLE_MANAGER')")
+	@PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')") 
 	public CaseDTO intoClassCase(CaseClassDTO caseClassDTO) {
 		// TODO Auto-generated method stub
 		return null;
@@ -219,6 +223,42 @@ public class CaseServiceImpl implements CaseService {
 	@Override
 	@PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")
 	public void completedCase(CaseCompleteDTO caseCompleteDTO) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void advanceToPending(List<CasePendingDTO> casePendingDTOs) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public List<CaseDTO> findQueuedCases() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void processLotteryResults(List<CaseLotteryResultDTO> lotteryResults) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void processWaitlistSuccess(List<CaseWaitlistDTO> waitlistDTOs) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void processWaitlistFailure(List<CaseWaitlistDTO> waitlistDTOs) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void intoRejected(List<CaseRejectDTO> caseRejectDTOs) {
 		// TODO Auto-generated method stub
 		
 	}
