@@ -2,6 +2,7 @@ package com.github.lianick.service;
 
 import java.util.List;
 
+import com.github.lianick.model.dto.WithdrawalRequestDTO;
 import com.github.lianick.model.dto.cases.CaseClassDTO;
 import com.github.lianick.model.dto.cases.CaseCompleteDTO;
 import com.github.lianick.model.dto.cases.CaseCreateDTO;
@@ -54,7 +55,7 @@ public interface CaseService {
 	/** 撤回 (自己)案件 (申請中 -> 撤回)
 	 * 需要 @PreAuthorize("hasAuthority('ROLE_PUBLIC')") 
 	 * */
-	CaseDTO withdrawnCase(CaseWithdrawnDTO caseWithdrawnDTO);
+	WithdrawalRequestDTO withdrawnCase(CaseWithdrawnDTO caseWithdrawnDTO);
 	
 	// 員工 專用
 	/** 搜尋 全部 案件

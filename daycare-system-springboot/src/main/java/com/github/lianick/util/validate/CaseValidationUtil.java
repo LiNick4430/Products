@@ -6,6 +6,7 @@ import com.github.lianick.exception.CaseFailureException;
 import com.github.lianick.exception.ValueMissException;
 import com.github.lianick.model.dto.cases.CaseCreateDTO;
 import com.github.lianick.model.dto.cases.CaseFindPublicDTO;
+import com.github.lianick.model.dto.cases.CaseWithdrawnDTO;
 import com.github.lianick.model.eneity.Cases;
 import com.github.lianick.model.eneity.ChildInfo;
 import com.github.lianick.model.eneity.UserPublic;
@@ -64,6 +65,18 @@ public class CaseValidationUtil {
 		}
 		if (!childInfo.getUserPublic().equals(userPublic)) {
 			throw new CaseFailureException("您沒有權限建立此案件");
+		}
+	}
+	
+	/**
+	 * CaseWithdrawnDTO 的完整性
+	 * */
+	public void validateWithdrawnCase(CaseWithdrawnDTO caseWithdrawnDTO) {
+		if (caseWithdrawnDTO.getId() == null || 
+				caseWithdrawnDTO.getReason() == null || caseWithdrawnDTO.getReason().isBlank()
+				) {
+			
+			throw new ValueMissException("缺少特定資料(案件ID, 撤銷原因)");
 		}
 	}
 }

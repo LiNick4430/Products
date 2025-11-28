@@ -12,13 +12,16 @@ import com.github.lianick.converter.CaseOrganizationSetToOrganizationNameSecondC
 import com.github.lianick.converter.CaseOrganizationSetToOrganizationStatusFirstConveter;
 import com.github.lianick.converter.CaseOrganizationSetToOrganizationStatusSecondConveter;
 import com.github.lianick.converter.CaseSetToCaseNumberListConverter;
+import com.github.lianick.converter.CaseToCaseNumberConveter;
 import com.github.lianick.converter.ChildInfoToChildNameConveter;
 import com.github.lianick.converter.ClassToClassNameConveter;
 import com.github.lianick.converter.OrganizationToOrganizationIdConveter;
 import com.github.lianick.converter.OrganizationToOrganizationNameConveter;
 import com.github.lianick.converter.RoleNumberToRoleConveter;
+import com.github.lianick.converter.UserAdminToNameConveter;
 import com.github.lianick.converter.UsersPublicToUseIdConveter;
 import com.github.lianick.converter.UsersToUsernameConveter;
+import com.github.lianick.model.dto.WithdrawalRequestDTO;
 import com.github.lianick.model.dto.announcement.AnnouncementDTO;
 import com.github.lianick.model.dto.cases.CaseDTO;
 import com.github.lianick.model.dto.child.ChildDTO;
@@ -47,6 +50,7 @@ import com.github.lianick.model.eneity.Regulations;
 import com.github.lianick.model.eneity.UserAdmin;
 import com.github.lianick.model.eneity.UserPublic;
 import com.github.lianick.model.eneity.Users;
+import com.github.lianick.model.eneity.WithdrawalRequests;
 
 @Configuration
 public class ModelMapperConfig {
@@ -93,6 +97,12 @@ public class ModelMapperConfig {
 	
 	@Autowired
 	private BaseEnumToDescriptionConveter baseEnumToDescriptionConveter;
+	
+	@Autowired
+	private CaseToCaseNumberConveter caseToCaseNumberConveter;
+	
+	@Autowired
+	private UserAdminToNameConveter userAdminToNameConveter;
 	
 	// 主要 邏輯
 	@Bean	// @Bean 預設 Public
@@ -225,6 +235,19 @@ public class ModelMapperConfig {
 				.map(Cases::getOrganizations, CaseDTO::setOrganizationNameSecondStatus);
 			mapper.using(classToClassNameConveter)
 				.map(Cases::getClasses, CaseDTO::setClassName);
+			mapper.using(baseEnumToDescriptionConveter)
+				.map(Cases::getStatus, CaseDTO::setStatus);
+		});
+		
+		// WithdrawalRequests 相關
+		modelMapper.typeMap(WithdrawalRequests.class, WithdrawalRequestDTO.class).addMappings(mapper -> {
+			mapper.map(WithdrawalRequests::getWithdrawalRequestId, WithdrawalRequestDTO::setId);
+			mapper.using(caseToCaseNumberConveter)
+				.map(WithdrawalRequests::getCases, WithdrawalRequestDTO::setCaseNumber);
+			mapper.using(userAdminToNameConveter)
+				.map(WithdrawalRequests::getUserAdmin, WithdrawalRequestDTO::setAdminName);
+			mapper.using(baseEnumToDescriptionConveter)
+				.map(WithdrawalRequests::getStatus, WithdrawalRequestDTO::setStatus);
 		});
 		
 		// ------------------------------------------------------------------------------------

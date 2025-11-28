@@ -12,4 +12,6 @@ import lombok.Setter;
 public class CaseWithdrawnDTO {
 
 	private Long id;					// 案件 ID
+	
+	private String reason;				// 撤銷 原因
 }

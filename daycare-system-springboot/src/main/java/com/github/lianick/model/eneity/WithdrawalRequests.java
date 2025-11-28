@@ -4,8 +4,12 @@ import java.time.LocalDateTime;
 
 import org.hibernate.annotations.SQLRestriction;
 
+import com.github.lianick.model.enums.WithdrawalRequestStatus;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -50,8 +54,9 @@ public class WithdrawalRequests extends BaseEntity{
 	@Column(name = "withdrawal_request_audit_date")
 	private LocalDateTime auditDate;			// 審核 日期
 	
+	@Enumerated(EnumType.STRING)
 	@Column(name = "withdrawal_request_audit_status", nullable = false)
-	private String status;						// 審核 狀態
+	private WithdrawalRequestStatus status;						// 審核 狀態
 }
 
 /*

@@ -10,6 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.github.lianick.model.dto.WithdrawalRequestDTO;
 import com.github.lianick.model.dto.cases.CaseClassDTO;
 import com.github.lianick.model.dto.cases.CaseCompleteDTO;
 import com.github.lianick.model.dto.cases.CaseCreateDTO;
@@ -25,12 +26,14 @@ import com.github.lianick.model.eneity.Cases;
 import com.github.lianick.model.eneity.ChildInfo;
 import com.github.lianick.model.eneity.Organization;
 import com.github.lianick.model.eneity.UserPublic;
+import com.github.lianick.model.eneity.WithdrawalRequests;
 import com.github.lianick.model.enums.ApplicationMethod;
 import com.github.lianick.model.enums.CaseStatus;
 import com.github.lianick.repository.CasesRepository;
 import com.github.lianick.service.CaseOrganizationService;
 import com.github.lianick.service.CasePriorityService;
 import com.github.lianick.service.CaseService;
+import com.github.lianick.service.WithdrawalRequestService;
 import com.github.lianick.util.CaseNumberUtil;
 import com.github.lianick.util.UserSecurityUtil;
 import com.github.lianick.util.validate.CaseValidationUtil;
@@ -66,6 +69,9 @@ public class CaseServiceImpl implements CaseService {
 	
 	@Autowired
 	private CasePriorityService casePriorityService;
+	
+	@Autowired
+	private WithdrawalRequestService withdrawalRequestService;
 	
 	@Override
 	@PreAuthorize("hasAuthority('ROLE_PUBLIC')") 
@@ -156,9 +162,22 @@ public class CaseServiceImpl implements CaseService {
 
 	@Override
 	@PreAuthorize("hasAuthority('ROLE_PUBLIC')") 
-	public CaseDTO withdrawnCase(CaseWithdrawnDTO caseWithdrawnDTO) {
-		// TODO Auto-generated method stub
-		return null;
+	public WithdrawalRequestDTO withdrawnCase(CaseWithdrawnDTO caseWithdrawnDTO) {
+		// 0. 檢查完整性
+		caseValidationUtil.validateWithdrawnCase(caseWithdrawnDTO);
+		
+		// 1. 檢查權限
+		UserPublic userPublic = userSecurityUtil.getCurrentUserPublicEntity();
+		
+		Cases cases = entityFetcher.getCasesById(caseWithdrawnDTO.getId());
+		ChildInfo childInfo = entityFetcher.getChildInfoById(cases.getChildInfo().getChildId());
+		caseValidationUtil.validatePublicAndChildInfo(userPublic, childInfo);
+		
+		// 2. 嘗試建立新的 撤銷申請 並且存入資料庫
+		WithdrawalRequests withdrawalRequests = withdrawalRequestService.createNewWithDrawalRequest(cases, caseWithdrawnDTO.getReason());
+		
+		// 3. 返回成功建立的 撤銷申請
+		return modelMapper.map(withdrawalRequests, WithdrawalRequestDTO.class);
 	}
 
 	@Override
