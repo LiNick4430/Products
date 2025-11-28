@@ -3,12 +3,19 @@ package com.github.lianick.exception;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.hibernate.StaleObjectStateException;
+import org.hibernate.StaleStateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.ConcurrencyFailureException;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.security.access.AccessDeniedException;
 
 import com.github.lianick.response.ApiResponse;
+
+import jakarta.persistence.OptimisticLockException;
 
 @RestControllerAdvice	// = @ControllerAdvice + @ResponseBody
 public class GlobalExceptionHandler {
@@ -130,6 +137,16 @@ public class GlobalExceptionHandler {
 		return ApiResponse.error(statusCode, errorCode, ex.getMessage());
 	}
 	
+	// 撤銷序列(WithdrawalRequests) 相關 的 異常 (401)
+	@ExceptionHandler(WithdrawalRequestFailureException.class) 	
+	@ResponseStatus(HttpStatus.UNAUTHORIZED)     		// 401
+	public ApiResponse<?> handleWithdrawalRequestFailureException(WithdrawalRequestFailureException ex) {
+		int statusCode = HttpStatus.UNAUTHORIZED.value();
+		ErrorCode errorCode = ErrorCode.WITHDRAWALREQUEST_FAILURE;
+		// return new ApiResponse<>(statusCode, ex.getMessage(), null);
+		return ApiResponse.error(statusCode, errorCode, ex.getMessage());
+	}
+	
 	// 無法發送電子信箱 的 異常 (500)
 	@ExceptionHandler(MailSendFailureException.class) 		
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)   // 500
@@ -200,6 +217,22 @@ public class GlobalExceptionHandler {
 		int statusCode = HttpStatus.FORBIDDEN.value();
 		ErrorCode errorCode = ErrorCode.ACCESS_DENIED;
 		return ApiResponse.error(statusCode, errorCode, "權限不足，無法訪問此資源");	 // 自定義的錯誤訊息
+	}
+	
+	// 處理 樂觀鎖 的衝突 409
+	@ExceptionHandler({
+		OptimisticLockException.class,					// JPA 標準：更新時 version 不匹配（@Version 衝突）。
+		StaleObjectStateException.class,				// Hibernate flush 過程發現 version 不一致或 row 已被改動。
+		StaleStateException.class,						// Hibernate update/delete 實際影響 row = 0，可能是資料已被修改或刪除。
+		ObjectOptimisticLockingFailureException.class,	// Spring Data 封裝 JPA/Hibernate 樂觀鎖衝突的 RuntimeException。
+		ConcurrencyFailureException.class,  			// Spring Data JPA 頂層封裝的並發失敗錯誤，一般是底層樂觀鎖衝突或資料同時被修改。
+	    OptimisticLockingFailureException.class  		// Spring ORM 層級封裝的樂觀鎖衝突，對應 JPA/Hibernate 的 version 不匹配。
+	})
+	@ResponseStatus(HttpStatus.CONFLICT)
+	public ApiResponse<Void> handleOptimisticLockException(Exception ex) {
+		int statusCode = HttpStatus.CONFLICT.value();
+		ErrorCode errorCode = ErrorCode.DATA_CONFLICT;
+		return ApiResponse.error(statusCode, errorCode, "資料已被其他使用者修改，請重新讀取後再試。");	 // 自定義的錯誤訊息	
 	}
 	
 	// 處理所有未被明確定義的 RuntimeException (預防萬一, 最終保護)

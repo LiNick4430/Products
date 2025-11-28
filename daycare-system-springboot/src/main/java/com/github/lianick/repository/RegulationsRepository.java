@@ -6,6 +6,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.github.lianick.model.eneity.Regulations;
+import com.github.lianick.model.enums.RegulationType;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -26,7 +28,7 @@ public interface RegulationsRepository extends JpaRepository<Regulations, Long> 
 			+ "AND organization_id = :organizationId "
 			+ "AND delete_at IS NULL "
 			, nativeQuery = true)
-	Optional<Regulations> findByOrganizationAndType(@Param("organizationId") Long organizationId, @Param("type") String type);
+	Optional<Regulations> findByOrganizationAndType(@Param("organizationId") Long organizationId, @Param("type") RegulationType type);
 	
 	@Query(value = 
 			"SELECT * FROM regulations "
@@ -34,6 +36,6 @@ public interface RegulationsRepository extends JpaRepository<Regulations, Long> 
 			+ "AND organization_id = :organizationId "
 			+ "AND delete_at IS NOT NULL "
 			, nativeQuery = true)
-	Optional<Regulations> findByOrganizationAndTypeAndIsDelete(@Param("organizationId") Long organizationId, @Param("type") String type);
+	Optional<Regulations> findByOrganizationAndTypeAndIsDelete(@Param("organizationId") Long organizationId, @Param("type") RegulationType type);
 	
 }

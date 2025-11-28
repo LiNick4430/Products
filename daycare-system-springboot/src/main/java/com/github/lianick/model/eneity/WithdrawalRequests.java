@@ -18,6 +18,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -57,6 +58,10 @@ public class WithdrawalRequests extends BaseEntity{
 	@Enumerated(EnumType.STRING)
 	@Column(name = "withdrawal_request_audit_status", nullable = false)
 	private WithdrawalRequestStatus status;						// 審核 狀態
+
+	@Version
+	@Column(name = "version", nullable = false)
+	private Long version;	// 樂觀鎖
 }
 
 /*

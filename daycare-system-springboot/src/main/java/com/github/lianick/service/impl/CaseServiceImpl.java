@@ -166,12 +166,13 @@ public class CaseServiceImpl implements CaseService {
 		// 0. 檢查完整性
 		caseValidationUtil.validateWithdrawnCase(caseWithdrawnDTO);
 		
-		// 1. 檢查權限
+		// 1. 檢查權限 並檢查 案件狀態
 		UserPublic userPublic = userSecurityUtil.getCurrentUserPublicEntity();
-		
 		Cases cases = entityFetcher.getCasesById(caseWithdrawnDTO.getId());
 		ChildInfo childInfo = entityFetcher.getChildInfoById(cases.getChildInfo().getChildId());
+		
 		caseValidationUtil.validatePublicAndChildInfo(userPublic, childInfo);
+		caseValidationUtil.validateCaseStatusInWithdrawnCase(cases);
 		
 		// 2. 嘗試建立新的 撤銷申請 並且存入資料庫
 		WithdrawalRequests withdrawalRequests = withdrawalRequestService.createNewWithDrawalRequest(cases, caseWithdrawnDTO.getReason());

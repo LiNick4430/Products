@@ -11,6 +11,7 @@ import com.github.lianick.model.eneity.Cases;
 import com.github.lianick.model.eneity.ChildInfo;
 import com.github.lianick.model.eneity.UserPublic;
 import com.github.lianick.model.enums.ApplicationMethod;
+import com.github.lianick.model.enums.CaseStatus;
 
 /**
  * 負責處理 Case 相關的 完整性 檢測
@@ -77,6 +78,23 @@ public class CaseValidationUtil {
 				) {
 			
 			throw new ValueMissException("缺少特定資料(案件ID, 撤銷原因)");
+		}
+	}
+	
+	/**
+	 * 檢查 CASE 的 狀態 是否 符合 withdrawnCase
+	 * */
+	public void validateCaseStatusInWithdrawnCase(Cases cases) {
+		CaseStatus caseStatus = cases.getStatus();
+		
+		if (caseStatus.equals(CaseStatus.WITHDRAWN)) {
+			throw new CaseFailureException("案件 正在 撤銷中");
+		}
+		if (caseStatus.equals(CaseStatus.REJECTED)) {
+			throw new CaseFailureException("案件 已經退件 無法撤銷");
+		}
+		if (caseStatus.equals(CaseStatus.COMPLETED)) {
+			throw new CaseFailureException("案件 已經結案 無法撤銷");
 		}
 	}
 }

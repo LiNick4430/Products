@@ -83,7 +83,7 @@ public class RegulationValidationUtil {
 	 * Organization 和 RegulationType 看 是否 已經存在 規範 
 	 * */
 	public void validateOrganizationAndRegulationType(Organization organization, RegulationType type) {
-		if (regulationsRepository.findByOrganizationAndType(organization.getOrganizationId(), type.name()).isPresent()) {
+		if (regulationsRepository.findByOrganizationAndType(organization.getOrganizationId(), type).isPresent()) {
 			throw new RegulationFailureException("同類型規範 已經存在");
 		}
 	}
