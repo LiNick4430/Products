@@ -23,6 +23,7 @@ import com.github.lianick.model.dto.cases.CaseQueneDTO;
 import com.github.lianick.model.dto.cases.CaseRejectDTO;
 import com.github.lianick.model.dto.cases.CaseVerifyDTO;
 import com.github.lianick.model.dto.cases.CaseWaitlistDTO;
+import com.github.lianick.model.dto.cases.CaseWithdrawnAdminDTO;
 import com.github.lianick.model.dto.cases.CaseWithdrawnDTO;
 import com.github.lianick.model.eneity.CaseOrganization;
 import com.github.lianick.model.eneity.CasePriority;
@@ -186,51 +187,33 @@ public class CaseServiceImpl implements CaseService {
 	}
 
 	@Override
-	@PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")
 	public List<CaseDTO> findAllByAdmin(CaseFindAdminDTO caseFindAdminDTO) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	@PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")
 	public CaseDTO findByAdmin(CaseFindAdminDTO caseFindAdminDTO) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	@PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")
 	public CaseDTO verifyCase(CaseVerifyDTO caseVerifyDTO) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	@PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')") 
-	public CaseDTO intoQueueCase(CaseQueneDTO caseQueneDTO) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	@PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')") 
-	public CaseDTO intoClassCase(CaseClassDTO caseClassDTO) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	@PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")
-	public void completedCase(CaseCompleteDTO caseCompleteDTO) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void advanceToPending(List<CasePendingDTO> casePendingDTOs) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public CaseDTO intoQueueCase(CaseQueneDTO caseQueneDTO) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
@@ -241,6 +224,18 @@ public class CaseServiceImpl implements CaseService {
 
 	@Override
 	public void processLotteryResults(List<CaseLotteryResultDTO> lotteryResults) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public CaseDTO intoClassCase(CaseClassDTO caseClassDTO) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void completedCase(List<CaseCompleteDTO> caseCompleteDTOs) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -263,4 +258,17 @@ public class CaseServiceImpl implements CaseService {
 		
 	}
 
+	@Override
+	public List<WithdrawalRequestDTO> findAllWithdrawalRequest() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void verifyWithdrawnCase(List<CaseWithdrawnAdminDTO> caseWithdrawnAdminDTOs) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	
 }

@@ -9,7 +9,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CaseCompleteDTO {
+public class CaseWithdrawnAdminDTO {
 
 	private Long id;					// 案件 ID
+	
+	private Boolean isPassed;			// 這個是否通過
 }

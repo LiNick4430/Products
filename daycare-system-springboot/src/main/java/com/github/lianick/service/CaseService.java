@@ -15,6 +15,7 @@ import com.github.lianick.model.dto.cases.CaseQueneDTO;
 import com.github.lianick.model.dto.cases.CaseRejectDTO;
 import com.github.lianick.model.dto.cases.CaseVerifyDTO;
 import com.github.lianick.model.dto.cases.CaseWaitlistDTO;
+import com.github.lianick.model.dto.cases.CaseWithdrawnAdminDTO;
 import com.github.lianick.model.dto.cases.CaseWithdrawnDTO;
 
 /** 案件的狀態順序
@@ -117,7 +118,7 @@ public interface CaseService {
 	/** 幼兒 向 班級 報到 (ALLOCATED -> COMPLETED) 
 	 * 需要 @PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')") 
 	 * */
-	void completedCase(CaseCompleteDTO caseCompleteDTO);
+	void completedCase(List<CaseCompleteDTO>  caseCompleteDTOs);
 	
 	/**
 	 * 機構 的 班級 還有 空位 的時候(報到期限後)
@@ -143,4 +144,16 @@ public interface CaseService {
 	 * 需要 @PreAuthorize("hasAuthority('ROLE_MANAGER')")
 	 * */
 	void intoRejected(List<CaseRejectDTO> caseRejectDTOs);
+	
+	/**
+	 * 尋找 所有 撤銷申請 的 案件 (狀態 是 APPLIED 的)
+	 * 需要 @PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")
+	 * */
+	List<WithdrawalRequestDTO> findAllWithdrawalRequest();
+	
+	/** 
+	 * 審核 撤銷申請 案件
+	 * 需要 @PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')") 
+	 * */
+	void verifyWithdrawnCase(List<CaseWithdrawnAdminDTO> caseWithdrawnAdminDTOs);
 }
