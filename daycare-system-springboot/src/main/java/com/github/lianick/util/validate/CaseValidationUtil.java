@@ -10,6 +10,7 @@ import com.github.lianick.model.dto.cases.CaseCreateDTO;
 import com.github.lianick.model.dto.cases.CaseFindAdminDTO;
 import com.github.lianick.model.dto.cases.CaseFindPublicDTO;
 import com.github.lianick.model.dto.cases.CasePendingDTO;
+import com.github.lianick.model.dto.cases.CaseQueueDTO;
 import com.github.lianick.model.dto.cases.CaseVerifyDTO;
 import com.github.lianick.model.dto.cases.CaseWithdrawnDTO;
 import com.github.lianick.model.eneity.Cases;
@@ -19,6 +20,7 @@ import com.github.lianick.model.eneity.UserAdmin;
 import com.github.lianick.model.eneity.UserPublic;
 import com.github.lianick.model.eneity.Users;
 import com.github.lianick.model.enums.ApplicationMethod;
+import com.github.lianick.model.enums.CaseOrganizationStatus;
 import com.github.lianick.model.enums.CaseStatus;
 
 /**
@@ -160,6 +162,29 @@ public class CaseValidationUtil {
 	}
 	
 	/**
+	 * CaseQueneDTO 的完整性 並且 取出 CaseOrganizationStatus (PASSED or REJECTED)
+	 * */
+	public CaseOrganizationStatus validateCaseQuene(CaseQueueDTO caseQueneDTO) {
+		if (caseQueneDTO.getId() == null || caseQueneDTO.getOrganizationId() == null || 
+				caseQueneDTO.getStatus() == null) {
+			throw new ValueMissException("缺少必要資訊(案件ID, 機構ID, 關聯新狀態)");
+		}
+		
+		CaseOrganizationStatus status;
+		try {
+			status = CaseOrganizationStatus.fromCode(caseQueneDTO.getStatus());
+		} catch (IllegalArgumentException e) {
+			throw new CaseFailureException("關聯狀態 類型錯誤");
+		}
+		
+		if (status == CaseOrganizationStatus.PASSED || status == CaseOrganizationStatus.REJECTED) {
+			return status;
+		}
+		
+		throw new CaseFailureException("關聯狀態 類型錯誤(必須是 通過 或者 未通過)");
+	}
+	
+	/**
 	 * 檢查 CasePendingDTO 的完整性
 	 * */
 	public void validateCasePending(CasePendingDTO casePendingDTO) {
@@ -171,7 +196,7 @@ public class CaseValidationUtil {
 	/**
 	 * 檢查 員工 是否可以控制 此案件
 	 * */
-	public void validateUserAnsCase(Users user, Cases cases) {
+	public void validateUserAndCase(Users user, Cases cases) {
 		// 1. 假設是管理者 直接通過
 		if (userValidationUtil.validateUserIsManager(user)) {
 			return;

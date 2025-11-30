@@ -24,17 +24,19 @@ import com.github.lianick.model.dto.cases.CaseFindAdminDTO;
 import com.github.lianick.model.dto.cases.CaseFindPublicDTO;
 import com.github.lianick.model.dto.cases.CaseLotteryResultDTO;
 import com.github.lianick.model.dto.cases.CasePendingDTO;
-import com.github.lianick.model.dto.cases.CaseQueneDTO;
+import com.github.lianick.model.dto.cases.CaseQueueDTO;
 import com.github.lianick.model.dto.cases.CaseRejectDTO;
 import com.github.lianick.model.dto.cases.CaseVerifyDTO;
 import com.github.lianick.model.dto.cases.CaseWaitlistDTO;
 import com.github.lianick.model.dto.cases.CaseWithdrawnAdminDTO;
 import com.github.lianick.model.dto.cases.CaseWithdrawnDTO;
+import com.github.lianick.model.dto.lotteryQueue.LotteryQueueCreateDTO;
 import com.github.lianick.model.dto.reviewLog.ReviewLogCreateDTO;
 import com.github.lianick.model.eneity.CaseOrganization;
 import com.github.lianick.model.eneity.CasePriority;
 import com.github.lianick.model.eneity.Cases;
 import com.github.lianick.model.eneity.ChildInfo;
+import com.github.lianick.model.eneity.LotteryQueue;
 import com.github.lianick.model.eneity.Organization;
 import com.github.lianick.model.eneity.ReviewLogs;
 import com.github.lianick.model.eneity.UserAdmin;
@@ -42,16 +44,19 @@ import com.github.lianick.model.eneity.UserPublic;
 import com.github.lianick.model.eneity.Users;
 import com.github.lianick.model.eneity.WithdrawalRequests;
 import com.github.lianick.model.enums.ApplicationMethod;
+import com.github.lianick.model.enums.CaseOrganizationStatus;
 import com.github.lianick.model.enums.CaseStatus;
 import com.github.lianick.repository.CasesRepository;
 import com.github.lianick.service.CaseOrganizationService;
 import com.github.lianick.service.CasePriorityService;
 import com.github.lianick.service.CaseService;
+import com.github.lianick.service.LotteryQueueService;
 import com.github.lianick.service.ReviewLogService;
 import com.github.lianick.service.WithdrawalRequestService;
 import com.github.lianick.util.CaseNumberUtil;
 import com.github.lianick.util.UserSecurityUtil;
 import com.github.lianick.util.validate.CaseValidationUtil;
+import com.github.lianick.util.validate.OrganizationValidationUtil;
 import com.github.lianick.util.validate.UserValidationUtil;
 
 @Service
@@ -60,6 +65,7 @@ public class CaseServiceImpl implements CaseService {
 
 	// 建立 Logger
 	private static final Logger logger = LoggerFactory.getLogger(CaseServiceImpl.class);
+	private static final int BATCH_MAX_SIZE = 50; 	// 單次流程上限
 	
 	@Autowired
 	private CasesRepository casesRepository;
@@ -80,6 +86,9 @@ public class CaseServiceImpl implements CaseService {
 	private CaseValidationUtil caseValidationUtil;
 
 	@Autowired
+	private OrganizationValidationUtil organizationValidationUtil;
+	
+	@Autowired
 	private CaseNumberUtil caseNumberUtil;
 	
 	@Autowired
@@ -93,6 +102,9 @@ public class CaseServiceImpl implements CaseService {
 	
 	@Autowired
 	private ReviewLogService reviewLogService;
+	
+	@Autowired
+	private LotteryQueueService lotteryQueueService;
 	
 	
 	// ------------------
@@ -242,7 +254,7 @@ public class CaseServiceImpl implements CaseService {
 		// 1. 判斷權限
 		Users users = userSecurityUtil.getCurrentUserEntity();
 		Cases cases = entityFetcher.getCasesById(caseFindAdminDTO.getId());
-		caseValidationUtil.validateUserAnsCase(users, cases);
+		caseValidationUtil.validateUserAndCase(users, cases);
 		
 		// 2. 轉換成 DTO
 		return modelMapper.map(cases, CaseDTO.class);
@@ -256,7 +268,7 @@ public class CaseServiceImpl implements CaseService {
 		// 1. 判斷權限
 		Users users = userSecurityUtil.getCurrentUserEntity();
 		Cases cases = entityFetcher.getCasesById(caseVerifyDTO.getId());
-		caseValidationUtil.validateUserAnsCase(users, cases);
+		caseValidationUtil.validateUserAndCase(users, cases);
 		
 		// 2. 判斷 案件 原本的狀態 是否 APPLIED
 		caseValidationUtil.validateCaseStatus(cases, CaseStatus.APPLIED);
@@ -296,15 +308,29 @@ public class CaseServiceImpl implements CaseService {
 		
 		// 2. 開始大量處理
 		List<CaseErrorDTO> caseErrorDTOs = new ArrayList<>();	//失敗 案件 集合
-		for (CasePendingDTO casePendingDTO : casePendingDTOs) {
+		
+		for (int i = 0; i < casePendingDTOs.size(); i += BATCH_MAX_SIZE) {
+			List<CasePendingDTO> batch = casePendingDTOs.subList(
+					i, Math.min(i + BATCH_MAX_SIZE , casePendingDTOs.size()));
+			
+			for (CasePendingDTO casePendingDTO : batch) {
+				try {
+		            oneCaseToPending(casePendingDTO, users.getAdminInfo());
+		        } catch (Exception e) {
+		            // 可以記錄錯誤，但繼續處理下一個案件
+		        	logger.error("案件 {} 處理失敗: {}", casePendingDTO.getId(), e.getMessage(), e);
+		        	caseErrorDTOs.add(new CaseErrorDTO(casePendingDTO.getId(), e.getMessage()));
+		        }
+			}
+			
 			try {
-	            oneCaseToPending(casePendingDTO, users.getAdminInfo());
-	        } catch (Exception e) {
-	            // 可以記錄錯誤，但繼續處理下一個案件
-	        	logger.error("案件 {} 處理失敗: {}", casePendingDTO.getId(), e.getMessage(), e);
-	        	caseErrorDTOs.add(new CaseErrorDTO(casePendingDTO.getId(), e.getMessage()));
-	        }
+			    Thread.sleep(200); // 0.2 秒
+			} catch (InterruptedException e) {
+			    Thread.currentThread().interrupt(); // 保留中斷狀態
+			    logger.warn("批次暫停被中斷", e);
+			}
 		}
+		
 		return caseErrorDTOs;
 	}
 	
@@ -338,9 +364,65 @@ public class CaseServiceImpl implements CaseService {
 	}
 
 	@Override
-	public CaseDTO intoQueueCase(CaseQueneDTO caseQueneDTO) {
-		// TODO Auto-generated method stub
-		return null;
+	@PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")
+	public CaseDTO intoQueueCase(CaseQueueDTO caseQueueDTO) {
+		// 0. 完整性 並取出 CaseOrganizationStatus
+		CaseOrganizationStatus newStatus = caseValidationUtil.validateCaseQuene(caseQueueDTO);
+		boolean isPassed = newStatus == CaseOrganizationStatus.PASSED;
+		
+		// 1. 判斷權限
+		Users users = userSecurityUtil.getCurrentUserEntity();
+		Cases cases = entityFetcher.getCasesById(caseQueueDTO.getId());
+		Organization organization = entityFetcher.getOrganizationById(caseQueueDTO.getOrganizationId());
+		
+		// 和 案件 是否有關連
+		caseValidationUtil.validateUserAndCase(users, cases);
+		// 和 目標機構 是否有關連
+		organizationValidationUtil.validateOrganizationPermission(users, organization.getOrganizationId());
+		// case 是不是 PENDING 狀態
+		caseValidationUtil.validateCaseStatus(cases, CaseStatus.PENDING);
+		
+		// 2. 取出 CaseOrganization
+		CaseOrganization caseOrganization = entityFetcher.getCaseOrganizationByCaseIdAndOrganizationId(cases.getCaseId(), organization.getOrganizationId());
+		
+		// 3. 更新 CaseOrganization 狀態
+		CaseOrganizationStatus oldStatus = caseOrganization.getStatus();
+		caseOrganization.setStatus(newStatus);
+		
+		// 4. 若 CaseOrganization 狀態改為 PASSED → 建立第一階段抽籤序列 LotteryQueue(QUEUED)
+		LotteryQueue lotteryQueue = null;
+		
+		if (isPassed) {
+			LotteryQueueCreateDTO lotteryQueueCreateDTO = new LotteryQueueCreateDTO();
+			lotteryQueueCreateDTO.setCases(cases);
+			lotteryQueueCreateDTO.setChildInfo(cases.getChildInfo());
+			lotteryQueueCreateDTO.setOrganization(organization);
+			
+			lotteryQueue = lotteryQueueService.createNewLotteryQueue(lotteryQueueCreateDTO);
+		}
+		
+		// 5. 建立審核紀錄
+		LocalDateTime now = LocalDateTime.now();
+		ReviewLogCreateDTO<CaseOrganizationStatus> reviewLogCreateDTO = new ReviewLogCreateDTO<>();
+		reviewLogCreateDTO.setCases(cases);
+		reviewLogCreateDTO.setUserAdmin(users.getAdminInfo());
+		reviewLogCreateDTO.setFrom(oldStatus);
+		reviewLogCreateDTO.setTo(newStatus);
+		reviewLogCreateDTO.setEnumClass(CaseOrganizationStatus.class);
+		reviewLogCreateDTO.setNow(now);
+		
+		ReviewLogs reviewLogs = reviewLogService.createNewReviewLog(reviewLogCreateDTO);
+		
+		// 6. 將 審核紀錄/柱列 放入案件 更新 關聯狀態 並 回存
+		if (lotteryQueue != null) {
+		    cases.getLotteryQueues().add(lotteryQueue);
+		}
+		cases.getReviewHistorys().add(reviewLogs);
+
+		cases = casesRepository.save(cases);
+		
+		// 7. 建立 DTO 回傳
+		return modelMapper.map(cases, CaseDTO.class);
 	}
 
 	@Override

@@ -17,6 +17,7 @@ import com.github.lianick.exception.RoleFailureException;
 import com.github.lianick.exception.TokenFailureException;
 import com.github.lianick.exception.UserNotFoundException;
 import com.github.lianick.model.eneity.Announcements;
+import com.github.lianick.model.eneity.CaseOrganization;
 import com.github.lianick.model.eneity.Cases;
 import com.github.lianick.model.eneity.ChildInfo;
 import com.github.lianick.model.eneity.Classes;
@@ -32,6 +33,7 @@ import com.github.lianick.model.eneity.UserPublic;
 import com.github.lianick.model.eneity.UserVerify;
 import com.github.lianick.model.eneity.Users;
 import com.github.lianick.repository.AnnouncementsRepository;
+import com.github.lianick.repository.CaseOrganizationRepository;
 import com.github.lianick.repository.CasesRepository;
 import com.github.lianick.repository.ChildInfoRepository;
 import com.github.lianick.repository.ClassesRepository;
@@ -97,6 +99,9 @@ public class EntityFetcher {
 	
 	@Autowired
 	private PriorityRepository priorityRepository;
+	
+	@Autowired
+	private CaseOrganizationRepository caseOrganizationRepository;
 	
 	/**
 	 * 使用 username 獲取 Users
@@ -208,6 +213,15 @@ public class EntityFetcher {
 		Cases cases = casesRepository.findById(id)
 				.orElseThrow(() -> new CaseFailureException("查無案件"));
 		return cases;
+	}
+	
+	/**
+	 * 使用 CaseId 和 OrganizationId 獲取 CaseOrganization
+	 * */
+	public CaseOrganization getCaseOrganizationByCaseIdAndOrganizationId(Long caseId, Long organizationId) {
+		CaseOrganization caseOrganization = caseOrganizationRepository.findByCasesAndOrganization(caseId, organizationId)
+				.orElseThrow(() -> new CaseFailureException("查無關聯機構"));
+		return caseOrganization;
 	}
 	
 	/**

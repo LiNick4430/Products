@@ -12,7 +12,7 @@ import com.github.lianick.model.dto.cases.CaseFindAdminDTO;
 import com.github.lianick.model.dto.cases.CaseFindPublicDTO;
 import com.github.lianick.model.dto.cases.CaseLotteryResultDTO;
 import com.github.lianick.model.dto.cases.CasePendingDTO;
-import com.github.lianick.model.dto.cases.CaseQueneDTO;
+import com.github.lianick.model.dto.cases.CaseQueueDTO;
 import com.github.lianick.model.dto.cases.CaseRejectDTO;
 import com.github.lianick.model.dto.cases.CaseVerifyDTO;
 import com.github.lianick.model.dto.cases.CaseWaitlistDTO;
@@ -92,7 +92,7 @@ public interface CaseService {
 	 * 假設 CaseOrganization = REJECTED	->  進入下一個 CaseOrganization 或者 PASSED -> REJECTED
 	 * 需要 @PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')") 
 	 * */
-	CaseDTO intoQueueCase(CaseQueneDTO caseQueneDTO);
+	CaseDTO intoQueueCase(CaseQueueDTO caseQueueDTO);
 	
 	/**
 	 * 取出 LotteryQueue = QUEUED 的 柱列們

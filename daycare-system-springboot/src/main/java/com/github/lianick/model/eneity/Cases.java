@@ -94,4 +94,7 @@ public class Cases extends BaseEntity{
 	@OneToMany(mappedBy = "cases", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private Set<WithdrawalRequests> withdrawalRequests;	// 案件 的 撤銷申請 紀錄 
 	
+	@OneToMany(mappedBy = "cases", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private Set<LotteryQueue> lotteryQueues;	// 案件的 抽籤柱列
+	
 }

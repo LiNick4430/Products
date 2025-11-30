@@ -54,7 +54,7 @@ public class LotteryQueue extends BaseEntity{
 	private Organization organization;		// 機構ID
 	
 	@Column(name = "lottery_queue_order", nullable = false)
-	private Integer lotteryOrder;			// 抽籤 序位
+	private Integer lotteryOrder;			// 抽籤 序位	只放入柱列 = -1
 	
 	@Column(name = "lottery_queue_alternate_number")
 	private Integer alternateNumber;		// 候補 排序

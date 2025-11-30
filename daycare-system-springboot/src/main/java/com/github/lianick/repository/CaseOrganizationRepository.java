@@ -27,4 +27,5 @@ public interface CaseOrganizationRepository extends JpaRepository<CaseOrganizati
 			+ "AND delete_at IS NULL "
 			, nativeQuery = true)
 	Optional<CaseOrganization> findByCasesAndPreferenceOrder(@Param("caseId") Long caseId, @Param("preferenceOrder") String preferenceOrder);
+	
 }
