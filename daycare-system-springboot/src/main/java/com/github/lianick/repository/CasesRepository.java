@@ -2,6 +2,8 @@ package com.github.lianick.repository;
 
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.github.lianick.model.eneity.Cases;
@@ -9,10 +11,21 @@ import com.github.lianick.model.eneity.ChildInfo;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
+
+import com.github.lianick.model.enums.CaseStatus;
+
 
 
 @Repository
 public interface CasesRepository extends JpaRepository<Cases, Long> {
+	
+	@EntityGraph(attributePaths = {
+	        "organizations",   
+	        "classes",         
+	        "childInfo"        
+	    })
+	Optional<Cases> findById(Long id);
 	
 	// 確保在查詢 Cases 時, 預載入 Set<CaseOrganization> Classes ChildInfo
 	@EntityGraph(attributePaths = {
@@ -21,4 +34,29 @@ public interface CasesRepository extends JpaRepository<Cases, Long> {
 	        "childInfo"        
 	    })
 	List<Cases> findByChildInfoIn(Collection<ChildInfo> childInfos);
+	
+	@EntityGraph(attributePaths = {
+	        "organizations",   
+	        "classes",         
+	        "childInfo"        
+	    })
+	List<Cases> findByStatus(CaseStatus status);
+	
+	@EntityGraph(attributePaths = {
+	        "organizations",   
+	        "classes",         
+	        "childInfo"        
+	    })
+	@Query("""
+		    SELECT c FROM Cases c
+		    JOIN c.organizations co
+		    WHERE c.status = :status
+		      AND co.organization.id = :organizationId
+		      AND c.deleteAt IS NULL
+		      AND co.deleteAt IS NULL
+		    """)
+	List<Cases> findByStatusAndOrganizationId(
+            @Param("status") CaseStatus status,
+            @Param("organizationId") Long organizationId);
+	
 }

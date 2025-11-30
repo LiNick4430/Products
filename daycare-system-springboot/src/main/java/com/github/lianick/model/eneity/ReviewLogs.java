@@ -40,8 +40,14 @@ public class ReviewLogs extends BaseEntity{
 	@JoinColumn(name = "admin_id", nullable = false)
 	private UserAdmin userAdmin;				// 審核 人員
 	
+	@Column(name = "review_from_status", nullable = false)
+    private String fromStatus; 					// 存 enum code
+
+    @Column(name = "review_to_status", nullable = false)
+    private String toStatus;  					// 存 enum code
+	
 	@Column(name = "review_type", nullable = false)
-	private String reviewType;					// 審核 動作
+	private String reviewType;					// 審核目標狀態
 	
 	@Column(name = "review_date", nullable = false)
 	private LocalDateTime reviewDate;			// 審核 日期

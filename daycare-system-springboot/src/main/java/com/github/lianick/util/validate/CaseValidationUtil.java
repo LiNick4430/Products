@@ -1,15 +1,23 @@
 package com.github.lianick.util.validate;
 
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.github.lianick.exception.CaseFailureException;
 import com.github.lianick.exception.ValueMissException;
 import com.github.lianick.model.dto.cases.CaseCreateDTO;
+import com.github.lianick.model.dto.cases.CaseFindAdminDTO;
 import com.github.lianick.model.dto.cases.CaseFindPublicDTO;
+import com.github.lianick.model.dto.cases.CasePendingDTO;
+import com.github.lianick.model.dto.cases.CaseVerifyDTO;
 import com.github.lianick.model.dto.cases.CaseWithdrawnDTO;
 import com.github.lianick.model.eneity.Cases;
 import com.github.lianick.model.eneity.ChildInfo;
+import com.github.lianick.model.eneity.Organization;
+import com.github.lianick.model.eneity.UserAdmin;
 import com.github.lianick.model.eneity.UserPublic;
+import com.github.lianick.model.eneity.Users;
 import com.github.lianick.model.enums.ApplicationMethod;
 import com.github.lianick.model.enums.CaseStatus;
 
@@ -18,7 +26,10 @@ import com.github.lianick.model.enums.CaseStatus;
  * */
 @Service
 public class CaseValidationUtil {
-
+	
+	@Autowired
+	private UserValidationUtil userValidationUtil;
+	
 	/**
 	 * CaseFindPublicDTO 的完整性
 	 * */
@@ -95,6 +106,112 @@ public class CaseValidationUtil {
 		}
 		if (caseStatus.equals(CaseStatus.COMPLETED)) {
 			throw new CaseFailureException("案件 已經結案 無法撤銷");
+		}
+	}
+	
+	/**
+	 * 大量搜尋時 檢查 CaseFindAdminDTO 的 完整性 並取出 狀態
+	 * */
+	public CaseStatus validateFindAdminAll(CaseFindAdminDTO caseFindAdminDTO) {
+		if (caseFindAdminDTO.getCaseStatus() == null || caseFindAdminDTO.getCaseStatus().isBlank()) {
+			throw new ValueMissException("缺少必要資訊(案件狀態)");
+		}
+		
+		try {
+			return CaseStatus.fromCode(caseFindAdminDTO.getCaseStatus());
+		} catch (IllegalArgumentException e) {
+			throw new CaseFailureException("案件狀態 類型錯誤");
+		}
+	}
+	
+	/**
+	 * 單一搜尋時 檢查 CaseFindAdminDTO 的 完整性
+	 * */
+	public void validateFindAdminOne(CaseFindAdminDTO caseFindAdminDTO) {
+		if (caseFindAdminDTO.getId() == null) {
+			throw new ValueMissException("缺少必要資訊(案件ID)");
+		}
+	}
+	
+	/**
+	 * 檢查 CaseVerifyDTO 的 完整性，並返回合法的 CaseStatus (PASSED 或 REJECTED)。
+	 * */
+	public CaseStatus validateCaseVerify(CaseVerifyDTO caseVerifyDTO) {
+		// 檢查空值
+		if (caseVerifyDTO.getId() == null || 
+				caseVerifyDTO.getNewStatus() == null || caseVerifyDTO.getNewStatus().isBlank()) {
+			throw new ValueMissException("缺少必要資訊(案件ID, 案件新狀態)");
+		}
+		
+		// 取出狀態
+		CaseStatus status;
+		try {
+			status = CaseStatus.fromCode(caseVerifyDTO.getNewStatus());
+		} catch (IllegalArgumentException e) {
+			throw new CaseFailureException("案件狀態 類型錯誤");
+		}
+		
+		// 看看 是不是 合法的 新狀態
+		if (status == CaseStatus.PASSED || status == CaseStatus.REJECTED) {
+			return status;
+		} 
+		
+		throw new CaseFailureException("案件狀態 類型錯誤(必須是 通過 或者 拒絕)");
+	}
+	
+	/**
+	 * 檢查 CasePendingDTO 的完整性
+	 * */
+	public void validateCasePending(CasePendingDTO casePendingDTO) {
+		if (casePendingDTO.getId() == null) {
+			throw new CaseFailureException("缺少必要資訊(案件ID)");
+		}
+	}
+	
+	/**
+	 * 檢查 員工 是否可以控制 此案件
+	 * */
+	public void validateUserAnsCase(Users user, Cases cases) {
+		// 1. 假設是管理者 直接通過
+		if (userValidationUtil.validateUserIsManager(user)) {
+			return;
+		}
+		
+		// 2. 取得使用者 的 organization
+		UserAdmin userAdmin = user.getAdminInfo();
+		if (userAdmin == null || userAdmin.getOrganization() == null) {
+			throw new CaseFailureException("使用者缺少所屬機構資訊");
+		}
+		Organization userOrganization = userAdmin.getOrganization();
+		
+		// 3. 比對 案件 的 關聯機構 是不是 有關
+		boolean matched = cases.getOrganizations().stream()
+				.map(co -> co.getOrganization().getOrganizationId())
+				.anyMatch(id -> id.equals(userOrganization.getOrganizationId()));
+		
+		if (!matched) {
+			throw new CaseFailureException("您沒有權限處理/操作此案件，它不屬於您的管轄機構。");
+		}
+	}
+	
+	/**
+	 * 判斷 原本的案件 是不是 特定的狀態
+	 * */
+	public void validateCaseStatus(Cases cases, CaseStatus targetStatus) {
+		CaseStatus caseStatus = cases.getStatus();
+		if (caseStatus == null || caseStatus != targetStatus) {
+			throw new CaseFailureException(
+					String.format("案件狀態錯誤：目前=%s, 預期=%s。", caseStatus, targetStatus)
+			);
+		}
+	}
+	
+	/**
+	 * 判斷 是否有權限 做大量操作
+	 * */
+	public void validateUserCanBatchProcess(Users users) {
+		if (users == null || !userValidationUtil.validateUserIsManager(users)) {
+			throw new CaseFailureException("您沒有權限處理大量案件。");
 		}
 	}
 }

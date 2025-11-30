@@ -22,6 +22,9 @@ public class OrganizationValidationUtil {
 	@Autowired
 	private OrganizationRepository organizationRepository;
 	
+	@Autowired
+	private UserValidationUtil userValidationUtil;
+	
 	/**
 	 * OrganizationCreateDTO 的 完整性 與 唯一性
 	 * */
@@ -76,7 +79,7 @@ public class OrganizationValidationUtil {
 	    }
 		
 		// 判斷是否為主管(最高權限)（角色名稱 = "ROLE_MANAGER"）
-		boolean isManager = users.getRole().getName().equals("ROLE_MANAGER");
+		boolean isManager = userValidationUtil.validateUserIsManager(users);
 
 		// 非主管等級 要進一步判斷
 		if (!isManager) {

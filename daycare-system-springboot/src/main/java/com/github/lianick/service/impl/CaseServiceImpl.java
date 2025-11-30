@@ -1,13 +1,17 @@
 package com.github.lianick.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.github.lianick.model.dto.WithdrawalRequestDTO;
@@ -15,6 +19,7 @@ import com.github.lianick.model.dto.cases.CaseClassDTO;
 import com.github.lianick.model.dto.cases.CaseCompleteDTO;
 import com.github.lianick.model.dto.cases.CaseCreateDTO;
 import com.github.lianick.model.dto.cases.CaseDTO;
+import com.github.lianick.model.dto.cases.CaseErrorDTO;
 import com.github.lianick.model.dto.cases.CaseFindAdminDTO;
 import com.github.lianick.model.dto.cases.CaseFindPublicDTO;
 import com.github.lianick.model.dto.cases.CaseLotteryResultDTO;
@@ -25,12 +30,16 @@ import com.github.lianick.model.dto.cases.CaseVerifyDTO;
 import com.github.lianick.model.dto.cases.CaseWaitlistDTO;
 import com.github.lianick.model.dto.cases.CaseWithdrawnAdminDTO;
 import com.github.lianick.model.dto.cases.CaseWithdrawnDTO;
+import com.github.lianick.model.dto.reviewLog.ReviewLogCreateDTO;
 import com.github.lianick.model.eneity.CaseOrganization;
 import com.github.lianick.model.eneity.CasePriority;
 import com.github.lianick.model.eneity.Cases;
 import com.github.lianick.model.eneity.ChildInfo;
 import com.github.lianick.model.eneity.Organization;
+import com.github.lianick.model.eneity.ReviewLogs;
+import com.github.lianick.model.eneity.UserAdmin;
 import com.github.lianick.model.eneity.UserPublic;
+import com.github.lianick.model.eneity.Users;
 import com.github.lianick.model.eneity.WithdrawalRequests;
 import com.github.lianick.model.enums.ApplicationMethod;
 import com.github.lianick.model.enums.CaseStatus;
@@ -38,16 +47,20 @@ import com.github.lianick.repository.CasesRepository;
 import com.github.lianick.service.CaseOrganizationService;
 import com.github.lianick.service.CasePriorityService;
 import com.github.lianick.service.CaseService;
+import com.github.lianick.service.ReviewLogService;
 import com.github.lianick.service.WithdrawalRequestService;
 import com.github.lianick.util.CaseNumberUtil;
 import com.github.lianick.util.UserSecurityUtil;
 import com.github.lianick.util.validate.CaseValidationUtil;
-import com.github.lianick.util.validate.OrganizationValidationUtil;
+import com.github.lianick.util.validate.UserValidationUtil;
 
 @Service
 @Transactional		// 確保 完整性 
 public class CaseServiceImpl implements CaseService {
 
+	// 建立 Logger
+	private static final Logger logger = LoggerFactory.getLogger(CaseServiceImpl.class);
+	
 	@Autowired
 	private CasesRepository casesRepository;
 	
@@ -61,7 +74,7 @@ public class CaseServiceImpl implements CaseService {
 	private UserSecurityUtil userSecurityUtil;
 	
 	@Autowired
-	private OrganizationValidationUtil organizationValidationUtil;
+	private UserValidationUtil userValidationUtil;
 	
 	@Autowired
 	private CaseValidationUtil caseValidationUtil;
@@ -78,6 +91,13 @@ public class CaseServiceImpl implements CaseService {
 	@Autowired
 	private WithdrawalRequestService withdrawalRequestService;
 	
+	@Autowired
+	private ReviewLogService reviewLogService;
+	
+	
+	// ------------------
+	// ----- 民眾 專用 -----
+	// ------------------
 	@Override
 	@PreAuthorize("hasAuthority('ROLE_PUBLIC')") 
 	public List<CaseDTO> findAllByPublic() {
@@ -94,10 +114,8 @@ public class CaseServiceImpl implements CaseService {
 		
 		// 3. 轉成 DTO
 		List<CaseDTO> caseDTOs = cases.stream()
-									.map(oneCase -> {
-										CaseDTO caseDTO = modelMapper.map(oneCase, CaseDTO.class);
-										return caseDTO;
-									}).toList();
+									.map(oneCase -> modelMapper.map(oneCase, CaseDTO.class))
+									.toList();
 		
 		return caseDTOs;
 	}
@@ -186,28 +204,137 @@ public class CaseServiceImpl implements CaseService {
 		return modelMapper.map(withdrawalRequests, WithdrawalRequestDTO.class);
 	}
 
+	// ------------------
+	// ----- 員工 專用 -----
+	// ------------------
 	@Override
+	@PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")
 	public List<CaseDTO> findAllByAdmin(CaseFindAdminDTO caseFindAdminDTO) {
-		// TODO Auto-generated method stub
-		return null;
+		// 0. 檢測 完整性
+		CaseStatus caseStatus = caseValidationUtil.validateFindAdminAll(caseFindAdminDTO);
+		
+		// 1. 判斷權限
+		Users users = userSecurityUtil.getCurrentUserEntity();
+		boolean isManager = userValidationUtil.validateUserIsManager(users);
+		
+		// 2. 根據 要求 案件狀態 與 自身的機構 搜尋
+		List<Cases> caseses = new ArrayList<Cases>();
+		if (isManager) {
+			caseses = casesRepository.findByStatus(caseStatus);
+		} else {
+			Long organizationId = users.getAdminInfo().getOrganization().getOrganizationId();
+			caseses = casesRepository.findByStatusAndOrganizationId(caseStatus, organizationId);
+		}
+		
+		// 3. 轉成 DTO 回傳
+		List<CaseDTO> caseDTOs = caseses.stream()
+									.map(oneCase -> modelMapper.map(oneCase, CaseDTO.class))
+									.toList();
+		return caseDTOs;
 	}
 
 	@Override
+	@PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")
 	public CaseDTO findByAdmin(CaseFindAdminDTO caseFindAdminDTO) {
-		// TODO Auto-generated method stub
-		return null;
+		// 0. 檢測 完整性
+		caseValidationUtil.validateFindAdminOne(caseFindAdminDTO);
+		
+		// 1. 判斷權限
+		Users users = userSecurityUtil.getCurrentUserEntity();
+		Cases cases = entityFetcher.getCasesById(caseFindAdminDTO.getId());
+		caseValidationUtil.validateUserAnsCase(users, cases);
+		
+		// 2. 轉換成 DTO
+		return modelMapper.map(cases, CaseDTO.class);
 	}
 
 	@Override
 	public CaseDTO verifyCase(CaseVerifyDTO caseVerifyDTO) {
-		// TODO Auto-generated method stub
-		return null;
+		// 0. 檢測 完整性
+		CaseStatus newStatus = caseValidationUtil.validateCaseVerify(caseVerifyDTO);
+		
+		// 1. 判斷權限
+		Users users = userSecurityUtil.getCurrentUserEntity();
+		Cases cases = entityFetcher.getCasesById(caseVerifyDTO.getId());
+		caseValidationUtil.validateUserAnsCase(users, cases);
+		
+		// 2. 判斷 案件 原本的狀態 是否 APPLIED
+		caseValidationUtil.validateCaseStatus(cases, CaseStatus.APPLIED);
+		CaseStatus originalStatus = cases.getStatus(); // 先存原本狀態
+		
+		// 3. 修改 案件狀態
+		cases.setStatus(newStatus);
+		
+		// 4. 建立一個 審核紀錄用 DTO
+		LocalDateTime now = LocalDateTime.now();
+		ReviewLogCreateDTO<CaseStatus> reviewLogCreateDTO = new ReviewLogCreateDTO<CaseStatus>();
+		reviewLogCreateDTO.setCases(cases);
+		reviewLogCreateDTO.setUserAdmin(users.getAdminInfo());
+		reviewLogCreateDTO.setFrom(originalStatus);
+		reviewLogCreateDTO.setTo(newStatus);
+		reviewLogCreateDTO.setNow(now);
+		reviewLogCreateDTO.setReviewLogMessage(caseVerifyDTO.getMessage());
+		reviewLogCreateDTO.setEnumClass(CaseStatus.class);
+		
+		// 4. 建立一個 審核紀錄
+		ReviewLogs reviewLogs = reviewLogService.createNewReviewLog(reviewLogCreateDTO);
+		
+		// 5. 將 審核紀錄 放入案件 並 回存
+		cases.getReviewHistorys().add(reviewLogs);
+		cases = casesRepository.save(cases);
+		
+		// 6. 轉成 DTO 回傳
+		return modelMapper.map(cases, CaseDTO.class);
 	}
 
 	@Override
-	public void advanceToPending(List<CasePendingDTO> casePendingDTOs) {
-		// TODO Auto-generated method stub
+	@PreAuthorize("hasAuthority('ROLE_MANAGER')")
+	public List<CaseErrorDTO> advanceToPending(List<CasePendingDTO> casePendingDTOs) {
+		// 1. 判斷權限
+		Users users = userSecurityUtil.getCurrentUserEntity();
+		caseValidationUtil.validateUserCanBatchProcess(users);
 		
+		// 2. 開始大量處理
+		List<CaseErrorDTO> caseErrorDTOs = new ArrayList<>();	//失敗 案件 集合
+		for (CasePendingDTO casePendingDTO : casePendingDTOs) {
+			try {
+	            oneCaseToPending(casePendingDTO, users.getAdminInfo());
+	        } catch (Exception e) {
+	            // 可以記錄錯誤，但繼續處理下一個案件
+	        	logger.error("案件 {} 處理失敗: {}", casePendingDTO.getId(), e.getMessage(), e);
+	        	caseErrorDTOs.add(new CaseErrorDTO(casePendingDTO.getId(), e.getMessage()));
+	        }
+		}
+		return caseErrorDTOs;
+	}
+	
+	/** 單一處理 案件(PASSED -> PENDING) 方法 */
+	@Transactional(propagation = Propagation.REQUIRES_NEW)	// 每處理一個案件都建立新事務，即使外層批次事務失敗，也不會回滾已完成的單一案件。
+	private void oneCaseToPending(CasePendingDTO casePendingDTO, UserAdmin userAdmin) {
+		// 0. 檢查完整性
+		caseValidationUtil.validateCasePending(casePendingDTO);
+		Cases cases = entityFetcher.getCasesById(casePendingDTO.getId());
+		
+		// 1. 判斷 案件 原本的狀態 是否 PASSED 並改變成 PENDING
+		caseValidationUtil.validateCaseStatus(cases, CaseStatus.PASSED);
+		cases.setStatus(CaseStatus.PENDING);
+		
+		// 2. 補上 審核紀錄 DTO 資訊
+		LocalDateTime now = LocalDateTime.now();
+		ReviewLogCreateDTO<CaseStatus> reviewLogCreateDTO = new ReviewLogCreateDTO<CaseStatus>();
+		reviewLogCreateDTO.setCases(cases);
+		reviewLogCreateDTO.setUserAdmin(userAdmin);
+		reviewLogCreateDTO.setFrom(CaseStatus.PASSED);
+		reviewLogCreateDTO.setTo(CaseStatus.PENDING);
+		reviewLogCreateDTO.setEnumClass(CaseStatus.class);
+		reviewLogCreateDTO.setNow(now);
+		
+		// 3. 建立 審核紀錄
+		ReviewLogs reviewLogs = reviewLogService.createNewReviewLog(reviewLogCreateDTO);
+		
+		// 4. 將 審核紀錄 放入案件 並 回存
+		cases.getReviewHistorys().add(reviewLogs);
+		casesRepository.save(cases);
 	}
 
 	@Override

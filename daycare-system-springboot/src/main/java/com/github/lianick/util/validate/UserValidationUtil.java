@@ -13,6 +13,7 @@ import com.github.lianick.model.dto.user.UserLoginDTO;
 import com.github.lianick.model.dto.user.UserRegisterDTO;
 import com.github.lianick.model.dto.user.UserUpdateDTO;
 import com.github.lianick.model.eneity.UserVerify;
+import com.github.lianick.model.eneity.Users;
 import com.github.lianick.repository.UsersRepository;
 
 /**
@@ -92,5 +93,18 @@ public class UserValidationUtil {
 		if (userVerify.getExpiryTime().isBefore(now)) {
 			throw new TokenFailureException("驗證碼 已經過期");
 		}
+    }
+    
+    /**
+     * 檢查 Users 角色的權限 是否是 管理層("ROLE_MANAGER")?
+     * */
+    public boolean validateUserIsManager(Users users) {
+    	if (users == null) {
+			throw new ValueMissException("缺少必要資訊(使用者)");
+		}
+    	
+    	boolean isManager = users.getRole().getName().equals("ROLE_MANAGER");
+    	
+    	return isManager;
     }
 }

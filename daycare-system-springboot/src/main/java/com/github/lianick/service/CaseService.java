@@ -7,6 +7,7 @@ import com.github.lianick.model.dto.cases.CaseClassDTO;
 import com.github.lianick.model.dto.cases.CaseCompleteDTO;
 import com.github.lianick.model.dto.cases.CaseCreateDTO;
 import com.github.lianick.model.dto.cases.CaseDTO;
+import com.github.lianick.model.dto.cases.CaseErrorDTO;
 import com.github.lianick.model.dto.cases.CaseFindAdminDTO;
 import com.github.lianick.model.dto.cases.CaseFindPublicDTO;
 import com.github.lianick.model.dto.cases.CaseLotteryResultDTO;
@@ -83,7 +84,7 @@ public interface CaseService {
 	 * 案件 (PASSED -> PENDING)
 	 * 需要 @PreAuthorize("hasAuthority('ROLE_MANAGER')") 
 	 * */
-	void advanceToPending(List<CasePendingDTO>  casePendingDTOs);
+	List<CaseErrorDTO> advanceToPending(List<CasePendingDTO>  casePendingDTOs);
 	
 	/** 取出 PENDING 案件 (1ST 或者 1st失敗後 2nd 再跑一次)
 	 * 機構審核 CaseOrganization = APPLIED -> PASSED or REJECTED

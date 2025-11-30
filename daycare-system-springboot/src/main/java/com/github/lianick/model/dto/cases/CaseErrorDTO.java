@@ -7,13 +7,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class CaseVerifyDTO {
+@NoArgsConstructor
+public class CaseErrorDTO {
 
-	private Long id;					// 案件 ID
-	
-	private String newStatus;			// PASSED 或者 REJECTED
-	
-	private String message;				// 員工的 審核意見
+	private Long id;
+	private String errorMessage;
 }
