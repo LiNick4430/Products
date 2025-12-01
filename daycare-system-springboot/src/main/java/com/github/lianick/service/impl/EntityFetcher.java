@@ -11,6 +11,7 @@ import com.github.lianick.exception.CaseFailureException;
 import com.github.lianick.exception.ChildNotFoundException;
 import com.github.lianick.exception.ClassesFailureException;
 import com.github.lianick.exception.FileStorageException;
+import com.github.lianick.exception.LotteryQueueFailureException;
 import com.github.lianick.exception.OrganizationFailureException;
 import com.github.lianick.exception.PriorityNotFoundException;
 import com.github.lianick.exception.RegulationFailureException;
@@ -24,6 +25,7 @@ import com.github.lianick.model.eneity.ChildInfo;
 import com.github.lianick.model.eneity.Classes;
 import com.github.lianick.model.eneity.DocumentAdmin;
 import com.github.lianick.model.eneity.DocumentPublic;
+import com.github.lianick.model.eneity.LotteryQueue;
 import com.github.lianick.model.eneity.Organization;
 import com.github.lianick.model.eneity.Priority;
 import com.github.lianick.model.eneity.RefreshToken;
@@ -40,6 +42,7 @@ import com.github.lianick.repository.ChildInfoRepository;
 import com.github.lianick.repository.ClassesRepository;
 import com.github.lianick.repository.DocumentAdminRepository;
 import com.github.lianick.repository.DocumentPublicRepository;
+import com.github.lianick.repository.LotteryQueueRepository;
 import com.github.lianick.repository.OrganizationRepository;
 import com.github.lianick.repository.PriorityRepository;
 import com.github.lianick.repository.RefreshTokenRepository;
@@ -103,6 +106,9 @@ public class EntityFetcher {
 	
 	@Autowired
 	private CaseOrganizationRepository caseOrganizationRepository;
+	
+	@Autowired
+	private LotteryQueueRepository lotteryQueueRepository;
 	
 	/**
 	 * 使用 username 獲取 Users
@@ -270,6 +276,15 @@ public class EntityFetcher {
 		Regulations regulations = regulationsRepository.findById(id)
 				.orElseThrow(() -> new RegulationFailureException("查無規範"));
 		return regulations;
+	}
+	
+	/**
+	 * 使用 CaseId 和 OrganizationId 獲取 LotteryQueue 
+	 * */
+	public LotteryQueue getLotteryQueueByCaseIdAndOrganizationId(Long caseId, Long organizationId) {
+		LotteryQueue lotteryQueue = lotteryQueueRepository.findByCaseIdAndOrganizationId(caseId, organizationId)
+				.orElseThrow(() -> new LotteryQueueFailureException("查無抽籤柱列"));
+		return lotteryQueue;
 	}
 	
 	/**

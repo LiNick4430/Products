@@ -1,6 +1,5 @@
 package com.github.lianick.util.validate;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,6 +8,7 @@ import com.github.lianick.exception.ValueMissException;
 import com.github.lianick.model.dto.cases.CaseCreateDTO;
 import com.github.lianick.model.dto.cases.CaseFindAdminDTO;
 import com.github.lianick.model.dto.cases.CaseFindPublicDTO;
+import com.github.lianick.model.dto.cases.CaseLotteryResultDTO;
 import com.github.lianick.model.dto.cases.CasePendingDTO;
 import com.github.lianick.model.dto.cases.CaseQueueDTO;
 import com.github.lianick.model.dto.cases.CaseVerifyDTO;
@@ -190,6 +190,18 @@ public class CaseValidationUtil {
 	public void validateCasePending(CasePendingDTO casePendingDTO) {
 		if (casePendingDTO.getId() == null) {
 			throw new CaseFailureException("缺少必要資訊(案件ID)");
+		}
+	}
+	
+	/**
+	 * 檢查 CaseLotteryResultDTO 的完整性
+	 * */
+	public void validateCaseLottery(CaseLotteryResultDTO caseLotteryResultDTO) {
+		if (caseLotteryResultDTO.getCaseId() == null || 
+				caseLotteryResultDTO.getOrganizationId()  == null ||
+				caseLotteryResultDTO.getResultStatus() == null
+				) {
+			throw new CaseFailureException("缺少必要資訊(案件ID, 機構ID, 抽籤結果)");
 		}
 	}
 	

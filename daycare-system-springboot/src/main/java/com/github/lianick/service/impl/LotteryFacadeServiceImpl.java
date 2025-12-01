@@ -40,5 +40,4 @@ public class LotteryFacadeServiceImpl implements LotteryFacadeService {
 		// 常駐行為
 		caseService.processLotteryResults(caseLotteryResultDTOs);
 	}
-
 }

@@ -47,6 +47,7 @@ import com.github.lianick.model.enums.ApplicationMethod;
 import com.github.lianick.model.enums.CaseOrganizationStatus;
 import com.github.lianick.model.enums.CaseStatus;
 import com.github.lianick.model.enums.LotteryQueueStatus;
+import com.github.lianick.model.enums.LotteryResultStatus;
 import com.github.lianick.repository.CasesRepository;
 import com.github.lianick.service.CaseOrganizationService;
 import com.github.lianick.service.CasePriorityService;
@@ -427,12 +428,6 @@ public class CaseServiceImpl implements CaseService {
 	}
 
 	@Override
-	public void processLotteryResults(List<CaseLotteryResultDTO> lotteryResults) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void intoClassCase(List<CaseClassDTO> caseClassDTOs) {
 		// TODO Auto-generated method stub
 		
@@ -474,5 +469,63 @@ public class CaseServiceImpl implements CaseService {
 		
 	}
 
+	@Override
+	public void processLotteryResults(List<CaseLotteryResultDTO> lotteryResults) {
+		// 0. 假設沒有結果 直接跳過
+		if (lotteryResults.isEmpty()) {
+			return;
+		}
+		
+		// 1. 讀取回傳來源 依照 LotteryResultStatus 分類
+		List<CaseLotteryResultDTO> successList = new ArrayList<>();
+		List<CaseLotteryResultDTO> waitList = new ArrayList<>();
+		List<CaseLotteryResultDTO> failedList = new ArrayList<>();
+		
+		lotteryResults.forEach(lotteryResult -> {
+			if (lotteryResult.getResultStatus() == LotteryResultStatus.SUCCESS) {
+				successList.add(lotteryResult);
+			} else if (lotteryResult.getResultStatus() == LotteryResultStatus.WAITLIST) {
+				waitList.add(lotteryResult);
+			} else if (lotteryResult.getResultStatus() == LotteryResultStatus.FAILED) {
+				failedList.add(lotteryResult);
+			}
+		});
+		
+		// 2. 開始大量處理
+		successList.forEach(this::oneCaseInLottery);
+		waitList.forEach(this::oneCaseInLottery);
+		failedList.forEach(this::oneCaseInLottery);
+	}
 	
+	/** 單一處理 案件(CaseOrganization + LotteryQueue) 方法 */
+	private void oneCaseInLottery(CaseLotteryResultDTO lotteryResult) {
+		// 0. 檢查完整性
+		caseValidationUtil.validateCaseLottery(lotteryResult);
+		
+		// 1. 取得必要的東西
+		Cases cases = entityFetcher.getCasesById(lotteryResult.getCaseId());
+		CaseOrganization caseOrganization = entityFetcher.getCaseOrganizationByCaseIdAndOrganizationId(lotteryResult.getCaseId(), lotteryResult.getOrganizationId());
+		LotteryQueue lotteryQueue = entityFetcher.getLotteryQueueByCaseIdAndOrganizationId(lotteryResult.getCaseId(), lotteryResult.getOrganizationId());
+		LotteryResultStatus status = lotteryResult.getResultStatus();
+		Integer alternateNumber = lotteryResult.getAlternateNumber();
+		Integer lotteryOrder = lotteryResult.getLotteryOrder();
+		
+		// 2. 根據 結果狀態 修正數值 
+		if (status == LotteryResultStatus.SUCCESS) {
+			caseOrganization.setStatus(CaseOrganizationStatus.PASSED);
+			lotteryQueue.setStatus(LotteryQueueStatus.SELECTED);
+		} else if (status == LotteryResultStatus.WAITLIST) {
+			caseOrganization.setStatus(CaseOrganizationStatus.WAITLISTED);
+			lotteryQueue.setStatus(LotteryQueueStatus.SELECTED);
+			lotteryQueue.setAlternateNumber(alternateNumber);
+		} else if (status == LotteryResultStatus.FAILED) {
+			caseOrganization.setStatus(CaseOrganizationStatus.REJECTED);
+			lotteryQueue.setStatus(LotteryQueueStatus.FAILED);
+		}
+		
+		lotteryQueue.setLotteryOrder(lotteryOrder);
+		
+		// 3. 統一 回傳
+		casesRepository.save(cases);
+	}
 }

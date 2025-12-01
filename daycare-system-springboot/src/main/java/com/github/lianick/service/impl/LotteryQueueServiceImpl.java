@@ -89,12 +89,20 @@ public class LotteryQueueServiceImpl implements LotteryQueueService{
 		
 		// 4. 檢查 全部空位 和 全部柱列數量, 假設 柱列數量 <= 全部空位 就不用抽籤
 		if (lotteryQueues.size() <= totalEmptyCapacity) {
+			final int[] orderCounter = {1};
+			
 			return lotteryQueues.stream()
 					.map(queue -> {
+						// 1. 讀取並使用當前序號 (orderCounter[0])
+						Integer currentOrder = orderCounter[0];
+						// 2. 更新計數器(修改陣列中的值)
+						orderCounter[0]++;
+						
 						return new CaseLotteryResultDTO(
 								queue.getCases().getCaseId(),
 								queue.getOrganization().getOrganizationId(),
 								LotteryResultStatus.SUCCESS,
+								currentOrder,
 								null
 								);
 					})
@@ -132,11 +140,24 @@ public class LotteryQueueServiceImpl implements LotteryQueueService{
 		// 總人數
 		Integer totalCandidates = randomizedQueues.size();
 		
+		// 數據完整性檢查
+		if (successCount + actualWaitlistCount + failedCount != totalCandidates) {
+			throw new LotteryQueueFailureException(
+			        String.format("Lottery allocation mismatch. Candidates: %d, Allocated: %d (S:%d + W:%d + F:%d)",
+			            totalCandidates, 
+			            (successCount + actualWaitlistCount + failedCount),
+			            successCount, 
+			            actualWaitlistCount, 
+			            failedCount)
+			    );
+		}
+		
 		// 遍歷 打亂 的 群組
 		for (int i = 1; i <= totalCandidates; i++) {	// 單純記數 從 1 開始
 			LotteryQueue queue = randomizedQueues.get(i-1);	// 依照 JAVA 取數 從 0 開始 因此需要 -1 
 		    LotteryResultStatus resultStatus;
 		    Integer alternateNumber = null; // 備選號碼
+		    Integer lotteryOrder = i;
 			
 			if (i <= successCount) {
 				// SUCCESS
@@ -154,7 +175,8 @@ public class LotteryQueueServiceImpl implements LotteryQueueService{
 			finalResult.add(new CaseLotteryResultDTO(
 					queue.getCases().getCaseId(),
 					queue.getOrganization().getOrganizationId(), 
-					resultStatus, 
+					resultStatus,
+					lotteryOrder,
 					alternateNumber));
 		}
 		

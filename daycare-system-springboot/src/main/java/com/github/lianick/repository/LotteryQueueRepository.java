@@ -1,6 +1,7 @@
 package com.github.lianick.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -25,6 +26,17 @@ public interface LotteryQueueRepository extends JpaRepository<LotteryQueue, Long
 			+ ")"
 			, nativeQuery = true)
 	boolean existsByCaseAndOrg(
+			@Param("caseId") Long caseId,
+			@Param("organizationId") Long organizationId);
+	
+	@Query(value = 
+			"SELECT * FROM lottery_queue "
+			+ "WHERE case_id = :caseId "
+			+ "AND organization_id = :organizationId "
+			+ "AND delete_at IS NULL "
+			+ ")"
+			, nativeQuery = true)
+	Optional<LotteryQueue> findByCaseIdAndOrganizationId(
 			@Param("caseId") Long caseId,
 			@Param("organizationId") Long organizationId);
 	
