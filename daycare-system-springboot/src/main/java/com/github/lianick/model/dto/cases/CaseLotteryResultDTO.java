@@ -16,4 +16,5 @@ public class CaseLotteryResultDTO {
 	private Long caseId; 
 	private Long organizationId; 				// 哪個機構的志願產生了結果 (1st or 2nd)
 	private LotteryResultStatus resultStatus; 	// 抽籤結果 (e.g., SUCCESS, WAITLIST, FAILED)
+	private Integer alternateNumber;			// 備選者 號碼
 }

@@ -6,6 +6,7 @@ import com.github.lianick.model.dto.cases.CaseLotteryResultDTO;
 import com.github.lianick.model.dto.lotteryQueue.LotteryQueueCreateDTO;
 import com.github.lianick.model.dto.lotteryQueue.LotteryQueueDTO;
 import com.github.lianick.model.eneity.LotteryQueue;
+import com.github.lianick.model.eneity.Organization;
 
 public interface LotteryQueueService {
 
@@ -23,7 +24,7 @@ public interface LotteryQueueService {
 	 * 進行 抽籤 
 	 * 將依序 生產結果 回傳 List<CaseLotteryResultDTO>
 	 * */
-	List<CaseLotteryResultDTO> executeLottery(Long organizationId);
+	List<CaseLotteryResultDTO> executeLottery(Organization organization);
 	
 	// 供給 CaseService 使用的 子方法
 	/**

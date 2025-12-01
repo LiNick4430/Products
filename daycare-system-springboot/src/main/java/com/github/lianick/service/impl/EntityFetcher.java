@@ -1,6 +1,7 @@
 package com.github.lianick.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -249,6 +250,17 @@ public class EntityFetcher {
 		Classes classes = classesRepository.findById(id)
 				.orElseThrow(() -> new ClassesFailureException("查無班級"));
 		return classes;
+	}
+	
+	/**
+	 * 使用 Organization 獲取 List<Classes>
+	 * */
+	public List<Classes> getClassesListByOrganization(Organization organization) {
+		List<Classes> classes = classesRepository.findByOrganization(organization);
+		if (!classes.isEmpty()) {
+			return classes;
+		}
+		throw new OrganizationFailureException("該機構 無所屬班級");
 	}
 	
 	/**
