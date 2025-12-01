@@ -15,13 +15,13 @@ public interface LotteryQueueService {
 	 * */
 	List<LotteryQueueDTO> findQueuedCases();
 	
+	// 供給 LotteryFacadeService 的 子方法
 	/**
 	 * 執行 抽籤 
 	 * 獲取 該機構 全部的 班級 空位
 	 * 獲取 該機構 全部的 LotteryQueue = QUEUED 的 柱列
 	 * 進行 抽籤 
 	 * 將依序 生產結果 回傳 List<CaseLotteryResultDTO>
-	 * 需要 @PreAuthorize("hasAuthority('ROLE_MANAGER')")
 	 * */
 	List<CaseLotteryResultDTO> executeLottery(Long organizationId);
 	

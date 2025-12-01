@@ -94,16 +94,6 @@ public interface CaseService {
 	 * */
 	CaseDTO intoQueueCase(CaseQueueDTO caseQueueDTO);
 	
-	/**
-	 * 處理案件的抽籤結果 (批量操作)。
-	 * * 抽籤後:
-	 * 1. 抽籤成功 => CaseOrganization = PASSED, LotteryQueue = SELECTED
-	 * 2. 抽籤備選 => CaseOrganization = WAITLISTED, LotteryQueue = SELECTED
-	 * 3. 抽籤失敗 => CaseOrganization = REJECTED, LotteryQueue = FAILED
-	 * * 需要 @PreAuthorize("hasAuthority('ROLE_MANAGER')")
-	 * */
-	void processLotteryResults(List<CaseLotteryResultDTO> lotteryResults);
-	
 	/** 抽籤成功 => CaseOrganization = PASSED, LotteryQueue = SELECTED
 	 * 	CASE(PENDING -> ALLOCATED) 進入 有空位的班級
 	 * 需要 @PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')") 
@@ -151,4 +141,14 @@ public interface CaseService {
 	 * 需要 @PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')") 
 	 * */
 	void verifyWithdrawnCase(List<CaseWithdrawnAdminDTO> caseWithdrawnAdminDTOs);
+	
+	// 供給 LotteryFacadeService 的 子方法
+	/**
+	 * 處理案件的抽籤結果 (批量操作)。
+	 * * 抽籤後:
+	 * 1. 抽籤成功 => CaseOrganization = PASSED, LotteryQueue = SELECTED
+	 * 2. 抽籤備選 => CaseOrganization = WAITLISTED, LotteryQueue = SELECTED
+	 * 3. 抽籤失敗 => CaseOrganization = REJECTED, LotteryQueue = FAILED
+	 * */
+	void processLotteryResults(List<CaseLotteryResultDTO> lotteryResults);
 }

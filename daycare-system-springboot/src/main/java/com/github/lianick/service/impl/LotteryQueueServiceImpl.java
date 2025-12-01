@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.github.lianick.exception.LotteryQueueFailureException;
 import com.github.lianick.exception.ValueMissException;
+import com.github.lianick.model.dto.cases.CaseLotteryResultDTO;
 import com.github.lianick.model.dto.lotteryQueue.LotteryQueueCreateDTO;
 import com.github.lianick.model.dto.lotteryQueue.LotteryQueueDTO;
 import com.github.lianick.model.eneity.LotteryQueue;
@@ -65,6 +66,12 @@ public class LotteryQueueServiceImpl implements LotteryQueueService{
 	}
 	
 	@Override
+	public List<CaseLotteryResultDTO> executeLottery(Long organizationId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	@Override
 	public LotteryQueue createNewLotteryQueue(LotteryQueueCreateDTO lotteryQueueCreateDTO) {
 		// 0. 檢查完整性
 		if (lotteryQueueCreateDTO.getCases() == null ||
@@ -90,7 +97,4 @@ public class LotteryQueueServiceImpl implements LotteryQueueService{
 		
 		return lotteryQueue;
 	}
-
-	
-
 }
