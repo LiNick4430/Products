@@ -14,6 +14,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -60,4 +61,8 @@ public class Classes extends BaseEntity{
 	
 	@OneToMany(mappedBy = "classes")
 	private Set<Cases> cases;				// 旗下關連的 CASE(CHILD)
+	
+	@Version
+	@Column(name = "version", nullable = false)
+	private Long version;	// 樂觀鎖
 }

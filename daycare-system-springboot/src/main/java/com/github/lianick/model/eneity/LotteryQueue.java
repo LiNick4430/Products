@@ -16,6 +16,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -63,4 +64,7 @@ public class LotteryQueue extends BaseEntity{
 	@Column(name = "lottery_queue_status", nullable = false)
 	private LotteryQueueStatus status;		// 目前狀態
 	
+	@Version
+	@Column(name = "version", nullable = false)
+	private Long version;	// 樂觀鎖
 }

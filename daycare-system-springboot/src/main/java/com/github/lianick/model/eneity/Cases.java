@@ -23,6 +23,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -97,4 +98,7 @@ public class Cases extends BaseEntity{
 	@OneToMany(mappedBy = "cases", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private Set<LotteryQueue> lotteryQueues;	// 案件的 抽籤柱列
 	
+	@Version
+	@Column(name = "version", nullable = false)
+	private Long version;	// 樂觀鎖
 }

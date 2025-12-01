@@ -16,6 +16,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -62,4 +63,7 @@ public class CaseOrganization extends BaseEntity{
 	@Column(name = "case_organization_status", nullable = false)
 	private CaseOrganizationStatus status;			// 案件 在 機構的 狀態
 	
+	@Version
+	@Column(name = "version", nullable = false)
+	private Long version;	// 樂觀鎖
 }
