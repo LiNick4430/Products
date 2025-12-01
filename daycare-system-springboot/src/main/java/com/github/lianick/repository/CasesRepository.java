@@ -2,6 +2,7 @@ package com.github.lianick.repository;
 
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -14,6 +15,8 @@ import java.util.List;
 import java.util.Optional;
 
 import com.github.lianick.model.enums.CaseStatus;
+
+import jakarta.persistence.LockModeType;
 
 
 
@@ -59,4 +62,13 @@ public interface CasesRepository extends JpaRepository<Cases, Long> {
             @Param("status") CaseStatus status,
             @Param("organizationId") Long organizationId);
 	
+	/** 新增 悲觀鎖 的 搜尋 用於 更新狀態 用 */
+	@Lock(LockModeType.PESSIMISTIC_WRITE)
+	@EntityGraph(attributePaths = {"organizations", "classes", "childInfo"})
+	@Query(value = 
+				"SELECT * FROM cases "
+				+ "WHERE case_id = :caseId "
+				+ "AND delete_at IS NULL "
+				, nativeQuery = true)
+    Optional<Cases> findByIdForUpdate(@Param("caseId") Long caseId);
 }

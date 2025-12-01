@@ -483,8 +483,8 @@ public class CaseServiceImpl implements CaseService {
 		caseValidationUtil.validateCaseAllocation(caseAllocationDTO);
 		
 		// 1. 取出必要的資料
-		Cases cases = entityFetcher.getCasesById(caseAllocationDTO.getCaseId());
-		Classes classes = entityFetcher.getClassesById(caseAllocationDTO.getClassId());
+		Cases cases = entityFetcher.getCasesByIdForUpdate(caseAllocationDTO.getCaseId());
+		Classes classes = entityFetcher.getClassesByIdForUpdate(caseAllocationDTO.getClassId());
 		
 		// 2. 檢查權限
 		if (!isManager) {
@@ -500,11 +500,11 @@ public class CaseServiceImpl implements CaseService {
 		// 5. 把 該案件 其他關連的 機構 改變成 ALLOCATED_TO_OTHER 狀態 
 		Set<CaseOrganization> allCaseOrganizations = cases.getOrganizations();
 		
-		List<CaseOrganization> otherCaseOrganizations = allCaseOrganizations.stream()
-			    // 篩選出機構 ID 不等於當前分配機構 ID 的 CaseOrganization
-			    .filter(caseOrg -> !caseOrg.getOrganization().getOrganizationId()
-			                               .equals(organization.getOrganizationId()))
-			    .toList();
+			List<CaseOrganization> otherCaseOrganizations = allCaseOrganizations.stream()
+				    // 篩選出機構 ID 不等於當前分配機構 ID 的 CaseOrganization
+				    .filter(caseOrg -> !caseOrg.getOrganization().getOrganizationId()
+				                               .equals(classes.getOrganization().getOrganizationId()))
+				    .toList();
 		
 		if (!otherCaseOrganizations.isEmpty()) {
 		    for (CaseOrganization otherCaseOrg : otherCaseOrganizations) {

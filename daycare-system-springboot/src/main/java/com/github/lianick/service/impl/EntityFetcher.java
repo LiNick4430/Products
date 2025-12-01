@@ -223,6 +223,15 @@ public class EntityFetcher {
 	}
 	
 	/**
+	 * 使用 CaseId 獲取 Case 用於 悲觀鎖 更新用
+	 * */
+	public Cases getCasesByIdForUpdate(Long id) {
+		Cases cases = casesRepository.findByIdForUpdate(id)
+				.orElseThrow(() -> new CaseFailureException("查無案件"));
+		return cases;
+	}
+	
+	/**
 	 * 使用 CaseId 和 OrganizationId 獲取 CaseOrganization
 	 * */
 	public CaseOrganization getCaseOrganizationByCaseIdAndOrganizationId(Long caseId, Long organizationId) {
@@ -250,10 +259,19 @@ public class EntityFetcher {
 	}
 	
 	/**
-	 * 使用 ClassId 獲取 Classes
+	 * 使用 ClassId 獲取 Classes 
 	 * */
 	public Classes getClassesById(Long id) {
 		Classes classes = classesRepository.findById(id)
+				.orElseThrow(() -> new ClassesFailureException("查無班級"));
+		return classes;
+	}
+	
+	/**
+	 * 使用 ClassId 獲取 Classes 用於 悲觀鎖 更新用
+	 * */
+	public Classes getClassesByIdForUpdate(Long id) {
+		Classes classes = classesRepository.findByIdForUpdate(id)
 				.orElseThrow(() -> new ClassesFailureException("查無班級"));
 		return classes;
 	}
