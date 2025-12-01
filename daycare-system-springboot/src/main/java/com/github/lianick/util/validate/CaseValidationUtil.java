@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.github.lianick.exception.CaseFailureException;
 import com.github.lianick.exception.ValueMissException;
+import com.github.lianick.model.dto.cases.CaseAllocationDTO;
 import com.github.lianick.model.dto.cases.CaseCreateDTO;
 import com.github.lianick.model.dto.cases.CaseFindAdminDTO;
 import com.github.lianick.model.dto.cases.CaseFindPublicDTO;
@@ -202,6 +203,15 @@ public class CaseValidationUtil {
 				caseLotteryResultDTO.getResultStatus() == null
 				) {
 			throw new CaseFailureException("缺少必要資訊(案件ID, 機構ID, 抽籤結果)");
+		}
+	}
+	
+	/**
+	 * 檢查 CaseAllocationDTO 的完整性
+	 * */
+	public void validateCaseAllocation(CaseAllocationDTO caseAllocationDTO) {
+		if (caseAllocationDTO.getCaseId() == null || caseAllocationDTO.getClassId() == null) {
+			throw new CaseFailureException("缺少必要資訊(案件ID, 班級ID)");
 		}
 	}
 	

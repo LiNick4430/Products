@@ -3,7 +3,7 @@ package com.github.lianick.service;
 import java.util.List;
 
 import com.github.lianick.model.dto.WithdrawalRequestDTO;
-import com.github.lianick.model.dto.cases.CaseClassDTO;
+import com.github.lianick.model.dto.cases.CaseAllocationDTO;
 import com.github.lianick.model.dto.cases.CaseCompleteDTO;
 import com.github.lianick.model.dto.cases.CaseCreateDTO;
 import com.github.lianick.model.dto.cases.CaseDTO;
@@ -94,11 +94,11 @@ public interface CaseService {
 	 * */
 	CaseDTO intoQueueCase(CaseQueueDTO caseQueueDTO);
 	
-	/** 抽籤成功 => CaseOrganization = PASSED, LotteryQueue = SELECTED
-	 * 	CASE(PENDING -> ALLOCATED) 進入 有空位的班級
+	/** 批量分配案件到班級。
+	 * 將案件狀態從 PENDING 轉為 ALLOCATED，並更新班級人數。
 	 * 需要 @PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')") 
 	 * */
-	void intoClassCase(List<CaseClassDTO> caseClassDTOs);
+	List<CaseErrorDTO> allocateCasesToClasses(List<CaseAllocationDTO> caseAllocationDTOs);
 	
 	/** 幼兒 向 班級 報到 (ALLOCATED -> COMPLETED) 
 	 * 需要 @PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')") 

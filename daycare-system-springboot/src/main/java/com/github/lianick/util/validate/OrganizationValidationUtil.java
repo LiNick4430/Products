@@ -10,6 +10,8 @@ import com.github.lianick.exception.OrganizationFailureException;
 import com.github.lianick.exception.ValueMissException;
 import com.github.lianick.model.dto.organization.OrganizationCreateDTO;
 import com.github.lianick.model.dto.organization.OrganizationDocumentDTO;
+import com.github.lianick.model.eneity.Classes;
+import com.github.lianick.model.eneity.Organization;
 import com.github.lianick.model.eneity.Users;
 import com.github.lianick.repository.OrganizationRepository;
 
@@ -91,6 +93,15 @@ public class OrganizationValidationUtil {
 			if (!users.getAdminInfo().getOrganization().getOrganizationId().equals(organizationId)) {
 				throw new AccessDeniedException("操作身份錯誤，您無權修改非所屬機構資料");
 			}
+		}
+	}
+	
+	/**
+	 * Organization 和 class 是否有關連
+	 * */
+	public void validateOrganizationAndClass(Organization organization, Classes classes) {
+		if (!classes.getOrganization().getOrganizationId().equals(organization.getOrganizationId())) {
+			throw new OrganizationFailureException("並非機構關聯班級");
 		}
 	}
 }

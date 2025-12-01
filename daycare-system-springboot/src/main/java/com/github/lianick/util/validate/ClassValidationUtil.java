@@ -3,11 +3,13 @@ package com.github.lianick.util.validate;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
+import com.github.lianick.exception.ClassesFailureException;
 import com.github.lianick.exception.ValueMissException;
 import com.github.lianick.model.dto.clazz.ClassCreateDTO;
 import com.github.lianick.model.dto.clazz.ClassDeleteDTO;
 import com.github.lianick.model.dto.clazz.ClassFindDTO;
 import com.github.lianick.model.dto.clazz.ClassLinkCaseDTO;
+import com.github.lianick.model.eneity.Classes;
 import com.github.lianick.model.eneity.Users;
 
 /**
@@ -67,6 +69,15 @@ public class ClassValidationUtil {
 		if (classDeleteDTO.getId() == null || classDeleteDTO.getOrganizationId() == null ||
 				classDeleteDTO.getName() == null || classDeleteDTO.getName().isBlank()) {
 			throw new ValueMissException("缺少必要的班級刪除資料 (班級ID、班級名稱、機構ID)");
+		}
+	}
+	
+	/**
+	 * 檢查 該班級是否能再接受一個學生（即空位 > 0）。
+	 * */
+	public void validateClassCanAcceptOneMore(Classes classes) {
+		if ((classes.getCurrentCount() >= classes.getMaxCapacity())) {
+			throw new ClassesFailureException("該班級 沒有空位");
 		}
 	}
 	

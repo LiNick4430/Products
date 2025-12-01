@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.github.lianick.model.dto.WithdrawalRequestDTO;
-import com.github.lianick.model.dto.cases.CaseClassDTO;
+import com.github.lianick.model.dto.cases.CaseAllocationDTO;
 import com.github.lianick.model.dto.cases.CaseCompleteDTO;
 import com.github.lianick.model.dto.cases.CaseCreateDTO;
 import com.github.lianick.model.dto.cases.CaseDTO;
@@ -36,6 +36,7 @@ import com.github.lianick.model.eneity.CaseOrganization;
 import com.github.lianick.model.eneity.CasePriority;
 import com.github.lianick.model.eneity.Cases;
 import com.github.lianick.model.eneity.ChildInfo;
+import com.github.lianick.model.eneity.Classes;
 import com.github.lianick.model.eneity.LotteryQueue;
 import com.github.lianick.model.eneity.Organization;
 import com.github.lianick.model.eneity.ReviewLogs;
@@ -49,6 +50,8 @@ import com.github.lianick.model.enums.CaseStatus;
 import com.github.lianick.model.enums.LotteryQueueStatus;
 import com.github.lianick.model.enums.LotteryResultStatus;
 import com.github.lianick.repository.CasesRepository;
+import com.github.lianick.repository.ClassesRepository;
+import com.github.lianick.repository.LotteryQueueRepository;
 import com.github.lianick.service.CaseOrganizationService;
 import com.github.lianick.service.CasePriorityService;
 import com.github.lianick.service.CaseService;
@@ -58,6 +61,7 @@ import com.github.lianick.service.WithdrawalRequestService;
 import com.github.lianick.util.CaseNumberUtil;
 import com.github.lianick.util.UserSecurityUtil;
 import com.github.lianick.util.validate.CaseValidationUtil;
+import com.github.lianick.util.validate.ClassValidationUtil;
 import com.github.lianick.util.validate.OrganizationValidationUtil;
 import com.github.lianick.util.validate.UserValidationUtil;
 
@@ -71,6 +75,12 @@ public class CaseServiceImpl implements CaseService {
 	
 	@Autowired
 	private CasesRepository casesRepository;
+	
+	@Autowired
+	private ClassesRepository classesRepository;
+	
+	@Autowired
+	private LotteryQueueRepository lotteryQueueRepository;
 	
 	@Autowired
 	private ModelMapper modelMapper;
@@ -89,6 +99,9 @@ public class CaseServiceImpl implements CaseService {
 
 	@Autowired
 	private OrganizationValidationUtil organizationValidationUtil;
+	
+	@Autowired
+	private ClassValidationUtil classValidationUtil;
 	
 	@Autowired
 	private CaseNumberUtil caseNumberUtil;
@@ -428,11 +441,94 @@ public class CaseServiceImpl implements CaseService {
 	}
 
 	@Override
-	public void intoClassCase(List<CaseClassDTO> caseClassDTOs) {
-		// TODO Auto-generated method stub
+	@PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')") 
+	public List<CaseErrorDTO> allocateCasesToClasses(List<CaseAllocationDTO> caseAllocationDTOs) {
+		// 1. 檢查權限
+		Users users = userSecurityUtil.getCurrentUserEntity();
+		Boolean isManager = userValidationUtil.validateUserIsManager(users);
+		Organization organization = userSecurityUtil.getOrganizationEntity();
 		
+		// 2. 執行大量方法
+		List<CaseErrorDTO> caseErrorDTOs = new ArrayList<>();	//失敗 案件 集合
+		
+		for (int i = 0; i < caseAllocationDTOs.size(); i += BATCH_MAX_SIZE) {
+			List<CaseAllocationDTO> batch = caseAllocationDTOs.subList(
+					i, Math.min(i + BATCH_MAX_SIZE , caseAllocationDTOs.size()));
+			
+			for (CaseAllocationDTO caseAllocationDTO : batch) {
+				try {
+					oneCaseToAllocation(caseAllocationDTO, isManager, organization);
+		        } catch (Exception e) {
+		            // 可以記錄錯誤，但繼續處理下一個案件
+		        	logger.error("案件 {} 處理失敗: {}", caseAllocationDTO.getCaseId(), e.getMessage(), e);
+		        	caseErrorDTOs.add(new CaseErrorDTO(caseAllocationDTO.getCaseId(), e.getMessage()));
+		        }
+			}
+			
+			try {
+			    Thread.sleep(200); // 0.2 秒
+			} catch (InterruptedException e) {
+			    Thread.currentThread().interrupt(); // 保留中斷狀態
+			    logger.warn("批次暫停被中斷", e);
+			}
+		}
+		
+		return caseErrorDTOs;
 	}
 
+	/** 單一處理 案件(PENDING -> ALLOCATED) 方法 */
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	private void oneCaseToAllocation(CaseAllocationDTO caseAllocationDTO, Boolean isManager, Organization organization) {
+		// 0. 檢查完整性
+		caseValidationUtil.validateCaseAllocation(caseAllocationDTO);
+		
+		// 1. 取出必要的資料
+		Cases cases = entityFetcher.getCasesById(caseAllocationDTO.getCaseId());
+		Classes classes = entityFetcher.getClassesById(caseAllocationDTO.getClassId());
+		
+		// 2. 檢查權限
+		if (!isManager) {
+			organizationValidationUtil.validateOrganizationAndClass(organization, classes);
+		}
+		
+		// 3. 判斷 案件 原本的狀態 是否 PENDING 並改變成 ALLOCATED
+		caseValidationUtil.validateCaseStatus(cases, CaseStatus.PENDING);
+		
+		// 4. 判斷 班級 是否有空位
+		classValidationUtil.validateClassCanAcceptOneMore(classes);
+		
+		// 5. 把 該案件 其他關連的 機構 改變成 ALLOCATED_TO_OTHER 狀態 
+		Set<CaseOrganization> allCaseOrganizations = cases.getOrganizations();
+		
+		List<CaseOrganization> otherCaseOrganizations = allCaseOrganizations.stream()
+			    // 篩選出機構 ID 不等於當前分配機構 ID 的 CaseOrganization
+			    .filter(caseOrg -> !caseOrg.getOrganization().getOrganizationId()
+			                               .equals(organization.getOrganizationId()))
+			    .toList();
+		
+		if (!otherCaseOrganizations.isEmpty()) {
+		    for (CaseOrganization otherCaseOrg : otherCaseOrganizations) {
+		        otherCaseOrg.setStatus(CaseOrganizationStatus.ALLOCATED_TO_OTHER);
+		        
+		        Long caseId = otherCaseOrg.getCases().getCaseId();
+		        Long organizationId = otherCaseOrg.getOrganization().getOrganizationId();
+		        
+		        if (lotteryQueueRepository.existsByCaseAndOrg(caseId, organizationId)) {
+					LotteryQueue lotteryQueue = entityFetcher.getLotteryQueueByCaseIdAndOrganizationId(caseId, organizationId);
+		        	
+		        	lotteryQueue.setStatus(LotteryQueueStatus.ALLOCATED_ELSEWHERE);
+				}
+		    }	
+		}
+		
+		// 6. 修改資料 並 回傳
+		cases.setStatus(CaseStatus.ALLOCATED);
+		classes.setCurrentCount(classes.getCurrentCount()+1);
+		
+		classesRepository.save(classes);
+		casesRepository.save(cases);
+	}
+	
 	@Override
 	public void completedCase(List<CaseCompleteDTO> caseCompleteDTOs) {
 		// TODO Auto-generated method stub
