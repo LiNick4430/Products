@@ -46,6 +46,7 @@ import com.github.lianick.model.eneity.WithdrawalRequests;
 import com.github.lianick.model.enums.ApplicationMethod;
 import com.github.lianick.model.enums.CaseOrganizationStatus;
 import com.github.lianick.model.enums.CaseStatus;
+import com.github.lianick.model.enums.LotteryQueueStatus;
 import com.github.lianick.repository.CasesRepository;
 import com.github.lianick.service.CaseOrganizationService;
 import com.github.lianick.service.CasePriorityService;
@@ -423,12 +424,6 @@ public class CaseServiceImpl implements CaseService {
 		
 		// 7. 建立 DTO 回傳
 		return modelMapper.map(cases, CaseDTO.class);
-	}
-
-	@Override
-	public List<CaseDTO> findQueuedCases() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override

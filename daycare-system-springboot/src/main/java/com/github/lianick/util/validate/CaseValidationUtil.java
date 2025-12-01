@@ -239,4 +239,5 @@ public class CaseValidationUtil {
 			throw new CaseFailureException("您沒有權限處理大量案件。");
 		}
 	}
+	
 }

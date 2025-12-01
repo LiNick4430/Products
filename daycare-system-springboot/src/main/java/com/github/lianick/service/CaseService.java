@@ -95,12 +95,6 @@ public interface CaseService {
 	CaseDTO intoQueueCase(CaseQueueDTO caseQueueDTO);
 	
 	/**
-	 * 取出 LotteryQueue = QUEUED 的 柱列們
-	 * 需要 @PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")
-	 * */
-	List<CaseDTO> findQueuedCases();
-	
-	/**
 	 * 處理案件的抽籤結果 (批量操作)。
 	 * * 抽籤後:
 	 * 1. 抽籤成功 => CaseOrganization = PASSED, LotteryQueue = SELECTED

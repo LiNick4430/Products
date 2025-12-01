@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.github.lianick.exception.UserNotFoundException;
+import com.github.lianick.model.eneity.Organization;
 import com.github.lianick.model.eneity.UserAdmin;
 import com.github.lianick.model.eneity.UserPublic;
 import com.github.lianick.model.eneity.Users;
@@ -26,7 +27,7 @@ public class UserSecurityUtil {
 	
 	@Autowired
 	private  UserAdminRepository userAdminRepository;
-
+	
 	/**
 	 * 取出 User 實體
 	 * */
@@ -57,6 +58,17 @@ public class UserSecurityUtil {
 		UserAdmin userAdmin = userAdminRepository.findByUsers(getCurrentUserEntity())
 				.orElseThrow(() -> new UserNotFoundException("帳號錯誤"));
 		
-	    return userAdmin;
+		return userAdmin;
+	}
+	
+	/**
+	 * 取出 Organization 實體(透過 JWT)
+	 */
+	public Organization getOrganizationEntity() {
+		Organization organization = getCurrentUserAdminEntity().getOrganization();
+		if (organization == null) {
+			throw new UserNotFoundException("使用者缺少所屬機構資訊");
+		}
+		return organization;
 	}
 }

@@ -29,6 +29,7 @@ import com.github.lianick.model.dto.clazz.ClassDTO;
 import com.github.lianick.model.dto.documentAdmin.DocumentAnnouncementDTO;
 import com.github.lianick.model.dto.documentAdmin.DocumentOrganizationDTO;
 import com.github.lianick.model.dto.documentPublic.DocumentPublicDTO;
+import com.github.lianick.model.dto.lotteryQueue.LotteryQueueDTO;
 import com.github.lianick.model.dto.organization.OrganizationDTO;
 import com.github.lianick.model.dto.regulation.RegulationDTO;
 import com.github.lianick.model.dto.user.UserForgetPasswordDTO;
@@ -45,6 +46,7 @@ import com.github.lianick.model.eneity.ChildInfo;
 import com.github.lianick.model.eneity.Classes;
 import com.github.lianick.model.eneity.DocumentAdmin;
 import com.github.lianick.model.eneity.DocumentPublic;
+import com.github.lianick.model.eneity.LotteryQueue;
 import com.github.lianick.model.eneity.Organization;
 import com.github.lianick.model.eneity.Regulations;
 import com.github.lianick.model.eneity.UserAdmin;
@@ -248,6 +250,19 @@ public class ModelMapperConfig {
 				.map(WithdrawalRequests::getUserAdmin, WithdrawalRequestDTO::setAdminName);
 			mapper.using(baseEnumToDescriptionConveter)
 				.map(WithdrawalRequests::getStatus, WithdrawalRequestDTO::setStatus);
+		});
+		
+		// LotteryQueue 相關
+		modelMapper.typeMap(LotteryQueue.class, LotteryQueueDTO.class).addMappings(mapper -> {
+			mapper.map(LotteryQueue::getLotteryQueueId, LotteryQueueDTO::setId);
+			mapper.using(caseToCaseNumberConveter)
+				.map(LotteryQueue::getCases, LotteryQueueDTO::setCaseNumber);
+			mapper.using(childInfoToChildNameConveter)
+				.map(LotteryQueue::getChildInfo, LotteryQueueDTO::setChildName);
+			mapper.using(organizationToOrganizationIdConveter)
+				.map(LotteryQueue::getOrganization, LotteryQueueDTO::setOrganizationId);
+			mapper.using(baseEnumToDescriptionConveter)
+				.map(LotteryQueue::getStatus, LotteryQueueDTO::setStatus);
 		});
 		
 		// ------------------------------------------------------------------------------------

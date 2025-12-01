@@ -2,6 +2,7 @@ package com.github.lianick.repository;
 
 import java.util.Optional;
 
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,8 +15,8 @@ import java.util.List;
 @Repository
 public interface UserAdminRepository extends JpaRepository<UserAdmin, Long>{
 
+	@EntityGraph(attributePaths = {"organization"})
 	Optional<UserAdmin> findByUsers(Users users);
 	
 	List<UserAdmin> findByOrganization(Organization organization);
-	
 }

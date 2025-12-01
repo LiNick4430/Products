@@ -40,7 +40,7 @@ public interface OrganizationRepository extends JpaRepository<Organization, Long
 	Optional<Organization> findByPhoneNumber(String phoneNumber);
 	
 	Optional<Organization> findByEmail(String email);
-
+	
 	// 檢查是否有「非指定 ID」的機構 正在使用 這個名稱/電話/信箱
 	@Query(value = "SELECT * FROM organization "
 	        + "WHERE organization_name = :name AND organization_id != :id AND delete_at IS NULL"
