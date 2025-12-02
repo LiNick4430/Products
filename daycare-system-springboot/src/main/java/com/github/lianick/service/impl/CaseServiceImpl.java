@@ -553,11 +553,11 @@ public class CaseServiceImpl implements CaseService {
 				now, null);
 		ReviewLogs caseReviewLog = reviewLogService.createNewReviewLog(caseReviewLogCreateDTO);
 		
-		// 7. 修改 cases 和 classes 資料
+		// 8. 修改 cases 和 classes 資料
 		cases.setStatus(newCaseStatus);
 		classes.setCurrentCount(classes.getCurrentCount()+1);
 		
-		// 8. 將審核紀錄DTO 全部記錄成 審核紀錄 並且 存入 case
+		// 9. 將審核紀錄DTO 全部記錄成 審核紀錄 並且 存入 case
 		cases.getReviewHistorys().addAll(caseOrganizationReviewLogs);
 		cases.getReviewHistorys().addAll(lotteryQueueReviewLogs);
 		cases.getReviewHistorys().add(caseReviewLog);
