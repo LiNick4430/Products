@@ -1,5 +1,7 @@
 package com.github.lianick.service.impl;
 
+import java.time.LocalDateTime;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -8,7 +10,9 @@ import com.github.lianick.exception.EnumNotFoundException;
 import com.github.lianick.exception.ReviewLogFailureException;
 import com.github.lianick.exception.ValueMissException;
 import com.github.lianick.model.dto.reviewLog.ReviewLogCreateDTO;
+import com.github.lianick.model.eneity.Cases;
 import com.github.lianick.model.eneity.ReviewLogs;
+import com.github.lianick.model.eneity.UserAdmin;
 import com.github.lianick.model.enums.BaseEnum;
 import com.github.lianick.repository.ReviewLogsRepository;
 import com.github.lianick.service.ReviewLogService;
@@ -19,6 +23,28 @@ public class ReviewLogServiceImpl implements ReviewLogService{
 
 	@Autowired
 	private ReviewLogsRepository reviewLogsRepository;
+	
+	@Override
+	public <E extends Enum<E> & BaseEnum> ReviewLogCreateDTO<E> toDTO(Cases cases, UserAdmin userAdmin, 
+			E from, E to, Class<E> enumClass, 
+			LocalDateTime now, String reviewLogMessage) {
+		// 簡易前處理
+		if (cases == null || userAdmin == null || from == null || to == null || enumClass == null || now == null) {
+			throw new ValueMissException("審核紀錄 缺少必要資料");
+		}
+		
+		// 主要 建立步驟
+		ReviewLogCreateDTO<E> reviewLogCreateDTO = new ReviewLogCreateDTO<>();
+		reviewLogCreateDTO.setCases(cases);
+		reviewLogCreateDTO.setUserAdmin(userAdmin);
+		reviewLogCreateDTO.setFrom(from);
+		reviewLogCreateDTO.setTo(to);
+		reviewLogCreateDTO.setEnumClass(enumClass);
+		reviewLogCreateDTO.setNow(now);
+		reviewLogCreateDTO.setReviewLogMessage(reviewLogMessage);
+		
+		return reviewLogCreateDTO;
+	}
 	
 	@Override
 	public <E extends Enum<E> & BaseEnum> ReviewLogs createNewReviewLog(ReviewLogCreateDTO<E> reviewLogCreateDTO) {
@@ -56,5 +82,7 @@ public class ReviewLogServiceImpl implements ReviewLogService{
 		
 		return reviewLogs;
 	}
+
+	
 
 }

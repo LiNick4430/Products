@@ -294,14 +294,10 @@ public class CaseServiceImpl implements CaseService {
 		
 		// 4. 建立一個 審核紀錄用 DTO
 		LocalDateTime now = LocalDateTime.now();
-		ReviewLogCreateDTO<CaseStatus> reviewLogCreateDTO = new ReviewLogCreateDTO<CaseStatus>();
-		reviewLogCreateDTO.setCases(cases);
-		reviewLogCreateDTO.setUserAdmin(users.getAdminInfo());
-		reviewLogCreateDTO.setFrom(originalStatus);
-		reviewLogCreateDTO.setTo(newStatus);
-		reviewLogCreateDTO.setNow(now);
-		reviewLogCreateDTO.setReviewLogMessage(caseVerifyDTO.getMessage());
-		reviewLogCreateDTO.setEnumClass(CaseStatus.class);
+		ReviewLogCreateDTO<CaseStatus> reviewLogCreateDTO = reviewLogService.toDTO(
+				cases, users.getAdminInfo(), 
+				originalStatus, newStatus, CaseStatus.class, 
+				now, caseVerifyDTO.getMessage());
 		
 		// 4. 建立一個 審核紀錄
 		ReviewLogs reviewLogs = reviewLogService.createNewReviewLog(reviewLogCreateDTO);
@@ -315,6 +311,7 @@ public class CaseServiceImpl implements CaseService {
 	}
 
 	@Override
+	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	@PreAuthorize("hasAuthority('ROLE_MANAGER')")
 	public List<CaseErrorDTO> advanceToPending(List<CasePendingDTO> casePendingDTOs) {
 		// 1. 判斷權限
@@ -362,13 +359,10 @@ public class CaseServiceImpl implements CaseService {
 		
 		// 2. 補上 審核紀錄 DTO 資訊
 		LocalDateTime now = LocalDateTime.now();
-		ReviewLogCreateDTO<CaseStatus> reviewLogCreateDTO = new ReviewLogCreateDTO<CaseStatus>();
-		reviewLogCreateDTO.setCases(cases);
-		reviewLogCreateDTO.setUserAdmin(userAdmin);
-		reviewLogCreateDTO.setFrom(CaseStatus.PASSED);
-		reviewLogCreateDTO.setTo(CaseStatus.PENDING);
-		reviewLogCreateDTO.setEnumClass(CaseStatus.class);
-		reviewLogCreateDTO.setNow(now);
+		ReviewLogCreateDTO<CaseStatus> reviewLogCreateDTO = reviewLogService.toDTO(
+				cases, userAdmin, 
+				CaseStatus.PASSED, CaseStatus.PENDING, CaseStatus.class, 
+				now, null);
 		
 		// 3. 建立 審核紀錄
 		ReviewLogs reviewLogs = reviewLogService.createNewReviewLog(reviewLogCreateDTO);
@@ -418,13 +412,10 @@ public class CaseServiceImpl implements CaseService {
 		
 		// 5. 建立審核紀錄
 		LocalDateTime now = LocalDateTime.now();
-		ReviewLogCreateDTO<CaseOrganizationStatus> reviewLogCreateDTO = new ReviewLogCreateDTO<>();
-		reviewLogCreateDTO.setCases(cases);
-		reviewLogCreateDTO.setUserAdmin(users.getAdminInfo());
-		reviewLogCreateDTO.setFrom(oldStatus);
-		reviewLogCreateDTO.setTo(newStatus);
-		reviewLogCreateDTO.setEnumClass(CaseOrganizationStatus.class);
-		reviewLogCreateDTO.setNow(now);
+		ReviewLogCreateDTO<CaseOrganizationStatus> reviewLogCreateDTO = reviewLogService.toDTO(
+				cases, users.getAdminInfo(), 
+				oldStatus, newStatus, CaseOrganizationStatus.class, 
+				now, null);
 		
 		ReviewLogs reviewLogs = reviewLogService.createNewReviewLog(reviewLogCreateDTO);
 		
@@ -441,11 +432,12 @@ public class CaseServiceImpl implements CaseService {
 	}
 
 	@Override
+	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	@PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')") 
 	public List<CaseErrorDTO> allocateCasesToClasses(List<CaseAllocationDTO> caseAllocationDTOs) {
 		// 1. 檢查權限
-		Users users = userSecurityUtil.getCurrentUserEntity();
-		Boolean isManager = userValidationUtil.validateUserIsManager(users);
+		UserAdmin userAdmin = userSecurityUtil.getCurrentUserAdminEntity();
+		Boolean isManager = userValidationUtil.validateUserIsManager(userAdmin.getUsers());
 		Organization organization = userSecurityUtil.getOrganizationEntity();
 		
 		// 2. 執行大量方法
@@ -457,7 +449,7 @@ public class CaseServiceImpl implements CaseService {
 			
 			for (CaseAllocationDTO caseAllocationDTO : batch) {
 				try {
-					oneCaseToAllocation(caseAllocationDTO, isManager, organization);
+					oneCaseToAllocation(caseAllocationDTO, userAdmin, isManager, organization);
 		        } catch (Exception e) {
 		            // 可以記錄錯誤，但繼續處理下一個案件
 		        	logger.error("案件 {} 處理失敗: {}", caseAllocationDTO.getCaseId(), e.getMessage(), e);
@@ -478,13 +470,14 @@ public class CaseServiceImpl implements CaseService {
 
 	/** 單一處理 案件(PENDING -> ALLOCATED) 方法 */
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	private void oneCaseToAllocation(CaseAllocationDTO caseAllocationDTO, Boolean isManager, Organization organization) {
+	private void oneCaseToAllocation(CaseAllocationDTO caseAllocationDTO, UserAdmin userAdmin, Boolean isManager, Organization organization) {
 		// 0. 檢查完整性
 		caseValidationUtil.validateCaseAllocation(caseAllocationDTO);
 		
 		// 1. 取出必要的資料
 		Cases cases = entityFetcher.getCasesByIdForUpdate(caseAllocationDTO.getCaseId());
 		Classes classes = entityFetcher.getClassesByIdForUpdate(caseAllocationDTO.getClassId());
+		Organization classOrganization = classes.getOrganization();
 		
 		// 2. 檢查權限
 		if (!isManager) {
@@ -497,33 +490,77 @@ public class CaseServiceImpl implements CaseService {
 		// 4. 判斷 班級 是否有空位
 		classValidationUtil.validateClassCanAcceptOneMore(classes);
 		
-		// 5. 把 該案件 其他關連的 機構 改變成 ALLOCATED_TO_OTHER 狀態 
+		// 5. 把 該案件 其他關連的 機構 改變成 ALLOCATED_TO_OTHER 狀態
 		Set<CaseOrganization> allCaseOrganizations = cases.getOrganizations();
 		
-			List<CaseOrganization> otherCaseOrganizations = allCaseOrganizations.stream()
-				    // 篩選出機構 ID 不等於當前分配機構 ID 的 CaseOrganization
-				    .filter(caseOrg -> !caseOrg.getOrganization().getOrganizationId()
-				                               .equals(classes.getOrganization().getOrganizationId()))
-				    .toList();
+		//檢查是否有 其他 機構關聯
+		List<CaseOrganization> otherCaseOrganizations = allCaseOrganizations.stream()
+			    // 篩選出機構 ID 不等於當前分配機構 ID 的 CaseOrganization
+			    .filter(caseOrg -> !caseOrg.getOrganization().getOrganizationId()
+			                               .equals(classOrganization.getOrganizationId()))
+			    .toList();
+		
+		LocalDateTime now = LocalDateTime.now();
+		List<ReviewLogs> caseOrganizationReviewLogs = new ArrayList<>();
+		List<ReviewLogs> lotteryQueueReviewLogs = new ArrayList<>();
 		
 		if (!otherCaseOrganizations.isEmpty()) {
 		    for (CaseOrganization otherCaseOrg : otherCaseOrganizations) {
-		        otherCaseOrg.setStatus(CaseOrganizationStatus.ALLOCATED_TO_OTHER);
+		    	// 改變 狀態為 ALLOCATED_TO_OTHER 並 同步建立審核紀錄
+		    	CaseOrganizationStatus oldCaseOrganizationStatus = otherCaseOrg.getStatus();
+		    	CaseOrganizationStatus newCaseOrganizationStatus = CaseOrganizationStatus.ALLOCATED_TO_OTHER;
+		    	
+		        otherCaseOrg.setStatus(newCaseOrganizationStatus);
 		        
+		        // 建立 審核紀錄 並回存 List
+		        ReviewLogCreateDTO<CaseOrganizationStatus> caseOrganizationReviewLogCreateDTO = reviewLogService.toDTO(
+		    			cases, userAdmin, 
+		    			oldCaseOrganizationStatus, newCaseOrganizationStatus, CaseOrganizationStatus.class, 
+		    			now, null);
+		        ReviewLogs caseOrganizationReviewLog = reviewLogService.createNewReviewLog(caseOrganizationReviewLogCreateDTO);
+		        caseOrganizationReviewLogs.add(caseOrganizationReviewLog);
+		        
+		        // 6. 把 該案件 其他關連的 機構 的 LotteryQueue 改變成 ALLOCATED_ELSEWHERE 狀態
 		        Long caseId = otherCaseOrg.getCases().getCaseId();
 		        Long organizationId = otherCaseOrg.getOrganization().getOrganizationId();
 		        
 		        if (lotteryQueueRepository.existsByCaseAndOrg(caseId, organizationId)) {
+		        	// 改變 狀態為 ALLOCATED_ELSEWHERE 並 同步建立審核紀錄
 					LotteryQueue lotteryQueue = entityFetcher.getLotteryQueueByCaseIdAndOrganizationId(caseId, organizationId);
 		        	
-		        	lotteryQueue.setStatus(LotteryQueueStatus.ALLOCATED_ELSEWHERE);
+					LotteryQueueStatus oldLotteryQueueStatus = lotteryQueue.getStatus();
+					LotteryQueueStatus newLotteryQueueStatus = LotteryQueueStatus.ALLOCATED_ELSEWHERE;
+					
+		        	lotteryQueue.setStatus(newLotteryQueueStatus);
+		        	
+		        	ReviewLogCreateDTO<LotteryQueueStatus> lotteryQueueSReviewLogCreateDTO = reviewLogService.toDTO(
+		        			cases, userAdmin, 
+		        			oldLotteryQueueStatus, newLotteryQueueStatus, LotteryQueueStatus.class, 
+		        			now, null);
+		        	ReviewLogs lotteryQueueReviewLog = reviewLogService.createNewReviewLog(lotteryQueueSReviewLogCreateDTO);
+		        	lotteryQueueReviewLogs.add(lotteryQueueReviewLog);
 				}
 		    }	
 		}
 		
-		// 6. 修改資料 並 回傳
-		cases.setStatus(CaseStatus.ALLOCATED);
+		// 7. 建立 cases 的審核紀錄
+		CaseStatus oldCaseStatus = cases.getStatus();
+		CaseStatus newCaseStatus = CaseStatus.ALLOCATED;
+		
+		ReviewLogCreateDTO<CaseStatus> caseReviewLogCreateDTO = reviewLogService.toDTO(
+				cases, userAdmin, 
+				oldCaseStatus, newCaseStatus, CaseStatus.class, 
+				now, null);
+		ReviewLogs caseReviewLog = reviewLogService.createNewReviewLog(caseReviewLogCreateDTO);
+		
+		// 7. 修改 cases 和 classes 資料
+		cases.setStatus(newCaseStatus);
 		classes.setCurrentCount(classes.getCurrentCount()+1);
+		
+		// 8. 將審核紀錄DTO 全部記錄成 審核紀錄 並且 存入 case
+		cases.getReviewHistorys().addAll(caseOrganizationReviewLogs);
+		cases.getReviewHistorys().addAll(lotteryQueueReviewLogs);
+		cases.getReviewHistorys().add(caseReviewLog);
 		
 		classesRepository.save(classes);
 		casesRepository.save(cases);
@@ -566,7 +603,7 @@ public class CaseServiceImpl implements CaseService {
 	}
 
 	@Override
-	public void processLotteryResults(List<CaseLotteryResultDTO> lotteryResults) {
+	public void processLotteryResults(List<CaseLotteryResultDTO> lotteryResults, UserAdmin userAdmin) {
 		// 0. 假設沒有結果 直接跳過
 		if (lotteryResults.isEmpty()) {
 			return;
@@ -588,13 +625,13 @@ public class CaseServiceImpl implements CaseService {
 		});
 		
 		// 2. 開始大量處理
-		successList.forEach(this::oneCaseInLottery);
-		waitList.forEach(this::oneCaseInLottery);
-		failedList.forEach(this::oneCaseInLottery);
+		successList.forEach(lotteryResult -> oneCaseInLottery(lotteryResult, userAdmin));
+		waitList.forEach(lotteryResult -> oneCaseInLottery(lotteryResult, userAdmin));
+		failedList.forEach(lotteryResult -> oneCaseInLottery(lotteryResult, userAdmin));
 	}
 	
 	/** 單一處理 案件(CaseOrganization + LotteryQueue) 方法 */
-	private void oneCaseInLottery(CaseLotteryResultDTO lotteryResult) {
+	private void oneCaseInLottery(CaseLotteryResultDTO lotteryResult, UserAdmin userAdmin) {
 		// 0. 檢查完整性
 		caseValidationUtil.validateCaseLottery(lotteryResult);
 		
@@ -606,22 +643,49 @@ public class CaseServiceImpl implements CaseService {
 		Integer alternateNumber = lotteryResult.getAlternateNumber();
 		Integer lotteryOrder = lotteryResult.getLotteryOrder();
 		
-		// 2. 根據 結果狀態 修正數值 
+		// 2. 取得 CaseOrganization 和 LotteryResultStatus 新舊狀態
+		CaseOrganizationStatus oldCaseOrganizationStatus = caseOrganization.getStatus();
+		CaseOrganizationStatus newCaseOrganizationStatus = null;
+		
+		LotteryQueueStatus oldLotteryQueueStatus = lotteryQueue.getStatus();
+		LotteryQueueStatus newLotteryQueueStatus = null;
+		
+		// 3. 根據 結果狀態 修正數值 
 		if (status == LotteryResultStatus.SUCCESS) {
-			caseOrganization.setStatus(CaseOrganizationStatus.PASSED);
-			lotteryQueue.setStatus(LotteryQueueStatus.SELECTED);
+			newCaseOrganizationStatus = CaseOrganizationStatus.PASSED;
+			newLotteryQueueStatus = LotteryQueueStatus.SELECTED;
 		} else if (status == LotteryResultStatus.WAITLIST) {
-			caseOrganization.setStatus(CaseOrganizationStatus.WAITLISTED);
-			lotteryQueue.setStatus(LotteryQueueStatus.SELECTED);
+			newCaseOrganizationStatus = CaseOrganizationStatus.WAITLISTED;
+			newLotteryQueueStatus = LotteryQueueStatus.SELECTED;
 			lotteryQueue.setAlternateNumber(alternateNumber);
 		} else if (status == LotteryResultStatus.FAILED) {
-			caseOrganization.setStatus(CaseOrganizationStatus.REJECTED);
-			lotteryQueue.setStatus(LotteryQueueStatus.FAILED);
+			newCaseOrganizationStatus = CaseOrganizationStatus.REJECTED;
+			newLotteryQueueStatus = LotteryQueueStatus.FAILED;
 		}
 		
+		caseOrganization.setStatus(newCaseOrganizationStatus);
+		lotteryQueue.setStatus(newLotteryQueueStatus);
 		lotteryQueue.setLotteryOrder(lotteryOrder);
 		
-		// 3. 統一 回傳
+		// 4. 各自建立 審核紀錄 DTO
+		LocalDateTime now = LocalDateTime.now();
+		ReviewLogCreateDTO<CaseOrganizationStatus> caseOrganizationReviewLogCreateDTO = reviewLogService.toDTO(
+				cases, userAdmin, 
+				oldCaseOrganizationStatus, newCaseOrganizationStatus, CaseOrganizationStatus.class, 
+				now, null);
+		
+		ReviewLogCreateDTO<LotteryQueueStatus> lotteryQueueReviewLogCreateDTO = reviewLogService.toDTO(
+				cases, userAdmin, 
+				oldLotteryQueueStatus, newLotteryQueueStatus, LotteryQueueStatus.class, 
+				now, null);
+		
+		// 5. 各自建立 審核紀錄
+		ReviewLogs caseOrganizationReviewLog = reviewLogService.createNewReviewLog(caseOrganizationReviewLogCreateDTO);
+		ReviewLogs lotteryQueueReviewLog = reviewLogService.createNewReviewLog(lotteryQueueReviewLogCreateDTO);
+		cases.getReviewHistorys().add(caseOrganizationReviewLog);
+		cases.getReviewHistorys().add(lotteryQueueReviewLog);
+		
+		// 6. 統一 回傳
 		casesRepository.save(cases);
 	}
 }

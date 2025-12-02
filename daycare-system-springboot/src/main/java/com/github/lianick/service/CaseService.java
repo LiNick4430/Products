@@ -18,6 +18,7 @@ import com.github.lianick.model.dto.cases.CaseVerifyDTO;
 import com.github.lianick.model.dto.cases.CaseWaitlistDTO;
 import com.github.lianick.model.dto.cases.CaseWithdrawnAdminDTO;
 import com.github.lianick.model.dto.cases.CaseWithdrawnDTO;
+import com.github.lianick.model.eneity.UserAdmin;
 
 /** 案件的狀態順序
  * 1. 申請中		-> CaseStatus.APPLIED
@@ -82,7 +83,9 @@ public interface CaseService {
 	/**
 	 * 將 通過的案件 進入 待分發 狀態
 	 * 案件 (PASSED -> PENDING)
-	 * 需要 @PreAuthorize("hasAuthority('ROLE_MANAGER')") 
+	 * 需要 
+	 * @Transactional(propagation = Propagation.NOT_SUPPORTED)
+	 * @PreAuthorize("hasAuthority('ROLE_MANAGER')") 
 	 * */
 	List<CaseErrorDTO> advanceToPending(List<CasePendingDTO>  casePendingDTOs);
 	
@@ -96,7 +99,9 @@ public interface CaseService {
 	
 	/** 批量分配案件到班級。
 	 * 將案件狀態從 PENDING 轉為 ALLOCATED，並更新班級人數。
-	 * 需要 @PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')") 
+	 * 需要
+	 * @Transactional(propagation = Propagation.NOT_SUPPORTED)
+	 * @PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')") 
 	 * */
 	List<CaseErrorDTO> allocateCasesToClasses(List<CaseAllocationDTO> caseAllocationDTOs);
 	
@@ -150,5 +155,5 @@ public interface CaseService {
 	 * 2. 抽籤備選 => CaseOrganization = WAITLISTED, LotteryQueue = SELECTED
 	 * 3. 抽籤失敗 => CaseOrganization = REJECTED, LotteryQueue = FAILED
 	 * */
-	void processLotteryResults(List<CaseLotteryResultDTO> lotteryResults);
+	void processLotteryResults(List<CaseLotteryResultDTO> lotteryResults, UserAdmin userAdmin);
 }
