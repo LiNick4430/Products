@@ -84,7 +84,7 @@ public interface CaseService {
 	 * 將 通過的案件 進入 待分發 狀態
 	 * 案件 (PASSED -> PENDING)
 	 * 需要 
-	 * @Transactional(propagation = Propagation.NOT_SUPPORTED)
+	 * @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
 	 * @PreAuthorize("hasAuthority('ROLE_MANAGER')") 
 	 * */
 	List<CaseErrorDTO> advanceToPending(List<CasePendingDTO>  casePendingDTOs);
@@ -100,14 +100,14 @@ public interface CaseService {
 	/** 批量分配案件到班級。
 	 * 將案件狀態從 PENDING 轉為 ALLOCATED，並更新班級人數。
 	 * 需要
-	 * @Transactional(propagation = Propagation.NOT_SUPPORTED)
+	 * @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
 	 * @PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')") 
 	 * */
 	List<CaseErrorDTO> allocateCasesToClasses(List<CaseAllocationDTO> caseAllocationDTOs);
 	
 	/** 幼兒 向 班級 報到 (ALLOCATED -> COMPLETED)
 	 * 需要
-	 * @Transactional(propagation = Propagation.NOT_SUPPORTED)
+	 * @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
 	 * @PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')") 
 	 * */
 	void completedCase(List<CaseCompleteDTO>  caseCompleteDTOs);
@@ -117,7 +117,7 @@ public interface CaseService {
 	 * 將 申請該機構的 抽籤備選 => CaseOrganization = WAITLISTED, LotteryQueue = SELECTED 
 	 * 變成 CaseOrganization = PASSED
 	 * 需要
-	 * @Transactional(propagation = Propagation.NOT_SUPPORTED)
+	 * @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
 	 * @PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')") 
 	 * */
 	void processWaitlistSuccess(List<CaseWaitlistDTO> waitlistDTOs);
@@ -128,7 +128,7 @@ public interface CaseService {
 	 * 變成 CaseOrganization = REJECTED
 	 * (假設是 1st 讓 2nd 讓進入 intoQueueCase() 跑流程)
 	 * 需要
-	 * @Transactional(propagation = Propagation.NOT_SUPPORTED)
+	 * @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
 	 * @PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')") 
 	 * */
 	void processWaitlistFailure(List<CaseWaitlistDTO> waitlistDTOs);
@@ -138,7 +138,7 @@ public interface CaseService {
 	 * 1. CaseOrganizationFirst = REJECTED
 	 * 2. CaseOrganizationSecond = null or REJECTED
 	 * 需要
-	 * @Transactional(propagation = Propagation.NOT_SUPPORTED)
+	 * @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
 	 * @PreAuthorize("hasAuthority('ROLE_MANAGER')")
 	 * */
 	void intoRejected(List<CaseRejectDTO> caseRejectDTOs);
@@ -152,7 +152,7 @@ public interface CaseService {
 	/** 
 	 * 審核 撤銷申請 案件
 	 * 需要
-	 * @Transactional(propagation = Propagation.NOT_SUPPORTED)
+	 * @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
 	 * @PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')") 
 	 * */
 	void verifyWithdrawnCase(List<CaseWithdrawnAdminDTO> caseWithdrawnAdminDTOs);

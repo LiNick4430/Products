@@ -311,7 +311,7 @@ public class CaseServiceImpl implements CaseService {
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.NOT_SUPPORTED)
+	@Transactional(propagation = Propagation.REQUIRED, readOnly = true)
 	@PreAuthorize("hasAuthority('ROLE_MANAGER')")
 	public List<CaseErrorDTO> advanceToPending(List<CasePendingDTO> casePendingDTOs) {
 		// 1. 判斷權限
@@ -432,7 +432,7 @@ public class CaseServiceImpl implements CaseService {
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.NOT_SUPPORTED)
+	@Transactional(propagation = Propagation.REQUIRED, readOnly = true)
 	@PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')") 
 	public List<CaseErrorDTO> allocateCasesToClasses(List<CaseAllocationDTO> caseAllocationDTOs) {
 		// 1. 檢查權限
@@ -567,7 +567,7 @@ public class CaseServiceImpl implements CaseService {
 	}
 	
 	@Override
-	@Transactional(propagation = Propagation.NOT_SUPPORTED)
+	@Transactional(propagation = Propagation.REQUIRED, readOnly = true)
 	@PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")
 	public void completedCase(List<CaseCompleteDTO> caseCompleteDTOs) {
 		// TODO Auto-generated method stub
@@ -575,7 +575,7 @@ public class CaseServiceImpl implements CaseService {
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.NOT_SUPPORTED)
+	@Transactional(propagation = Propagation.REQUIRED, readOnly = true)
 	@PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")
 	public void processWaitlistSuccess(List<CaseWaitlistDTO> waitlistDTOs) {
 		// TODO Auto-generated method stub
@@ -583,7 +583,7 @@ public class CaseServiceImpl implements CaseService {
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.NOT_SUPPORTED)
+	@Transactional(propagation = Propagation.REQUIRED, readOnly = true)
 	@PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")
 	public void processWaitlistFailure(List<CaseWaitlistDTO> waitlistDTOs) {
 		// TODO Auto-generated method stub
@@ -591,7 +591,7 @@ public class CaseServiceImpl implements CaseService {
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.NOT_SUPPORTED)
+	@Transactional(propagation = Propagation.REQUIRED, readOnly = true)
 	@PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")
 	public void intoRejected(List<CaseRejectDTO> caseRejectDTOs) {
 		// TODO Auto-generated method stub
@@ -605,7 +605,7 @@ public class CaseServiceImpl implements CaseService {
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.NOT_SUPPORTED)
+	@Transactional(propagation = Propagation.REQUIRED, readOnly = true)
 	@PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")
 	public void verifyWithdrawnCase(List<CaseWithdrawnAdminDTO> caseWithdrawnAdminDTOs) {
 		// TODO Auto-generated method stub
