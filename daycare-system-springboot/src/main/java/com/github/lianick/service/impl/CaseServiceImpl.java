@@ -495,7 +495,7 @@ public class CaseServiceImpl implements CaseService {
 		
 		//檢查是否有 其他 機構關聯
 		List<CaseOrganization> otherCaseOrganizations = allCaseOrganizations.stream()
-			    // 篩選出機構 ID 不等於當前分配機構 ID 的 CaseOrganization
+			    // 篩選出機構 ID 不等於 當前分配機構(classOrganization) ID 的 CaseOrganization
 			    .filter(caseOrg -> !caseOrg.getOrganization().getOrganizationId()
 			                               .equals(classOrganization.getOrganizationId()))
 			    .toList();
@@ -567,24 +567,32 @@ public class CaseServiceImpl implements CaseService {
 	}
 	
 	@Override
+	@Transactional(propagation = Propagation.NOT_SUPPORTED)
+	@PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")
 	public void completedCase(List<CaseCompleteDTO> caseCompleteDTOs) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
+	@Transactional(propagation = Propagation.NOT_SUPPORTED)
+	@PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")
 	public void processWaitlistSuccess(List<CaseWaitlistDTO> waitlistDTOs) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
+	@Transactional(propagation = Propagation.NOT_SUPPORTED)
+	@PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")
 	public void processWaitlistFailure(List<CaseWaitlistDTO> waitlistDTOs) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
+	@Transactional(propagation = Propagation.NOT_SUPPORTED)
+	@PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")
 	public void intoRejected(List<CaseRejectDTO> caseRejectDTOs) {
 		// TODO Auto-generated method stub
 		
@@ -597,11 +605,16 @@ public class CaseServiceImpl implements CaseService {
 	}
 
 	@Override
+	@Transactional(propagation = Propagation.NOT_SUPPORTED)
+	@PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")
 	public void verifyWithdrawnCase(List<CaseWithdrawnAdminDTO> caseWithdrawnAdminDTOs) {
 		// TODO Auto-generated method stub
 		
 	}
 
+	// -------------------------------------------
+	// ----- 供給 LotteryFacadeService 的 子方法 -----
+	// -------------------------------------------
 	@Override
 	public void processLotteryResults(List<CaseLotteryResultDTO> lotteryResults, UserAdmin userAdmin) {
 		// 0. 假設沒有結果 直接跳過
