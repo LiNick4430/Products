@@ -105,8 +105,10 @@ public interface CaseService {
 	 * */
 	List<CaseErrorDTO> allocateCasesToClasses(List<CaseAllocationDTO> caseAllocationDTOs);
 	
-	/** 幼兒 向 班級 報到 (ALLOCATED -> COMPLETED) 
-	 * 需要 @PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')") 
+	/** 幼兒 向 班級 報到 (ALLOCATED -> COMPLETED)
+	 * 需要
+	 * @Transactional(propagation = Propagation.NOT_SUPPORTED)
+	 * @PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')") 
 	 * */
 	void completedCase(List<CaseCompleteDTO>  caseCompleteDTOs);
 	
@@ -114,7 +116,9 @@ public interface CaseService {
 	 * 機構 的 班級 還有 空位 的時候(報到期限後)
 	 * 將 申請該機構的 抽籤備選 => CaseOrganization = WAITLISTED, LotteryQueue = SELECTED 
 	 * 變成 CaseOrganization = PASSED
-	 * 需要 @PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')") 
+	 * 需要
+	 * @Transactional(propagation = Propagation.NOT_SUPPORTED)
+	 * @PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')") 
 	 * */
 	void processWaitlistSuccess(List<CaseWaitlistDTO> waitlistDTOs);
 	
@@ -123,7 +127,9 @@ public interface CaseService {
 	 * 將 申請該機構的 抽籤備選 => CaseOrganization = WAITLISTED, LotteryQueue = SELECTED 
 	 * 變成 CaseOrganization = REJECTED
 	 * (假設是 1st 讓 2nd 讓進入 intoQueueCase() 跑流程)
-	 * 需要 @PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')") 
+	 * 需要
+	 * @Transactional(propagation = Propagation.NOT_SUPPORTED)
+	 * @PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')") 
 	 * */
 	void processWaitlistFailure(List<CaseWaitlistDTO> waitlistDTOs);
 	
@@ -131,7 +137,9 @@ public interface CaseService {
 	 * 檢查 是否 流程失敗 直接把 CASE 進入 REJECTED
 	 * 1. CaseOrganizationFirst = REJECTED
 	 * 2. CaseOrganizationSecond = null or REJECTED
-	 * 需要 @PreAuthorize("hasAuthority('ROLE_MANAGER')")
+	 * 需要
+	 * @Transactional(propagation = Propagation.NOT_SUPPORTED)
+	 * @PreAuthorize("hasAuthority('ROLE_MANAGER')")
 	 * */
 	void intoRejected(List<CaseRejectDTO> caseRejectDTOs);
 	
@@ -143,7 +151,9 @@ public interface CaseService {
 	
 	/** 
 	 * 審核 撤銷申請 案件
-	 * 需要 @PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')") 
+	 * 需要
+	 * @Transactional(propagation = Propagation.NOT_SUPPORTED)
+	 * @PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')") 
 	 * */
 	void verifyWithdrawnCase(List<CaseWithdrawnAdminDTO> caseWithdrawnAdminDTOs);
 	
