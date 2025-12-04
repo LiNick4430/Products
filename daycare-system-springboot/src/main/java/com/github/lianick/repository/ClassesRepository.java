@@ -26,7 +26,7 @@ public interface ClassesRepository extends JpaRepository<Classes, Long> {
 			"SELECT COUNT(case_id) "
 			+ "FROM cases "
 			+ "WHERE class_id = :classId "
-			+ "AND case_status IN ('COMPLETED', 'ALLOCATED') "
+			+ "AND case_status = 'COMPLETED' "
 			+ "AND delete_at IS NULL"
 			, nativeQuery = true)
 	Long countActiveCasesByClassId(@Param("classId") Long classId);
@@ -39,4 +39,5 @@ public interface ClassesRepository extends JpaRepository<Classes, Long> {
 			+ "AND delete_at IS NULL "
 			, nativeQuery = true)
 	Optional<Classes> findByIdForUpdate(@Param("classId") Long classId);
+	
 }

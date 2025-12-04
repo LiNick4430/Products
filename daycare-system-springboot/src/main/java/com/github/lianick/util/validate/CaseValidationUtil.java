@@ -1,11 +1,14 @@
 package com.github.lianick.util.validate;
 
+import java.time.LocalDateTime;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.github.lianick.exception.CaseFailureException;
 import com.github.lianick.exception.ValueMissException;
 import com.github.lianick.model.dto.cases.CaseAllocationDTO;
+import com.github.lianick.model.dto.cases.CaseCompleteDTO;
 import com.github.lianick.model.dto.cases.CaseCreateDTO;
 import com.github.lianick.model.dto.cases.CaseFindAdminDTO;
 import com.github.lianick.model.dto.cases.CaseFindPublicDTO;
@@ -14,8 +17,10 @@ import com.github.lianick.model.dto.cases.CasePendingDTO;
 import com.github.lianick.model.dto.cases.CaseQueueDTO;
 import com.github.lianick.model.dto.cases.CaseVerifyDTO;
 import com.github.lianick.model.dto.cases.CaseWithdrawnDTO;
+import com.github.lianick.model.eneity.CaseOrganization;
 import com.github.lianick.model.eneity.Cases;
 import com.github.lianick.model.eneity.ChildInfo;
+import com.github.lianick.model.eneity.LotteryQueue;
 import com.github.lianick.model.eneity.Organization;
 import com.github.lianick.model.eneity.UserAdmin;
 import com.github.lianick.model.eneity.UserPublic;
@@ -23,6 +28,7 @@ import com.github.lianick.model.eneity.Users;
 import com.github.lianick.model.enums.ApplicationMethod;
 import com.github.lianick.model.enums.CaseOrganizationStatus;
 import com.github.lianick.model.enums.CaseStatus;
+import com.github.lianick.model.enums.LotteryQueueStatus;
 
 /**
  * 負責處理 Case 相關的 完整性 檢測
@@ -209,9 +215,28 @@ public class CaseValidationUtil {
 	/**
 	 * 檢查 CaseAllocationDTO 的完整性
 	 * */
+	public void validateCaseComplete(CaseCompleteDTO caseCompleteDTO) {
+		if (caseCompleteDTO.getCaseId() == null || 
+				caseCompleteDTO.getClassId() == null) {
+			throw new CaseFailureException("缺少必要資訊(案件ID, 班級ID)");
+		}
+	}
+	
+	/**
+	 * 檢查 CaseAllocationDTO 的完整性
+	 * */
 	public void validateCaseAllocation(CaseAllocationDTO caseAllocationDTO) {
 		if (caseAllocationDTO.getCaseId() == null || caseAllocationDTO.getClassId() == null) {
 			throw new CaseFailureException("缺少必要資訊(案件ID, 班級ID)");
+		}
+	}
+	
+	/**
+	 * 檢查 today 的完整性
+	 * */
+	public void validateToday(LocalDateTime today) {
+		if (today == null) {
+			throw new CaseFailureException("缺少必要資訊(現在時間)");
 		}
 	}
 	
@@ -248,7 +273,31 @@ public class CaseValidationUtil {
 		CaseStatus caseStatus = cases.getStatus();
 		if (caseStatus == null || caseStatus != targetStatus) {
 			throw new CaseFailureException(
-					String.format("案件狀態錯誤：目前=%s, 預期=%s。", caseStatus, targetStatus)
+					String.format("案件狀態 錯誤：目前=%s, 預期=%s。", caseStatus, targetStatus)
+			);
+		}
+	}
+	
+	/**
+	 * 判斷 案件關聯狀態 是不是 特定的狀態
+	 * */
+	public void validateCaseOrganizationStatus(CaseOrganization caseOrganization, CaseOrganizationStatus targetStatus) {
+		CaseOrganizationStatus caseOrganizationStatus = caseOrganization.getStatus();
+		if (caseOrganizationStatus == null || caseOrganizationStatus != targetStatus) {
+			throw new CaseFailureException(
+					String.format("案件關聯狀態 錯誤：目前=%s, 預期=%s。", caseOrganizationStatus, targetStatus)
+			);
+		}
+	}
+	
+	/**
+	 * 判斷 案件柱列狀態 是不是 特定的狀態
+	 * */
+	public void validateLotteryQueueStatus(LotteryQueue lotteryQueue, LotteryQueueStatus targetStatus) {
+		LotteryQueueStatus lotteryQueueStatus = lotteryQueue.getStatus();
+		if (lotteryQueueStatus == null || lotteryQueueStatus != targetStatus) {
+			throw new CaseFailureException(
+					String.format("案件柱列狀態 錯誤：目前=%s, 預期=%s。", lotteryQueueStatus, targetStatus)
 			);
 		}
 	}

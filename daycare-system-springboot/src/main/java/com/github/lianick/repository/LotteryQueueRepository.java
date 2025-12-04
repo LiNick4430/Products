@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -12,6 +13,8 @@ import org.springframework.stereotype.Repository;
 import com.github.lianick.model.eneity.LotteryQueue;
 import com.github.lianick.model.eneity.Organization;
 import com.github.lianick.model.enums.LotteryQueueStatus;
+
+import jakarta.persistence.LockModeType;
 
 
 @Repository
@@ -37,6 +40,19 @@ public interface LotteryQueueRepository extends JpaRepository<LotteryQueue, Long
 			+ ")"
 			, nativeQuery = true)
 	Optional<LotteryQueue> findByCaseIdAndOrganizationId(
+			@Param("caseId") Long caseId,
+			@Param("organizationId") Long organizationId);
+	
+	/** 新增 悲觀鎖 的 搜尋 用於 更新狀態 用 */
+	@Lock(LockModeType.PESSIMISTIC_WRITE)
+	@Query(value = 
+			"SELECT * FROM lottery_queue "
+			+ "WHERE case_id = :caseId "
+			+ "AND organization_id = :organizationId "
+			+ "AND delete_at IS NULL "
+			+ ")"
+			, nativeQuery = true)
+	Optional<LotteryQueue> findByCaseIdAndOrganizationIdForUpdate(
 			@Param("caseId") Long caseId,
 			@Param("organizationId") Long organizationId);
 	

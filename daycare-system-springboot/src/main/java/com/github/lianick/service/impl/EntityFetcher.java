@@ -241,6 +241,15 @@ public class EntityFetcher {
 	}
 	
 	/**
+	 * 使用 CaseId 和 OrganizationId 獲取 CaseOrganization 用於 悲觀鎖 更新用
+	 * */
+	public CaseOrganization getCaseOrganizationByCaseIdAndOrganizationIdForUpdate(Long caseId, Long organizationId) {
+		CaseOrganization caseOrganization = caseOrganizationRepository.findByCasesAndOrganizationForUpdate(caseId, organizationId)
+				.orElseThrow(() -> new CaseFailureException("查無關聯機構"));
+		return caseOrganization;
+	}
+	
+	/**
 	 * 使用 DocumentAdminId 和 OrganizationId 獲取 DocumentAdmin
 	 * */
 	public DocumentAdmin getDocumentAdminByIdAndOrganizationId(Long documentAdminId, Long organizationId) {
@@ -301,6 +310,15 @@ public class EntityFetcher {
 	 * */
 	public LotteryQueue getLotteryQueueByCaseIdAndOrganizationId(Long caseId, Long organizationId) {
 		LotteryQueue lotteryQueue = lotteryQueueRepository.findByCaseIdAndOrganizationId(caseId, organizationId)
+				.orElseThrow(() -> new LotteryQueueFailureException("查無抽籤柱列"));
+		return lotteryQueue;
+	}
+	
+	/**
+	 * 使用 CaseId 和 OrganizationId 獲取 LotteryQueue 用於 悲觀鎖 更新用
+	 * */
+	public LotteryQueue getLotteryQueueByCaseIdAndOrganizationIdForUpdate(Long caseId, Long organizationId) {
+		LotteryQueue lotteryQueue = lotteryQueueRepository.findByCaseIdAndOrganizationIdForUpdate(caseId, organizationId)
 				.orElseThrow(() -> new LotteryQueueFailureException("查無抽籤柱列"));
 		return lotteryQueue;
 	}

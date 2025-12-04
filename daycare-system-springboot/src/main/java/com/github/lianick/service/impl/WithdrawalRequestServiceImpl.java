@@ -30,10 +30,10 @@ public class WithdrawalRequestServiceImpl implements WithdrawalRequestService{
 		}
 		
 		// 1. 定義所有需要阻止的狀態
-		List<WithdrawalRequestStatus> blockingStatuses = List.of(
-				WithdrawalRequestStatus.APPLIED,
-				WithdrawalRequestStatus.PASSED,
-				WithdrawalRequestStatus.IN_REVIEW
+		List<String> blockingStatuses = List.of(
+				WithdrawalRequestStatus.APPLIED.getCode(),
+				WithdrawalRequestStatus.PASSED.getCode(),
+				WithdrawalRequestStatus.IN_REVIEW.getCode()
 				);
 		
 		// 2. 執行單次查詢

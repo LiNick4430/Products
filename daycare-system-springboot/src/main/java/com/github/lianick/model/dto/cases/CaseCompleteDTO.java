@@ -11,5 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class CaseCompleteDTO {
 
-	private Long id;					// 案件 ID
+	private Long caseId;					// 案件 ID
+	
+	private Long classId;					// 班級 ID
 }

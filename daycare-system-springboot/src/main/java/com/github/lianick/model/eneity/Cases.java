@@ -57,7 +57,7 @@ public class Cases extends BaseEntity{
 	@OneToMany(mappedBy = "cases", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private Set<CaseOrganization> organizations;	// 機構(第一 和 第二志願)
 	
-	// 對應前台(申請 退件 通過)
+	// 對應前台
 	@Enumerated(EnumType.STRING)	// 確保資料庫中儲存的是 Enum 的名稱字符串 (e.g., "APPLIED")
 	@Column(name = "case_status", nullable = false)
 	private CaseStatus status;						// 申請當前狀態(使用 Enum)
@@ -75,6 +75,12 @@ public class Cases extends BaseEntity{
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "class_id")
 	private Classes classes = null;				// 成功之後 對應的 班級ID
+	
+	@Column(name = "case_allocation_date")
+	private LocalDateTime allocationDate;		// 成功 分配班級 的時間
+	
+	@Column(name = "case_enrollment_deadline")
+	private LocalDateTime enrollmentDeadline;	// 分配班級後 報到的截止時間	(預設 +7天)
 	
 	// 以下 生命週期 都和 cases 綁定 因此使用 cascade = CascadeType.ALL
 	

@@ -1,5 +1,6 @@
 package com.github.lianick.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.github.lianick.model.dto.WithdrawalRequestDTO;
@@ -110,7 +111,19 @@ public interface CaseService {
 	 * @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
 	 * @PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')") 
 	 * */
-	void completedCase(List<CaseCompleteDTO>  caseCompleteDTOs);
+	List<CaseErrorDTO> completedCase(List<CaseCompleteDTO>  caseCompleteDTOs);
+	
+	/** 幼兒 時間已到 未向 班級報到的
+	 * 1. 案件狀態 (ALLOCATED -> REJECTED)
+	 * 2. CaseOrganization (PASSED -> REJECTED)
+	 * 3. LotteryQueue (SELECTED -> FAILED)
+	 * 4. 班級 和 案件的關聯 要刪除 並且 目前人數 -1
+	 * 5. 以上 都需要一條 修改紀錄
+	 * 需要
+	 * @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+	 * @PreAuthorize("hasAuthority('ROLE_MANAGER'))
+	 * */
+	List<CaseErrorDTO> cleanupOverdueAllocations(LocalDateTime today);
 	
 	/**
 	 * 機構 的 班級 還有 空位 的時候(報到期限後)

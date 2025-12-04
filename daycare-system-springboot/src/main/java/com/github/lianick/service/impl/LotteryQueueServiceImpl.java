@@ -72,6 +72,7 @@ public class LotteryQueueServiceImpl implements LotteryQueueService{
 	}
 	
 	@Override
+	@Transactional(readOnly = true)		// 只負責 讀取計算資料 + 產生DTO給後面 節省效能
 	public List<CaseLotteryResultDTO> executeLottery(Organization organization) {
 		// 1. 取出 該機構 的 所有班級
 		List<Classes> organizationClasses = entityFetcher.getClassesListByOrganization(organization);

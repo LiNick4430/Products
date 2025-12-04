@@ -23,6 +23,7 @@ public enum CaseStatus implements BaseEnum{
     // 成功流程 (報到完成，案件結案)
     COMPLETED("已報到/結案"), // 報到結案
     
+    // 失敗流程 (未報到，案件結案)
     // 失敗流程 (人工拒絕)
     REJECTED("退件"), // 2. 退件
     

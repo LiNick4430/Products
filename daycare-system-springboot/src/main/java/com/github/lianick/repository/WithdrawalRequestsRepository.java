@@ -8,7 +8,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.github.lianick.model.eneity.WithdrawalRequests;
-import com.github.lianick.model.enums.WithdrawalRequestStatus;
 
 
 @Repository
@@ -22,5 +21,5 @@ public interface WithdrawalRequestsRepository extends JpaRepository<WithdrawalRe
 			, nativeQuery = true)
 	List<WithdrawalRequests> findByCaseIdAndStatusIn(
 										@Param("caseId") Long caseId,
-										@Param("statuses") List<WithdrawalRequestStatus> statuses);
+										@Param("statuses") List<String> statuses);
 }

@@ -92,7 +92,7 @@ public class RegulationServiceImpl implements RegulationService{
 		regulationValidationUtil.validateOrganizationAndRegulationType(organization, type);
 		
 		// 3. 尋找是否有 同機構 同type 但是 已經被軟刪除 的 Regulation
-		Optional<Regulations> optRegulation = regulationsRepository.findByOrganizationAndTypeAndIsDelete(organizationId, type);
+		Optional<Regulations> optRegulation = regulationsRepository.findByOrganizationAndTypeAndIsDelete(organizationId, type.getCode());
 		
 		// 4. 建立 Regulations 並儲存
 		Regulations regulations = null;

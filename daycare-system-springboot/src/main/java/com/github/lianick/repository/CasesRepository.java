@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import com.github.lianick.model.eneity.Cases;
 import com.github.lianick.model.eneity.ChildInfo;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -45,6 +46,16 @@ public interface CasesRepository extends JpaRepository<Cases, Long> {
 	    })
 	List<Cases> findByStatus(CaseStatus status);
 	
+	@Query(value = 
+			"SELECT case_id FROM cases "
+			+ "WHERE case_status = :status "
+			+ "AND case_enrollment_deadline < :deadline "
+			+ "AND delete_at IS NULL "	
+			, nativeQuery = true)
+	List<Long> findOverdueCaseIds(
+	    @Param("status") String status,
+	    @Param("deadline") LocalDateTime deadline);
+	
 	@EntityGraph(attributePaths = {
 	        "organizations",   
 	        "classes",         
@@ -65,10 +76,10 @@ public interface CasesRepository extends JpaRepository<Cases, Long> {
 	/** 新增 悲觀鎖 的 搜尋 用於 更新狀態 用 */
 	@Lock(LockModeType.PESSIMISTIC_WRITE)
 	@EntityGraph(attributePaths = {"organizations", "classes", "childInfo"})
-	@Query(value = 
-				"SELECT * FROM cases "
-				+ "WHERE case_id = :caseId "
-				+ "AND delete_at IS NULL "
-				, nativeQuery = true)
+	@Query("""
+			SELECT c FROM Cases c 
+			WHERE c.caseId = :caseId 
+			AND c.deleteAt IS NULL 
+			""")
     Optional<Cases> findByIdForUpdate(@Param("caseId") Long caseId);
 }
