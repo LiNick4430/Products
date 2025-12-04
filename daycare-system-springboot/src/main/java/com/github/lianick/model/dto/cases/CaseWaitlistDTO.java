@@ -11,6 +11,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class CaseWaitlistDTO {
 
-	private Long id;
+	private Long caseId;
     private Long organizationId; // 標示是哪個機構的備取名單（1st 或 2nd）
 }

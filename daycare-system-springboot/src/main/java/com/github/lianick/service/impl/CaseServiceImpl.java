@@ -291,7 +291,7 @@ public class CaseServiceImpl implements CaseService {
 		
 		// 1. 判斷權限
 		Users users = userSecurityUtil.getCurrentUserEntity();
-		Cases cases = entityFetcher.getCasesById(caseVerifyDTO.getId());
+		Cases cases = entityFetcher.getCasesByIdForUpdate(caseVerifyDTO.getId());
 		caseValidationUtil.validateUserAndCase(users, cases);
 		
 		// 2. 判斷 案件 原本的狀態 是否 APPLIED
@@ -360,7 +360,7 @@ public class CaseServiceImpl implements CaseService {
 	private void oneCaseToPending(CasePendingDTO casePendingDTO, UserAdmin userAdmin) {
 		// 0. 檢查完整性
 		caseValidationUtil.validateCasePending(casePendingDTO);
-		Cases cases = entityFetcher.getCasesById(casePendingDTO.getId());
+		Cases cases = entityFetcher.getCasesByIdForUpdate(casePendingDTO.getId());
 		
 		// 1. 判斷 案件 原本的狀態 是否 PASSED 並改變成 PENDING
 		caseValidationUtil.validateCaseStatus(cases, CaseStatus.PASSED);
@@ -390,7 +390,7 @@ public class CaseServiceImpl implements CaseService {
 		
 		// 1. 判斷權限
 		Users users = userSecurityUtil.getCurrentUserEntity();
-		Cases cases = entityFetcher.getCasesById(caseQueueDTO.getId());
+		Cases cases = entityFetcher.getCasesByIdForUpdate(caseQueueDTO.getId());
 		Organization organization = entityFetcher.getOrganizationById(caseQueueDTO.getOrganizationId());
 		
 		// 和 案件 是否有關連
@@ -401,7 +401,8 @@ public class CaseServiceImpl implements CaseService {
 		caseValidationUtil.validateCaseStatus(cases, CaseStatus.PENDING);
 		
 		// 2. 取出 CaseOrganization
-		CaseOrganization caseOrganization = entityFetcher.getCaseOrganizationByCaseIdAndOrganizationId(cases.getCaseId(), organization.getOrganizationId());
+		CaseOrganization caseOrganization = entityFetcher.getCaseOrganizationByCaseIdAndOrganizationIdForUpdate(cases.getCaseId(), organization.getOrganizationId());
+		caseValidationUtil.validateCaseOrganizationStatus(caseOrganization, CaseOrganizationStatus.APPLIED);
 		
 		// 3. 更新 CaseOrganization 狀態
 		CaseOrganizationStatus oldStatus = caseOrganization.getStatus();
@@ -598,7 +599,7 @@ public class CaseServiceImpl implements CaseService {
 			
 			for (CaseCompleteDTO caseCompleteDTO : batch) {
 				try {
-					oneCaseToCOMPLETED(caseCompleteDTO, userAdmin, isManager, userOrganization);
+					oneCaseToCompleted(caseCompleteDTO, userAdmin, isManager, userOrganization);
 		        } catch (Exception e) {
 		            // 可以記錄錯誤，但繼續處理下一個案件
 		        	logger.error("案件 {} 處理失敗: {}", caseCompleteDTO.getCaseId(), e.getMessage(), e);
@@ -619,7 +620,7 @@ public class CaseServiceImpl implements CaseService {
 	
 	/** 單一處理 案件(ALLOCATED -> COMPLETED) 方法 */
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	private void oneCaseToCOMPLETED(CaseCompleteDTO caseCompleteDTO, UserAdmin userAdmin, Boolean isManager, Organization userOrganization) {
+	private void oneCaseToCompleted(CaseCompleteDTO caseCompleteDTO, UserAdmin userAdmin, Boolean isManager, Organization userOrganization) {
 		// 0. 檢查完整性
 		caseValidationUtil.validateCaseComplete(caseCompleteDTO);
 		
@@ -772,10 +773,33 @@ public class CaseServiceImpl implements CaseService {
 	@Transactional(propagation = Propagation.REQUIRED, readOnly = true)
 	@PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")
 	public void processWaitlistSuccess(List<CaseWaitlistDTO> waitlistDTOs) {
-		// TODO Auto-generated method stub
+		// 1. 檢查權限
+		UserAdmin userAdmin = userSecurityUtil.getCurrentUserAdminEntity();
+		Boolean isManager = userValidationUtil.validateUserIsManager(userAdmin.getUsers());
+		Organization userOrganization = userAdmin.getOrganization();
+		
+		// 2. 大量執行
 		
 	}
-
+	
+	/** 機構班級 有空位 的 案件 (PENDING -> ALLOCATED) */
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	private void oneCaseWaitlist(CaseWaitlistDTO waitlistDTO, UserAdmin userAdmin, Boolean isManager, Organization userOrganization) {
+		// 0. 完整性
+		caseValidationUtil.validateCaseWaitlist(waitlistDTO);
+		
+		// 1. 取出必要的資料 並 鎖定
+		Cases cases = entityFetcher.getCasesByIdForUpdate(waitlistDTO.getCaseId());
+		Organization caseOrganization = entityFetcher.getOrganizationById(waitlistDTO.getOrganizationId());
+		if (!isManager && caseOrganization.getOrganizationId() != userOrganization.getOrganizationId()) {
+			throw new CaseFailureException("權限不足 無法控制其他機構");
+		}
+		
+		// 2. 
+		// TODO
+		
+	}
+	
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED, readOnly = true)
 	@PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")

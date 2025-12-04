@@ -16,6 +16,7 @@ import com.github.lianick.model.dto.cases.CaseLotteryResultDTO;
 import com.github.lianick.model.dto.cases.CasePendingDTO;
 import com.github.lianick.model.dto.cases.CaseQueueDTO;
 import com.github.lianick.model.dto.cases.CaseVerifyDTO;
+import com.github.lianick.model.dto.cases.CaseWaitlistDTO;
 import com.github.lianick.model.dto.cases.CaseWithdrawnDTO;
 import com.github.lianick.model.eneity.CaseOrganization;
 import com.github.lianick.model.eneity.Cases;
@@ -237,6 +238,15 @@ public class CaseValidationUtil {
 	public void validateToday(LocalDateTime today) {
 		if (today == null) {
 			throw new CaseFailureException("缺少必要資訊(現在時間)");
+		}
+	}
+	
+	/**
+	 * 檢查 CaseAllocationDTO 的完整性
+	 * */
+	public void validateCaseWaitlist(CaseWaitlistDTO caseWaitlistDTO) {
+		if (caseWaitlistDTO.getCaseId() == null || caseWaitlistDTO.getOrganizationId() == null) {
+			throw new CaseFailureException("缺少必要資訊(案件ID, 機構ID)");
 		}
 	}
 	
