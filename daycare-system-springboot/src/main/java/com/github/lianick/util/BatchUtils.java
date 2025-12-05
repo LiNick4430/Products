@@ -17,12 +17,14 @@ public class BatchUtils {
 
 	private static final Logger logger = LoggerFactory.getLogger(BatchUtils.class);
 	
-	/**	用於 單一ReadOnly 大交易 包裝 大量獨立 小交易 的 泛用方法
-	 * @param items 			-> DTO
-	 * @param batchSize			-> 批量 單一最大次數
-	 * @param singleProcessor	-> 主要方法
-	 * @param idExtractor		-> DTO 取出 ID方法
-	 * @param sleepMillis		-> 中斷休息 毫秒
+	/**	用於 處理 Case 的 單一ReadOnly大交易 包裝 大量獨立 小交易 的 泛用方法
+	 * @param <T> 					-> DTO
+	 * @param items 				-> DTO List
+	 * @param batchSize				-> 批量 單一最大次數
+	 * @param singleProcessor		-> 主要方法
+	 * @param idExtractor			-> DTO 取出 ID方法
+	 * @param sleepMillis			-> 中斷休息 毫秒
+	 * @return List<CaseErrorDTO> 	-> 處理失敗的資料與錯誤訊息
 	 * */
 	public static <T> List<CaseErrorDTO> processInBatches(
 			List<T> items,

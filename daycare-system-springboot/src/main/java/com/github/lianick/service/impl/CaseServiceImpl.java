@@ -4,10 +4,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 
 import org.modelmapper.ModelMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -16,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.github.lianick.exception.CaseFailureException;
 import com.github.lianick.exception.ClassesFailureException;
-import com.github.lianick.exception.ValueMissException;
 import com.github.lianick.model.dto.WithdrawalRequestDTO;
 import com.github.lianick.model.dto.cases.CaseAllocationDTO;
 import com.github.lianick.model.dto.cases.CaseCompleteDTO;
@@ -61,6 +59,7 @@ import com.github.lianick.service.CaseService;
 import com.github.lianick.service.LotteryQueueService;
 import com.github.lianick.service.ReviewLogService;
 import com.github.lianick.service.WithdrawalRequestService;
+import com.github.lianick.util.BatchUtils;
 import com.github.lianick.util.CaseNumberUtil;
 import com.github.lianick.util.UserSecurityUtil;
 import com.github.lianick.util.validate.CaseValidationUtil;
@@ -73,10 +72,9 @@ import jakarta.persistence.EntityManager;
 @Service
 @Transactional		// 確保 完整性 
 public class CaseServiceImpl implements CaseService {
-
-	// 建立 Logger
-	private static final Logger logger = LoggerFactory.getLogger(CaseServiceImpl.class);
+	
 	private static final int BATCH_MAX_SIZE = 50; 	// 單次流程上限
+	private static final long SLEEP_MILLIS = 200;	// 批量方法 休息時間 (毫秒)
 	private static final int DEADLINE_DAY = 7;		// 報到截止日期 = 分配日期 + N 天
 	
 	@Autowired
@@ -328,29 +326,12 @@ public class CaseServiceImpl implements CaseService {
 		caseValidationUtil.validateUserCanBatchProcess(users);
 		
 		// 2. 開始大量處理
-		List<CaseErrorDTO> caseErrorDTOs = new ArrayList<>();	//失敗 案件 集合
-		
-		for (int i = 0; i < casePendingDTOs.size(); i += BATCH_MAX_SIZE) {
-			List<CasePendingDTO> batch = casePendingDTOs.subList(
-					i, Math.min(i + BATCH_MAX_SIZE , casePendingDTOs.size()));
-			
-			for (CasePendingDTO casePendingDTO : batch) {
-				try {
-		            oneCaseToPending(casePendingDTO, users.getAdminInfo());
-		        } catch (Exception e) {
-		            // 可以記錄錯誤，但繼續處理下一個案件
-		        	logger.error("案件 {} 處理失敗: {}", casePendingDTO.getId(), e.getMessage(), e);
-		        	caseErrorDTOs.add(new CaseErrorDTO(casePendingDTO.getId(), e.getMessage()));
-		        }
-			}
-			
-			try {
-			    Thread.sleep(200); // 0.2 秒
-			} catch (InterruptedException e) {
-			    Thread.currentThread().interrupt(); // 保留中斷狀態
-			    logger.warn("批次暫停被中斷", e);
-			}
-		}
+		List<CaseErrorDTO> caseErrorDTOs = BatchUtils.processInBatches(
+				casePendingDTOs, 
+				BATCH_MAX_SIZE, 
+				dto -> oneCaseToPending(dto, users.getAdminInfo()), 
+				CasePendingDTO::getId, 
+				SLEEP_MILLIS);
 		
 		return caseErrorDTOs;
 	}
@@ -451,29 +432,12 @@ public class CaseServiceImpl implements CaseService {
 		Organization organization = userSecurityUtil.getOrganizationEntity();
 		
 		// 2. 執行大量方法
-		List<CaseErrorDTO> caseErrorDTOs = new ArrayList<>();	//失敗 案件 集合
-		
-		for (int i = 0; i < caseAllocationDTOs.size(); i += BATCH_MAX_SIZE) {
-			List<CaseAllocationDTO> batch = caseAllocationDTOs.subList(
-					i, Math.min(i + BATCH_MAX_SIZE , caseAllocationDTOs.size()));
-			
-			for (CaseAllocationDTO caseAllocationDTO : batch) {
-				try {
-					oneCaseToAllocation(caseAllocationDTO, userAdmin, isManager, organization);
-		        } catch (Exception e) {
-		            // 可以記錄錯誤，但繼續處理下一個案件
-		        	logger.error("案件 {} 處理失敗: {}", caseAllocationDTO.getCaseId(), e.getMessage(), e);
-		        	caseErrorDTOs.add(new CaseErrorDTO(caseAllocationDTO.getCaseId(), e.getMessage()));
-		        }
-			}
-			
-			try {
-			    Thread.sleep(200); // 0.2 秒
-			} catch (InterruptedException e) {
-			    Thread.currentThread().interrupt(); // 保留中斷狀態
-			    logger.warn("批次暫停被中斷", e);
-			}
-		}
+		List<CaseErrorDTO> caseErrorDTOs = BatchUtils.processInBatches(
+				caseAllocationDTOs, 
+				BATCH_MAX_SIZE, 
+				dto -> oneCaseToAllocation(dto, userAdmin, isManager, organization), 
+				CaseAllocationDTO::getCaseId, 
+				SLEEP_MILLIS);
 		
 		return caseErrorDTOs;
 	}
@@ -591,29 +555,12 @@ public class CaseServiceImpl implements CaseService {
 		Organization userOrganization = userAdmin.getOrganization();
 				
 		// 2. 大量處理
-		List<CaseErrorDTO> caseErrorDTOs = new ArrayList<>();	//失敗 案件 集合
-		
-		for (int i = 0; i < caseCompleteDTOs.size(); i += BATCH_MAX_SIZE) {
-			List<CaseCompleteDTO> batch = caseCompleteDTOs.subList(
-					i, Math.min(i + BATCH_MAX_SIZE , caseCompleteDTOs.size()));
-			
-			for (CaseCompleteDTO caseCompleteDTO : batch) {
-				try {
-					oneCaseToCompleted(caseCompleteDTO, userAdmin, isManager, userOrganization);
-		        } catch (Exception e) {
-		            // 可以記錄錯誤，但繼續處理下一個案件
-		        	logger.error("案件 {} 處理失敗: {}", caseCompleteDTO.getCaseId(), e.getMessage(), e);
-		        	caseErrorDTOs.add(new CaseErrorDTO(caseCompleteDTO.getCaseId(), e.getMessage()));
-		        }
-			}
-			
-			try {
-			    Thread.sleep(200); // 0.2 秒
-			} catch (InterruptedException e) {
-			    Thread.currentThread().interrupt(); // 保留中斷狀態
-			    logger.warn("批次暫停被中斷", e);
-			}
-		}
+		List<CaseErrorDTO> caseErrorDTOs = BatchUtils.processInBatches(
+				caseCompleteDTOs, 
+				BATCH_MAX_SIZE, 
+				dto -> oneCaseToCompleted(dto, userAdmin, isManager, userOrganization), 
+				CaseCompleteDTO::getCaseId, 
+				SLEEP_MILLIS);
 		
 		return caseErrorDTOs;
 	}
@@ -669,30 +616,13 @@ public class CaseServiceImpl implements CaseService {
 		List<Long> caseIds = casesRepository.findOverdueCaseIds(CaseStatus.ALLOCATED.getCode(), today);
 		
 		// 3. 大量處理
-		List<CaseErrorDTO> caseErrorDTOs = new ArrayList<>();	//失敗 案件 集合
-		
-		for (int i = 0; i < caseIds.size(); i += BATCH_MAX_SIZE) {
-			List<Long> batch = caseIds.subList(
-					i, Math.min(i + BATCH_MAX_SIZE , caseIds.size()));
-			
-			for (Long caseId : batch) {
-				try {
-					oneCaseOverdueAllocation(caseId, userAdmin);
-		        } catch (Exception e) {
-		            // 可以記錄錯誤，但繼續處理下一個案件
-		        	logger.error("案件 {} 處理失敗: {}", caseId, e.getMessage(), e);
-		        	caseErrorDTOs.add(new CaseErrorDTO(caseId, e.getMessage()));
-		        }
-			}
-			
-			try {
-			    Thread.sleep(200); // 0.2 秒
-			} catch (InterruptedException e) {
-			    Thread.currentThread().interrupt(); // 保留中斷狀態
-			    logger.warn("批次暫停被中斷", e);
-			}
-		}
-		
+		List<CaseErrorDTO> caseErrorDTOs = BatchUtils.processInBatches(
+				caseIds, 
+				BATCH_MAX_SIZE, 
+				caseId -> oneCaseOverdueAllocation(caseId, userAdmin), 
+				Function.identity(), 
+				SLEEP_MILLIS);
+
 		return caseErrorDTOs;
 	}
 	
@@ -779,29 +709,12 @@ public class CaseServiceImpl implements CaseService {
 		Organization userOrganization = userAdmin.getOrganization();
 		
 		// 2. 大量執行
-		List<CaseErrorDTO> caseErrorDTOs = new ArrayList<>();	//失敗 案件 集合
-		
-		for (int i = 0; i < waitlistDTOs.size(); i += BATCH_MAX_SIZE) {
-			List<CaseWaitlistDTO> batch = waitlistDTOs.subList(
-					i, Math.min(i + BATCH_MAX_SIZE , waitlistDTOs.size()));
-			
-			for (CaseWaitlistDTO waitlistDTO : batch) {
-				try {
-					oneCaseWaitlist(waitlistDTO, userAdmin, isManager, userOrganization);
-		        } catch (Exception e) {
-		            // 可以記錄錯誤，但繼續處理下一個案件
-		        	logger.error("案件 {} 處理失敗: {}", waitlistDTO.getCaseId(), e.getMessage(), e);
-		        	caseErrorDTOs.add(new CaseErrorDTO(waitlistDTO.getCaseId(), e.getMessage()));
-		        }
-			}
-			
-			try {
-			    Thread.sleep(200); // 0.2 秒
-			} catch (InterruptedException e) {
-			    Thread.currentThread().interrupt(); // 保留中斷狀態
-			    logger.warn("批次暫停被中斷", e);
-			}
-		}
+		List<CaseErrorDTO> caseErrorDTOs = BatchUtils.processInBatches(
+				waitlistDTOs, 
+				BATCH_MAX_SIZE, 
+				dto -> oneCaseWaitlist(dto, userAdmin, isManager, userOrganization), 
+				CaseWaitlistDTO::getCaseId, 
+				SLEEP_MILLIS);
 		
 		return caseErrorDTOs;
 	}
@@ -929,9 +842,9 @@ public class CaseServiceImpl implements CaseService {
 			// 每處理 BATCH_SIZE 個案件，執行一次優化
 			if (i % BATCH_MAX_SIZE == 0) {
 
-				entityManager.flush(); 
+				entityManager.flush(); 	// 把 Hibernate Session 的變更送到資料庫（但不 commit）
 
-				// C. 暫停以減緩資料庫壓力
+				// 暫停以減緩資料庫壓力
 				try {
 					Thread.sleep(200); // 0.2 秒
 				} catch (InterruptedException e) {
