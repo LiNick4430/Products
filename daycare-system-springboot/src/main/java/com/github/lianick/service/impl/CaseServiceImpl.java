@@ -786,7 +786,7 @@ public class CaseServiceImpl implements CaseService {
 	@PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")
 	public void processWaitlistFailure(List<CaseWaitlistDTO> waitlistDTOs) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
