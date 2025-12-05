@@ -772,14 +772,38 @@ public class CaseServiceImpl implements CaseService {
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED, readOnly = true)
 	@PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")
-	public void processWaitlistSuccess(List<CaseWaitlistDTO> waitlistDTOs) {
+	public List<CaseErrorDTO> processWaitlistSuccess(List<CaseWaitlistDTO> waitlistDTOs) {
 		// 1. 檢查權限
 		UserAdmin userAdmin = userSecurityUtil.getCurrentUserAdminEntity();
 		Boolean isManager = userValidationUtil.validateUserIsManager(userAdmin.getUsers());
 		Organization userOrganization = userAdmin.getOrganization();
 		
 		// 2. 大量執行
+		List<CaseErrorDTO> caseErrorDTOs = new ArrayList<>();	//失敗 案件 集合
 		
+		for (int i = 0; i < waitlistDTOs.size(); i += BATCH_MAX_SIZE) {
+			List<CaseWaitlistDTO> batch = waitlistDTOs.subList(
+					i, Math.min(i + BATCH_MAX_SIZE , waitlistDTOs.size()));
+			
+			for (CaseWaitlistDTO waitlistDTO : batch) {
+				try {
+					oneCaseWaitlist(waitlistDTO, userAdmin, isManager, userOrganization);
+		        } catch (Exception e) {
+		            // 可以記錄錯誤，但繼續處理下一個案件
+		        	logger.error("案件 {} 處理失敗: {}", waitlistDTO.getCaseId(), e.getMessage(), e);
+		        	caseErrorDTOs.add(new CaseErrorDTO(waitlistDTO.getCaseId(), e.getMessage()));
+		        }
+			}
+			
+			try {
+			    Thread.sleep(200); // 0.2 秒
+			} catch (InterruptedException e) {
+			    Thread.currentThread().interrupt(); // 保留中斷狀態
+			    logger.warn("批次暫停被中斷", e);
+			}
+		}
+		
+		return caseErrorDTOs;
 	}
 	
 	/** 機構班級 有空位 的 案件 (PENDING -> ALLOCATED) */
@@ -788,16 +812,60 @@ public class CaseServiceImpl implements CaseService {
 		// 0. 完整性
 		caseValidationUtil.validateCaseWaitlist(waitlistDTO);
 		
-		// 1. 取出必要的資料 並 鎖定
+		// 1. 取出 必要的鎖定資料 並 判斷狀態 
 		Cases cases = entityFetcher.getCasesByIdForUpdate(waitlistDTO.getCaseId());
-		Organization caseOrganization = entityFetcher.getOrganizationById(waitlistDTO.getOrganizationId());
-		if (!isManager && caseOrganization.getOrganizationId() != userOrganization.getOrganizationId()) {
+		caseValidationUtil.validateCaseStatus(cases, CaseStatus.PENDING);
+		
+		Organization organization = entityFetcher.getOrganizationById(waitlistDTO.getOrganizationId());
+		if (!isManager && organization.getOrganizationId() != userOrganization.getOrganizationId()) {
 			throw new CaseFailureException("權限不足 無法控制其他機構");
 		}
 		
-		// 2. 
-		// TODO
+		CaseOrganization caseOrganization = entityFetcher.getCaseOrganizationByCaseIdAndOrganizationIdForUpdate(cases.getCaseId(), organization.getOrganizationId());
+		caseValidationUtil.validateCaseOrganizationStatus(caseOrganization, CaseOrganizationStatus.WAITLISTED);
 		
+		LotteryQueue lotteryQueue = entityFetcher.getLotteryQueueByCaseIdAndOrganizationIdForUpdate(cases.getCaseId(), organization.getOrganizationId());
+		caseValidationUtil.validateLotteryQueueStatus(lotteryQueue, LotteryQueueStatus.SELECTED);
+		
+		// 2. 尋找 該機構中 有空位的 班級
+		Classes classes = entityFetcher.getClassesByOrganizationIdHasEmptyCapacityForUpdate(organization.getOrganizationId());
+		
+		// 3. 班級 人數 +1
+		Integer currentCount = classes.getCurrentCount();
+		if (currentCount >= classes.getMaxCapacity()) {
+		    throw new CaseFailureException("班級人數已滿");		// 預防萬一檢測用
+		}
+		classes.setCurrentCount(currentCount +1);
+		
+		// 4. 修改 各狀態 並同時建立 審核紀錄
+		LocalDateTime now = LocalDateTime.now();
+		
+		CaseStatus oldCaseStatus = cases.getStatus();
+		CaseStatus newCaseStatus = CaseStatus.ALLOCATED;
+		
+		CaseOrganizationStatus oldCaseOrganizationStatus = caseOrganization.getStatus();
+		CaseOrganizationStatus newCaseOrganizationStatus = CaseOrganizationStatus.PASSED;
+		
+		cases.setStatus(newCaseStatus);
+		caseOrganization.setStatus(newCaseOrganizationStatus);
+		
+		ReviewLogs caseReviewLogs = reviewLogService.createNewReviewLog(
+				reviewLogService.toDTO(
+						cases, userAdmin, 
+						oldCaseStatus, newCaseStatus, CaseStatus.class, 
+						now, "備選 進入 正選"));
+		ReviewLogs caseOrganizationReviewLogs = reviewLogService.createNewReviewLog(
+				reviewLogService.toDTO(
+						cases, userAdmin, 
+						oldCaseOrganizationStatus, newCaseOrganizationStatus, CaseOrganizationStatus.class, 
+						now, "備選 進入 正選"));
+		
+		// 5. 存入審核紀錄 並 回存
+		cases.getReviewHistorys().add(caseReviewLogs);
+		cases.getReviewHistorys().add(caseOrganizationReviewLogs);
+		
+		casesRepository.save(cases);
+		classesRepository.save(classes);
 	}
 	
 	@Override

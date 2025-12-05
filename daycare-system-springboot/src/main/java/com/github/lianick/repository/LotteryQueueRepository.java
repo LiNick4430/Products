@@ -44,13 +44,13 @@ public interface LotteryQueueRepository extends JpaRepository<LotteryQueue, Long
 			@Param("organizationId") Long organizationId);
 	
 	/** 新增 悲觀鎖 的 搜尋 用於 更新狀態 用 */
-	@Lock(LockModeType.PESSIMISTIC_WRITE)
+	// @Lock(LockModeType.PESSIMISTIC_WRITE)
 	@Query(value = 
 			"SELECT * FROM lottery_queue "
 			+ "WHERE case_id = :caseId "
 			+ "AND organization_id = :organizationId "
 			+ "AND delete_at IS NULL "
-			+ ")"
+			+ "FOR UPDATE "
 			, nativeQuery = true)
 	Optional<LotteryQueue> findByCaseIdAndOrganizationIdForUpdate(
 			@Param("caseId") Long caseId,

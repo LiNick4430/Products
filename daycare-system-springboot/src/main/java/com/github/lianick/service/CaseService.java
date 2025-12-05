@@ -133,7 +133,7 @@ public interface CaseService {
 	 * @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
 	 * @PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')") 
 	 * */
-	void processWaitlistSuccess(List<CaseWaitlistDTO> waitlistDTOs);
+	List<CaseErrorDTO> processWaitlistSuccess(List<CaseWaitlistDTO> waitlistDTOs);
 	
 	/**
 	 * 機構 的 班級 無 空位 的時候(報到期限後)

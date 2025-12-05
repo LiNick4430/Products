@@ -297,6 +297,15 @@ public class EntityFetcher {
 	}
 	
 	/**
+	 * 使用 OrganizationId 獲取 有空位 的 Classes 並 用於 悲觀鎖 更新用
+	 * */
+	public Classes getClassesByOrganizationIdHasEmptyCapacityForUpdate(Long organizationId) {
+		Classes classes = classesRepository.findByOrganizationIdAndHasEmptyCapacityForUpdate(organizationId)
+				.orElseThrow(() -> new OrganizationFailureException("該機構 的班級們 無空缺位置"));
+		return classes;
+	}
+	
+	/**
 	 * 使用 RegulationId 獲取 Regulations
 	 * */
 	public Regulations getRegulationsById(Long id) {

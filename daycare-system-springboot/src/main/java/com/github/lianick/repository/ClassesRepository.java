@@ -31,12 +31,22 @@ public interface ClassesRepository extends JpaRepository<Classes, Long> {
 			, nativeQuery = true)
 	Long countActiveCasesByClassId(@Param("classId") Long classId);
 	
+	@Query(value = 
+			"SELECT * FROM classes "
+			+ "WHERE organization_id = :organizationId "
+			+ "AND maxCapacity - currentCount > 0 "
+			+ "AND delete_at IS NULL "
+			+ "LIMIT 1 FOR UPDATE"
+			, nativeQuery = true)
+	Optional<Classes> findByOrganizationIdAndHasEmptyCapacityForUpdate(@Param("organizationId") Long organizationId);
+	
 	/** 新增 悲觀鎖 的 搜尋 用於 更新狀態 用 */
-	@Lock(LockModeType.PESSIMISTIC_WRITE)
+	// @Lock(LockModeType.PESSIMISTIC_WRITE)	-> 使用原生SQL 手動加上 FOR UPDATE
 	@Query(value = 
 			"SELECT * FROM classes "
 			+ "WHERE class_id = :classId "
 			+ "AND delete_at IS NULL "
+			+ "FOR UPDATE "
 			, nativeQuery = true)
 	Optional<Classes> findByIdForUpdate(@Param("classId") Long classId);
 	
