@@ -13,14 +13,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-// 這個表本身是多對多關聯的中間表, 通常不繼承 BaseEntity, 方便 JPA 操作可設為獨立 Entity。
+// 這個表本身是多對多關聯的中間表, 方便 JPA 操作可設為獨立 Entity。
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "case_priority") 	
-public class CasePriority {
+public class CasePriority extends BaseEntity{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

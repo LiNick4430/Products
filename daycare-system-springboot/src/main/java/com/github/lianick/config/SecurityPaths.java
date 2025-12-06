@@ -109,9 +109,13 @@ public class SecurityPaths {
 			// RegulationController
 		    "/regulation/create/**",
 		    "/regulation/update/**",
-		    "/regulation/delete/**"
+		    "/regulation/delete/**",
 			
+		    // CaseController
+		    "/case/create/**"
+		    
 			// TODO 新的 Controller 添加
-			
+		    
+		    
 			);
 }

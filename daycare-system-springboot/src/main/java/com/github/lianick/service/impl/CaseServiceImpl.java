@@ -202,9 +202,11 @@ public class CaseServiceImpl implements CaseService {
 		// 4. 關聯表的建立
 		CaseOrganization caseOrganizationFirst = caseOrganizationService.createOrganization(cases, organizationFirst, true);
 		cases.getOrganizations().add(caseOrganizationFirst);
+		System.out.println("執行成功C");
 		if (organizationSecond != null) {
 			CaseOrganization caseOrganizationSecond = caseOrganizationService.createOrganization(cases, organizationSecond, false);
 			cases.getOrganizations().add(caseOrganizationSecond);
+			System.out.println("執行成功D");
 		}
 		
 		Set<CasePriority> priorities = casePriorityService.createPriorities(cases, caseCreateDTO.getPriorityIds());

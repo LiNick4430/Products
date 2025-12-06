@@ -30,12 +30,14 @@ public class CaseOrganizationServiceImpl implements CaseOrganizationService{
 		
 		// 1. 判斷是否經存在
 		if (caseOrganizationRepository.findByCasesAndOrganization(cases.getCaseId(), organization.getOrganizationId()).isPresent()) {
+			System.out.println("報錯點A");
 			throw new CaseFailureException("機構關係已經存在");
 		}
 		
 		// 2. 判斷 是否是已經存在的 順序
 		PreferenceOrder preferenceOrder = isFirst ? PreferenceOrder.FIRST : PreferenceOrder.SECOND;
 		if (caseOrganizationRepository.findByCasesAndPreferenceOrder(cases.getCaseId(), preferenceOrder.getCode()).isPresent()) {
+			System.out.println("報錯點B");
 			throw new CaseFailureException("機構關係已經存在");
 		}
 		

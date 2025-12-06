@@ -1,6 +1,7 @@
 package com.github.lianick.model.eneity;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.hibernate.annotations.SQLRestriction;
@@ -55,7 +56,7 @@ public class Cases extends BaseEntity{
 	private ApplicationMethod applicationMethod;		// 申請方式
 	
 	@OneToMany(mappedBy = "cases", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	private Set<CaseOrganization> organizations;	// 機構(第一 和 第二志願)
+	private Set<CaseOrganization> organizations = new HashSet<>();	// 機構(第一 和 第二志願)
 	
 	// 對應前台
 	@Enumerated(EnumType.STRING)	// 確保資料庫中儲存的是 Enum 的名稱字符串 (e.g., "APPLIED")
@@ -85,7 +86,7 @@ public class Cases extends BaseEntity{
 	// 以下 生命週期 都和 cases 綁定 因此使用 cascade = CascadeType.ALL
 	
 	@OneToMany(mappedBy = "cases", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	private Set<CasePriority> priorities;		// 案件 所選擇的 優先條件
+	private Set<CasePriority> priorities = new HashSet<>();		// 案件 所選擇的 優先條件
 	
 	@ManyToMany
 	@JoinTable(
@@ -93,16 +94,16 @@ public class Cases extends BaseEntity{
 			joinColumns = @JoinColumn(name = "case_id"),				// 案件 ID
 			inverseJoinColumns = @JoinColumn(name = "public_doc_id")	// 民眾附件 ID
 			)
-	private Set<DocumentPublic> documents;		// 案件 所使用 附件
+	private Set<DocumentPublic> documents = new HashSet<>();		// 案件 所使用 附件
 	
 	@OneToMany(mappedBy = "cases", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	private Set<ReviewLogs> reviewHistorys;		// 案件 的 審核紀錄
+	private Set<ReviewLogs> reviewHistorys = new HashSet<>();		// 案件 的 審核紀錄
 	
 	@OneToMany(mappedBy = "cases", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	private Set<WithdrawalRequests> withdrawalRequests;	// 案件 的 撤銷申請 紀錄 
+	private Set<WithdrawalRequests> withdrawalRequests = new HashSet<>();	// 案件 的 撤銷申請 紀錄 
 	
 	@OneToMany(mappedBy = "cases", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	private Set<LotteryQueue> lotteryQueues;	// 案件的 抽籤柱列
+	private Set<LotteryQueue> lotteryQueues = new HashSet<>();	// 案件的 抽籤柱列
 	
 	@Version
 	@Column(name = "version", nullable = false)

@@ -56,6 +56,7 @@ public class CaseOrganization extends BaseEntity{
 	@JoinColumn(name = "organization_id", nullable = false)
 	private Organization organization;				// 機構 ID
 	
+	@Enumerated(EnumType.STRING)
 	@Column(name = "case_organization_preference_order", nullable = false)
 	private PreferenceOrder preferenceOrder;		// 志願序
 

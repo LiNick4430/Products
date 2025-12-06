@@ -99,7 +99,9 @@ POST	"/update", "/update/"					更新 規範				"/regulation/update/"				AUTHENT
 DELETE	"/delete", "/delete/"					刪除 規範				"/regulation/delete/"				AUTHENTICATED
 
 
-
+CaseController
+Request Mapping: "/case"
+POST	"/create", "/create/"					民眾建立新的案件			"/case/create/"						AUTHENTICATED
 
 // 背景 錯誤捕捉 需要
 CustomErrorController
