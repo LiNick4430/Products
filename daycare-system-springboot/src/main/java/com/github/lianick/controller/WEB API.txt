@@ -105,8 +105,16 @@ DELETE	"/delete", "/delete/"					刪除 規範				"/regulation/delete/"				AUTHE
 CustomErrorController
 REQUEST	"/error/access-denied"	讓 AccessDeniedException 被 CustomAccessDeniedHandler 轉發 到此 後讓 GlobalExceptionHandler 會接管
 
-// 給前端工程師 用的 ENUM 街口
+// 給前端工程師 用的 ENUM 接口
 // 查詢 該 ENUM 的 code + description
 EnumController
 Request Mapping: "/enum"
-GET 	"/document/type" 	DocumentType
+GET 	"/document/type" 				DocumentType
+GET 	"/application/method" 			ApplicationMethod
+GET 	"/regulation/type" 				RegulationType
+GET 	"/preference/order" 			PreferenceOrder
+GET 	"/case/status" 					CaseStatus
+GET 	"/case/organization/status" 	CaseOrganizationStatus
+GET 	"/lottery/queue/status" 		LotteryQueueStatus
+GET 	"/lottery/result/status" 		LotteryResultStatus
+GET 	"/withdrawal/request/status" 	WithdrawalRequestStatus

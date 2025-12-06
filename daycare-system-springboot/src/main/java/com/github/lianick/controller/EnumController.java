@@ -7,8 +7,11 @@ import com.github.lianick.model.dto.EnumDTO;
 import com.github.lianick.model.enums.ApplicationMethod;
 import com.github.lianick.model.enums.CaseOrganizationStatus;
 import com.github.lianick.model.enums.CaseStatus;
+import com.github.lianick.model.enums.LotteryQueueStatus;
+import com.github.lianick.model.enums.LotteryResultStatus;
 import com.github.lianick.model.enums.PreferenceOrder;
 import com.github.lianick.model.enums.RegulationType;
+import com.github.lianick.model.enums.WithdrawalRequestStatus;
 import com.github.lianick.model.enums.document.DocumentType;
 import com.github.lianick.response.ApiResponse;
 import com.github.lianick.service.EnumService;
@@ -24,6 +27,15 @@ import org.springframework.web.bind.annotation.GetMapping;
  * 查詢 該 ENUM 的 code + description
  * EnumController
  * Request Mapping: "/enum"
+ * GET 	"/document/type" 				DocumentType
+ * GET 	"/application/method" 			ApplicationMethod
+ * GET 	"/regulation/type" 				RegulationType
+ * GET 	"/preference/order" 			PreferenceOrder
+ * GET 	"/case/status" 					CaseStatus
+ * GET 	"/case/organization/status" 	CaseOrganizationStatus
+ * GET 	"/lottery/queue/status" 		LotteryQueueStatus
+ * GET 	"/lottery/result/status" 		LotteryResultStatus
+ * GET 	"/withdrawal/request/status" 	WithdrawalRequestStatus
  * */
 
 @RestController
@@ -67,5 +79,23 @@ public class EnumController {
 	public ApiResponse<List<EnumDTO>> getCaseOrganizationStatus() {
 		List<EnumDTO> enumDTOs = enumService.convertToDTOList(CaseOrganizationStatus.class);
 		return ApiResponse.success("CaseOrganizationStatus OK", enumDTOs);
+	}
+	
+	@GetMapping("/lottery/queue/status")
+	public ApiResponse<List<EnumDTO>> getLotteryQueueStatus() {
+		List<EnumDTO> enumDTOs = enumService.convertToDTOList(LotteryQueueStatus.class);
+		return ApiResponse.success("LotteryQueueStatus OK", enumDTOs);
+	}
+	
+	@GetMapping("/lottery/result/status")
+	public ApiResponse<List<EnumDTO>> getLotteryResultStatus() {
+		List<EnumDTO> enumDTOs = enumService.convertToDTOList(LotteryResultStatus.class);
+		return ApiResponse.success("LotteryResultStatus OK", enumDTOs);
+	}
+	
+	@GetMapping("/withdrawal/request/status")
+	public ApiResponse<List<EnumDTO>> getWithdrawalRequestStatus() {
+		List<EnumDTO> enumDTOs = enumService.convertToDTOList(WithdrawalRequestStatus.class);
+		return ApiResponse.success("WithdrawalRequestStatus OK", enumDTOs);
 	}
 }

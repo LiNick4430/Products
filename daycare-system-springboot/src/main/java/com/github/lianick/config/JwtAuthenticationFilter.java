@@ -102,7 +102,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{	// OncePerReq
 				request.setAttribute(AUTH_ERROR_ATTRIBUTE, e);
 			}
 		} else {
-			logger.warn("缺少 Authorization Header 或 Token 格式錯誤");
+			if (!isPublic) {	// 公開的 本身就沒有 TOKEN
+				logger.warn("缺少 Authorization Header 或 Token 格式錯誤");
+			}
 		}
 
 		// 3. 驗證通過且 Security Context 中沒有身份驗證物件時，設置身份

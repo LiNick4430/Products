@@ -6,7 +6,15 @@ public class SecurityPaths {
 
 	public static final List<String> PUBLIC = List.of(
 				// 前端工程師 用的 ENUM 接口
-				"/enum/**",
+				"/enum/document/type",
+				"/enum/application/method",
+				"/enum/regulation/type",
+				"/enum/preference/order",
+				"/enum/case/status",
+				"/enum/case/organization/status",
+				"/enum/lottery/queue/status",
+				"/enum/lottery/result/status",
+				"/enum/withdrawal/request/status",
 				// 錯誤處理 相關
 				"/error/access-denied",
 				// 使用者 相關
