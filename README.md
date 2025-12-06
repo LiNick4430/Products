@@ -33,7 +33,7 @@
 * **無狀態身份驗證 (JWT 整合)：**
     * 透過 **`JwtAuthenticationFilter`** 在請求到達 Controller 前進行 Token 驗證與用戶身份解析。
     * 深入理解並實作了 [Spring Security + JWT 認證流程] 所示的 JWT 認證流程。
-      ![Spring Security + JWT 認證流程](docs/images/Spring%20Security%20%2B%20JWT%20認證流程.png)
+      <img src="docs/images/Spring%20Security%20%2B%20JWT%20認證流程.png" width="500" alt="Spring Security + JWT 認證流程" />
     * `JwtUtil` 集中處理 Token 的生成、解析、以及過期驗證邏輯。
 * **安全入口與處理器：**
     * 自定義 **`CustomAccessDeniedHandler`** (處理 403 拒絕訪問) 和 **`JwtAuthenticationEntryPoint`** (處理 401 未經授權) 的標準化響應。
@@ -65,7 +65,7 @@
 3.  **複雜案件審核與分發流程 (核心業務邏輯)**
     * 員工根據**雙階段審核與抽籤流程**對案件進行操作。
     * **流程圖佐證：** 案件從申請到分發的複雜狀態機請參考。
-      ![案件審核流程圖](docs/images/案件審核%20流程圖%20.png)
+      <img src="docs/images/案件審核%20流程圖%20.png" width="500" alt="案件審核流程圖" />
 
 ---
 
@@ -120,3 +120,9 @@ docker-compose up -d --build
 * **未來改進：**
     * **性能優化：** 引入 **Redis 快取**針對公告內容、機構規範等頻繁查詢但更新較少的靜態資料進行優化，以提升整體系統效能。
     * **監控與日誌：** 整合 Spring Boot Actuator 與 ELK/Prometheus 進行生產環境的監控與日誌追蹤。
+ 
+---
+
+## 設計資料庫 QR Code
+
+<img src="docs/images/Google試算連接.png" width="250" alt="QR Code" />
