@@ -94,8 +94,8 @@
 # 1. 複製專案
 git clone [您的 GITHUB 連結]
 
-# 2. 進入包含 docker-compose.yml 的資料夾 (通常是專案根目錄)
-cd daycare-system 
+# 2. 進入包含 docker-compose.yml 的資料夾 (專案根目錄)
+cd Products
 
 # 3. 啟動 React 前端容器與 MailHog
 docker-compose up -d --build
