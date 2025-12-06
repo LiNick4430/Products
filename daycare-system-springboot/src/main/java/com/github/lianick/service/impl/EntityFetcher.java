@@ -10,6 +10,7 @@ import com.github.lianick.exception.AnnouncementFailureException;
 import com.github.lianick.exception.CaseFailureException;
 import com.github.lianick.exception.ChildNotFoundException;
 import com.github.lianick.exception.ClassesFailureException;
+import com.github.lianick.exception.DocumentPublicFailureException;
 import com.github.lianick.exception.FileStorageException;
 import com.github.lianick.exception.LotteryQueueFailureException;
 import com.github.lianick.exception.OrganizationFailureException;
@@ -140,6 +141,15 @@ public class EntityFetcher {
 	}
 	
 	/**
+	 * 使用 UserId 獲取 UserPublic
+	 * */
+	public UserPublic getUsersPublicByUserId(Long userId) {
+		UserPublic userPublic = userPublicRepository.findById(userId)
+				.orElseThrow(() -> new UserNotFoundException("查無民眾"));
+		return userPublic;
+	}
+	
+	/**
 	 * 使用 username 找到 userAdmin
 	 * */
 	public UserAdmin getUserAdminByUsername(String username) {
@@ -166,6 +176,17 @@ public class EntityFetcher {
 		DocumentPublic documentPublic = documentPublicRepository.findById(id)
 				.orElseThrow(() -> new FileStorageException("查無附件"));
 		return documentPublic;
+	}
+	
+	/**
+	 * 使用 UserPublic 獲取 List<DocumentPublic>
+	 * */
+	public List<DocumentPublic> getDocumentPublicListByUserPublic(UserPublic userPublic) {
+		List<DocumentPublic> documentPublics = documentPublicRepository.findByUserPublic(userPublic);
+		if (!documentPublics.isEmpty()) {
+			return documentPublics;
+		}
+		throw new DocumentPublicFailureException("該民眾 旗下無附件");
 	}
 	
 	/**

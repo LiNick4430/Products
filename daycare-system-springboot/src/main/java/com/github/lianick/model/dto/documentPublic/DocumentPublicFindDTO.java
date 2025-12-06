@@ -10,6 +10,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DocumentPublicFindDTO {
-	// private Long userId;		// 使用者ID
+	private Long userId;		// 使用者ID
 	private Long caseId;		// 案件ID
 }

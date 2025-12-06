@@ -71,6 +71,7 @@ public class SecurityPaths {
 			
 			// DocumentPublicController
 		    "/document/public/find/**",
+		    "/document/admin/find/**",
 		    "/document/case/find/**",
 		    "/document/public/create/**",
 		    "/document/case/create/**",

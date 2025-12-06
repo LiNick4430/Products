@@ -26,7 +26,8 @@ import com.github.lianick.util.JsonUtil;
 /**
  * DocumentPublicController	
  * Request Mapping: "/document"
- * GET 		"/public/find", "/public/find/"				尋找 民眾底下 所有的附件	"/document/public/find/" 		AUTHENTICATED
+ * GET 		"/public/find", "/public/find/"				民眾 尋找 底下 所有的附件	"/document/public/find/" 		AUTHENTICATED
+ * POST 	"/admin/find/", "/admin/find/"				員工 尋找 民眾底下 所有的附件"/document/admim/find/" 		AUTHENTICATED
  * POST 	"/case/find", "/case/find/"					尋找 案件底下 所有的附件	"/document/case/find/" 			AUTHENTICATED
  * POST		"/public/create", "/public/create/"			民眾建立 新的附件			"/document/public/create/" 		AUTHENTICATED
  * POST		"/case/create", "/case/create/"				民眾為了 案件建立 新的附件	"/document/case/create/" 		AUTHENTICATED
@@ -48,6 +49,12 @@ public class DocumentPublicController {
 	@GetMapping(value = {"/public/find", "/public/find/"})
 	public ApiResponse<List<DocumentPublicDTO>> findAllDocByPublic() {
 		List<DocumentPublicDTO> documentPublicDTOs = documentPublicService.findAllDocByPublic();
+		return ApiResponse.success("民眾 尋找 旗下附件 成功", documentPublicDTOs);
+	}
+	
+	@PostMapping(value = {"/admin/find/", "/admin/find/"})
+	public ApiResponse<List<DocumentPublicDTO>> findAllDocByAdmin(@RequestBody DocumentPublicFindDTO documentPublicFindDTO) {
+		List<DocumentPublicDTO> documentPublicDTOs = documentPublicService.findAllDocByAdmin(documentPublicFindDTO);
 		return ApiResponse.success("尋找 民眾 旗下附件 成功", documentPublicDTOs);
 	}
 	

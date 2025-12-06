@@ -47,6 +47,16 @@ public class GlobalExceptionHandler {
 		return ApiResponse.error(statusCode, errorCode, ex.getMessage());
 	}
 	
+	// 處理找不到 民眾附件 的 異常 (401)
+	@ExceptionHandler(DocumentPublicFailureException.class) 	
+	@ResponseStatus(HttpStatus.UNAUTHORIZED)     		// 401
+	public ApiResponse<?> handleDocumentPublicFailureException(DocumentPublicFailureException ex) {
+		int statusCode = HttpStatus.UNAUTHORIZED.value();
+		ErrorCode errorCode = ErrorCode.DOCUMENT_PUBLIC_FAILURE;
+		// return new ApiResponse<>(statusCode, ex.getMessage(), null);
+		return ApiResponse.error(statusCode, errorCode, ex.getMessage());
+	}
+	
 	// 處理找不到 Priority 的 異常 (401)
 	@ExceptionHandler(PriorityNotFoundException.class) 	
 	@ResponseStatus(HttpStatus.UNAUTHORIZED)     		// 401

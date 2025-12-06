@@ -73,7 +73,29 @@ public class DocumentPublicServiceImpl implements DocumentPublicService{
 
 	@Override
 	@PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")
+	public List<DocumentPublicDTO> findAllDocByAdmin(DocumentPublicFindDTO documentPublicFindDTO) {
+		// 0. 檢查完整性
+		documentPublicValidationUtil.validatePublicFindByPublic(documentPublicFindDTO);
+
+		// 1. 找出 民眾 並找出 他的 DocumentPublic
+		UserPublic userPublic = entityFetcher.getUsersPublicByUserId(documentPublicFindDTO.getUserId());
+		List<DocumentPublic> documentPublics = entityFetcher.getDocumentPublicListByUserPublic(userPublic);
+
+		List<DocumentPublicDTO> documentPublicDTOs = documentPublics
+														.stream()
+														.map(documentPublic -> {
+															DocumentPublicDTO documentPublicDTO = modelMapper.map(documentPublic, DocumentPublicDTO.class);
+															return documentPublicDTO;
+														}).toList();
+
+		return documentPublicDTOs;
+	}
+	
+	@Override
+	@PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")
 	public List<DocumentPublicDTO> findAllDocByCase(DocumentPublicFindDTO documentPublicFindDTO) {
+		// 0. 檢查完整性
+		documentPublicValidationUtil.validatePublicFindByCase(documentPublicFindDTO);
 		
 		// 1. 從 Case 找尋 DocumentPublic
 		Cases cases = entityFetcher.getCasesById(documentPublicFindDTO.getCaseId());
@@ -138,11 +160,14 @@ public class DocumentPublicServiceImpl implements DocumentPublicService{
 		DocumentPublic documentPublic = new DocumentPublic();
 		
 		documentPublic.setUserPublic(userPublic);
-		documentPublic.getCases().add(cases);
 		documentPublic.setFileName(documentDTO.getOrignalFileName());
 		documentPublic.setStoragePath(documentDTO.getTargetLocation());
 		documentPublic.setDocType(type);
 
+		// 關聯表 需要 互相加入關聯
+		documentPublic.getCases().add(cases);
+		cases.getDocuments().add(documentPublic);
+		
 		documentPublic = documentPublicRepository.save(documentPublic);
 
 		// 4. Entity -> DTO
@@ -164,12 +189,16 @@ public class DocumentPublicServiceImpl implements DocumentPublicService{
 		Cases cases = entityFetcher.getCasesById(documentPublicLinkDTO.getCaseId());
 		documentPublicValidationUtil.validateUserPublicAndCases(userPublic, cases);
 		
+		documentPublicValidationUtil.validateCasesAndDocumentPublic(cases, documentPublic);
+		
 		if (documentPublic.getIsVerified() == false) {
 			throw new FileStorageException("檔案錯誤：尚未通過驗證");
 		}
 		
 		// 2. 建立關連
 		documentPublic.getCases().add(cases);
+		cases.getDocuments().add(documentPublic);
+		
 		documentPublic = documentPublicRepository.save(documentPublic);
 
 		// 3. Entity -> DTO
@@ -220,4 +249,5 @@ public class DocumentPublicServiceImpl implements DocumentPublicService{
 		documentPublic.setDeleteAt(now);
 		documentPublic = documentPublicRepository.save(documentPublic);
 	}
+
 }

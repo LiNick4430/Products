@@ -1,6 +1,7 @@
 package com.github.lianick.model.eneity;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.hibernate.annotations.SQLRestriction;
@@ -36,7 +37,7 @@ public class DocumentPublic extends BaseDocument{
 	
 	// 案件相關文件 多對多關連
 	@ManyToMany(mappedBy = "documents")
-	private Set<Cases> cases;
+	private Set<Cases> cases = new HashSet<Cases>();
 	
 	// 個人文件庫
 	@ManyToOne(fetch = FetchType.LAZY)

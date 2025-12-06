@@ -15,10 +15,16 @@ import com.github.lianick.model.dto.documentPublic.DocumentPublicVerifyDTO;
 public interface DocumentPublicService {
 
 	/**
-	 * 尋找 該 民眾 底下 所有 的 附件<p>
+	 * 該 民眾 尋找 底下 所有 的 附件<p>
 	 * 需要 @PreAuthorize("hasAuthority('ROLE_PUBLIC')")
 	 * */
 	List<DocumentPublicDTO> findAllDocByPublic();
+	
+	/**
+	 * 尋找 該 民眾 底下 所有 的 附件<p>
+	 * 需要 @PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")
+	 * */
+	List<DocumentPublicDTO> findAllDocByAdmin(DocumentPublicFindDTO documentPublicFindDTO);
 	
 	/**
 	 * 尋找 該 案件 底下 所有 的 附件<p>

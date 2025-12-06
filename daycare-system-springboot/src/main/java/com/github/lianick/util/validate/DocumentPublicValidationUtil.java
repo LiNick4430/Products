@@ -1,14 +1,17 @@
 package com.github.lianick.util.validate;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.github.lianick.exception.DocumentPublicFailureException;
 import com.github.lianick.exception.EnumNotFoundException;
 import com.github.lianick.exception.FileStorageException;
 import com.github.lianick.exception.ValueMissException;
 import com.github.lianick.model.dto.documentPublic.DocumentPublicCreateDTO;
 import com.github.lianick.model.dto.documentPublic.DocumentPublicDeleteDTO;
+import com.github.lianick.model.dto.documentPublic.DocumentPublicFindDTO;
 import com.github.lianick.model.dto.documentPublic.DocumentPublicLinkDTO;
 import com.github.lianick.model.dto.documentPublic.DocumentPublicVerifyDTO;
 import com.github.lianick.model.eneity.Cases;
@@ -16,6 +19,7 @@ import com.github.lianick.model.eneity.DocumentPublic;
 import com.github.lianick.model.eneity.UserPublic;
 import com.github.lianick.model.enums.document.DocumentScope;
 import com.github.lianick.model.enums.document.DocumentType;
+import com.github.lianick.repository.DocumentPublicRepository;
 
 /**
  * 負責處理 DocumentPublic 相關的 完整性 檢測
@@ -23,6 +27,9 @@ import com.github.lianick.model.enums.document.DocumentType;
 @Service
 public class DocumentPublicValidationUtil {
 
+	@Autowired
+	private DocumentPublicRepository documentPublicRepository;
+	
 	/**
 	 * 私人方法 處理 DocumentPublicCreateDTO 和 file 的完整性 並回傳 DocumentType
 	 * */
@@ -73,6 +80,24 @@ public class DocumentPublicValidationUtil {
 	}
 	
 	/**
+	 * 處理 DocumentPublicFindDTO 的完整性 依靠 民眾 搜尋
+	 * */
+	public void validatePublicFindByPublic(DocumentPublicFindDTO documentPublicFindDTO) {
+		if (documentPublicFindDTO.getUserId() == null) {
+			throw new ValueMissException("缺少特定資料(民眾ID)");
+		}
+	}
+	
+	/**
+	 * 處理 DocumentPublicFindDTO 的完整性 依靠 案件 搜尋
+	 * */
+	public void validatePublicFindByCase(DocumentPublicFindDTO documentPublicFindDTO) {
+		if (documentPublicFindDTO.getCaseId() == null) {
+			throw new ValueMissException("缺少特定資料(案件ID)");
+		}
+	}
+	
+	/**
 	 * 處理 DocumentPublicLinkDTO 的完整性
 	 * */
 	public void validatePublicLink(DocumentPublicLinkDTO documentPublicLinkDTO) {
@@ -116,4 +141,14 @@ public class DocumentPublicValidationUtil {
 			throw new AccessDeniedException("查無附件");
 		}
 	}
+	
+	/**
+	 * 處理 Cases 和 DocumentPublic 的 關係
+	 */
+	public void validateCasesAndDocumentPublic(Cases cases, DocumentPublic documentPublic) {
+		if (documentPublicRepository.existsByCaseIdAndDocumentPublicId(cases.getCaseId(), documentPublic.getPublicDocId())) {
+			throw new DocumentPublicFailureException("案件與附件 已經建立關聯");
+		}
+	}
+	
 }
