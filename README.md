@@ -111,7 +111,7 @@ docker-compose up -d --build
 
 ---
 
-## 🧠 設計決策與挑戰 (Design Decisions and Challenges)
+## 設計決策與挑戰 (Design Decisions and Challenges)
 
 * **技術選型：** 選擇 Spring Boot 的主要原因在於其成熟的生態系統、內建的安全性框架（Spring Security），以及企業級的穩定性，使其非常適合處理複雜的業務邏輯。
 * **最大挑戰：複雜業務流程的狀態機實現**
