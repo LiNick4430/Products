@@ -17,11 +17,11 @@ public interface DocumentPublicRepository extends JpaRepository<DocumentPublic, 
 	List<DocumentPublic> findByUserPublic(UserPublic userPublic);
 	
 	@Query(value = 
-			"SELECT CASE WHEN COUNT(*) > 0 THEN true ELSE false END "
+			"SELECT COUNT(*)"
 			+ "FROM case_link_document_public "
 			+ "WHERE case_id = :caseId "
 			+ "AND public_doc_id = :documentPublicId "
 			, nativeQuery = true)
-	boolean existsByCaseIdAndDocumentPublicId(@Param("caseId") Long caseId, @Param("documentPublicId") Long documentPublicId);
+	Integer countByCaseIdAndDocumentPublicId(@Param("caseId") Long caseId, @Param("documentPublicId") Long documentPublicId);
 	
 }

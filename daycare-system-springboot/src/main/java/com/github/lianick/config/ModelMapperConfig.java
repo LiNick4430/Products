@@ -121,10 +121,6 @@ public class ModelMapperConfig {
 			mapper.map(Users::getUserId, UserVerifyDTO::setId);
 			mapper.map(Users::getAccount, UserVerifyDTO::setUsername);
 		});
-		modelMapper.typeMap(Users.class, UserLoginDTO.class).addMappings(mapper -> {
-			mapper.map(Users::getUserId, UserLoginDTO::setId);
-			mapper.map(Users::getAccount, UserLoginDTO::setUsername);
-		});
 		modelMapper.typeMap(Users.class, UserForgetPasswordDTO.class).addMappings(mapper -> {
 			mapper.map(Users::getUserId, UserForgetPasswordDTO::setId);
 			mapper.map(Users::getAccount, UserForgetPasswordDTO::setUsername);

@@ -146,7 +146,7 @@ public class DocumentPublicValidationUtil {
 	 * 處理 Cases 和 DocumentPublic 的 關係
 	 */
 	public void validateCasesAndDocumentPublic(Cases cases, DocumentPublic documentPublic) {
-		if (documentPublicRepository.existsByCaseIdAndDocumentPublicId(cases.getCaseId(), documentPublic.getPublicDocId())) {
+		if (documentPublicRepository.countByCaseIdAndDocumentPublicId(cases.getCaseId(), documentPublic.getPublicDocId()) != 0) {
 			throw new DocumentPublicFailureException("案件與附件 已經建立關聯");
 		}
 	}
