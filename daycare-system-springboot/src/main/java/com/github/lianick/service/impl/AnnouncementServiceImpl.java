@@ -65,7 +65,7 @@ public class AnnouncementServiceImpl implements AnnouncementService{
 		// 1. 建立 現在變數
 		LocalDateTime now = LocalDateTime.now();
 		// 2. 找尋 符合的公告
-		List<Announcements> announcements = announcementsRepository.findAll(now);
+		List<Announcements> announcements = announcementsRepository.findAllActive(now);
 		// 3. 轉成 DTO
 		return announcements.stream()
 					.map(announcement -> {

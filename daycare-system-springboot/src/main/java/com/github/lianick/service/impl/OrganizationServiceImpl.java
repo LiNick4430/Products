@@ -64,6 +64,16 @@ public class OrganizationServiceImpl implements OrganizationService{
 	private DocumentAdminService documentAdminService;
 	
 	@Override
+	public List<OrganizationDTO> findAllOrganization() {
+		// 獲取全部的機構 資料
+		List<Organization> organizations = organizationRepository.findAll();
+		
+		return organizations.stream()
+				.map(organization -> modelMapper.map(organization, OrganizationDTO.class))
+				.toList();
+	}
+	
+	@Override
 	public List<OrganizationDTO> findOrganization(OrganizationFindDTO organizationFindDTO) {
 		// 0. 提取 + 預處理資料
 		String name = organizationFindDTO.getName();

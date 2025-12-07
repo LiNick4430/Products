@@ -17,11 +17,11 @@ public interface AnnouncementsRepository extends JpaRepository<Announcements, Lo
 
 	@Query(value = 
 			"SELECT * FROM announcements "
-			+ "WHERE announcement_expiry_date IS NOT NULL "
-			+ "AND announcement_expiry_date > :now "
+			+ "WHERE announcement_is_published = true "
+			+ "AND (announcement_expiry_date IS NULL OR announcement_expiry_date > :now) "
 			+ "AND delete_at IS NULL"
 			, nativeQuery = true)
-	List<Announcements> findAll(@Param("now") LocalDateTime now);
+	List<Announcements> findAllActive(@Param("now") LocalDateTime now);
 	
 	@Query(value = 
 			"SELECT * FROM announcements "

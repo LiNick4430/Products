@@ -7,6 +7,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,7 +30,8 @@ import com.github.lianick.util.JsonUtil;
 /**
  * OrganizationController
  * Request Mapping: "/organization"
- * POST	"/find", "/find/"					尋找 特定機構資料			"/organization/find/"			PUBLIC
+ * GET	"/find/all", "/find/all/"			搜尋 全部 機構 資料		"/organization/find/all/"		PUBLIC
+ * POST	"/find", "/find/"					關鍵字 搜尋 機構 資料		"/organization/find/"			PUBLIC
  * POST	"/download/doc/", "/download/doc/"	下載 特定機構附件			"/organization/download/doc/"	AUTHENTICATED
  * POST	"/create", "/create/"				主管 建立 新的機構		"/organization/create/"			AUTHENTICATED
  * POST	"/upload/doc", "/upload/doc/"		主管/員工 上傳 機構附件 	"/organization/upload/doc/"		AUTHENTICATED
@@ -49,10 +51,16 @@ public class OrganizationController {
 	@Autowired 
 	private JsonUtil jsonUtil;
 
+	@GetMapping(value = {"/find/all", "/find/all/"})
+	public ApiResponse<List<OrganizationDTO>> findAllOrganization() {
+		List<OrganizationDTO> organizationDTOs = organizationService.findAllOrganization();
+		return ApiResponse.success("搜尋 全部 機構 資料 成功", organizationDTOs);
+	}
+	
 	@PostMapping(value = {"/find", "/find/"})
 	public ApiResponse<List<OrganizationDTO>> findOrganization(@RequestBody OrganizationFindDTO organizationFindDTO) {
 		List<OrganizationDTO> organizationDTOs = organizationService.findOrganization(organizationFindDTO);
-		return ApiResponse.success("尋找 特定機構資料 成功", organizationDTOs);
+		return ApiResponse.success("關鍵字 搜尋 機構 資料 成功", organizationDTOs);
 	}
 	
 	@PostMapping(value = {"/download/doc/", "/download/doc"})

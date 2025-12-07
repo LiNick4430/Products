@@ -31,7 +31,7 @@ public class ClassValidationUtil {
 	 * 檢查 ClassFindDTO 的 完整性 
 	 * */
 	public void validateFindByAdmin(ClassFindDTO classFindDTO) {
-		if (classFindDTO.getOrganizationId() == null) {
+		if (classFindDTO.getOrganizationId() == null ) {
 			throw new ValueMissException("缺少必要的搜尋資料：機構 ID");
 		}
 	}

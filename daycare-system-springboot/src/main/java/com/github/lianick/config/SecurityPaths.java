@@ -28,7 +28,8 @@ public class SecurityPaths {
 				"/email/verify",			// 帳號驗證
 				"/email/reset/password",	// 忘記密碼驗證
 				// 機構 相關
-				"/organization/find/**",	// 尋找 特定機構資料
+				"/organization/find/all/**",	// 搜尋 全部 機構 資料
+				"/organization/find/**",		// 關鍵字 搜尋 機構 資料
 				// 公告 相關
 				"/announcement/find/all/**",		// 搜尋 全部公告
 				"/announcement/find/**",			// 搜尋 特定公告
@@ -95,7 +96,7 @@ public class SecurityPaths {
 			// ClassController
 			"/class/find/**",
 		    "/class/create/**",
-		    "/class/link/case/**",
+		    // "/class/link/case/**",
 		    "/class/delete/**",
 			
 			// AnnouncementController

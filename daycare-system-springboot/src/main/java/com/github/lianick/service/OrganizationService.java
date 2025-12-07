@@ -14,7 +14,10 @@ import com.github.lianick.model.dto.organization.OrganizationDocumentDTO;
 
 public interface OrganizationService {
 
-	/** 搜尋 機構 資料 */
+	/** 搜尋 全部 機構 資料 */
+	List<OrganizationDTO> findAllOrganization();
+	
+	/** 關鍵字 搜尋 機構 資料 */
 	List<OrganizationDTO> findOrganization(OrganizationFindDTO organizationFindDTO);
 	
 	/**

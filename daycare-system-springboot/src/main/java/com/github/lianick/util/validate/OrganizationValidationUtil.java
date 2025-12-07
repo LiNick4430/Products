@@ -63,7 +63,7 @@ public class OrganizationValidationUtil {
 			}
 		} else {
 			if (organizationDocumentDTO.getId() == null || organizationDocumentDTO.getDocumentId() == null) {
-				throw new ValueMissException("缺少必要的機構上傳資料 (機構ID, 附件ID)");
+				throw new ValueMissException("缺少必要的機構下載資料 (機構ID, 附件ID)");
 			}
 		}
 	}

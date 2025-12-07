@@ -15,7 +15,7 @@ public class ClassCreateDTO {
 	
 	private String name;	// 班級名稱
 	private Integer maxCapacity;			// 班級 最大人數
-	// private Integer currentCount = 0;		// 班級 目前人數(預設 0)
+	// private Integer currentCount = 0;	// 班級 目前人數(預設 0)
 	private Integer ageMinMonths;			// 最小公托年齡
 	private Integer ageMaxMonths;			// 最大公托年齡
 	private Integer serviceStartMonth;		// 服務起始月份

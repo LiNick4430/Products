@@ -11,9 +11,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ClassFindDTO {
 	
-	private Long id;		// 班級 ID
-	private String name;	// 班級名稱
-	
 	private Long organizationId;		// 機構ID
 	private String organizationName;	// 機構名稱
 
