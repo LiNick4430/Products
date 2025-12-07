@@ -125,4 +125,4 @@ docker-compose up -d --build
 
 ## 設計資料庫 QR Code
 
-<img src="docs/images/Google試算連接.png" width="250" alt="QR Code" />
+<img src="docs/images/Google雲端.png" width="200" alt="QR Code" />
