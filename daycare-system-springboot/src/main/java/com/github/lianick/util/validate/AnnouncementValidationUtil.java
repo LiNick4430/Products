@@ -79,7 +79,7 @@ public class AnnouncementValidationUtil {
 			}
 		} else {
 			if (announcementDocumnetDTO.getId() == null || announcementDocumnetDTO.getDocumentId() == null) {
-				throw new ValueMissException("缺少必要的公告上傳資料 (公告ID, 附件ID)");
+				throw new ValueMissException("缺少必要的公告下載資料 (公告ID, 附件ID)");
 			}
 		}
 	}

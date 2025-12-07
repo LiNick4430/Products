@@ -7,7 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -48,6 +48,32 @@ public class DocumentUtil {
 			throw new FileStorageException("檔案過大，請勿超過 10MB");
 		}
 
+		// 取得副檔名
+		String originalName = file.getOriginalFilename();
+		String ext = "";
+		if (originalName != null && originalName.contains(".")) {
+			ext = originalName.substring(originalName.lastIndexOf(".") + 1).toLowerCase();	// 找到最後一個 . 之後的 取出來 -> xxx.jpg.exe 會取出 exe
+			
+			// 雙檔名 檢查
+			String nameWithoutExt = originalName.substring(0, originalName.lastIndexOf("."));	// 找到最後一個 . 把之前的取出來 -> xxx.jpg.exe 會取出 xxx.jpg
+		    if (nameWithoutExt.contains(".")) {
+		        throw new FileStorageException("檔案錯誤：不允許雙重副檔名");
+		    }
+		}
+
+		// 副檔名白名單 (PDF / JPG / JPEG / PNG)
+		Map<String, String> EXTENSION_MIME_MAP = Map.of(
+				"jpg", "image/jpeg",
+				"jpeg", "image/jpeg",
+				"png", "image/png",
+				"pdf", "application/pdf"
+				);
+
+		// 檢查 副檔名 有沒有包含在 白名單
+		if (!EXTENSION_MIME_MAP.containsKey(ext)) {
+			throw new FileStorageException("檔案錯誤：上傳檔案格式不支援");
+		}
+
 		// 檔案格式
 		String detectedType;
 		// 設定 Tika 偵測的最大時限，例如 5 秒
@@ -62,7 +88,7 @@ public class DocumentUtil {
 				// Tika 偵測操作
 				return tika.detect(is);
 			} catch (IOException e) {
-				
+
 				throw new FileStorageException("Tika 偵測過程中發生 IO 錯誤", e);
 			}
 		});
@@ -70,30 +96,29 @@ public class DocumentUtil {
 		try {
 			// 取得結果，如果超過 5 秒則拋出 TimeoutException
 			detectedType = future.get(TIKA_TIMEOUT_SECONDS, TimeUnit.SECONDS);
-			
+
 		} catch (TimeoutException e) {
 			// Tika 偵測超時！必須中斷該執行緒
 			future.cancel(true);
 			throw new FileStorageException("檔案格式偵測超時 (" + TIKA_TIMEOUT_SECONDS + "秒)。", e);
-			
+
 		} catch (InterruptedException | java.util.concurrent.ExecutionException e) {
 			// 處理執行中斷或其他執行錯誤（如上面 Callable 拋出的 RuntimeException）
 			throw new FileStorageException("檔案格式偵測失敗", e);
-			
+
 		} finally {
 			// 無論成功或失敗，都必須關閉 ExecutorService
 			executor.shutdownNow();
 		}
 
-		List<String> allowed = List.of(
-				"image/jpeg",
-				"image/png",
-				"application/pdf"
-				);
+		// 副檔名 & MIME 是否一致
+		String expectedMime = EXTENSION_MIME_MAP.get(ext);
 
-		if (!allowed.contains(detectedType)) {
-			throw new FileStorageException("檔案錯誤：上傳檔案格式不支援");
-		}
+	    if (!expectedMime.equals(detectedType)) {
+	        throw new FileStorageException(
+	            "檔案錯誤：副檔名 (" + ext + ") 與 檔案內容 (" + detectedType + ") 不一致"
+	        );
+	    }
 
 		return detectedType;
 	}
