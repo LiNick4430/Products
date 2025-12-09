@@ -31,7 +31,9 @@ import com.github.lianick.util.JsonUtil;
 /**AnnouncementController
  * Request Mapping: "/announcement"
  * GET		"/find/all", "/find/all/"				搜尋 全部公告			"/announcement/find/all/"			PUBLIC
+ * GET		"/find/all/no/expiry", "/find/all/no/expiry/"	搜尋 全部公告(未過期包含未發布)	"/announcement/find/all/no/expiry/"	AUTHENTICATED
  * POST 	"/find", "/find/"						搜尋 特定公告			"/announcement/find/"				PUBLIC
+ * POST 	"/find/no/expiry", "/find/no/expiry/"	搜尋 特定公告(未過期包含未發布)	"/announcement/find/no/expiry/"	AUTHENTICATED
  * POST 	"/download/doc", "/download/doc/"		下載 公告附件			"/announcement/download/doc/"		PUBLIC
  * POST		"/create", "/create/"					建立 公告				"/announcement/create/"				AUTHENTICATED
  * POST		"/update", "/update/"					更新 公告				"/announcement/update/"				AUTHENTICATED
@@ -55,13 +57,25 @@ public class AnnouncementController {
 	
 	@GetMapping(value = {"/find/all", "/find/all/"})
 	public ApiResponse<List<AnnouncementDTO>> findAll() {
-		List<AnnouncementDTO> announcementDTOs = announcementService.findAllAnnouncement();
+		List<AnnouncementDTO> announcementDTOs = announcementService.findAllActiveAnnouncement();
+		return ApiResponse.success("搜尋 全部公告 成功", announcementDTOs);
+	}
+	
+	@GetMapping(value = {"/find/all/no/expiry", "/find/all/no/expiry/"})
+	public ApiResponse<List<AnnouncementDTO>> findAllNoExpiry() {
+		List<AnnouncementDTO> announcementDTOs = announcementService.findAllNoExpiryAnnouncement();
 		return ApiResponse.success("搜尋 全部公告 成功", announcementDTOs);
 	}
 	
 	@PostMapping(value = {"/find", "/find/"})
 	public ApiResponse<AnnouncementDTO> findById(@RequestBody AnnouncementFindDTO announcementFindDTO) {
-		AnnouncementDTO announcementDTO = announcementService.findAnnouncementById(announcementFindDTO);
+		AnnouncementDTO announcementDTO = announcementService.findActiveAnnouncementById(announcementFindDTO);
+		return ApiResponse.success("搜尋 特定公告 成功", announcementDTO);
+	}
+	
+	@PostMapping(value = {"/find/no/expiry", "/find/no/expiry/"})
+	public ApiResponse<AnnouncementDTO> findNoExpiryById(@RequestBody AnnouncementFindDTO announcementFindDTO) {
+		AnnouncementDTO announcementDTO = announcementService.findNoExpiryAnnouncementById(announcementFindDTO);
 		return ApiResponse.success("搜尋 特定公告 成功", announcementDTO);
 	}
 	

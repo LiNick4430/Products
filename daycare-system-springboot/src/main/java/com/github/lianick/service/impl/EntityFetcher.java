@@ -226,11 +226,29 @@ public class EntityFetcher {
 	}
 	
 	/**
+	 * 使用 AnnouncementsId 和 now 獲取 Active Announcements
+	 * */
+	public Announcements getAnnouncementsActiveByIdAndNow(Long id, LocalDateTime now) {
+		Announcements announcements = announcementsRepository.findActiveById(id, now)
+				.orElseThrow(() -> new AnnouncementFailureException("公告已過期"));
+		return announcements;
+	}
+	
+	/**
 	 * 使用 AnnouncementsId 和 now 獲取 Announcements
 	 * */
 	public Announcements getAnnouncementsByIdAndNow(Long id, LocalDateTime now) {
-		Announcements announcements = announcementsRepository.findAllById(id, now)
-				.orElseThrow(() -> new AnnouncementFailureException("公告已過期"));
+		Announcements announcements = announcementsRepository.findNoExpiryById(id, now)
+				.orElseThrow(() -> new AnnouncementFailureException("查無公告"));
+		return announcements;
+	}
+	
+	/**
+	 * 使用 AnnouncementsId, OrganizationId 和 now 獲取 Announcements
+	 * */
+	public Announcements getAnnouncementsByIdAndOrganizationIdAndNow(Long id, Long organizationId, LocalDateTime now) {
+		Announcements announcements = announcementsRepository.findNoExpiryByIdAndOrganizationId(id, organizationId, now)
+				.orElseThrow(() -> new AnnouncementFailureException("查無公告"));
 		return announcements;
 	}
 	

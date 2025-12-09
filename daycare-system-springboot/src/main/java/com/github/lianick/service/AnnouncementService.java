@@ -16,11 +16,21 @@ import com.github.lianick.model.dto.announcement.AnnouncementUpdateDTO;
 // 公告用 服務
 public interface AnnouncementService {
 
-	/** 尋找公告 */
-	List<AnnouncementDTO> findAllAnnouncement();
+	/** 尋找公告(活動) */
+	List<AnnouncementDTO> findAllActiveAnnouncement();
 	
-	/** 尋找 公告 */
-	AnnouncementDTO findAnnouncementById(AnnouncementFindDTO announcementFindDTO);
+	/** 尋找公告(未過期包含未發布)
+	 * 需要 @PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')") 
+	 * */
+	List<AnnouncementDTO> findAllNoExpiryAnnouncement();
+	
+	/** 尋找 公告(活動) */
+	AnnouncementDTO findActiveAnnouncementById(AnnouncementFindDTO announcementFindDTO);
+	
+	/** 尋找 公告(未過期包含未發布) 
+	 * 需要 @PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')") 
+	 * */
+	AnnouncementDTO findNoExpiryAnnouncementById(AnnouncementFindDTO announcementFindDTO);
 	
 	/** 下載 公告附件 */
 	DownloadDTO downloadDoc(AnnouncementDocumnetDTO announcementDocumnetDTO);

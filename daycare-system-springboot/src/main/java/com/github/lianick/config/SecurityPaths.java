@@ -100,6 +100,8 @@ public class SecurityPaths {
 		    "/class/delete/**",
 			
 			// AnnouncementController
+		    "/announcement/find/all/no/expiry/**",		// 搜尋 全部公告
+			"/announcement/find/no/expiry/**",			// 搜尋 特定公告
 		    "/announcement/create/**",
 		    "/announcement/update/**",
 		    "/announcement/upload/doc/**",

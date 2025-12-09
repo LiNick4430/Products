@@ -19,23 +19,55 @@ public interface AnnouncementsRepository extends JpaRepository<Announcements, Lo
 			"SELECT * FROM announcements "
 			+ "WHERE announcement_is_published = true "
 			+ "AND (announcement_expiry_date IS NULL OR announcement_expiry_date > :now) "
-			+ "AND delete_at IS NULL"
+			+ "AND delete_at IS NULL "
 			, nativeQuery = true)
 	List<Announcements> findAllActive(@Param("now") LocalDateTime now);
+	
+	@Query(value = 
+			"SELECT * FROM announcements "
+			+ "WHERE (announcement_expiry_date IS NULL OR announcement_expiry_date > :now) "
+			+ "AND delete_at IS NULL "
+			, nativeQuery = true)
+	List<Announcements> findAllNoExpiry(@Param("now") LocalDateTime now);
+	
+	@Query(value = 
+			"SELECT * FROM announcements "
+			+ "WHERE organization_id = :organizationId "
+			+ "AND announcement_expiry_date > :now "
+			+ "AND delete_at IS NULL "
+			, nativeQuery = true)
+	List<Announcements> findAllNoExpiryByOrganizationId(@Param("organizationId") Long organizationId, @Param("now") LocalDateTime now);
 	
 	@Query(value = 
 			"SELECT * FROM announcements "
 			+ "WHERE announcement_id = :id "
 			+ "AND announcement_is_published = true "
 			+ "AND (announcement_expiry_date IS NULL OR announcement_expiry_date > :now) "
-			+ "AND delete_at IS NULL"
+			+ "AND delete_at IS NULL "
 			, nativeQuery = true)
-	Optional<Announcements> findAllById(@Param("id") Long id, @Param("now") LocalDateTime now);
+	Optional<Announcements> findActiveById(@Param("id") Long id, @Param("now") LocalDateTime now);
+	
+	@Query(value = 
+			"SELECT * FROM announcements "
+			+ "WHERE announcement_id = :id "
+			+ "AND (announcement_expiry_date IS NULL OR announcement_expiry_date > :now) "
+			+ "AND delete_at IS NULL "
+			, nativeQuery = true)
+	Optional<Announcements> findNoExpiryById(@Param("id") Long id, @Param("now") LocalDateTime now);
+	
+	@Query(value = 
+			"SELECT * FROM announcements "
+			+ "WHERE announcement_id = :id "
+			+ "AND organization_id = :organizationId "
+			+ "AND (announcement_expiry_date IS NULL OR announcement_expiry_date > :now) "
+			+ "AND delete_at IS NULL "
+			, nativeQuery = true)
+	Optional<Announcements> findNoExpiryByIdAndOrganizationId(@Param("id") Long id, @Param("organizationId") Long organizationId, @Param("now") LocalDateTime now);
 	
 	@Query(value = 
 			"SELECT * FROM announcements "
 			+ "WHERE announcement_is_published = false "
-			+ "AND delete_at IS NULL"
+			+ "AND delete_at IS NULL "
 			, nativeQuery = true)
 	List<Announcements> findAllByNoPublish();
 	
@@ -43,7 +75,7 @@ public interface AnnouncementsRepository extends JpaRepository<Announcements, Lo
 			"SELECT * FROM announcements "
 			+ "WHERE announcement_is_published = false "
 			+ "AND organization_id = :organizationId "
-			+ "AND delete_at IS NULL"
+			+ "AND delete_at IS NULL "
 			, nativeQuery = true)
 	List<Announcements> findAllByNoPublishAndOrganizationId(@Param("organizationId") Long organizationId);
 	
@@ -51,7 +83,7 @@ public interface AnnouncementsRepository extends JpaRepository<Announcements, Lo
 			"SELECT * FROM announcements "
 			+ "WHERE announcement_id = :id "
 			+ "AND announcement_is_published = false "
-			+ "AND delete_at IS NULL"
+			+ "AND delete_at IS NULL "
 			, nativeQuery = true)
 	Optional<Announcements> findByIdAndNoPublish(@Param("id") Long id);
 	
@@ -60,7 +92,7 @@ public interface AnnouncementsRepository extends JpaRepository<Announcements, Lo
 			+ "WHERE announcement_id = :id "
 			+ "AND organization_id = :organizationId "
 			+ "AND announcement_is_published = false "
-			+ "AND delete_at IS NULL"
+			+ "AND delete_at IS NULL "
 			, nativeQuery = true)
 	Optional<Announcements> findByIdAndOrganizationId(@Param("id") Long id, @Param("organizationId") Long organizationId);
 }

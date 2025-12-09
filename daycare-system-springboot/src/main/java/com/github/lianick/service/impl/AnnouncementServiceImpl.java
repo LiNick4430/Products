@@ -31,6 +31,7 @@ import com.github.lianick.service.DocumentAdminService;
 import com.github.lianick.util.UserSecurityUtil;
 import com.github.lianick.util.validate.AnnouncementValidationUtil;
 import com.github.lianick.util.validate.OrganizationValidationUtil;
+import com.github.lianick.util.validate.UserValidationUtil;
 
 @Service
 @Transactional				// 確保 完整性 
@@ -60,8 +61,11 @@ public class AnnouncementServiceImpl implements AnnouncementService{
 	@Autowired
 	private OrganizationValidationUtil organizationValidationUtil;
 	
+	@Autowired
+	private UserValidationUtil userValidationUtil;
+	
 	@Override
-	public List<AnnouncementDTO> findAllAnnouncement() {
+	public List<AnnouncementDTO> findAllActiveAnnouncement() {
 		// 1. 建立 現在變數
 		LocalDateTime now = LocalDateTime.now();
 		// 2. 找尋 符合的公告
@@ -73,15 +77,66 @@ public class AnnouncementServiceImpl implements AnnouncementService{
 						return announcementDTO;
 					}).toList();
 	}
+	
+	@Override
+	@PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")
+	public List<AnnouncementDTO> findAllNoExpiryAnnouncement() {
+		// 0. 檢查權限
+		Users tableUser = userSecurityUtil.getCurrentUserEntity();
+		Organization organization = userSecurityUtil.getOrganizationEntity();
+		Boolean isManager = userValidationUtil.validateUserIsManager(tableUser);
+		
+		// 1. 建立 現在變數
+		LocalDateTime now = LocalDateTime.now();
+		
+		// 2. 找尋 符合的公告(根據 權限搜尋)
+		List<Announcements> announcements;
+		if (isManager) {
+			announcements = announcementsRepository.findAllNoExpiry(now);
+		} else {
+			announcements = announcementsRepository.findAllNoExpiryByOrganizationId(organization.getOrganizationId(), now);
+		}
+		
+		// 3. 轉成 DTO
+		return announcements.stream()
+					.map(announcement -> {
+						AnnouncementDTO announcementDTO = modelMapper.map(announcement, AnnouncementDTO.class);
+						return announcementDTO;
+					}).toList();
+	}
 
 	@Override
-	public AnnouncementDTO findAnnouncementById(AnnouncementFindDTO announcementFindDTO) {
+	public AnnouncementDTO findActiveAnnouncementById(AnnouncementFindDTO announcementFindDTO) {
 		// 0. 檢查完整性
 		announcementValidationUtil.validateFind(announcementFindDTO);
 		// 1. 建立 現在變數
 		LocalDateTime now = LocalDateTime.now();
 		// 2. 找尋 符合的公告
-		Announcements announcements = entityFetcher.getAnnouncementsByIdAndNow(announcementFindDTO.getId(), now);
+		Announcements announcements = entityFetcher.getAnnouncementsActiveByIdAndNow(announcementFindDTO.getId(), now);
+		// 3. 轉成 DTO
+		return modelMapper.map(announcements, AnnouncementDTO.class);
+	}
+	
+	@Override
+	@PreAuthorize("hasAuthority('ROLE_MANAGER') or hasAuthority('ROLE_STAFF')")
+	public AnnouncementDTO findNoExpiryAnnouncementById(AnnouncementFindDTO announcementFindDTO) {
+		// 0. 檢查權限 + 完整性
+		announcementValidationUtil.validateFind(announcementFindDTO);
+		Users tableUser = userSecurityUtil.getCurrentUserEntity();
+		Organization organization = userSecurityUtil.getOrganizationEntity();
+		Boolean isManager = userValidationUtil.validateUserIsManager(tableUser);
+		
+		// 1. 建立 現在變數
+		LocalDateTime now = LocalDateTime.now();
+		
+		// 2. 找尋 符合的公告
+		Announcements announcements; 
+		if (isManager) {
+			announcements = entityFetcher.getAnnouncementsByIdAndNow(announcementFindDTO.getId(), now);
+		} else {
+			announcements = entityFetcher.getAnnouncementsByIdAndOrganizationIdAndNow(announcementFindDTO.getId(), organization.getOrganizationId(), now);
+		}
+		
 		// 3. 轉成 DTO
 		return modelMapper.map(announcements, AnnouncementDTO.class);
 	}
@@ -249,8 +304,10 @@ public class AnnouncementServiceImpl implements AnnouncementService{
 		}
 		
 		// 3. 開始發布公告
-		LocalDate expiryDate = LocalDate.now().plusDays(announcementPublishDTO.getDaysUntilExpiry());
+		LocalDate publishDate = LocalDate.now();
+		LocalDate expiryDate = publishDate.plusDays(announcementPublishDTO.getDaysUntilExpiry());
 		announcements.setIsPublished(true);
+		announcements.setPublishDate(publishDate);
 		announcements.setExpiryDate(expiryDate);
 		
 		announcements = announcementsRepository.save(announcements);
