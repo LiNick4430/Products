@@ -1,0 +1,2684 @@
+type: collection.insomnia.rest/5.0
+schema_version: "5.1"
+name: Scratch Pad
+meta:
+  id: wrk_scratchpad
+  created: 1757225504635
+  modified: 1757225504635
+  description: ""
+collection:
+  - name: RESTful
+    meta:
+      id: fld_ba8eca836f214c03a02ea0429b3b3162
+      created: 1757225585378
+      modified: 1758665371842
+      sortKey: -1757225585378
+      description: ""
+  - name: Book
+    meta:
+      id: fld_38c6a0837dc54c09ba808310b813ba6e
+      created: 1758209585687
+      modified: 1760763300689
+      sortKey: -1758209585687
+      description: ""
+  - name: Daycare
+    meta:
+      id: fld_4efcb1b2e5154ac6b087f7e33590fb36
+      created: 1760759629968
+      modified: 1761071501720
+      sortKey: -1760759629968
+      description: ""
+    children:
+      - name: User
+        meta:
+          id: fld_045d67b5e6504bcb803e2b82a3acc1db
+          created: 1760759637170
+          modified: 1761635996410
+          sortKey: -1760759637170
+          description: ""
+        children:
+          - url: http://localhost:8080/user/register/
+            name: /user/register/ 註冊帳號
+            meta:
+              id: req_add64b41df884cea9f481ae0597c5212
+              created: 1760761401888
+              modified: 1762252078701
+              isPrivate: false
+              description: |
+                # 回傳 的 Json 規格
+
+                ## Json參數說明：
+                | 變數名 | 類型 | 說明 | 必填 |
+                | :--- | :--- | :--- | :--- |
+                | "username" | String | 帳號(唯一) | Y |
+                | "password" | String | 密碼 | Y |
+                | "email" | String | 信箱唯一 | Y |
+                | "phoneNumber" | String | 電話號碼 | Y |
+                | "roleNumber" | Integer | 角色ID: 1(民眾), 2(基層), 或 3(管理) | Y |
+
+                ## 回傳範例：
+                ```json
+                {
+                	"username": "test01",
+                	"password": "123456",
+                	"email": "test01@xxx.com",
+                	"phoneNumber": "0900111222",
+                	"roleNumber" : 1
+                }
+                ```
+              sortKey: -1760761401888
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"username": "test03",
+                	"password": "123456",
+                	"email": "test02@xxx.com",
+                	"phoneNumber": "0900111224",
+                	"roleNumber" : 1
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/11.6.1
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/auth/login/
+            name: /auth/login/ 登入帳號
+            meta:
+              id: req_1818b711ce0c4220856eaf85870b44f9
+              created: 1760765216903
+              modified: 1765114060444
+              isPrivate: false
+              description: |
+                # 回傳 的 Json 規格
+
+                ## Json參數說明：
+                | 變數名 | 類型 | 說明 | 必填 |
+                | :--- | :--- | :--- | :--- |
+                | "username" | String | 帳號 | Y |
+                | "password" | String | 密碼 | Y |
+
+                ## 回傳範例：
+                ```json
+                {
+                	"username": "test01",
+                	"password": "123456"
+                }
+                ```
+              sortKey: -1759485495223
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                    "username": "manager",
+                    "password": "123456"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/11.6.1
+            authentication:
+              type: none
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/auth/logout/
+            name: /auth/logout/ 登出帳號
+            meta:
+              id: req_008ccdbe403845d0853ab93f1cb551a1
+              created: 1760765304908
+              modified: 1761204388744
+              isPrivate: false
+              description: |-
+                ## Auth -> Bearer Token
+                | TOKEN | Prefix |
+                | :--- | :--- |
+                | 登入TOKEN | Bearer|
+              sortKey: -1758847541890.5
+            method: GET
+            headers:
+              - name: User-Agent
+                value: insomnia/11.6.1
+            authentication:
+              type: bearer
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfUFVCTElDIiwidXNlcklkIjo2LCJyb2xlTnVtYmVyIjoxLCJzdWIiOiJ0ZXN0MDYiLCJpYXQiOjE3NjEyMDQyMTgsImV4cCI6MTc2MTIwNjAxOH0.xKQBDg3f61fXJ0ppFDAEALhSfJCzQ_IfKLfcGv26xqk
+              prefix: Bearer
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/email/send/password/
+            name: /email/send/password/ 忘記密碼 認證信
+            meta:
+              id: req_091efff47542417794c207efa8979b1a
+              created: 1760765790027
+              modified: 1765108761834
+              isPrivate: false
+              description: |-
+                # 回傳 的 Json 規格
+
+                ## Json參數說明：
+                | 變數名 | 類型 | 說明 | 必填 |
+                | :--- | :--- | :--- | :--- |
+                | "username" | String | 帳號 | Y |
+
+                ## 回傳範例：
+                ```json
+                {
+                	"username": "test03"
+                }
+                ```
+              sortKey: -1760123448555.5
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"username": "public_2"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/11.6.1
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/user/reset/password/
+            name: /user/reset/password/ 重設密碼
+            meta:
+              id: req_3c7e786f69c84f6db130aa4a21b5a6f5
+              created: 1760766048663
+              modified: 1761176935688
+              isPrivate: false
+              description: |-
+                # 回傳 的 Json 規格
+
+                ## Json參數說明：
+                | 變數名 | 類型 | 說明 | 必填 |
+                | :--- | :--- | :--- | :--- |
+                | "username" | String | 帳號 | Y |
+                | "password" | String | 密碼 | Y |
+                | "token" | String | 驗證碼 | Y |
+
+                ## 回傳範例：
+                ```json
+                {
+                	"username": "test03",
+                	"password": "123456",
+                	"token": "ec409e47c2654288a08378cb523f30e8"
+                }
+                ```
+              sortKey: -1760442425221.75
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"username": "test03",
+                	"password": "123456",
+                	"token": "ec409e47c2654288a08378cb523f30e8"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/11.6.1
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/auth/check/password/
+            name: /auth/check/password/ 更新資料前 密碼驗證
+            meta:
+              id: req_f62bbf0a4927430a83360a45a3a53457
+              created: 1760766426302
+              modified: 1765108460579
+              isPrivate: false
+              description: |-
+                # 回傳 的 Json 規格
+
+                ## Json參數說明：
+                | 變數名 | 類型 | 說明 | 必填 |
+                | :--- | :--- | :--- | :--- |
+                | "password" | String | 密碼 | Y |
+
+                ## 回傳範例：
+                ```json
+                {
+                	"password": "123456"
+                }
+                ```
+
+                ## Auth -> Bearer Token
+                | TOKEN | Prefix |
+                | :--- | :--- |
+                | 登入TOKEN | Bearer|
+              sortKey: -1759166518556.75
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"password": "123456"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/11.6.1
+            authentication:
+              type: bearer
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfUFVCTElDIiwidXNlcklkIjo2LCJyb2xlTnVtYmVyIjoxLCJzdWIiOiJwdWJsaWNfMiIsImlhdCI6MTc2NTEwODM5NiwiZXhwIjoxNzY1MTEwMTk2fQ.1vxs_mSaFHxUlQxoFGGlM_rjvTXZbBpPeodS4NpfeBA
+              prefix: Bearer
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/user/update/
+            name: /user/update/ 更新帳號
+            meta:
+              id: req_f074fb0d8f104eb99f122f72519ce429
+              created: 1760766720177
+              modified: 1761840585422
+              isPrivate: false
+              description: |-
+                # 回傳 的 Json 規格
+
+                ## Json參數說明：
+                | 變數名 | 類型 | 說明 | 必填 |
+                | :--- | :--- | :--- | :--- |
+                | "newPassword" | String | 新密碼 | Y |
+                | "newPhoneNumber" | String | 新電話號碼 | Y |
+
+                ## 回傳範例：
+                ```json
+                {
+                	"newPassword": "123456",
+                	"newPhoneNumber": "0900111222"
+                }
+                ```
+
+                ## Auth -> Bearer Token
+                | TOKEN | Prefix |
+                | :--- | :--- |
+                | 登入TOKEN | Bearer|
+              sortKey: -1760601913554.875
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"newPassword": "123456",
+                	"newPhoneNumber": "0900111222"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/11.6.1
+            authentication:
+              type: bearer
+              prefix: Bearer
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/user/delete/
+            name: /user/delete/ 刪除帳號
+            meta:
+              id: req_b32424913e3c43eead889e420d665771
+              created: 1760766899045
+              modified: 1762240478944
+              isPrivate: false
+              description: |-
+                # 回傳 的 Json 規格
+
+                ## Json參數說明：
+                | 變數名 | 類型 | 說明 | 必填 |
+                | :--- | :--- | :--- | :--- |
+                | "password" | String | 密碼 | Y |
+
+                ## 回傳範例：
+                ```json
+                {
+                	"password": "123456"
+                }
+                ```
+
+                ## Auth -> Bearer Token
+                | TOKEN | Prefix |
+                | :--- | :--- |
+                | 登入TOKEN | Bearer|
+              sortKey: -1760681657721.4375
+            method: DELETE
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"password": "123456"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/11.6.1
+            authentication:
+              type: bearer
+              prefix: Bearer
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/auth/public/check/password/
+            name: /auth/public/check/password/  民眾資料修改前 確認密碼
+            meta:
+              id: req_8f8d1a0e8e8a4479a3b3bd2ae2d47f37
+              created: 1761029735966
+              modified: 1765108543219
+              isPrivate: false
+              description: |-
+                # 回傳 的 Json 規格
+
+                ## Json參數說明：
+                | 變數名 | 類型 | 說明 | 必填 |
+                | :--- | :--- | :--- | :--- |
+                | "password" | String | 密碼 | Y |
+
+                ## 回傳範例：
+                ```json
+                {
+                	"password": "123456"
+                }
+                ```
+
+                ## Auth -> Bearer Token
+                | TOKEN | Prefix |
+                | :--- | :--- |
+                | 登入TOKEN | Bearer|
+              sortKey: -1759007030223.625
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"password": "123456"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/11.6.1
+            authentication:
+              type: bearer
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfUFVCTElDIiwidXNlcklkIjo2LCJyb2xlTnVtYmVyIjoxLCJzdWIiOiJwdWJsaWNfMiIsImlhdCI6MTc2NTEwODM5NiwiZXhwIjoxNzY1MTEwMTk2fQ.1vxs_mSaFHxUlQxoFGGlM_rjvTXZbBpPeodS4NpfeBA
+              prefix: Bearer
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/auth/access/token/refresh/
+            name: /auth/access/token/refresh/ access token 刷新
+            meta:
+              id: req_29d3da7e668e42fc9377837e57349c1f
+              created: 1761204174504
+              modified: 1765108634917
+              isPrivate: false
+              description: |
+                # 回傳 的 Json 規格
+
+                ## Json參數說明：
+                | 變數名 | 類型 | 說明 | 必填 |
+                | :--- | :--- | :--- | :--- |
+                | "refreshToken" | String | Refresh Token | Y |
+
+                ## 回傳範例：
+                ```json
+                {
+                	"refreshToken": "7ffd77f914054001bc6c54e872c062ba"
+                }
+                ```
+              sortKey: -1759326006889.875
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"refreshToken": "707b4308b1b9481f8b74d6eef2198f0f"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/11.6.1
+            authentication:
+              type: none
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/user/me/
+            name: /user/me/ 從JWT獲得基本資料
+            meta:
+              id: req_d8f22198e51e441d83ff481926ffad02
+              created: 1761616601130
+              modified: 1765026169161
+              isPrivate: false
+              description: |-
+                ## Auth -> Bearer Token
+                | TOKEN | Prefix |
+                | :--- | :--- |
+                | 登入TOKEN | Bearer|
+              sortKey: -1760522169388.3125
+            method: GET
+            headers:
+              - name: User-Agent
+                value: insomnia/11.6.1
+            authentication:
+              type: bearer
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfTUFOQUdFUiIsInVzZXJJZCI6MSwicm9sZU51bWJlciI6Mywic3ViIjoibWFuYWdlciIsImlhdCI6MTc2MTYxNjYyNywiZXhwIjoxNzYxNjE4NDI3fQ.Y3j_xDwwBXXJIHBMhUkF772mFBMF-lGA_kEpQQtwwXk
+              prefix: Bearer
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+      - name: UserPublic
+        meta:
+          id: fld_25e29320684f4a359bfd23f8df72dd5d
+          created: 1761027630244
+          modified: 1761176978032
+          sortKey: -1761027630244
+          description: ""
+        children:
+          - url: http://localhost:8080/public/user/information/
+            name: /public/user/information/  設定 民眾基本資料
+            meta:
+              id: req_0ba2630cec7f4abe9879fe0aa217706e
+              created: 1761027649934
+              modified: 1764180072853
+              isPrivate: false
+              description: |-
+                # 回傳 的 Json 規格
+
+                ## Json參數說明：
+                | 變數名 | 類型 | 說明 | 必填 |
+                | :--- | :--- | :--- | :--- |
+                | "name" | String | 民眾姓名 | Y |
+                | "nationalIdNo" | String |  身分證字號(唯一) | Y |
+                | "birthdate" | String | 生日 必須是 yyyy-MM-dd 格式 | Y |
+                | "registeredAddress" | String | 戶籍地址 | Y |
+                | "mailingAddress" | String | 通訊地址 | Y |
+
+                ## 回傳範例：
+                ```json
+                {
+                	"name" : "民眾B",
+                	"nationalIdNo" : "B100000001",
+                	"birthdate" : "1992-01-01",
+                	"registeredAddress" : "台中市南區",
+                	"mailingAddress" : "台中市南區"
+                }
+                ```
+
+                ## Headers
+                | Key | Value |
+                | :--- | :--- |
+                | Authorization | Bearer + {登入的TOKEN} |
+              sortKey: -1761027649935
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"name" : "民眾C",
+                	"nationalIdNo" : "B100000003",
+                	"birthdate" : "1992-01-01",
+                	"registeredAddress" : "台中市南區",
+                	"mailingAddress" : "台中市南區"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/11.6.1
+            authentication:
+              type: bearer
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfUFVCTElDIiwidXNlcklkIjoxMiwicm9sZU51bWJlciI6MSwic3ViIjoidGVzdDAyIiwiaWF0IjoxNzY0MTc5NTcxLCJleHAiOjE3NjQxODEzNzF9.lBPkwBcZEnbvcDoxrZr4VO9zCjeXax3qdZkDIle2vMQ
+              prefix: Bearer
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/public/user/find/
+            name: /public/user/find/  尋找	特定民眾帳號
+            meta:
+              id: req_85aaba08c1b1480c8c7fc32abf6ee157
+              created: 1761028356938
+              modified: 1764180151962
+              isPrivate: false
+              description: |-
+                # 回傳 的 Json 規格
+
+                ## Json參數說明：
+                | 變數名 | 類型 | 說明 | 必填 |
+                | :--- | :--- | :--- | :--- |
+                | "username" | String | 帳號 | Y |
+
+                ## 回傳範例：
+                ```json
+                {
+                	"username": "test01"
+                }
+                ```
+
+                ## Headers
+                | Key | Value |
+                | :--- | :--- |
+                | Authorization | Bearer + {登入的TOKEN} |
+              sortKey: -1760894525911.5
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"username": "test02"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/11.6.1
+            authentication:
+              type: bearer
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfTUFOQUdFUiIsInVzZXJJZCI6MSwicm9sZU51bWJlciI6Mywic3ViIjoibWFuYWdlciIsImlhdCI6MTc2NDE4MDExMCwiZXhwIjoxNzY0MTgxOTEwfQ.J86g7HLMMcIDFhyNyMAl3eewBqJWY8ogpOWRlpRoybE
+              prefix: Bearer
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/public/user/update/
+            name: /public/user/update/ 更新 民眾基本資料
+            meta:
+              id: req_ad4b217fb4f7448cb5d55d768453f91a
+              created: 1761029822076
+              modified: 1764179920660
+              isPrivate: false
+              description: |-
+                # 回傳 的 Json 規格
+
+                ## Json參數說明：
+                | 變數名 | 類型 | 說明 | 必填 |
+                | :--- | :--- | :--- | :--- |
+                | "newName" | String | 新民眾姓名 | Y |
+                | "newRegisteredAddress" | String | 新戶籍地址 | Y |
+                | "newMailingAddress" | String | 新通訊地址 | Y |
+
+                ## 回傳範例：
+                ```json
+                {
+                	"newName" : "民眾A的老公",
+                	"newRegisteredAddress" : "台中市北區",
+                	"newMailingAddress" : "台中市北區"
+                }
+                ```
+
+                ## Auth -> Bearer Token
+                | TOKEN | Prefix |
+                | :--- | :--- |
+                | 登入TOKEN | Bearer|
+              sortKey: -1760961087923.25
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"newName" : "民眾C",
+                	"newRegisteredAddress" : "台中市",
+                	"newMailingAddress" : "台中市"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/11.6.1
+            authentication:
+              type: bearer
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfUFVCTElDIiwidXNlcklkIjoxMiwicm9sZU51bWJlciI6MSwic3ViIjoidGVzdDAyIiwiaWF0IjoxNzY0MTc5NTcxLCJleHAiOjE3NjQxODEzNzF9.lBPkwBcZEnbvcDoxrZr4VO9zCjeXax3qdZkDIle2vMQ
+              prefix: Bearer
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/public/user/delete/
+            name: /public/user/delete/  刪除	民眾帳號
+            meta:
+              id: req_a284002f356d49e2bf614a9ce5e56b72
+              created: 1761029932922
+              modified: 1764180032632
+              isPrivate: false
+              description: |-
+                # 回傳 的 Json 規格
+
+                ## Json參數說明：
+                | 變數名 | 類型 | 說明 | 必填 |
+                | :--- | :--- | :--- | :--- |
+                | "password" | String | 密碼 | Y |
+
+                ## 回傳範例：
+                ```json
+                {
+                	"password": "123456"
+                }
+                ```
+
+                ## Auth -> Bearer Token
+                | TOKEN | Prefix |
+                | :--- | :--- |
+                | 登入TOKEN | Bearer|
+              sortKey: -1760994368929.125
+            method: DELETE
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"username": "test04",
+                	"password": "123456"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/11.6.1
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/public/user/find/all/
+            name: /public/user/find/all/  尋找 全部民眾帳號
+            meta:
+              id: req_91af0cf586f44384b94807e186548a30
+              created: 1761572500215
+              modified: 1764180119735
+              isPrivate: false
+              description: ""
+              sortKey: -1761011009432.0625
+            method: GET
+            headers:
+              - name: User-Agent
+                value: insomnia/11.6.1
+            authentication:
+              type: bearer
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfTUFOQUdFUiIsInVzZXJJZCI6MSwicm9sZU51bWJlciI6Mywic3ViIjoibWFuYWdlciIsImlhdCI6MTc2NDE4MDExMCwiZXhwIjoxNzY0MTgxOTEwfQ.J86g7HLMMcIDFhyNyMAl3eewBqJWY8ogpOWRlpRoybE
+              prefix: Bearer
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+      - name: ChildInfo
+        meta:
+          id: fld_273411445dab4da8a6d7d5cf20f4a363
+          created: 1761380281228
+          modified: 1764178837046
+          sortKey: -1761380281228
+          description: ""
+        children:
+          - url: http://localhost:8080/child/information/
+            name: /child/information/ 設定 民眾底下 新幼兒資料
+            meta:
+              id: req_4a5bac61eb5f46c2aba1b6f2c0a030ac
+              created: 1761380284851
+              modified: 1764178868230
+              isPrivate: false
+              description: ""
+              sortKey: -1761380284851
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"name": "幼兒B",
+                	"nationalIdNo": "D100000002",
+                	"birthdate" : "2025-10-10",
+                	"gender" : "男"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/11.6.2
+            authentication:
+              type: bearer
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfUFVCTElDIiwidXNlcklkIjoxMiwicm9sZU51bWJlciI6MSwic3ViIjoidGVzdDAyIiwiaWF0IjoxNzY0MTc4ODE1LCJleHAiOjE3NjQxODA2MTV9.rNHr1muPyYcTDQRoCp4EafbXA6LETOgmbfmpO_R7H6s
+              prefix: Bearer
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/child/find/all/
+            name: /child/find/all/ 尋找 民眾底下 全部幼兒資料
+            meta:
+              id: req_ff3b89ba37854915aedc0d8ce15e1e5e
+              created: 1761380757061
+              modified: 1763302766739
+              isPrivate: false
+              description: ""
+              sortKey: -1761203967393
+            method: GET
+            headers:
+              - name: User-Agent
+                value: insomnia/11.6.2
+            authentication:
+              type: bearer
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfUFVCTElDIiwidXNlcklkIjo1LCJyb2xlTnVtYmVyIjoxLCJzdWIiOiJwdWJsaWNfMSIsImlhdCI6MTc2MzMwMjc0OSwiZXhwIjoxNzYzMzA0NTQ5fQ.G3wsnA0LLFXOGHFaXBxnKgU98euQy-JnWI8i6_mSjbY
+              prefix: Bearer
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/child/find/
+            name: /child/find/ 尋找 民眾底下 特定幼兒資料
+            meta:
+              id: req_fedc4447d8684045af9f0afc357a327b
+              created: 1761380843829
+              modified: 1761380871906
+              isPrivate: false
+              description: ""
+              sortKey: -1761115808664
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                		"id": 1
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/11.6.2
+            authentication:
+              type: bearer
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfUFVCTElDIiwidXNlcklkIjo2LCJyb2xlTnVtYmVyIjoxLCJzdWIiOiJ0ZXN0MDYiLCJpYXQiOjE3NjEzODA2ODgsImV4cCI6MTc2MTM4MjQ4OH0.UMFt9INJU1PMCGqHtHdPbbQuzN3i9gGocYwRWkJnl7g
+              prefix: Bearer
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/child/update/
+            name: /child/update/ 更新 民眾底下 特定幼兒資料
+            meta:
+              id: req_2c799038ec5c47bcb90d9779a748680d
+              created: 1761380906325
+              modified: 1761380950053
+              isPrivate: false
+              description: ""
+              sortKey: -1761292126122
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"id" : 1,
+                	"newName": "幼兒AB"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/11.6.2
+            authentication:
+              type: bearer
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfUFVCTElDIiwidXNlcklkIjo2LCJyb2xlTnVtYmVyIjoxLCJzdWIiOiJ0ZXN0MDYiLCJpYXQiOjE3NjEzODA2ODgsImV4cCI6MTc2MTM4MjQ4OH0.UMFt9INJU1PMCGqHtHdPbbQuzN3i9gGocYwRWkJnl7g
+              prefix: Bearer
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/child/delete/
+            name: /child/delete/ 刪除 民眾底下 特定幼兒資料
+            meta:
+              id: req_f54876eee3ec4f23be3d20e888d9910b
+              created: 1761380991840
+              modified: 1761381036337
+              isPrivate: false
+              description: ""
+              sortKey: -1761071729299.5
+            method: DELETE
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                		"id": 1
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/11.6.2
+            authentication:
+              type: bearer
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfUFVCTElDIiwidXNlcklkIjo2LCJyb2xlTnVtYmVyIjoxLCJzdWIiOiJ0ZXN0MDYiLCJpYXQiOjE3NjEzODA2ODgsImV4cCI6MTc2MTM4MjQ4OH0.UMFt9INJU1PMCGqHtHdPbbQuzN3i9gGocYwRWkJnl7g
+              prefix: Bearer
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+      - name: UserAdmin
+        meta:
+          id: fld_7622ba6809e544a5b7fe3cbd028bc53d
+          created: 1761575488941
+          modified: 1761575488941
+          sortKey: -1761575488941
+          description: ""
+        children:
+          - url: http://localhost:8080/admin/user/me/
+            name: /admin/user/me/  取得 自己的資料
+            meta:
+              id: req_e6f9e48d196a43a08df2d7a68b34e596
+              created: 1761575499522
+              modified: 1765112362981
+              isPrivate: false
+              description: ""
+              sortKey: -1761575499522
+            method: GET
+            headers:
+              - name: User-Agent
+                value: insomnia/11.6.2
+            authentication:
+              type: bearer
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfTUFOQUdFUiIsInVzZXJJZCI6MSwicm9sZU51bWJlciI6Mywic3ViIjoibWFuYWdlciIsImlhdCI6MTc2NTExMjM1MywiZXhwIjoxNzY1MTE0MTUzfQ.O-Sv6cd02yqw2d8KtMIyzk-NyhhhYVsLAfex6TcWV0Y
+              prefix: Bearer
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/admin/user/find/all/
+            name: /admin/user/find/all/  尋找 全部員工帳號
+            meta:
+              id: req_080083e4bbd344c2a0c62e1062922baf
+              created: 1761575642613
+              modified: 1765112374697
+              isPrivate: false
+              description: ""
+              sortKey: -1761477892186.5
+            method: GET
+            headers:
+              - name: User-Agent
+                value: insomnia/11.6.2
+            authentication:
+              type: bearer
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfTUFOQUdFUiIsInVzZXJJZCI6MSwicm9sZU51bWJlciI6Mywic3ViIjoibWFuYWdlciIsImlhdCI6MTc2NTExMjM1MywiZXhwIjoxNzY1MTE0MTUzfQ.O-Sv6cd02yqw2d8KtMIyzk-NyhhhYVsLAfex6TcWV0Y
+              prefix: Bearer
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/admin/user/find/
+            name: /admin/user/find/ 尋找 特定員工帳號
+            meta:
+              id: req_837b171578e6445f97f75ce1ba988ec1
+              created: 1761575704735
+              modified: 1765112395709
+              isPrivate: false
+              description: ""
+              sortKey: -1761429088518.75
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"username": "staff_c"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/11.6.2
+            authentication:
+              type: bearer
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfTUFOQUdFUiIsInVzZXJJZCI6MSwicm9sZU51bWJlciI6Mywic3ViIjoibWFuYWdlciIsImlhdCI6MTc2NTExMjM1MywiZXhwIjoxNzY1MTE0MTUzfQ.O-Sv6cd02yqw2d8KtMIyzk-NyhhhYVsLAfex6TcWV0Y
+              prefix: Bearer
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/admin/user/create/
+            name: /admin/user/create/ 設定 員工基本資料
+            meta:
+              id: req_a60b93aa29634fb3952236a34dd3b39b
+              created: 1761575781777
+              modified: 1765026705146
+              isPrivate: false
+              description: ""
+              sortKey: -1761404686684.875
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"username": "test01",
+                	"password": "123456",
+                	"email": "test01@xxx.com",
+                	"phoneNumber": "0900111222",
+                	"roleNumber" : 2,
+                	"name" : "員工丁",
+                	"jobTitle" : "組長",
+                	"organizationId" : 1
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/11.6.2
+            authentication:
+              type: bearer
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfTUFOQUdFUiIsInVzZXJJZCI6MSwicm9sZU51bWJlciI6Mywic3ViIjoibWFuYWdlciIsImlhdCI6MTc2MTU3NTU5NywiZXhwIjoxNzYxNTc3Mzk3fQ.zwOLFnP87QIcC8TdUE8YbvT5sNdBBwqzS9T49VD1SGM
+              prefix: Bearer
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/admin/user/update/
+            name: /admin/user/update/ 更新 員工基本資料
+            meta:
+              id: req_e4c5157ab2344c45836bc375d00710c9
+              created: 1761576004093
+              modified: 1765026730831
+              isPrivate: false
+              description: ""
+              sortKey: -1761392485767.9375
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"username": "test01",
+                	"newRoleNumber" : 2,
+                	"newName" : "員工丁",
+                	"newJobTitle" : "組長長",
+                	"newOrganizationId" : 2
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/11.6.2
+            authentication:
+              type: bearer
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfTUFOQUdFUiIsInVzZXJJZCI6MSwicm9sZU51bWJlciI6Mywic3ViIjoibWFuYWdlciIsImlhdCI6MTc2MTU3NTU5NywiZXhwIjoxNzYxNTc3Mzk3fQ.zwOLFnP87QIcC8TdUE8YbvT5sNdBBwqzS9T49VD1SGM
+              prefix: Bearer
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/admin/user/delete/
+            name: /admin/user/delete/ 刪除 特定員工帳號
+            meta:
+              id: req_958f9fcb38414165b7962243286b745d
+              created: 1761576150537
+              modified: 1762241841413
+              isPrivate: false
+              description: ""
+              sortKey: -1761386385309.4688
+            method: DELETE
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"username": "test01"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/11.6.2
+            authentication:
+              type: bearer
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfTUFOQUdFUiIsInVzZXJJZCI6MSwicm9sZU51bWJlciI6Mywic3ViIjoibWFuYWdlciIsImlhdCI6MTc2MTU3NTU5NywiZXhwIjoxNzYxNTc3Mzk3fQ.zwOLFnP87QIcC8TdUE8YbvT5sNdBBwqzS9T49VD1SGM
+              prefix: Bearer
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+      - name: Organization
+        meta:
+          id: fld_1e8889d2ea904fddb1f05b52f568f8d5
+          created: 1761637307176
+          modified: 1761637307176
+          sortKey: -1761637307176
+          description: ""
+        children:
+          - url: http://localhost:8080/organization/find/
+            name: /organization/find/ 尋找特定機構
+            meta:
+              id: req_b9c7643c4f314efe9016177bc923cebe
+              created: 1761637309793
+              modified: 1765111611675
+              isPrivate: false
+              description: ""
+              sortKey: -1761637309793
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"name" : "公托家園",
+                	"address" : ""
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/11.6.2
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/organization/create/
+            name: /organization/create/ 主管 建立 新的機構
+            meta:
+              id: req_876587c6e50f4895bbba1b320d4b27ea
+              created: 1761637692401
+              modified: 1765111349827
+              isPrivate: false
+              description: ""
+              sortKey: -1761606404657.5
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"name": "台中市東區太陽公立幼兒園",
+                	"description": "結合自然教學法，培養幼兒獨立思考能力，近公園綠地。",
+                	"address": "台中市東區XX路XX號",
+                	"phoneNumber": "04-23003223",
+                	"email": "sun.wtc@daycare.gov.tw",
+                	"fax": "04-23003333"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/11.6.2
+            authentication:
+              type: bearer
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfTUFOQUdFUiIsInVzZXJJZCI6MSwicm9sZU51bWJlciI6Mywic3ViIjoibWFuYWdlciIsImlhdCI6MTc2NTExMTI2NiwiZXhwIjoxNzY1MTEzMDY2fQ.ewnmFCRytDJY5W6Z00lSf1FDvCwdk1sGwZ1QCVe9wFk
+              prefix: Bearer
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/organization/update/
+            name: /organization/update/ 主管/員工 更新 機構資料
+            meta:
+              id: req_00f11dfc71224a96a7b1263aa8e08355
+              created: 1761637857873
+              modified: 1765111482641
+              isPrivate: false
+              description: ""
+              sortKey: -1761590952089.75
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"id": 5,
+                	"newName": "台中市西屯區太陽公立幼兒園",
+                	"newDescription": "結合自然教學法，培養幼兒獨立思考能力，近公園綠地。",
+                	"newAddress": "台中市西屯區台灣大道三段400號",
+                	"newPhoneNumber": "04-23003333",
+                	"newEmail": "sun.wtc@daycare.gov.tw",
+                	"newFax": "04-23003333"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/11.6.2
+            authentication:
+              type: bearer
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfTUFOQUdFUiIsInVzZXJJZCI6MSwicm9sZU51bWJlciI6Mywic3ViIjoibWFuYWdlciIsImlhdCI6MTc2NTExMTI2NiwiZXhwIjoxNzY1MTEzMDY2fQ.ewnmFCRytDJY5W6Z00lSf1FDvCwdk1sGwZ1QCVe9wFk
+              prefix: Bearer
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/organization/delete/
+            name: /organization/delete/ 主管 刪除 機構資料
+            meta:
+              id: req_910482c1fab94149b5674a329b2cecc0
+              created: 1761637957832
+              modified: 1765111706012
+              isPrivate: false
+              description: ""
+              sortKey: -1761583225805.875
+            method: DELETE
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"id": 5,
+                	
+                	"username" : "manager",
+                	"password" : "123456"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/11.6.2
+            authentication:
+              type: bearer
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfTUFOQUdFUiIsInVzZXJJZCI6MSwicm9sZU51bWJlciI6Mywic3ViIjoibWFuYWdlciIsImlhdCI6MTc2NTExMTI2NiwiZXhwIjoxNzY1MTEzMDY2fQ.ewnmFCRytDJY5W6Z00lSf1FDvCwdk1sGwZ1QCVe9wFk
+              prefix: Bearer
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/organization/upload/doc/
+            name: /organization/upload/doc/ 主管/員工 上傳 機構附件
+            meta:
+              id: req_9322900fc04d4b7b9e73faae00191d06
+              created: 1763713570224
+              modified: 1765110759312
+              isPrivate: false
+              description: ""
+              sortKey: -1763713570224
+            method: POST
+            body:
+              mimeType: multipart/form-data
+              params:
+                - name: file
+                  value: ""
+                  description: ""
+                  disabled: false
+                  fileName: C:\Users\User\Desktop\測試用資料\機構資料.pdf
+                  type: file
+                - name: data
+                  value: '{ "id" : 1}'
+                  description: ""
+                  disabled: false
+                  multiline: false
+                  type: text
+            headers:
+              - name: Content-Type
+                value: multipart/form-data
+              - name: User-Agent
+                value: insomnia/12.0.0
+            authentication:
+              type: bearer
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfU1RBRkYiLCJ1c2VySWQiOjIsInJvbGVOdW1iZXIiOjIsInN1YiI6InN0YWZmX2EiLCJpYXQiOjE3NjUxMTA3MzcsImV4cCI6MTc2NTExMjUzN30.x4TBZujdjNmp8UW1hsY4spyEPFjS48TKVSUFUUzoo7s
+              prefix: Bearer
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/organization/delete/doc/
+            name: /organization/delete/doc/ 主管 刪除 機構附件
+            meta:
+              id: req_db233c5d15dc49bcb8d61f173b7e5012
+              created: 1763715262282
+              modified: 1765111650491
+              isPrivate: false
+              description: ""
+              sortKey: -1761579362663.9375
+            method: DELETE
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"id": 1,
+                	
+                	"documentId": 1
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/11.6.2
+            authentication:
+              type: bearer
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfTUFOQUdFUiIsInVzZXJJZCI6MSwicm9sZU51bWJlciI6Mywic3ViIjoibWFuYWdlciIsImlhdCI6MTc2NTExMTI2NiwiZXhwIjoxNzY1MTEzMDY2fQ.ewnmFCRytDJY5W6Z00lSf1FDvCwdk1sGwZ1QCVe9wFk
+              prefix: Bearer
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/organization/download/doc/
+            name: /organization/download/doc/ 下載 特定機構附件
+            meta:
+              id: req_2335c9f91ffd41bb9938b1bb79921322
+              created: 1763719326294
+              modified: 1765111154213
+              isPrivate: false
+              description: ""
+              sortKey: -1763503693321.5
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"id" : 1,
+                	"documentId" : 1
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/12.0.0
+            authentication:
+              type: bearer
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfU1RBRkYiLCJ1c2VySWQiOjIsInJvbGVOdW1iZXIiOjIsInN1YiI6InN0YWZmX2EiLCJpYXQiOjE3NjUxMTA3MzcsImV4cCI6MTc2NTExMjUzN30.x4TBZujdjNmp8UW1hsY4spyEPFjS48TKVSUFUUzoo7s
+              prefix: Bearer
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/organization/find/all/
+            name: /organization/find/all/ 尋找全部的機構
+            meta:
+              id: req_944197269e3a4cf08153de1385e10d0c
+              created: 1765112234487
+              modified: 1765112246608
+              isPrivate: false
+              description: ""
+              sortKey: -1761621857225.25
+            method: GET
+            headers:
+              - name: User-Agent
+                value: insomnia/11.6.2
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+      - name: DocumentPublic
+        meta:
+          id: fld_47af65bf4efd48a5929f772c120f383b
+          created: 1763293812993
+          modified: 1765114532857
+          sortKey: -1763293812993
+          description: ""
+        children:
+          - url: http://localhost:8080/document/public/create/
+            name: /document/public/create/ 民眾上傳附件
+            meta:
+              id: req_f715726afbf24d0ca0042c59d516d48b
+              created: 1763293816419
+              modified: 1765035021205
+              isPrivate: false
+              description: ""
+              sortKey: -1763293816419
+            method: POST
+            body:
+              mimeType: multipart/form-data
+              params:
+                - name: file
+                  value: ""
+                  description: ""
+                  disabled: false
+                  fileName: C:\Users\User\Desktop\測試用資料\證件照片.jpg
+                  type: file
+                - name: data
+                  value: '{ "docType" : "ID_PHOTO" }'
+                  description: ""
+                  disabled: false
+            headers:
+              - name: Content-Type
+                value: multipart/form-data
+              - name: User-Agent
+                value: insomnia/11.6.2
+                description: ""
+                disabled: false
+            authentication:
+              type: bearer
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfUFVCTElDIiwidXNlcklkIjo2LCJyb2xlTnVtYmVyIjoxLCJzdWIiOiJwdWJsaWNfMiIsImlhdCI6MTc2NTAzNDM5OSwiZXhwIjoxNzY1MDM2MTk5fQ.tXo3TbNqRbdyHYCo_fYgxBmZFmQ6XGTisxqgZ4ma_Ug
+              prefix: Bearer
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/document/case/create/
+            name: /document/case/create/ 民眾為了 案件建立 新的附件
+            meta:
+              id: req_ddb04ca02a8d4829aa8cdcbbab61e129
+              created: 1763470651777
+              modified: 1765034887043
+              isPrivate: false
+              description: ""
+              sortKey: -1762465563106
+            method: POST
+            body:
+              mimeType: multipart/form-data
+              params:
+                - name: file
+                  value: ""
+                  description: ""
+                  disabled: false
+                  fileName: C:\Users\User\Desktop\測試用資料\證件照片.jpg
+                  type: file
+                - name: data
+                  value: '{ "docType" : "ID_PHOTO", "caseId": 2 }'
+                  description: ""
+                  disabled: false
+            headers:
+              - name: Content-Type
+                value: multipart/form-data
+              - name: User-Agent
+                value: insomnia/11.6.2
+                description: ""
+                disabled: false
+            authentication:
+              type: bearer
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfUFVCTElDIiwidXNlcklkIjo2LCJyb2xlTnVtYmVyIjoxLCJzdWIiOiJwdWJsaWNfMiIsImlhdCI6MTc2NTAzNDM5OSwiZXhwIjoxNzY1MDM2MTk5fQ.tXo3TbNqRbdyHYCo_fYgxBmZFmQ6XGTisxqgZ4ma_Ug
+              prefix: Bearer
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/document/public/find/
+            name: /document/public/find/ 民眾 尋找 底下 所有的附件
+            meta:
+              id: req_d1d4fdd5cb544da08f0df7a7d9d320e2
+              created: 1763470772871
+              modified: 1765037285975
+              isPrivate: false
+              description: ""
+              sortKey: -1762879689762.5
+            method: GET
+            headers:
+              - name: User-Agent
+                value: insomnia/11.6.2
+                description: ""
+                disabled: false
+            authentication:
+              type: bearer
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfTUFOQUdFUiIsInVzZXJJZCI6MSwicm9sZU51bWJlciI6Mywic3ViIjoibWFuYWdlciIsImlhdCI6MTc2NTAzNTc4OCwiZXhwIjoxNzY1MDM3NTg4fQ.xm9LBeyM92_frM_FaaLevy4yjUpWqs3cXPjV91lZjio
+              prefix: Bearer
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/document/public/delete/
+            name: /document/public/delete/ 民眾刪除 附件
+            meta:
+              id: req_d5f4fd60e92040c0ba917dd3b58f57c2
+              created: 1763470955574
+              modified: 1765039525976
+              isPrivate: false
+              description: ""
+              sortKey: -1762672626434.25
+            method: DELETE
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"id" : 1
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/11.6.2
+                description: ""
+                disabled: false
+            authentication:
+              type: bearer
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfUFVCTElDIiwidXNlcklkIjo2LCJyb2xlTnVtYmVyIjoxLCJzdWIiOiJwdWJsaWNfMiIsImlhdCI6MTc2NTAzOTUxNywiZXhwIjoxNzY1MDQxMzE3fQ.P2JGsL20xWD3EXaNWLh-bdVtZsFauCdn5X1A3v14Ejc
+              prefix: Bearer
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/document/public/link/case/
+            name: /document/public/link/case/ 民眾 關連 案件 舊有的附件
+            meta:
+              id: req_73a96c0cd9c0497c97f3798221e8676c
+              created: 1765035607535
+              modified: 1765037690679
+              isPrivate: false
+              description: ""
+              sortKey: -1763086753090.75
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"id" : 2,
+                	"caseId" : 2
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/11.6.2
+                description: ""
+                disabled: false
+            authentication:
+              type: bearer
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfUFVCTElDIiwidXNlcklkIjo2LCJyb2xlTnVtYmVyIjoxLCJzdWIiOiJwdWJsaWNfMiIsImlhdCI6MTc2NTAzNzY3MSwiZXhwIjoxNzY1MDM5NDcxfQ.FYaje5B98FTbjFbMrD2x91apvp5SvuhZn9s5lrwMaJY
+              prefix: Bearer
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/document/admin/find/
+            name: /document/admin/find/ 員工 尋找 民眾底下 所有的附件
+            meta:
+              id: req_5f5fdf3dbe1b42488abbbaf966473eac
+              created: 1765037306974
+              modified: 1765037369070
+              isPrivate: false
+              description: ""
+              sortKey: -1762776158098.375
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"userId" : 6
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/11.6.2
+                description: ""
+                disabled: false
+            authentication:
+              type: bearer
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfTUFOQUdFUiIsInVzZXJJZCI6MSwicm9sZU51bWJlciI6Mywic3ViIjoibWFuYWdlciIsImlhdCI6MTc2NTAzNzM2MCwiZXhwIjoxNzY1MDM5MTYwfQ.EUqianEwgtgIrvgKrlIJ8dN5lrfUFkvVc5z7HiVNrkw
+              prefix: Bearer
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/document/case/find/
+            name: /document/case/find/ 尋找 案件底下 所有的附件
+            meta:
+              id: req_70a56261b3f441f4bd724ba8fd2d46ee
+              created: 1765037478109
+              modified: 1765037500116
+              isPrivate: false
+              description: ""
+              sortKey: -1762724392266.3125
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"caseId" : 2
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/11.6.2
+                description: ""
+                disabled: false
+            authentication:
+              type: bearer
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfTUFOQUdFUiIsInVzZXJJZCI6MSwicm9sZU51bWJlciI6Mywic3ViIjoibWFuYWdlciIsImlhdCI6MTc2NTAzNzM2MCwiZXhwIjoxNzY1MDM5MTYwfQ.EUqianEwgtgIrvgKrlIJ8dN5lrfUFkvVc5z7HiVNrkw
+              prefix: Bearer
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/document/admin/verify/
+            name: /document/admin/verify/ 員工 審核 附件
+            meta:
+              id: req_902f221506504bbd8c89f6a1cc94dc4a
+              created: 1765037540553
+              modified: 1765037629901
+              isPrivate: false
+              description: ""
+              sortKey: -1762750275182.3438
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"id" : 3
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/11.6.2
+                description: ""
+                disabled: false
+            authentication:
+              type: bearer
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfTUFOQUdFUiIsInVzZXJJZCI6MSwicm9sZU51bWJlciI6Mywic3ViIjoibWFuYWdlciIsImlhdCI6MTc2NTAzNzM2MCwiZXhwIjoxNzY1MDM5MTYwfQ.EUqianEwgtgIrvgKrlIJ8dN5lrfUFkvVc5z7HiVNrkw
+              prefix: Bearer
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+      - name: Announcements
+        meta:
+          id: fld_90be5caf23884bf980d2343263a3fab3
+          created: 1763734335723
+          modified: 1765114546122
+          sortKey: -1763734335723
+          description: ""
+        children:
+          - url: http://localhost:8080/announcement/find/all/
+            name: /announcement/find/all/  搜尋 全部公告
+            meta:
+              id: req_3c05ae9b21194659a0db74d63ef8470a
+              created: 1765114541940
+              modified: 1765251720162
+              isPrivate: false
+              description: ""
+              sortKey: -1765114541940
+            method: GET
+            headers:
+              - name: User-Agent
+                value: insomnia/12.1.0
+                description: ""
+                disabled: false
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/announcement/find/
+            name: /announcement/find/  搜尋 特定公告
+            meta:
+              id: req_04155feb0d264befb335317b5c42b8ec
+              created: 1765115399267
+              modified: 1765248101209
+              isPrivate: false
+              description: ""
+              sortKey: -1765113773889
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"id" : 15
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/12.1.0
+                description: ""
+                disabled: false
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/announcement/upload/doc/
+            name: /announcement/upload/doc/  上傳 公告附件
+            meta:
+              id: req_4010c068795a4fe09aa505f76c71da4b
+              created: 1765115664861
+              modified: 1765117208964
+              isPrivate: false
+              description: ""
+              sortKey: -1765113389863.5
+            method: POST
+            body:
+              mimeType: multipart/form-data
+              params:
+                - name: file
+                  value: ""
+                  fileName: C:\Users\User\Desktop\測試用資料\公告附件 (2).pdf
+                  type: file
+                - name: data
+                  value: '{ "id" : 1}'
+                  description: ""
+                  disabled: false
+            headers:
+              - name: Content-Type
+                value: multipart/form-data
+              - name: User-Agent
+                value: insomnia/12.1.0
+                description: ""
+                disabled: false
+            authentication:
+              type: bearer
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfTUFOQUdFUiIsInVzZXJJZCI6MSwicm9sZU51bWJlciI6Mywic3ViIjoibWFuYWdlciIsImlhdCI6MTc2NTExNTg4OSwiZXhwIjoxNzY1MTE3Njg5fQ.NoL5Fj3H2Zoi6R2o0kVyw8EkWdDiCDoqUZWBfW5bbg8
+              prefix: Bearer
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/announcement/delete/doc/
+            name: /announcement/delete/doc/  刪除 公告附件
+            meta:
+              id: req_6f4fffe82e80481986fedbf10b450934
+              created: 1765117674260
+              modified: 1765251559286
+              isPrivate: false
+              description: ""
+              sortKey: -1765113197850.75
+            method: DELETE
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"id" : 1,
+                	"documentId" : 6
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/12.1.0
+                description: ""
+                disabled: false
+            authentication:
+              type: bearer
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfTUFOQUdFUiIsInVzZXJJZCI6MSwicm9sZU51bWJlciI6Mywic3ViIjoibWFuYWdlciIsImlhdCI6MTc2NTExNzczNiwiZXhwIjoxNzY1MTE5NTM2fQ.Nzgt2fuODyDBS-uo_c0nWqnnyL78oWLhcedvyO7MxH8
+              prefix: Bearer
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/announcement/download/doc/
+            name: /announcement/download/doc/  下載 公告附件
+            meta:
+              id: req_a0c2955071544cacb1ae951b8bf98ff0
+              created: 1765117974031
+              modified: 1765118012994
+              isPrivate: false
+              description: ""
+              sortKey: -1765113293857.125
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"id" : 1,
+                	"documentId" : 2
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/12.1.0
+                description: ""
+                disabled: false
+            authentication:
+              type: none
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/announcement/create/
+            name: /announcement/create/  建立 公告
+            meta:
+              id: req_175aff3e53424848a8bd549b2092611a
+              created: 1765247834430
+              modified: 1765251873995
+              isPrivate: false
+              description: ""
+              sortKey: -1765113341860.3125
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"title" : "測試公告",
+                	"content" : "內文細節 OOXX 12345678",
+                	"organizationId" : 1
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/12.1.0
+                description: ""
+                disabled: false
+            authentication:
+              type: bearer
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfTUFOQUdFUiIsInVzZXJJZCI6MSwicm9sZU51bWJlciI6Mywic3ViIjoibWFuYWdlciIsImlhdCI6MTc2NTI1MTcwMSwiZXhwIjoxNzY1MjUzNTAxfQ.xdGL1__5-eOv4GF239bG1boizuELmSzUh4U-1LVeLpU
+              prefix: Bearer
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/announcement/find/all/no/expiry/
+            name: /announcement/find/all/no/expiry/  搜尋 全部公告
+            meta:
+              id: req_32b8e8a3470d42c1aba92599693efe8f
+              created: 1765251126613
+              modified: 1765251724456
+              isPrivate: false
+              description: ""
+              sortKey: -1765114157914.5
+            method: GET
+            headers:
+              - name: User-Agent
+                value: insomnia/12.1.0
+                description: ""
+                disabled: false
+            authentication:
+              type: bearer
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfTUFOQUdFUiIsInVzZXJJZCI6MSwicm9sZU51bWJlciI6Mywic3ViIjoibWFuYWdlciIsImlhdCI6MTc2NTI1MTE1MiwiZXhwIjoxNzY1MjUyOTUyfQ.Fj-slSAoA6vhQl7zVQSg3T_j029pkZgoyyheVm34RkY
+              prefix: Bearer
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/announcement/find/no/expiry/
+            name: /announcement/find/no/expiry/  搜尋 特定公告
+            meta:
+              id: req_93933dcbe394447c9fd223b26f3d66dd
+              created: 1765251223679
+              modified: 1765251274410
+              isPrivate: false
+              description: ""
+              sortKey: -1765113581876.25
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"id" : 3
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/12.1.0
+                description: ""
+                disabled: false
+            authentication:
+              type: bearer
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfTUFOQUdFUiIsInVzZXJJZCI6MSwicm9sZU51bWJlciI6Mywic3ViIjoibWFuYWdlciIsImlhdCI6MTc2NTI1MTE1MiwiZXhwIjoxNzY1MjUyOTUyfQ.Fj-slSAoA6vhQl7zVQSg3T_j029pkZgoyyheVm34RkY
+              prefix: Bearer
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/announcement/delete/
+            name: /announcement/delete/  刪除 公告
+            meta:
+              id: req_725a787b693d435c866e2262024857da
+              created: 1765251590250
+              modified: 1765251714616
+              isPrivate: false
+              description: ""
+              sortKey: -1765113101844.375
+            method: DELETE
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"id" : 15
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/12.1.0
+                description: ""
+                disabled: false
+            authentication:
+              type: bearer
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfTUFOQUdFUiIsInVzZXJJZCI6MSwicm9sZU51bWJlciI6Mywic3ViIjoibWFuYWdlciIsImlhdCI6MTc2NTI1MTcwMSwiZXhwIjoxNzY1MjUzNTAxfQ.xdGL1__5-eOv4GF239bG1boizuELmSzUh4U-1LVeLpU
+              prefix: Bearer
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/announcement/find/not/publish/
+            name: /announcement/find/not/publish/  搜尋 尚未發布公告
+            meta:
+              id: req_79f8c22e85ec49aebfdba5a90dc585b4
+              created: 1765251816303
+              modified: 1765252801118
+              isPrivate: false
+              description: ""
+              sortKey: -1765113965901.75
+            method: GET
+            headers:
+              - name: User-Agent
+                value: insomnia/12.1.0
+                description: ""
+                disabled: false
+            authentication:
+              type: bearer
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfTUFOQUdFUiIsInVzZXJJZCI6MSwicm9sZU51bWJlciI6Mywic3ViIjoibWFuYWdlciIsImlhdCI6MTc2NTI1Mjc4OSwiZXhwIjoxNzY1MjU0NTg5fQ.zL9PFeUxqaMhZQyqX8_gxJE-aLFErfv9lrMvWsBJnK4
+              prefix: Bearer
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/announcement/publish/
+            name: /announcement/publish/  發布 公告
+            meta:
+              id: req_a5547af676e14b0e85d5328c6a7b5d1f
+              created: 1765251915117
+              modified: 1765251980080
+              isPrivate: false
+              description: ""
+              sortKey: -1765113317858.7188
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"id" : 16,
+                	"daysUntilExpiry" : 180
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/12.1.0
+                description: ""
+                disabled: false
+            authentication:
+              type: bearer
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfTUFOQUdFUiIsInVzZXJJZCI6MSwicm9sZU51bWJlciI6Mywic3ViIjoibWFuYWdlciIsImlhdCI6MTc2NTI1MTcwMSwiZXhwIjoxNzY1MjUzNTAxfQ.xdGL1__5-eOv4GF239bG1boizuELmSzUh4U-1LVeLpU
+              prefix: Bearer
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+      - name: Enum
+        meta:
+          id: fld_2fd37aad8a904da99452429cca9f5e45
+          created: 1765029194339
+          modified: 1765029194339
+          sortKey: -1765029194339
+          description: ""
+        children:
+          - url: http://localhost:8080/enum/document/type
+            name: /enum/document/type 獲取 DocumentType Enum
+            meta:
+              id: req_75a096584f6c4391a93c3bebe4b18546
+              created: 1765029196914
+              modified: 1765030221652
+              isPrivate: false
+              description: ""
+              sortKey: -1765029196914
+            method: GET
+            headers:
+              - name: User-Agent
+                value: insomnia/12.1.0
+                description: ""
+                disabled: false
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/enum/application/method
+            name: /enum/application/method 獲取 ApplicationMethod Enum
+            meta:
+              id: req_a082cf43af19470981751ace421eaf7d
+              created: 1765029501295
+              modified: 1765029512124
+              isPrivate: false
+              description: ""
+              sortKey: -1764371383569
+            method: GET
+            headers:
+              - name: User-Agent
+                value: insomnia/12.1.0
+                description: ""
+                disabled: false
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/enum/regulation/type
+            name: /enum/regulation/type 獲取 RegulationType Enum
+            meta:
+              id: req_dee43d02ade5476a8f285d65faf69d0e
+              created: 1765029564386
+              modified: 1765253703949
+              isPrivate: false
+              description: ""
+              sortKey: -1764700290241.5
+            method: GET
+            headers:
+              - name: User-Agent
+                value: insomnia/12.1.0
+                description: ""
+                disabled: false
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/enum/preference/order
+            name: /enum/preference/order 獲取 PreferenceOrder Enum
+            meta:
+              id: req_72cb22fbfb0b45549d15922fc753a99c
+              created: 1765029612390
+              modified: 1765029627529
+              isPrivate: false
+              description: ""
+              sortKey: -1764864743577.75
+            method: GET
+            headers:
+              - name: User-Agent
+                value: insomnia/12.1.0
+                description: ""
+                disabled: false
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/enum/case/status
+            name: /enum/case/status 獲取 CaseStatus Enum
+            meta:
+              id: req_42785bf4b1ed48f498264476061ce73a
+              created: 1765029670237
+              modified: 1765029676477
+              isPrivate: false
+              description: ""
+              sortKey: -1764946970245.875
+            method: GET
+            headers:
+              - name: User-Agent
+                value: insomnia/12.1.0
+                description: ""
+                disabled: false
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/enum/case/organization/status
+            name: /enum/case/organization/status 獲取 CaseOrganizationStatus Enum
+            meta:
+              id: req_d24baba4e9ea4a809260c8aa33f33ad1
+              created: 1765029713017
+              modified: 1765029716092
+              isPrivate: false
+              description: ""
+              sortKey: -1764988083579.9375
+            method: GET
+            headers:
+              - name: User-Agent
+                value: insomnia/12.1.0
+                description: ""
+                disabled: false
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/enum/lottery/queue/status
+            name: /enum/lottery/queue/status 獲取 LotteryQueueStatus Enum
+            meta:
+              id: req_7ca5b951553f435dbb81f8dc2af93861
+              created: 1765029747972
+              modified: 1765029879838
+              isPrivate: false
+              description: ""
+              sortKey: -1765008640246.9688
+            method: GET
+            headers:
+              - name: User-Agent
+                value: insomnia/12.1.0
+                description: ""
+                disabled: false
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/enum/lottery/result/status
+            name: /enum/lottery/result/status 獲取 LotteryResultStatus Enum
+            meta:
+              id: req_4e77464a55a04bbe85d06fc02c20f733
+              created: 1765030030302
+              modified: 1765030033674
+              isPrivate: false
+              description: ""
+              sortKey: -1765018918580.4844
+            method: GET
+            headers:
+              - name: User-Agent
+                value: insomnia/12.1.0
+                description: ""
+                disabled: false
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/enum/withdrawal/request/status
+            name: /enum/withdrawal/request/status 獲取 WithdrawalRequestStatus Enum
+            meta:
+              id: req_074590fac063421aa0d8e2532d4412b0
+              created: 1765030063690
+              modified: 1765030067866
+              isPrivate: false
+              description: ""
+              sortKey: -1765024057747.2422
+            method: GET
+            headers:
+              - name: User-Agent
+                value: insomnia/12.1.0
+                description: ""
+                disabled: false
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+      - name: Case
+        meta:
+          id: fld_7663f55c58034c4cb392da2b324f3360
+          created: 1765031874447
+          modified: 1765031874447
+          sortKey: -1765031874447
+          description: ""
+        children:
+          - url: http://localhost:8080/case/create/
+            name: /case/create/
+            meta:
+              id: req_44b11933a0d242af93d8140f329b27f7
+              created: 1765031891343
+              modified: 1765034412595
+              isPrivate: false
+              description: ""
+              sortKey: -1765030536700.5
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"applicationMethod" : "ONLINE",
+                	"childId" : 1,
+                	"organizationIdFirst" : 1,
+                	"organizationIdSecond" : 2,
+                	"priorityIds" : [1, 3, 5, 7]
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/12.1.0
+                description: ""
+                disabled: false
+            authentication:
+              type: bearer
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfUFVCTElDIiwidXNlcklkIjo2LCJyb2xlTnVtYmVyIjoxLCJzdWIiOiJwdWJsaWNfMiIsImlhdCI6MTc2NTAzNDM5OSwiZXhwIjoxNzY1MDM2MTk5fQ.tXo3TbNqRbdyHYCo_fYgxBmZFmQ6XGTisxqgZ4ma_Ug
+              prefix: Bearer
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+      - name: Class
+        meta:
+          id: fld_2966305feb1142e989e1d12aea624485
+          created: 1765112999573
+          modified: 1765113004580
+          sortKey: -1765112999573
+          description: ""
+        children:
+          - url: http://localhost:8080/class/find/
+            name: /class/find/ 尋找 機構旗下班級
+            meta:
+              id: req_b66b8683b9884ff3a9cbb8bfc749ce50
+              created: 1765113005838
+              modified: 1765114291545
+              isPrivate: false
+              description: ""
+              sortKey: -1765113005838
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"organizationId" : 1,
+                	"organizationName" : ""
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/12.1.0
+                description: ""
+                disabled: false
+            authentication:
+              type: bearer
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfTUFOQUdFUiIsInVzZXJJZCI6MSwicm9sZU51bWJlciI6Mywic3ViIjoibWFuYWdlciIsImlhdCI6MTc2NTExNDA2MSwiZXhwIjoxNzY1MTE1ODYxfQ.ooe2z6o5Ot-F18Avfbmn-nnyXs8Aah05_CELsC6_-Ts
+              prefix: Bearer
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/class/create/
+            name: /class/create/ 建立 機構 新班級
+            meta:
+              id: req_20a4a8967a094ea0a1c99c8bf4d87f3b
+              created: 1765113936714
+              modified: 1765114078457
+              isPrivate: false
+              description: ""
+              sortKey: -1765051153984.875
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"name" : "幼幼新班",
+                	"maxCapacity" : 30,
+                	"ageMinMonths" : 24,
+                	"ageMaxMonths" : 48,
+                	"serviceStartMonth" : 8,
+                	"serviceEndMonth" : 12,
+
+                	"organizationId" : 1
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/12.1.0
+                description: ""
+                disabled: false
+            authentication:
+              type: bearer
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfTUFOQUdFUiIsInVzZXJJZCI6MSwicm9sZU51bWJlciI6Mywic3ViIjoibWFuYWdlciIsImlhdCI6MTc2NTExNDA2MSwiZXhwIjoxNzY1MTE1ODYxfQ.ooe2z6o5Ot-F18Avfbmn-nnyXs8Aah05_CELsC6_-Ts
+              prefix: Bearer
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/class/delete/
+            name: /class/delete/ 刪除 班級
+            meta:
+              id: req_0f2162b1c0c64005bf12cba7ca6beb3b
+              created: 1765114194988
+              modified: 1765114268725
+              isPrivate: false
+              description: ""
+              sortKey: -1765040845342.6875
+            method: DELETE
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"id" : 5,
+                	"name" : "幼幼新班",
+
+                	"organizationId" : 1
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/12.1.0
+                description: ""
+                disabled: false
+            authentication:
+              type: bearer
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfTUFOQUdFUiIsInVzZXJJZCI6MSwicm9sZU51bWJlciI6Mywic3ViIjoibWFuYWdlciIsImlhdCI6MTc2NTExNDA2MSwiZXhwIjoxNzY1MTE1ODYxfQ.ooe2z6o5Ot-F18Avfbmn-nnyXs8Aah05_CELsC6_-Ts
+              prefix: Bearer
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+      - name: Regulation
+        meta:
+          id: fld_faf103bba4b94d8eb8cdcd0d3ef135cf
+          created: 1765253060578
+          modified: 1765253081076
+          sortKey: -1765253060578
+          description: ""
+        children:
+          - url: http://localhost:8080/regulation/find/all/
+            name: /regulation/find/all/  搜尋 全部規範
+            meta:
+              id: req_e1212839a94d4f678a565b5cf6058b6d
+              created: 1765253077188
+              modified: 1765253252956
+              isPrivate: false
+              description: ""
+              sortKey: -1765253077188
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"organizationId" : 1
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/12.1.0
+                description: ""
+                disabled: false
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/regulation/find/
+            name: /regulation/find/ 搜尋 特定規範
+            meta:
+              id: req_f01c39c7d89146e9918d546947013604
+              created: 1765253268596
+              modified: 1765253287622
+              isPrivate: false
+              description: ""
+              sortKey: -1765183809564
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"id": 1,
+                	"organizationId" : 1
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/12.1.0
+                description: ""
+                disabled: false
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/regulation/create/
+            name: "/regulation/create/ 建立 規範 "
+            meta:
+              id: req_c3db3ed5e4084964ac60585342a94c45
+              created: 1765253650175
+              modified: 1765254326515
+              isPrivate: false
+              description: ""
+              sortKey: -1765149175752
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"type": "LUNCH_POLICY",
+                	"content" : "本機構提供每日三餐點心，午睡時間為 12:30–14:30，由專職老師陪同照護。Create",
+                	"organizationId" : 1
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/12.1.0
+                description: ""
+                disabled: false
+            authentication:
+              type: bearer
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfTUFOQUdFUiIsInVzZXJJZCI6MSwicm9sZU51bWJlciI6Mywic3ViIjoibWFuYWdlciIsImlhdCI6MTc2NTI1Mjc4OSwiZXhwIjoxNzY1MjU0NTg5fQ.zL9PFeUxqaMhZQyqX8_gxJE-aLFErfv9lrMvWsBJnK4
+              prefix: Bearer
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/regulation/update/
+            name: "/regulation/update/ 更新 規範 "
+            meta:
+              id: req_a1fd3fb496794771886529e4f69e819c
+              created: 1765253787168
+              modified: 1765253848888
+              isPrivate: false
+              description: ""
+              sortKey: -1765131858846
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"id": "2",
+                	"newContent" : "本機構提供每日三餐點心，午睡時間為 12:30–14:30，由專職老師陪同照護。New"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/12.1.0
+                description: ""
+                disabled: false
+            authentication:
+              type: bearer
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfTUFOQUdFUiIsInVzZXJJZCI6MSwicm9sZU51bWJlciI6Mywic3ViIjoibWFuYWdlciIsImlhdCI6MTc2NTI1Mjc4OSwiZXhwIjoxNzY1MjU0NTg5fQ.zL9PFeUxqaMhZQyqX8_gxJE-aLFErfv9lrMvWsBJnK4
+              prefix: Bearer
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/regulation/delete/
+            name: "/regulation/delete/ 刪除 規範 "
+            meta:
+              id: req_59e2da30325c4bddae9aaf5d176379b3
+              created: 1765253885104
+              modified: 1765253896896
+              isPrivate: false
+              description: ""
+              sortKey: -1765123200393
+            method: DELETE
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"id": "2"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/12.1.0
+                description: ""
+                disabled: false
+            authentication:
+              type: bearer
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfTUFOQUdFUiIsInVzZXJJZCI6MSwicm9sZU51bWJlciI6Mywic3ViIjoibWFuYWdlciIsImlhdCI6MTc2NTI1Mjc4OSwiZXhwIjoxNzY1MjU0NTg5fQ.zL9PFeUxqaMhZQyqX8_gxJE-aLFErfv9lrMvWsBJnK4
+              prefix: Bearer
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_99d30891da4bdcebc63947a8fc17f076de878684
+    created: 1757225513401
+    modified: 1761071501715
+environments:
+  name: Base Environment
+  meta:
+    id: env_99d30891da4bdcebc63947a8fc17f076de878684
+    created: 1757225513376
+    modified: 1761072220363
+    isPrivate: false
