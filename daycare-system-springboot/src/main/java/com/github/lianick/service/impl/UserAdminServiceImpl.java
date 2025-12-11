@@ -24,6 +24,7 @@ import com.github.lianick.repository.UserAdminRepository;
 import com.github.lianick.repository.UsersRepository;
 import com.github.lianick.service.UserAdminService;
 import com.github.lianick.service.UserService;
+import com.github.lianick.service.UserVerifyService;
 import com.github.lianick.util.PasswordSecurity;
 import com.github.lianick.util.SecurityUtil;
 import com.github.lianick.util.UserSecurityUtil;
@@ -38,6 +39,9 @@ public class UserAdminServiceImpl implements UserAdminService{
 	
 	@Autowired 
 	private UserService userService;
+	
+	@Autowired
+	private UserVerifyService userVerifyService;
 	
 	@Autowired
 	private UserAdminRepository userAdminRepository;
@@ -114,7 +118,7 @@ public class UserAdminServiceImpl implements UserAdminService{
 		users = usersRepository.save(users);
 		
 		// 4. 產生驗證碼 同時 寄出 驗證信
-		userService.generateUserToken(users, "帳號啟用信件", "verify");
+		userVerifyService.generateUserToken(users, "帳號啟用信件", "verify");
 		
 		// 5. 建立 UserAdmin
 		UserAdmin userAdmin = new UserAdmin();

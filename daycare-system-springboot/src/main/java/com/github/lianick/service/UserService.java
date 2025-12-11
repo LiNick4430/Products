@@ -60,10 +60,7 @@ public interface UserService {
 	 * 需要 @PreAuthorize("isAuthenticated()") 
 	 * */
 	void deleteUser(UserDeleteDTO userDeleteDTO);
-	
-	/** 產生 帳號驗證碼 同時 寄出驗證信 */
-	void generateUserToken(Users users, String subject, String apiName);
-	
+
 	/** 密碼驗證, 泛型 T 必須是 PasswordAwareDTO 或其子類 */
 	<T extends PasswordAwareDTO> void checkPassword (T userDto, Users tableUser);
 }

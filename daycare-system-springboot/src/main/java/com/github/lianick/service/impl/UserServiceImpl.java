@@ -9,10 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.github.lianick.config.FrontendProperties;
 import com.github.lianick.exception.TokenFailureException;
 import com.github.lianick.exception.UserNotFoundException;
 import com.github.lianick.model.dto.user.PasswordAwareDTO;
@@ -27,11 +25,9 @@ import com.github.lianick.model.eneity.UserVerify;
 import com.github.lianick.model.eneity.Users;
 import com.github.lianick.repository.UsersRepository;
 import com.github.lianick.repository.UsersVerifyRepository;
-import com.github.lianick.service.EmailService;
 import com.github.lianick.service.UserService;
 import com.github.lianick.service.UserVerifyService;
 import com.github.lianick.util.PasswordSecurity;
-import com.github.lianick.util.TokenUUID;
 import com.github.lianick.util.UserSecurityUtil;
 import com.github.lianick.util.validate.UserValidationUtil;
 
@@ -52,13 +48,7 @@ public class UserServiceImpl implements UserService{
 	private UserVerifyService userVerifyService;
 	
 	@Autowired
-	private EmailService emailService;
-	
-	@Autowired
 	private EntityFetcher entityFetcher;
-	
-	@Autowired
-	private TokenUUID tokenUUID;
 	
 	@Autowired
 	private ModelMapper modelMapper;
@@ -68,9 +58,6 @@ public class UserServiceImpl implements UserService{
 	
 	@Autowired
 	private UserValidationUtil userValidationUtil;
-	
-	@Autowired
-	private FrontendProperties frontendProperties;
 	
 	@Override
 	public Users convertToUser(UserRegisterDTO userRegisterDTO) {
@@ -383,39 +370,6 @@ public class UserServiceImpl implements UserService{
 		// return new ApiResponse<Void>(true, "帳號刪除成功", null);
 	}
 
-	@Override
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public void generateUserToken(Users users, String subject, String apiName) {
-		// 1. 取出/建立 所需資料
-		String account = users.getAccount();
-		String email = users.getEmail();
-		String token = tokenUUID.generateToken();
-		LocalDateTime expiryTime;
-		// 假設是 重設密碼 
-		if (apiName.equals("reset/password")) {
-			expiryTime = LocalDateTime.now().plusHours(1);	
-		} else {	// 其他
-			expiryTime = LocalDateTime.now().plusMinutes(15);
-		}
-		
-		// 將該帳號所有未使用的舊 Token 標記為「已使用」(isUsed = true)。
-		// 以確保同一時間只存在一個有效的認證 Token，防止使用者誤用或惡意重發。
-		usersVerifyRepository.markAllUnusedTokenAsUsed(account);
-		
-		// 2. 產生驗證碼 並存回去
-		UserVerify userVerify = new UserVerify();
-		userVerify.setToken(token);
-		userVerify.setExpiryTime(expiryTime);
-		userVerify.setUsers(users);
-		
-		usersVerifyRepository.save(userVerify);
-		
-		// 3. 寄出驗證信
-		// 根據不同 api 導向 不同用途 (1. verify 2. reset/password)
-		String verificationLink = frontendProperties.getUrl() + "/email/" + apiName + "?token=" + userVerify.getToken();			
-		emailService.sendVerificationEmail(email, subject, verificationLink);
-	}
-	
 	@Override
 	public <T extends PasswordAwareDTO> void checkPassword(T userDto, Users tableUser) {
 		// 取出 使用者輸入的 明文密碼
