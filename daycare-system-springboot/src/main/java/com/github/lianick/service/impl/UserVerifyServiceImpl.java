@@ -70,7 +70,7 @@ public class UserVerifyServiceImpl implements UserVerifyService{
 	
 	@Override
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public void generateUserTokenByLogin(Users users, String subject, String apiName) {
+	public void generateUserTokenWithNewTransactional(Users users, String subject, String apiName) {
 		generateUserTokenAndSendEmail(users, subject, apiName);
 	}
 	

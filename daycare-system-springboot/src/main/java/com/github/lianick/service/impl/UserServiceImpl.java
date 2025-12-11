@@ -168,7 +168,7 @@ public class UserServiceImpl implements UserService{
 	    
 	    // 3. 檢查是否已經啟動
 	    if (!tableUser.getIsActive()) {
-	    	userVerifyService.generateUserTokenByLogin(tableUser, "帳號啟用信件", "verify");
+	    	userVerifyService.generateUserTokenWithNewTransactional(tableUser, "帳號啟用信件", "verify");
 	    	throw new UserNotFoundException("請去信箱 收取啟動信件 驗證帳號");
 		}
 	    
@@ -188,7 +188,7 @@ public class UserServiceImpl implements UserService{
 	    Users tableUser = entityFetcher.getUsersByUsername(userForgetPasswordDTO.getUsername());
 	    
 	    // 2. 產生驗證碼 同時 寄出 驗證信
-	    userVerifyService.generateUserToken(tableUser, "忘記密碼驗證信件", "reset/password");
+	    userVerifyService.generateUserTokenWithNewTransactional(tableUser, "忘記密碼驗證信件", "reset/password");
 	    
 	    // 3. Entity 轉 DTO
 	    userForgetPasswordDTO = modelMapper.map(tableUser, UserForgetPasswordDTO.class);

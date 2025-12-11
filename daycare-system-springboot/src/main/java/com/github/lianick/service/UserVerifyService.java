@@ -7,10 +7,10 @@ public interface UserVerifyService {
 	/** 產生 帳號驗證碼 同時 寄出驗證信-私用方法 */
 	// void generateUserTokenAndSendEmail(Users users, String subject, String apiName);
 	
-	/** 用於 註冊帳號 忘記密碼 的 方法 */
+	/** 用於 註冊帳號 的 方法 */
 	void generateUserToken(Users users, String subject, String apiName);
 	
-	/** 用於 登陸 方法*/
-	void generateUserTokenByLogin(Users users, String subject, String apiName);
+	/** 用於 登陸 忘記密碼 方法*/
+	void generateUserTokenWithNewTransactional(Users users, String subject, String apiName);
 	
 }
