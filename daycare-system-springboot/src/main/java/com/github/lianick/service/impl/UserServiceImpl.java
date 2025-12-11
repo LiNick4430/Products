@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.github.lianick.config.FrontendProperties;
@@ -28,6 +29,7 @@ import com.github.lianick.repository.UsersRepository;
 import com.github.lianick.repository.UsersVerifyRepository;
 import com.github.lianick.service.EmailService;
 import com.github.lianick.service.UserService;
+import com.github.lianick.service.UserVerifyService;
 import com.github.lianick.util.PasswordSecurity;
 import com.github.lianick.util.TokenUUID;
 import com.github.lianick.util.UserSecurityUtil;
@@ -45,6 +47,9 @@ public class UserServiceImpl implements UserService{
 	
 	@Autowired
 	private UsersVerifyRepository usersVerifyRepository;
+	
+	@Autowired
+	private UserVerifyService userVerifyService;
 	
 	@Autowired
 	private EmailService emailService;
@@ -106,7 +111,8 @@ public class UserServiceImpl implements UserService{
 		users = usersRepository.save(users);
 		
 		// 4. 產生驗證碼 同時 寄出 驗證信
-		generateUserToken(users, "帳號啟用信件", "verify");
+		// generateUserToken(users, "帳號啟用信件", "verify");
+		userVerifyService.generateUserToken(users, "帳號啟用信件", "verify");
 		
 		// 5. Entity 轉 DTO
 		userRegisterDTO = modelMapper.map(users, UserRegisterDTO.class);
@@ -173,7 +179,13 @@ public class UserServiceImpl implements UserService{
 	    // 2. checkPassword 方法 驗證密碼
 	    checkPassword(userLoginDTO, tableUser);
 	    
-	    // 3. 登入成功 打上時間
+	    // 3. 檢查是否已經啟動
+	    if (!tableUser.getIsActive()) {
+	    	userVerifyService.generateUserTokenByLogin(tableUser, "帳號啟用信件", "verify");
+	    	throw new UserNotFoundException("請去信箱 收取啟動信件 驗證帳號");
+		}
+	    
+	    // 4. 登入成功 打上時間
 	    tableUser.setLoginDate(LocalDateTime.now());	// 登入時間
     	tableUser = usersRepository.save(tableUser);
     	
@@ -189,7 +201,7 @@ public class UserServiceImpl implements UserService{
 	    Users tableUser = entityFetcher.getUsersByUsername(userForgetPasswordDTO.getUsername());
 	    
 	    // 2. 產生驗證碼 同時 寄出 驗證信
-	    generateUserToken(tableUser, "忘記密碼驗證信件", "reset/password");
+	    userVerifyService.generateUserToken(tableUser, "忘記密碼驗證信件", "reset/password");
 	    
 	    // 3. Entity 轉 DTO
 	    userForgetPasswordDTO = modelMapper.map(tableUser, UserForgetPasswordDTO.class);
@@ -372,6 +384,7 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void generateUserToken(Users users, String subject, String apiName) {
 		// 1. 取出/建立 所需資料
 		String account = users.getAccount();
