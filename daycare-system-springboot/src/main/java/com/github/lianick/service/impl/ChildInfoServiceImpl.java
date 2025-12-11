@@ -15,13 +15,16 @@ import com.github.lianick.exception.CaseFailureException;
 import com.github.lianick.model.dto.child.ChildCreateDTO;
 import com.github.lianick.model.dto.child.ChildDTO;
 import com.github.lianick.model.dto.child.ChildDeleteDTO;
+import com.github.lianick.model.dto.child.ChildFindDTO;
 import com.github.lianick.model.dto.child.ChildUpdateDTO;
 import com.github.lianick.model.eneity.ChildInfo;
 import com.github.lianick.model.eneity.UserPublic;
+import com.github.lianick.model.eneity.Users;
 import com.github.lianick.repository.ChildInfoRepository;
 import com.github.lianick.service.ChildInfoService;
 import com.github.lianick.util.UserSecurityUtil;
 import com.github.lianick.util.validate.ChildValidationUtil;
+import com.github.lianick.util.validate.UserValidationUtil;
 
 @Service
 @Transactional				// 確保 完整性
@@ -41,12 +44,24 @@ public class ChildInfoServiceImpl implements ChildInfoService{
 	
 	@Autowired
 	private ChildValidationUtil childValidationUtil;
+	
+	@Autowired
+	private UserValidationUtil userValidationUtil;
 
 	@Override
-	@PreAuthorize("isAuthenticated()") 
-	public List<ChildDTO> findAllChildByUserPublic() {
+	@PreAuthorize("isAuthenticated()")
+	public List<ChildDTO> findAllChildByUserPublic(ChildFindDTO childFindDTO) {
 		// 0. 找尋 UserPublic
-		UserPublic userPublic = userSecurityUtil.getCurrentUserPublicEntity();
+		Users users = userSecurityUtil.getCurrentUserEntity();
+		Boolean isPublic = userValidationUtil.validateUserIsPublic(users);
+		
+		UserPublic userPublic = null;
+		if (isPublic) {
+			userPublic = userSecurityUtil.getCurrentUserPublicEntity();
+		} else {
+			childValidationUtil.validateChildFindByAdmin(childFindDTO);
+			userPublic = entityFetcher.getUsersPublicByUserId(childFindDTO.getPublicId());
+		}
 		
 		// 1. 找尋所有的 幼兒資料
 		List<ChildDTO> childDTOs = childInfoRepository.findByUserPublic(userPublic)
@@ -61,15 +76,16 @@ public class ChildInfoServiceImpl implements ChildInfoService{
 
 	@Override
 	@PreAuthorize("hasAuthority('ROLE_PUBLIC')") 
-	public ChildDTO findChildByUserPublic(ChildDTO childDTO) {
+	public ChildDTO findChildByUserPublic(ChildFindDTO childFindDTO) {
+		
 		// 0. 找尋 UserPublic
 		UserPublic userPublic = userSecurityUtil.getCurrentUserPublicEntity();
 		
 		// 1. 檢查資料的完整性
-		childValidationUtil.validateChild(childDTO);
+		childValidationUtil.validateChildFind(childFindDTO);
 		
 		// 2. 檢查幼兒ID 是否存在 / 是否 登錄者(民眾) 的幼兒資料
-		ChildInfo childInfo = entityFetcher.getChildInfoById(childDTO.getId());
+		ChildInfo childInfo = entityFetcher.getChildInfoById(childFindDTO.getId());
 		childValidationUtil.validateChildAndUserPublic(childInfo, userPublic);
 		
 		// 3. Entity 轉 DTO

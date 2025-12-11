@@ -38,7 +38,6 @@ import com.github.lianick.util.JsonUtil;
  * POST	"/update", "/update/"				主管/員工 更新 機構資料	"/organization/update/"			AUTHENTICATED
  * DELETE	"/delete/doc", "/delete/doc/"	主管 刪除 機構附件 		"/organization/delete/doc/"		AUTHENTICATED
  * DELETE	"/delete", "/delete/"			主管 刪除 機構資料		"/organization/delete/"			AUTHENTICATED
-
  * */
 
 @RestController

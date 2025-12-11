@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Repository
 public interface ChildInfoRepository extends JpaRepository<ChildInfo, Long> {
-
+	
 	List<ChildInfo> findByUserPublic(UserPublic userPublic);
 	
 	Optional<ChildInfo> findByNationalIdNo(String nationalIdNo);

@@ -8,8 +8,8 @@ import com.github.lianick.exception.FormatterFailureException;
 import com.github.lianick.exception.UserExistException;
 import com.github.lianick.exception.ValueMissException;
 import com.github.lianick.model.dto.child.ChildCreateDTO;
-import com.github.lianick.model.dto.child.ChildDTO;
 import com.github.lianick.model.dto.child.ChildDeleteDTO;
+import com.github.lianick.model.dto.child.ChildFindDTO;
 import com.github.lianick.model.dto.child.ChildUpdateDTO;
 import com.github.lianick.model.eneity.ChildInfo;
 import com.github.lianick.model.eneity.UserPublic;
@@ -32,11 +32,20 @@ public class ChildValidationUtil {
 	private DateValidationUtil dateValidationUtil;
 	
 	/**
-	 * 檢查 ChildDTO 的 完整性 
+	 * 檢查 ChildFindDTO 在 民眾找尋幼兒 的 完整性 
 	 * */
-	public void validateChild(ChildDTO childDTO) {
-		if (childDTO.getId() == null ) {
+	public void validateChildFind(ChildFindDTO childFindDTO) {
+		if (childFindDTO.getId() == null ) {
 			throw new ValueMissException("缺少特定資料(幼兒ID)");
+		}
+	}
+	
+	/**
+	 * 檢查 ChildFindDTO 在 員工找尋民眾旗下 的 完整性 
+	 * */
+	public void validateChildFindByAdmin(ChildFindDTO childFindDTO) {
+		if (childFindDTO.getPublicId() == null ) {
+			throw new ValueMissException("缺少特定資料(民眾ID)");
 		}
 	}
 	

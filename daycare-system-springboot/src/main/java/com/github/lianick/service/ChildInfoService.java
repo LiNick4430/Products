@@ -5,6 +5,7 @@ import java.util.List;
 import com.github.lianick.model.dto.child.ChildCreateDTO;
 import com.github.lianick.model.dto.child.ChildDTO;
 import com.github.lianick.model.dto.child.ChildDeleteDTO;
+import com.github.lianick.model.dto.child.ChildFindDTO;
 import com.github.lianick.model.dto.child.ChildUpdateDTO;
 
 // 負責處理 幼兒資料
@@ -12,12 +13,12 @@ public interface ChildInfoService {
 	/** 尋找 全部的幼兒資料<p>
 	 * 需要 @PreAuthorize("isAuthenticated()")
 	 * */
-	List<ChildDTO> findAllChildByUserPublic();
+	List<ChildDTO> findAllChildByUserPublic(ChildFindDTO childFindDTO);
 	
 	/** 尋找 特定的幼兒資料<p>
 	 * 需要 @PreAuthorize("hasAuthority('ROLE_PUBLIC')") 
 	 * */
-	ChildDTO findChildByUserPublic(ChildDTO childDTO);
+	ChildDTO findChildByUserPublic(ChildFindDTO childFindDTO);
 	
 	/** 設定 民眾底下 新幼兒資料<p>
 	 * 需要 @PreAuthorize("hasAuthority('ROLE_PUBLIC')") 

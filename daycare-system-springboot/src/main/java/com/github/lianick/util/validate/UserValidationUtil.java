@@ -107,4 +107,17 @@ public class UserValidationUtil {
     	
     	return isManager;
     }
+    
+    /**
+     * 檢查 Users 角色的權限 是否是 民眾("ROLE_PUBLIC")?
+     * */
+    public boolean validateUserIsPublic(Users users) {
+    	if (users == null) {
+			throw new ValueMissException("缺少必要資訊(使用者)");
+		}
+    	
+    	boolean isPublic = users.getRole().getName().equals("ROLE_PUBLIC");
+    	
+    	return isPublic;
+    }
 }

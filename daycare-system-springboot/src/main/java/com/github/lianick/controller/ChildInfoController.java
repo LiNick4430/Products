@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.github.lianick.model.dto.child.ChildCreateDTO;
 import com.github.lianick.model.dto.child.ChildDTO;
 import com.github.lianick.model.dto.child.ChildDeleteDTO;
+import com.github.lianick.model.dto.child.ChildFindDTO;
 import com.github.lianick.model.dto.child.ChildUpdateDTO;
 import com.github.lianick.response.ApiResponse;
 import com.github.lianick.service.ChildInfoService;
 
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 /**
  * ChildInfoController
  * Request Mapping: "/child"
- * GET	"/find/all", "/find/all/"		尋找 民眾底下 全部幼兒資料		"/child/find/all/"			AUTHENTICATED
+ * POST	"/find/all", "/find/all/"		尋找 民眾底下 全部幼兒資料		"/child/find/all/"			AUTHENTICATED
  * POST	"/find", "/find/"				尋找 民眾底下 特定幼兒資料		"/child/find/"				AUTHENTICATED
  * POST	"/information", "/information/"	設定 民眾底下 新幼兒資料		"/child/information/"		AUTHENTICATED
  * POST	"/update", "/update/"			更新 民眾底下 特定幼兒資料		"/child/update/"			AUTHENTICATED
@@ -36,15 +36,15 @@ public class ChildInfoController {
 	@Autowired
 	private ChildInfoService childInfoService;
 	
-	@GetMapping(value = {"/find/all", "/find/all/"})
-	public ApiResponse<List<ChildDTO>> findAllChild() {
-		List<ChildDTO> childDTOs = childInfoService.findAllChildByUserPublic();
+	@PostMapping(value = {"/find/all", "/find/all/"})
+	public ApiResponse<List<ChildDTO>> findAllChild(@RequestBody ChildFindDTO childFindDTO) {
+		List<ChildDTO> childDTOs = childInfoService.findAllChildByUserPublic(childFindDTO);
 		return ApiResponse.success("尋找 全部嬰兒資料 成功", childDTOs);
 	}
 	
 	@PostMapping(value = {"/find", "/find/"})
-	public ApiResponse<ChildDTO> findById(@RequestBody ChildDTO childDTO) {
-		childDTO = childInfoService.findChildByUserPublic(childDTO);
+	public ApiResponse<ChildDTO> findById(@RequestBody ChildFindDTO childFindDTO) {
+		ChildDTO childDTO = childInfoService.findChildByUserPublic(childFindDTO);
 		return ApiResponse.success("尋找 特定幼兒資料 成功", childDTO);
 	}
 	
