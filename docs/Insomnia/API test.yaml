@@ -33,7 +33,7 @@ collection:
         meta:
           id: fld_045d67b5e6504bcb803e2b82a3acc1db
           created: 1760759637170
-          modified: 1761635996410
+          modified: 1765448412441
           sortKey: -1760759637170
           description: ""
         children:
@@ -42,7 +42,7 @@ collection:
             meta:
               id: req_add64b41df884cea9f481ae0597c5212
               created: 1760761401888
-              modified: 1762252078701
+              modified: 1765448427527
               isPrivate: false
               description: |
                 # 回傳 的 Json 規格
@@ -72,9 +72,9 @@ collection:
               mimeType: application/json
               text: |-
                 {
-                	"username": "test03",
+                	"username": "test10",
                 	"password": "123456",
-                	"email": "test02@xxx.com",
+                	"email": "test10@xxx.com",
                 	"phoneNumber": "0900111224",
                 	"roleNumber" : 1
                 }
@@ -96,7 +96,7 @@ collection:
             meta:
               id: req_1818b711ce0c4220856eaf85870b44f9
               created: 1760765216903
-              modified: 1765114060444
+              modified: 1765449817532
               isPrivate: false
               description: |
                 # 回傳 的 Json 規格
@@ -511,7 +511,7 @@ collection:
             meta:
               id: req_d8f22198e51e441d83ff481926ffad02
               created: 1761616601130
-              modified: 1765026169161
+              modified: 1765428807340
               isPrivate: false
               description: |-
                 ## Auth -> Bearer Token
@@ -539,7 +539,7 @@ collection:
         meta:
           id: fld_25e29320684f4a359bfd23f8df72dd5d
           created: 1761027630244
-          modified: 1761176978032
+          modified: 1765447825414
           sortKey: -1761027630244
           description: ""
         children:
@@ -548,7 +548,7 @@ collection:
             meta:
               id: req_0ba2630cec7f4abe9879fe0aa217706e
               created: 1761027649934
-              modified: 1764180072853
+              modified: 1765448760503
               isPrivate: false
               description: |-
                 # 回傳 的 Json 規格
@@ -583,9 +583,9 @@ collection:
               mimeType: application/json
               text: |-
                 {
-                	"name" : "民眾C",
+                	"name" : "民眾10",
                 	"nationalIdNo" : "B100000003",
-                	"birthdate" : "1992-01-01",
+                	"birthdate" : "1995-01-01",
                 	"registeredAddress" : "台中市南區",
                 	"mailingAddress" : "台中市南區"
                 }
@@ -596,7 +596,7 @@ collection:
                 value: insomnia/11.6.1
             authentication:
               type: bearer
-              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfUFVCTElDIiwidXNlcklkIjoxMiwicm9sZU51bWJlciI6MSwic3ViIjoidGVzdDAyIiwiaWF0IjoxNzY0MTc5NTcxLCJleHAiOjE3NjQxODEzNzF9.lBPkwBcZEnbvcDoxrZr4VO9zCjeXax3qdZkDIle2vMQ
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfUFVCTElDIiwidXNlcklkIjoyMCwicm9sZU51bWJlciI6MSwic3ViIjoidGVzdDEwIiwiaWF0IjoxNzY1NDQ4NzMzLCJleHAiOjE3NjU0NTA1MzN9.RhaDyrHfYlVWRY-pJAouY2bvsA1pEX9wOomcme9bC50
               prefix: Bearer
             settings:
               renderRequestBody: true
@@ -611,7 +611,7 @@ collection:
             meta:
               id: req_85aaba08c1b1480c8c7fc32abf6ee157
               created: 1761028356938
-              modified: 1764180151962
+              modified: 1765448707845
               isPrivate: false
               description: |-
                 # 回傳 的 Json 規格
@@ -638,7 +638,7 @@ collection:
               mimeType: application/json
               text: |-
                 {
-                	"username": "test02"
+                	"username": "test10"
                 }
             headers:
               - name: Content-Type
@@ -647,7 +647,7 @@ collection:
                 value: insomnia/11.6.1
             authentication:
               type: bearer
-              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfTUFOQUdFUiIsInVzZXJJZCI6MSwicm9sZU51bWJlciI6Mywic3ViIjoibWFuYWdlciIsImlhdCI6MTc2NDE4MDExMCwiZXhwIjoxNzY0MTgxOTEwfQ.J86g7HLMMcIDFhyNyMAl3eewBqJWY8ogpOWRlpRoybE
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfTUFOQUdFUiIsInVzZXJJZCI6MSwicm9sZU51bWJlciI6Mywic3ViIjoibWFuYWdlciIsImlhdCI6MTc2NTQ0ODY3MiwiZXhwIjoxNzY1NDUwNDcyfQ.wEICK1YdZBywvC6lw0eTNE2MZEiKjZtV4jwSW8ot4ak
               prefix: Bearer
             settings:
               renderRequestBody: true
@@ -662,7 +662,7 @@ collection:
             meta:
               id: req_ad4b217fb4f7448cb5d55d768453f91a
               created: 1761029822076
-              modified: 1764179920660
+              modified: 1765448147168
               isPrivate: false
               description: |-
                 # 回傳 的 Json 規格
@@ -693,7 +693,7 @@ collection:
               mimeType: application/json
               text: |-
                 {
-                	"newName" : "民眾C",
+                	"newName" : "民眾20",
                 	"newRegisteredAddress" : "台中市",
                 	"newMailingAddress" : "台中市"
                 }
@@ -704,7 +704,7 @@ collection:
                 value: insomnia/11.6.1
             authentication:
               type: bearer
-              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfUFVCTElDIiwidXNlcklkIjoxMiwicm9sZU51bWJlciI6MSwic3ViIjoidGVzdDAyIiwiaWF0IjoxNzY0MTc5NTcxLCJleHAiOjE3NjQxODEzNzF9.lBPkwBcZEnbvcDoxrZr4VO9zCjeXax3qdZkDIle2vMQ
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfUFVCTElDIiwidXNlcklkIjoxNywicm9sZU51bWJlciI6MSwic3ViIjoidGVzdDEwIiwiaWF0IjoxNzY1NDQ4MTAxLCJleHAiOjE3NjU0NDk5MDF9.whqnc4Y0HerqI0HEo3FpxWPWKvPQoXIEgRoVLwT6Ulk
               prefix: Bearer
             settings:
               renderRequestBody: true
@@ -719,7 +719,7 @@ collection:
             meta:
               id: req_a284002f356d49e2bf614a9ce5e56b72
               created: 1761029932922
-              modified: 1764180032632
+              modified: 1765448384284
               isPrivate: false
               description: |-
                 # 回傳 的 Json 規格
@@ -746,7 +746,7 @@ collection:
               mimeType: application/json
               text: |-
                 {
-                	"username": "test04",
+                	"username": "test10",
                 	"password": "123456"
                 }
             headers:
@@ -754,6 +754,10 @@ collection:
                 value: application/json
               - name: User-Agent
                 value: insomnia/11.6.1
+            authentication:
+              type: bearer
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfUFVCTElDIiwidXNlcklkIjoxNywicm9sZU51bWJlciI6MSwic3ViIjoidGVzdDEwIiwiaWF0IjoxNzY1NDQ4MTAxLCJleHAiOjE3NjU0NDk5MDF9.whqnc4Y0HerqI0HEo3FpxWPWKvPQoXIEgRoVLwT6Ulk
+              prefix: Bearer
             settings:
               renderRequestBody: true
               encodeUrl: true
@@ -767,7 +771,7 @@ collection:
             meta:
               id: req_91af0cf586f44384b94807e186548a30
               created: 1761572500215
-              modified: 1764180119735
+              modified: 1765448687182
               isPrivate: false
               description: ""
               sortKey: -1761011009432.0625
@@ -777,7 +781,32 @@ collection:
                 value: insomnia/11.6.1
             authentication:
               type: bearer
-              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfTUFOQUdFUiIsInVzZXJJZCI6MSwicm9sZU51bWJlciI6Mywic3ViIjoibWFuYWdlciIsImlhdCI6MTc2NDE4MDExMCwiZXhwIjoxNzY0MTgxOTEwfQ.J86g7HLMMcIDFhyNyMAl3eewBqJWY8ogpOWRlpRoybE
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfTUFOQUdFUiIsInVzZXJJZCI6MSwicm9sZU51bWJlciI6Mywic3ViIjoibWFuYWdlciIsImlhdCI6MTc2NTQ0ODY3MiwiZXhwIjoxNzY1NDUwNDcyfQ.wEICK1YdZBywvC6lw0eTNE2MZEiKjZtV4jwSW8ot4ak
+              prefix: Bearer
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: http://localhost:8080/public/user/me
+            name: /public/user/me/  民眾 取得 自己的資料
+            meta:
+              id: req_12b3fcb876b44b93bc8d2b1c951f7953
+              created: 1765448006171
+              modified: 1765448742848
+              isPrivate: false
+              description: ""
+              sortKey: -1761002689180.5938
+            method: GET
+            headers:
+              - name: User-Agent
+                value: insomnia/11.6.1
+            authentication:
+              type: bearer
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfUFVCTElDIiwidXNlcklkIjoyMCwicm9sZU51bWJlciI6MSwic3ViIjoidGVzdDEwIiwiaWF0IjoxNzY1NDQ4NzMzLCJleHAiOjE3NjU0NTA1MzN9.RhaDyrHfYlVWRY-pJAouY2bvsA1pEX9wOomcme9bC50
               prefix: Bearer
             settings:
               renderRequestBody: true
@@ -791,7 +820,7 @@ collection:
         meta:
           id: fld_273411445dab4da8a6d7d5cf20f4a363
           created: 1761380281228
-          modified: 1764178837046
+          modified: 1765447771636
           sortKey: -1761380281228
           description: ""
         children:
@@ -800,7 +829,7 @@ collection:
             meta:
               id: req_4a5bac61eb5f46c2aba1b6f2c0a030ac
               created: 1761380284851
-              modified: 1764178868230
+              modified: 1765447148760
               isPrivate: false
               description: ""
               sortKey: -1761380284851
@@ -809,8 +838,8 @@ collection:
               mimeType: application/json
               text: |-
                 {
-                	"name": "幼兒B",
-                	"nationalIdNo": "D100000002",
+                	"name": "新幼兒",
+                	"nationalIdNo": "D100000005",
                 	"birthdate" : "2025-10-10",
                 	"gender" : "男"
                 }
@@ -821,7 +850,7 @@ collection:
                 value: insomnia/11.6.2
             authentication:
               type: bearer
-              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfUFVCTElDIiwidXNlcklkIjoxMiwicm9sZU51bWJlciI6MSwic3ViIjoidGVzdDAyIiwiaWF0IjoxNzY0MTc4ODE1LCJleHAiOjE3NjQxODA2MTV9.rNHr1muPyYcTDQRoCp4EafbXA6LETOgmbfmpO_R7H6s
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfUFVCTElDIiwidXNlcklkIjo2LCJyb2xlTnVtYmVyIjoxLCJzdWIiOiJwdWJsaWNfMiIsImlhdCI6MTc2NTQ0NzEwOCwiZXhwIjoxNzY1NDQ4OTA4fQ.geSw51xnT2NlBtM9YED--3fszsbwGONNQ9G6cGD-OM0
               prefix: Bearer
             settings:
               renderRequestBody: true
@@ -836,17 +865,25 @@ collection:
             meta:
               id: req_ff3b89ba37854915aedc0d8ce15e1e5e
               created: 1761380757061
-              modified: 1763302766739
+              modified: 1765447118695
               isPrivate: false
               description: ""
               sortKey: -1761203967393
-            method: GET
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	
+                }
             headers:
+              - name: Content-Type
+                value: application/json
               - name: User-Agent
                 value: insomnia/11.6.2
             authentication:
               type: bearer
-              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfUFVCTElDIiwidXNlcklkIjo1LCJyb2xlTnVtYmVyIjoxLCJzdWIiOiJwdWJsaWNfMSIsImlhdCI6MTc2MzMwMjc0OSwiZXhwIjoxNzYzMzA0NTQ5fQ.G3wsnA0LLFXOGHFaXBxnKgU98euQy-JnWI8i6_mSjbY
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfUFVCTElDIiwidXNlcklkIjo2LCJyb2xlTnVtYmVyIjoxLCJzdWIiOiJwdWJsaWNfMiIsImlhdCI6MTc2NTQ0NzEwOCwiZXhwIjoxNzY1NDQ4OTA4fQ.geSw51xnT2NlBtM9YED--3fszsbwGONNQ9G6cGD-OM0
               prefix: Bearer
             settings:
               renderRequestBody: true
@@ -861,7 +898,7 @@ collection:
             meta:
               id: req_fedc4447d8684045af9f0afc357a327b
               created: 1761380843829
-              modified: 1761380871906
+              modified: 1765447159125
               isPrivate: false
               description: ""
               sortKey: -1761115808664
@@ -870,7 +907,7 @@ collection:
               mimeType: application/json
               text: |-
                 {
-                		"id": 1
+                		"id": 9
                 }
             headers:
               - name: Content-Type
@@ -879,7 +916,7 @@ collection:
                 value: insomnia/11.6.2
             authentication:
               type: bearer
-              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfUFVCTElDIiwidXNlcklkIjo2LCJyb2xlTnVtYmVyIjoxLCJzdWIiOiJ0ZXN0MDYiLCJpYXQiOjE3NjEzODA2ODgsImV4cCI6MTc2MTM4MjQ4OH0.UMFt9INJU1PMCGqHtHdPbbQuzN3i9gGocYwRWkJnl7g
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfUFVCTElDIiwidXNlcklkIjo2LCJyb2xlTnVtYmVyIjoxLCJzdWIiOiJwdWJsaWNfMiIsImlhdCI6MTc2NTQ0NzEwOCwiZXhwIjoxNzY1NDQ4OTA4fQ.geSw51xnT2NlBtM9YED--3fszsbwGONNQ9G6cGD-OM0
               prefix: Bearer
             settings:
               renderRequestBody: true
@@ -894,7 +931,7 @@ collection:
             meta:
               id: req_2c799038ec5c47bcb90d9779a748680d
               created: 1761380906325
-              modified: 1761380950053
+              modified: 1765447188606
               isPrivate: false
               description: ""
               sortKey: -1761292126122
@@ -903,8 +940,8 @@ collection:
               mimeType: application/json
               text: |-
                 {
-                	"id" : 1,
-                	"newName": "幼兒AB"
+                	"id" : 9,
+                	"newName": "新幼兒A"
                 }
             headers:
               - name: Content-Type
@@ -913,7 +950,7 @@ collection:
                 value: insomnia/11.6.2
             authentication:
               type: bearer
-              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfUFVCTElDIiwidXNlcklkIjo2LCJyb2xlTnVtYmVyIjoxLCJzdWIiOiJ0ZXN0MDYiLCJpYXQiOjE3NjEzODA2ODgsImV4cCI6MTc2MTM4MjQ4OH0.UMFt9INJU1PMCGqHtHdPbbQuzN3i9gGocYwRWkJnl7g
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfUFVCTElDIiwidXNlcklkIjo2LCJyb2xlTnVtYmVyIjoxLCJzdWIiOiJwdWJsaWNfMiIsImlhdCI6MTc2NTQ0NzEwOCwiZXhwIjoxNzY1NDQ4OTA4fQ.geSw51xnT2NlBtM9YED--3fszsbwGONNQ9G6cGD-OM0
               prefix: Bearer
             settings:
               renderRequestBody: true
@@ -928,7 +965,7 @@ collection:
             meta:
               id: req_f54876eee3ec4f23be3d20e888d9910b
               created: 1761380991840
-              modified: 1761381036337
+              modified: 1765447221576
               isPrivate: false
               description: ""
               sortKey: -1761071729299.5
@@ -937,7 +974,7 @@ collection:
               mimeType: application/json
               text: |-
                 {
-                		"id": 1
+                		"id": 9
                 }
             headers:
               - name: Content-Type
@@ -946,7 +983,7 @@ collection:
                 value: insomnia/11.6.2
             authentication:
               type: bearer
-              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfUFVCTElDIiwidXNlcklkIjo2LCJyb2xlTnVtYmVyIjoxLCJzdWIiOiJ0ZXN0MDYiLCJpYXQiOjE3NjEzODA2ODgsImV4cCI6MTc2MTM4MjQ4OH0.UMFt9INJU1PMCGqHtHdPbbQuzN3i9gGocYwRWkJnl7g
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfUFVCTElDIiwidXNlcklkIjo2LCJyb2xlTnVtYmVyIjoxLCJzdWIiOiJwdWJsaWNfMiIsImlhdCI6MTc2NTQ0NzEwOCwiZXhwIjoxNzY1NDQ4OTA4fQ.geSw51xnT2NlBtM9YED--3fszsbwGONNQ9G6cGD-OM0
               prefix: Bearer
             settings:
               renderRequestBody: true
@@ -960,7 +997,7 @@ collection:
         meta:
           id: fld_7622ba6809e544a5b7fe3cbd028bc53d
           created: 1761575488941
-          modified: 1761575488941
+          modified: 1765428832808
           sortKey: -1761575488941
           description: ""
         children:
@@ -1052,7 +1089,7 @@ collection:
             meta:
               id: req_a60b93aa29634fb3952236a34dd3b39b
               created: 1761575781777
-              modified: 1765026705146
+              modified: 1765444662210
               isPrivate: false
               description: ""
               sortKey: -1761404686684.875
@@ -1061,14 +1098,14 @@ collection:
               mimeType: application/json
               text: |-
                 {
-                	"username": "test01",
+                	"username": "test20",
                 	"password": "123456",
-                	"email": "test01@xxx.com",
+                	"email": "test20@xxx.com",
                 	"phoneNumber": "0900111222",
                 	"roleNumber" : 2,
-                	"name" : "員工丁",
-                	"jobTitle" : "組長",
-                	"organizationId" : 1
+                	"name" : "新員工",
+                	"jobTitle" : "第二櫃台",
+                	"organizationId" : 4
                 }
             headers:
               - name: Content-Type
@@ -1077,7 +1114,7 @@ collection:
                 value: insomnia/11.6.2
             authentication:
               type: bearer
-              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfTUFOQUdFUiIsInVzZXJJZCI6MSwicm9sZU51bWJlciI6Mywic3ViIjoibWFuYWdlciIsImlhdCI6MTc2MTU3NTU5NywiZXhwIjoxNzYxNTc3Mzk3fQ.zwOLFnP87QIcC8TdUE8YbvT5sNdBBwqzS9T49VD1SGM
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfTUFOQUdFUiIsInVzZXJJZCI6MSwicm9sZU51bWJlciI6Mywic3ViIjoibWFuYWdlciIsImlhdCI6MTc2NTQ0NDY0NSwiZXhwIjoxNzY1NDQ2NDQ1fQ.-q7YA1xzWhzfYADZcXxvzWgoiIK4yBINt81zHgQMBWg
               prefix: Bearer
             settings:
               renderRequestBody: true
@@ -1161,7 +1198,7 @@ collection:
         meta:
           id: fld_1e8889d2ea904fddb1f05b52f568f8d5
           created: 1761637307176
-          modified: 1761637307176
+          modified: 1765448944142
           sortKey: -1761637307176
           description: ""
         children:
@@ -1170,7 +1207,7 @@ collection:
             meta:
               id: req_b9c7643c4f314efe9016177bc923cebe
               created: 1761637309793
-              modified: 1765111611675
+              modified: 1765449035119
               isPrivate: false
               description: ""
               sortKey: -1761637309793
@@ -1200,7 +1237,7 @@ collection:
             meta:
               id: req_876587c6e50f4895bbba1b320d4b27ea
               created: 1761637692401
-              modified: 1765111349827
+              modified: 1765448981827
               isPrivate: false
               description: ""
               sortKey: -1761606404657.5
@@ -1313,7 +1350,7 @@ collection:
             meta:
               id: req_9322900fc04d4b7b9e73faae00191d06
               created: 1763713570224
-              modified: 1765110759312
+              modified: 1765449298609
               isPrivate: false
               description: ""
               sortKey: -1763713570224
@@ -1340,7 +1377,7 @@ collection:
                 value: insomnia/12.0.0
             authentication:
               type: bearer
-              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfU1RBRkYiLCJ1c2VySWQiOjIsInJvbGVOdW1iZXIiOjIsInN1YiI6InN0YWZmX2EiLCJpYXQiOjE3NjUxMTA3MzcsImV4cCI6MTc2NTExMjUzN30.x4TBZujdjNmp8UW1hsY4spyEPFjS48TKVSUFUUzoo7s
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfU1RBRkYiLCJ1c2VySWQiOjIsInJvbGVOdW1iZXIiOjIsInN1YiI6InN0YWZmX2EiLCJpYXQiOjE3NjU0NDkyODIsImV4cCI6MTc2NTQ1MTA4Mn0.40OtB9A6tpp2PG1aDUjUmglsqXz6_TuXpFV8Klk-lvw
               prefix: Bearer
             settings:
               renderRequestBody: true
@@ -1355,7 +1392,7 @@ collection:
             meta:
               id: req_db233c5d15dc49bcb8d61f173b7e5012
               created: 1763715262282
-              modified: 1765111650491
+              modified: 1765449350524
               isPrivate: false
               description: ""
               sortKey: -1761579362663.9375
@@ -1365,8 +1402,7 @@ collection:
               text: |-
                 {
                 	"id": 1,
-                	
-                	"documentId": 1
+                	"documentId": 2
                 }
             headers:
               - name: Content-Type
@@ -1375,7 +1411,7 @@ collection:
                 value: insomnia/11.6.2
             authentication:
               type: bearer
-              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfTUFOQUdFUiIsInVzZXJJZCI6MSwicm9sZU51bWJlciI6Mywic3ViIjoibWFuYWdlciIsImlhdCI6MTc2NTExMTI2NiwiZXhwIjoxNzY1MTEzMDY2fQ.ewnmFCRytDJY5W6Z00lSf1FDvCwdk1sGwZ1QCVe9wFk
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfTUFOQUdFUiIsInVzZXJJZCI6MSwicm9sZU51bWJlciI6Mywic3ViIjoibWFuYWdlciIsImlhdCI6MTc2NTQ0OTM0MiwiZXhwIjoxNzY1NDUxMTQyfQ.CEP9VXiqHNd97Sp5vct7xB8CcL5TGUT21eTiB0THodw
               prefix: Bearer
             settings:
               renderRequestBody: true
@@ -1390,7 +1426,7 @@ collection:
             meta:
               id: req_2335c9f91ffd41bb9938b1bb79921322
               created: 1763719326294
-              modified: 1765111154213
+              modified: 1765449315160
               isPrivate: false
               description: ""
               sortKey: -1763503693321.5
@@ -1400,7 +1436,7 @@ collection:
               text: |-
                 {
                 	"id" : 1,
-                	"documentId" : 1
+                	"documentId" : 2
                 }
             headers:
               - name: Content-Type
@@ -1409,7 +1445,7 @@ collection:
                 value: insomnia/12.0.0
             authentication:
               type: bearer
-              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfU1RBRkYiLCJ1c2VySWQiOjIsInJvbGVOdW1iZXIiOjIsInN1YiI6InN0YWZmX2EiLCJpYXQiOjE3NjUxMTA3MzcsImV4cCI6MTc2NTExMjUzN30.x4TBZujdjNmp8UW1hsY4spyEPFjS48TKVSUFUUzoo7s
+              token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlTmFtZSI6IlJPTEVfU1RBRkYiLCJ1c2VySWQiOjIsInJvbGVOdW1iZXIiOjIsInN1YiI6InN0YWZmX2EiLCJpYXQiOjE3NjU0NDkyODIsImV4cCI6MTc2NTQ1MTA4Mn0.40OtB9A6tpp2PG1aDUjUmglsqXz6_TuXpFV8Klk-lvw
               prefix: Bearer
             settings:
               renderRequestBody: true
@@ -1424,7 +1460,7 @@ collection:
             meta:
               id: req_944197269e3a4cf08153de1385e10d0c
               created: 1765112234487
-              modified: 1765112246608
+              modified: 1765449039769
               isPrivate: false
               description: ""
               sortKey: -1761621857225.25
@@ -1453,7 +1489,7 @@ collection:
             meta:
               id: req_f715726afbf24d0ca0042c59d516d48b
               created: 1763293816419
-              modified: 1765035021205
+              modified: 1765449943293
               isPrivate: false
               description: ""
               sortKey: -1763293816419
@@ -1465,10 +1501,10 @@ collection:
                   value: ""
                   description: ""
                   disabled: false
-                  fileName: C:\Users\User\Desktop\測試用資料\證件照片.jpg
+                  fileName: C:\Users\User\Desktop\測試用資料\戶籍證明.pdf
                   type: file
                 - name: data
-                  value: '{ "docType" : "ID_PHOTO" }'
+                  value: '{ "docType" : "CERTIFICATE_RESIDENCE" }'
                   description: ""
                   disabled: false
             headers:
@@ -2323,16 +2359,16 @@ collection:
         meta:
           id: fld_7663f55c58034c4cb392da2b324f3360
           created: 1765031874447
-          modified: 1765031874447
+          modified: 1765449895932
           sortKey: -1765031874447
           description: ""
         children:
           - url: http://localhost:8080/case/create/
-            name: /case/create/
+            name: /case/create/  民眾建立新的案件
             meta:
               id: req_44b11933a0d242af93d8140f329b27f7
               created: 1765031891343
-              modified: 1765034412595
+              modified: 1765449881065
               isPrivate: false
               description: ""
               sortKey: -1765030536700.5
