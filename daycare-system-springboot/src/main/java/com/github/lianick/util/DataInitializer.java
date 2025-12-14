@@ -128,7 +128,7 @@ public class DataInitializer implements CommandLineRunner{
 		Users userP3 = createUsersIfNotExists("public_3", "$2a$10$xP4HKIGKe7OHGKDjY7V0T.vZ4D2BaZmegdcRyf7mbtoXfacoAkqhe", "public_3@system.com", "0950555554", true, publicRole);
 		Users userP4 = createUsersIfNotExists("public_4", "$2a$10$KDZIFuFWYk8BPuMfL0tAvObjX1pI3k6z84Owb77vSsTuaJnYBlKRC", "public_4@system.com", "0950555555", true, publicRole);
 		Users userP5 = createUsersIfNotExists("public_5", "$2a$10$mAVVL5uugxz.mYnS1ox2oeE570g8EEhHQScLXHf0VqX7wu4EVZR4.", "public_5@system.com", "0950555556", true, publicRole);
-
+		
 		// 6. 建立 主管/員工 使用者
 		createUserAdminIfNotExists(userManager, "主管A", "經理", org1);
 
@@ -326,7 +326,11 @@ public class DataInitializer implements CommandLineRunner{
 			userAdmin.setName(name);
 			userAdmin.setJobTitle(jobTitle);
 			userAdmin.setOrganization(organization);
-			return userAdminRepository.save(userAdmin);
+			
+			users.setAdminInfo(userAdmin);
+			Users newUsers = usersRepository.save(users);
+			
+			return newUsers.getAdminInfo();
 		});
 	}
 
@@ -341,7 +345,11 @@ public class DataInitializer implements CommandLineRunner{
 			userPublic.setRegisteredAddress(registeredAddress);
 			userPublic.setMailingAddress(mailingAddress);
 			userPublic.setChildren(new HashSet<ChildInfo>());
-			return userPublicRepository.save(userPublic);
+			
+			users.setPublicInfo(userPublic);
+			Users newUsers = usersRepository.save(users);
+			
+			return newUsers.getPublicInfo();
 		});
 	}
 
