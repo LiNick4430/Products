@@ -1,4 +1,4 @@
--- 同時兼容 MySQL + PostgreSQL
+-- 同時兼容 MySQL + PostgreSQL(目前有一些 型態問題 例如 Date)
 
 -- Table 基本資料填入
 -- Table role permission role_permission 為了 RBAC(Role-Based Access Control)

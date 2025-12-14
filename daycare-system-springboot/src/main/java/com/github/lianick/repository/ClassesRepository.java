@@ -20,6 +20,14 @@ public interface ClassesRepository extends JpaRepository<Classes, Long> {
 	List<Classes> findByOrganization(Organization organization);
 	
 	@Query(value = 
+			"SELECT * FROM classes "
+			+ "WHERE class_name = :name "
+			+ "AND organization_id = :organizationId "
+			+ "AND delete_at IS NULL "
+			, nativeQuery = true)
+	Optional<Classes> findByNameAndOrganizationId(@Param("name") String name, @Param("organizationId") Long organizationId);
+	
+	@Query(value = 
 			"SELECT COUNT(case_id) "
 			+ "FROM cases "
 			+ "WHERE class_id = :classId "

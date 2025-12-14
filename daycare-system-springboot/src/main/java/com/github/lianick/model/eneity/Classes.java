@@ -14,6 +14,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,7 +26,11 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "classes")					// 班級
+@Table(
+		name = "classes",	// 班級
+		uniqueConstraints = {
+				@UniqueConstraint(columnNames = {"organization_id", "class_name"})
+		})					
 @SQLRestriction("delete_at IS NULL")
 public class Classes extends BaseEntity{
 
@@ -64,5 +69,5 @@ public class Classes extends BaseEntity{
 	
 	@Version
 	@Column(name = "version", nullable = false)
-	private Long version;	// 樂觀鎖
+	private Long version = 0L;	// 樂觀鎖
 }
