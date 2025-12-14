@@ -38,7 +38,7 @@ public class Announcements extends BaseEntity{
 	@Column(name = "announcement_title", nullable = false)
 	private String title;					// 公告 標題
 	
-	@Column(name = "announcement_content", columnDefinition = "LONGTEXT", nullable = false)
+	@Column(name = "announcement_content", columnDefinition = "TEXT", nullable = false)
 	private String content;					// 公告 內容
 	
 	@Column(name = "announcement_publish_date")
