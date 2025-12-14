@@ -21,9 +21,23 @@
 | **前端核心** | **React** (JavaScript) | 負責用戶介面 (UI) 和使用者互動體驗。 |
 | **環境與測試** | **Docker / Docker Compose** | 容器化部署環境。 |
 | **輔助工具** | **MailHog** | 提供本地郵件伺服器，用於開發時的郵件通知測試。 |
+| **輔助工具** | **Mailtrap** | 提供雲端郵件沙箱伺服器，用於開發時的郵件通知測試。 |
 
 ---
 
+## 當前開發里程碑 (Current Milestones)
+
+目前系統已完成 **第一階段核心基礎服務** 的建構與整合，具體進度如下：
+
+* **API 核心服務：** * ✅ **用戶與員工管理 (User/Employee)：** 完成註冊、登入、權限驗證、JWT Token 生命週期管理等 API，並通過 **Spring Security** 測試。
+    * ✅ **機構基本資料管理 (Institution/Notice)：** 完成公告、文件附件的 CRUD 與上傳下載 API。
+* **基礎架構與環境：**
+    * ✅ 專案已成功部署至 **Render 雲端平台**，可供外部存取測試。
+    * ✅ 完成所有核心 API 的 **Mailtrap 整合測試**，確保郵件通知功能正常。
+* **待辦 (Backlog)：**
+    * 案件相關 API (Application Case Service) 及其複雜狀態機邏輯。
+
+---
 ## 後端 Spring Boot 架構深度解析
 
 ### 企業級安全機制 (`config` & `util` 層)
