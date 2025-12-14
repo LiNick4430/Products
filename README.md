@@ -128,3 +128,5 @@ docker-compose up -d --build
 
 ## 📊 資料庫設計（ERD）
 <img src="docs/images/Google雲端.png" width="200" alt="QR Code" />
+
+⚠️ Note: Known technical debt and deployment-related caveats are documented in TECH-DEBT.md.
