@@ -30,8 +30,8 @@ COPY --from=build /app/target/daycare-system-0.0.1-SNAPSHOT.jar app.jar
 # 將上傳資料的永久儲存 Disk 掛載點建立為資料夾
 RUN mkdir -p /data/uploads
 
-# 設定環境變數：Render 服務會自動注入 SPRING_DATASOURCE_URL 等變數
-ENV SPRING_PROFILES_ACTIVE=render
+# 設定環境變數：Render 服務會自動注入 SPRING_DATASOURCE_URL 等變數 
+# ENV SPRING_PROFILES_ACTIVE=render	(搬到 Render 的 環境變數 使用)
 
 # 定義應用程式啟動命令
 # 啟動時使用 --spring.profiles.active=render 確保載入 application-render.properties
