@@ -163,37 +163,37 @@ SELECT
     CURRENT_TIMESTAMP 
 FROM (
     SELECT 
-        'public_2@system.com' AS user_email, 
+        'public_1@system.com' AS user_email, 
         '0950555552' AS user_phone_number, 
-        'public_2' AS user_account, 
+        'public_1' AS user_account, 
         '$2a$10$ewjCrApxXBC5CWDjYBQSd.tltdphrqs/bdYIPdcCW5eS7DiSA.Cji' AS user_password, 
         TRUE AS user_is_active
     UNION ALL
     SELECT 
-        'public_3@system.com', 
+        'public_2@system.com', 
         '0950555553', 
-        'public_3', 
+        'public_2', 
         '$2a$10$XxHqW2rKSM/AzI4WP3abYe6aaRMFDDrG04CqvH3QCPKLjMfGkif/i',
         TRUE
     UNION ALL
     SELECT 
-        'public_4@system.com', 
+        'public_3@system.com', 
         '0950555554', 
-        'public_4', 
+        'public_3', 
         '$2a$10$xP4HKIGKe7OHGKDjY7V0T.vZ4D2BaZmegdcRyf7mbtoXfacoAkqhe',
         TRUE
     UNION ALL
     SELECT 
-        'public_5@system.com', 
+        'public_4@system.com', 
         '0950555555', 
-        'public_5', 
+        'public_4', 
         '$2a$10$KDZIFuFWYk8BPuMfL0tAvObjX1pI3k6z84Owb77vSsTuaJnYBlKRC',
         TRUE
     UNION ALL
     SELECT 
-        'public_6@system.com', 
+        'public_5@system.com', 
         '0950555556', 
-        'public_6', 
+        'public_5', 
         '$2a$10$mAVVL5uugxz.mYnS1ox2oeE570g8EEhHQScLXHf0VqX7wu4EVZR4.',
         TRUE
 ) AS u -- 民眾資料
