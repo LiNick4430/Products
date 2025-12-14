@@ -1,142 +1,130 @@
-# 公托系統 (Daycare Management System) - 全棧作品集 
+# 公托管理系統（Daycare Management System）
 
-## 專案簡介與核心亮點 (Project Overview)
+**Spring Boot × React × Docker × PostgreSQL | 全端作品集**
 
-這是一個整合**後端 Spring Boot** 與 **前端 React** 的現代全端公托管理系統。專案核心著重於**後端服務的企業級架構、高安全性、以及標準化的 API 設計**，確保系統的穩定性、可維護性和高效率。
+## 📌 專案簡介（Project Overview）
 
-> **專案亮點：**
->
-> * **企業級安全：** 採用 Spring Security 搭配 **JWT 完整實作**無狀態身份驗證與授權過濾。
-> * **複雜流程控制：** 實作**雙階段案件審核與抽籤流程**的狀態機管理。
-> * **專業架構：** 嚴格遵循**三層架構**，並利用 DTO 轉換器 (`converter` / `ModelMapper`) 實現資料物件的解耦。
-> * **環境標準化：** 透過 **Docker Compose** 管理前端開發與測試輔助服務，確保開發環境快速一致。
----
+本專案為一套 **後端導向的全端公托管理系統**，整合 **Spring Boot（後端）** 與 **React（前端）**，核心目標在於展示：
 
-## 核心技術棧 (Tech Stack)
+企業級後端架構設計能力、複雜業務流程控管，以及雲端部署與環境標準化能力。
 
-| 領域 | 技術/框架 | 說明 |
-| :--- | :--- | :--- |
-| **後端核心** | **Spring Boot** (Java) | 負責所有業務邏輯、API 服務和資料庫互動。 |
-| **資料持久層** | **Spring Data JPA/Hibernate** | 簡化資料庫操作，專注於物件關係映射 (ORM)。 |
-| **前端核心** | **React** (JavaScript) | 負責用戶介面 (UI) 和使用者互動體驗。 |
-| **環境與測試** | **Docker / Docker Compose** | 容器化部署環境。 |
-| **輔助工具** | **MailHog** | 提供本地郵件伺服器，用於開發時的郵件通知測試。 |
-| **輔助工具** | **Mailtrap** | 提供雲端郵件沙箱伺服器，用於開發時的郵件通知測試。 |
+系統涵蓋公托機構管理、公告與規範管理、使用者與角色權限控管，並為後續複雜案件審核流程提供穩定可擴充的基礎架構。
 
----
+## 🌟 專案核心亮點（Key Highlights）
 
-## 當前開發里程碑 (Current Milestones)
+### 🔐 企業級安全機制
+- Spring Security + JWT
+- 完整實作無狀態驗證（Stateless Authentication）
+- 角色 / 權限（RBAC）細緻控管 API 存取
 
-目前系統已完成 **第一階段核心基礎服務** 的建構與整合，具體進度如下：
+### 🔄 複雜業務流程設計
+- 雙階段案件審核 + 抽籤流程
+- Service 層以 Enum + 狀態檢查確保流程合法性
 
-* **API 核心服務：** * ✅ **用戶與員工管理 (User/Employee)：** 完成註冊、登入、權限驗證、JWT Token 生命週期管理等 API，並通過 **Spring Security** 測試。
-    * ✅ **機構基本資料管理 (Institution/Notice)：** 完成公告、文件附件的 CRUD 與上傳下載 API。
-* **基礎架構與環境：**
-    * ✅ 專案已成功部署至 **Render 雲端平台**，可供外部存取測試。
-    * ✅ 完成所有核心 API 的 **Mailtrap 整合測試**，確保郵件通知功能正常。
-* **待辦 (Backlog)：**
-    * 案件相關 API (Application Case Service) 及其複雜狀態機邏輯。
+### 🧱 清晰可維護的後端架構
+- Controller / Service / Repository 三層架構
+- DTO 與 Entity 明確分離，避免業務層污染
 
----
-## 後端 Spring Boot 架構深度解析
+### ☁️ 雲端部署與環境一致性
+- Render 雲端部署（PostgreSQL）
+- Docker Multi-stage Build
+- Profile 區分 Local / Render 行為
+- 雲端環境每次重啟自動重建資料庫（僅保留預設資料）
 
-### 企業級安全機制 (`config` & `util` 層)
+## 🛠 技術棧（Tech Stack）
 
-專案的核心安全架構建立在 Spring Security 上，通過自定義組件確保 API 存取的嚴謹性。
+| 領域 | 技術 | 說明 |
+|----|----|----|
+| 後端 | Spring Boot (Java 17) | REST API、商業邏輯、權限控管 |
+| ORM | Spring Data JPA / Hibernate | ORM 與交易管理 |
+| 資料庫 | MySQL / PostgreSQL | Local / Cloud 環境切換 |
+| 前端 | React | UI 與 API 串接 |
+| 安全 | Spring Security + JWT | 無狀態驗證 |
+| 容器化 | Docker / Docker Compose | 環境標準化 |
+| 郵件測試 | MailHog / Mailtrap | 本地 / 雲端郵件測試 |
 
-* **無狀態身份驗證 (JWT 整合)：**
-    * 透過 **`JwtAuthenticationFilter`** 在請求到達 Controller 前進行 Token 驗證與用戶身份解析。
-    * 深入理解並實作了 [Spring Security + JWT 認證流程] 所示的 JWT 認證流程。
-      <img src="docs/images/Spring%20Security%20%2B%20JWT%20認證流程.png" width="500" alt="Spring Security + JWT 認證流程" />
-    * `JwtUtil` 集中處理 Token 的生成、解析、以及過期驗證邏輯。
-* **安全入口與處理器：**
-    * 自定義 **`CustomAccessDeniedHandler`** (處理 403 拒絕訪問) 和 **`JwtAuthenticationEntryPoint`** (處理 401 未經授權) 的標準化響應。
-* **密碼安全：**
-    * 利用 **`PasswordSecurity`** 實作安全的密碼散列 (Hashing) 與比對機制。
+## 🚀 系統功能模組（Features）
 
-### 專業分層與職責分離
+### 1️⃣ 使用者與角色權限管理（RBAC）
+- 支援三種角色：民眾（ROLE_PUBLIC）、員工（ROLE_STAFF）、高階主管（ROLE_MANAGER）
+- JWT 驗證 + 權限攔截
+- 高階主管可管理後台帳號與權限
 
-我們追求高可維護性、高內聚、低耦合的程式碼設計。
+### 2️⃣ 機構、公告與規範管理
+- 機構公告 CRUD
+- 規範文件管理
+- 支援檔案上傳 / 下載
+- 公告草稿 / 發布狀態控制
 
-* **標準化三層架構：** 嚴格區分 **Controller**、**Service**、**Repository** 的職責。
-* **資料物件轉換：** 專門使用 **`converter`** 套件，並透過 **`ModelMapperConfig`** 配置，集中處理 DTO 與 Model 之間的資料映射，避免在業務邏輯層混入轉換細節。
-* **統一響應與異常處理：**
-    * 實作 **`GlobalExceptionHandler`**，並使用 **`response`** 套件中的 **`ApiResponse`** 統一格式化所有 API 的成功或錯誤響應。
-    * `exception` 層定義所有自定義業務異常，確保錯誤訊息格式統一且清晰，便於前端處理。
+### 3️⃣ 案件審核與分發流程（核心業務）
+- 多階段案件審核
+- 抽籤與候補邏輯
+- Service 層嚴格狀態驗證
 
----
+📌 案件流程示意圖：
+<img src="docs/images/案件審核%20流程圖%20.png" width="500" alt="案件審核流程圖" />
 
-## 核心功能模組 (Features)
+## 🔐 後端安全架構說明（Spring Security + JWT）
+- 自訂 JwtAuthenticationFilter
+- JwtUtil 負責 Token 生成 / 驗證 / 解析
+- 客製化錯誤處理：JwtAuthenticationEntryPoint（401）、CustomAccessDeniedHandler（403）
 
-1.  **用戶與員工權限管理**
-    * 支援民眾、普通員工、高層員工三種角色，通過 JWT 進行權限分配和驗證。
-    * 高層員工具備員工帳號的創建與權限修改功能。
+📌 JWT 認證流程示意：
+<img src="docs/images/Spring%20Security%20%2B%20JWT%20認證流程.png" width="500" alt="Spring Security + JWT 認證流程" />
 
-2.  **公告與資料文件管理**
-    * 實作機構公告與規範的 CRUD (增/查/改/刪) 操作。
-    * 支援公告附件、機構附件的**上傳與下載**功能。
+## 🧱 專案架構設計（Backend Architecture）
+- Controller：處理 HTTP 請求
+- Service：封裝業務邏輯與流程控管
+- Repository：資料存取層
+- Converter / DTO：使用 ModelMapper，避免 Entity 直接暴露給前端
+- GlobalExceptionHandler：統一 API Response 格式，提升前後端協作一致性
 
-3.  **複雜案件審核與分發流程 (核心業務邏輯)**
-    * 員工根據**雙階段審核與抽籤流程**對案件進行操作。
-    * **流程圖佐證：** 案件從申請到分發的複雜狀態機請參考。
-      <img src="docs/images/案件審核%20流程圖%20.png" width="500" alt="案件審核流程圖" />
+## ☁️ 環境與部署策略（Environment & Deployment）
 
----
+### Profile 設計
 
-## 環境啟動與部署指南 (Getting Started)
+| 環境 | Profile | 行為 |
+|----|----|----|
+| 本地 | local | 保留資料、方便開發 |
+| 雲端 | render | 每次重啟重建資料庫 |
 
-### 1. 服務地址
+### 雲端行為說明（Render）
+- spring.jpa.hibernate.ddl-auto=create
+- spring.sql.init.mode=always
+- 啟動時自動執行 data.sql
+- 資料庫只保留系統預設資料
 
-| 服務名稱 | 地址 |
-| :--- | :--- |
-| **後端服務 API** | `http://localhost:8080` |
-| **前端介面 (容器)** | `http://localhost:5173` |
-| **MailHog 郵件監控 (容器)** | `http://localhost:8025` |
+📌 此設計確保：
+- 雲端展示環境可重建
+- Demo 資料永遠一致
+- 避免測試資料污染
 
-### 2. 先決條件 (Prerequisites)
+## 🧪 本地開發環境啟動（Getting Started）
 
-* **Java 17+**
-* **Node.js (LTS) & npm**
-* **Docker & Docker Compose**
-* **資料庫環境：** 確保您的本地 MySQL 或 PostgreSQL 資料庫已啟動並配置正確。
-
-### 3. 啟動容器化服務 (React 前端與 MailHog)
-
-此步驟將啟動前端開發環境和郵件測試服務。
-
-* **優化說明：** 前端服務 (`frontend-dev`) 設置了 Volume 掛載 (`./daycare-system-react:/app`) 並採用 `npm run dev -- --host` 指令，確保容器內程式碼與主機同步，實現**熱重載 (HMR)**，提高開發效率。
-
-```bash
-# 1. 複製專案
-git clone [您的 GITHUB 連結]
-
-# 2. 進入包含 docker-compose.yml 的資料夾 (專案根目錄)
+### 1️⃣ 啟動前端與 MailHog（Docker）
+git clone <your-github-repo>
 cd Products
-
-# 3. 啟動 React 前端容器與 MailHog
 docker-compose up -d --build
-```
 
-### 4. 啟動 Spring Boot 後端服務 (獨立運行)
-請確保您的 daycare-system-springboot/src/main/resources 下的配置文件已指向正確的本地資料庫。
+服務 URL：
+- Backend API: http://localhost:8080
+- Frontend: http://localhost:5173
+- MailHog: http://localhost:8025
 
-#### 啟動 Spring Boot 應用程式
-#### 透過 IDE (如 IntelliJ IDEA 或 Eclipse) 啟動主類別 
+### 2️⃣ 啟動後端（Spring Boot）
+- 使用 IDE（IntelliJ / Eclipse）
+- 啟用 application-local.properties
 
----
+## 🧠 設計決策與挑戰（Design Decisions）
 
-## 設計決策與挑戰 (Design Decisions and Challenges)
+### 複雜狀態流程設計
+- 挑戰：多階段審核 + 抽籤流程，狀態錯誤會導致資料不一致
+- 解法：使用 Enum 定義狀態，Service 層強制狀態驗證，不合法操作直接丟出業務例外
 
-* **技術選型：** 選擇 Spring Boot 的主要原因在於其成熟的生態系統、內建的安全性框架（Spring Security），以及企業級的穩定性，使其非常適合處理複雜的業務邏輯。
-* **最大挑戰：複雜業務流程的狀態機實現**
-    * **挑戰：** 如何在後端穩定且可靠地實現如 [案件審核 流程圖 .png] 所示的**多階段審核、抽籤、分發**的複雜狀態轉移。一個錯誤的操作或狀態跳轉可能導致資料錯誤。
-    * **解決方案：** 我在 Service 層針對案件狀態實作了**嚴格的狀態檢查機制**（使用 Enum 進行狀態約束），確保只有在滿足特定條件時，才能觸發下一階段的業務邏輯，保證了流程的合規性與資料的一致性。
-* **未來改進：**
-    * **性能優化：** 引入 **Redis 快取**針對公告內容、機構規範等頻繁查詢但更新較少的靜態資料進行優化，以提升整體系統效能。
-    * **監控與日誌：** 整合 Spring Boot Actuator 與 ELK/Prometheus 進行生產環境的監控與日誌追蹤。
- 
----
+### 🔮 未來擴充方向
+- Redis 快取（公告 / 規範）
+- Spring Actuator + Monitoring
+- 完整 CI/CD Pipeline
 
-## 設計資料庫 QR Code
-
+## 📊 資料庫設計（ERD）
 <img src="docs/images/Google雲端.png" width="200" alt="QR Code" />
