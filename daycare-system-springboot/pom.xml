@@ -103,11 +103,8 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>com.mysql</groupId>
-			<artifactId>mysql-connector-j</artifactId>
-			<scope>runtime</scope>
-		</dependency>
+		
+		<!-- *** 資料庫驅動已移至下方的 Maven Profiles 區塊管理 *** -->
 
 		<!-- 使用 @ConfigurationProperties 讓 IDE（例如 IntelliJ 或 Eclipse）可以提示自訂屬性的 
 			key -->
@@ -118,6 +115,38 @@
 		</dependency>
 
 	</dependencies>
+
+	<!-- Maven Profiles 用於管理不同環境的依賴 -->
+	<profiles>
+		<!-- 預設 Profile：本地開發環境 (MySQL) -->
+		<profile>
+			<id>mysql-local</id>
+			<activation>
+				<activeByDefault>true</activeByDefault> <!-- 預設啟用 -->
+			</activation>
+			<dependencies>
+				<!-- 啟用 MySQL 驅動 -->
+				<dependency>
+					<groupId>com.mysql</groupId>
+					<artifactId>mysql-connector-j</artifactId>
+					<scope>runtime</scope>
+				</dependency>
+			</dependencies>
+		</profile>
+
+		<!-- 部署 Profile：Render 雲端環境 (PostgreSQL) -->
+		<profile>
+			<id>render-postgres</id>
+			<dependencies>
+				<!-- 啟用 PostgreSQL 驅動 -->
+				<dependency>
+					<groupId>org.postgresql</groupId>
+					<artifactId>postgresql</artifactId>
+					<scope>runtime</scope>
+				</dependency>
+			</dependencies>
+		</profile>
+	</profiles>
 
 	<build>
 		<plugins>
