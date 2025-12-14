@@ -31,12 +31,12 @@ import lombok.Setter;
 		uniqueConstraints = {
 			// 1. 案件不能重複申請 同一機構
 			@UniqueConstraint(
-					name = "UK_case_organization_unique", 			// 確保 案件 不會重複申請同一個 機構
+					name = "uk_case_organization_unique", 			// 確保 案件 不會重複申請同一個 機構
 					columnNames = {"case_id", "organization_id"}
 					),
 			// 2. 案件不能有重複的 志願序
 			@UniqueConstraint(
-					name = "UK_case_preference_unique",		// 確保 案件 不會出現重複的 志願序
+					name = "uk_case_preference_unique",		// 確保 案件 不會出現重複的 志願序
 					columnNames = {"case_id", "case_organization_preference_order"}
 					)
 		})
