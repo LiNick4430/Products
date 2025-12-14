@@ -90,14 +90,17 @@
 
 ### 雲端行為說明（Render）
 - spring.jpa.hibernate.ddl-auto=create
-- spring.sql.init.mode=always
-- 啟動時自動執行 data.sql
-- 資料庫只保留系統預設資料
+- spring.sql.init.mode=naver
+- 使用 CommandLineRunner 直接灌入資料
 
 📌 此設計確保：
 - 雲端展示環境可重建
 - Demo 資料永遠一致
 - 避免測試資料污染
+
+- Render Free Web Service
+- 僅作為測試環境與作品展示用途
+- 允許 cold start 與 schema recreate
 
 ## 🧪 本地開發環境啟動（Getting Started）
 
