@@ -23,7 +23,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "role")		// 角色 用於 RBAC
+@Table(name = "roles")		// 角色 用於 RBAC
 @SQLRestriction("delete_at IS NULL")
 public class Role extends BaseEntity{
 

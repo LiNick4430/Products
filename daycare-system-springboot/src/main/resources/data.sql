@@ -3,7 +3,7 @@
 -- Table 基本資料填入
 -- Table role permission role_permission 為了 RBAC(Role-Based Access Control)
 -- 1. 插入基礎角色 (ROLE)
-INSERT INTO role (role_name, role_description, create_date, update_date) VALUES 
+INSERT INTO roles (role_name, role_description, create_date, update_date) VALUES 
 ('ROLE_PUBLIC', '普通民眾', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
 ('ROLE_STAFF', '基層人員', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
 ('ROLE_MANAGER', '高階主管', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
@@ -36,7 +36,7 @@ INSERT INTO permission (permission_name, permission_description, create_date, up
 -- --- A. 民眾權限 (ROLE_PUBLIC)
 INSERT INTO role_permission (role_id, permission_id)
 SELECT -- 搜尋資料 放進對應的 role_id, permission_id
-	(SELECT role_id FROM role WHERE role_name = 'ROLE_PUBLIC'), -- 搜尋 role 表 中 role_name 是 'ROLE_PUBLIC' 的 role_id 放入 role_permission 的 role_id
+	(SELECT role_id FROM roles WHERE role_name = 'ROLE_PUBLIC'), -- 搜尋 role 表 中 role_name 是 'ROLE_PUBLIC' 的 role_id 放入 role_permission 的 role_id
     p.permission_id	-- 把符合資料的 ID 放進去
 FROM permission p	-- 遍歷 permission 表格
 WHERE p.permission_name IN ( -- 找尋 permission_name 是 下方陣列 的 資料
@@ -50,7 +50,7 @@ WHERE p.permission_name IN ( -- 找尋 permission_name 是 下方陣列 的 資�
 -- --- B. 基層工作人員權限 (ROLE_STAFF) ---	201 ~ 207
 INSERT INTO role_permission (role_id, permission_id)
 SELECT 
-    (SELECT role_id FROM role WHERE role_name = 'ROLE_STAFF'),
+    (SELECT role_id FROM roles WHERE role_name = 'ROLE_STAFF'),
     p.permission_id
 FROM permission p
 WHERE p.permission_name IN (
@@ -66,7 +66,7 @@ WHERE p.permission_name IN (
 -- --- C. 高階主管人員權限 (ROLE_MANAGER) ---		201 ~ 207, 301 ~ 304
 INSERT INTO role_permission (role_id, permission_id)
 SELECT 
-    (SELECT role_id FROM role WHERE role_name = 'ROLE_MANAGER'),
+    (SELECT role_id FROM roles WHERE role_name = 'ROLE_MANAGER'),
     p.permission_id
 FROM permission p
 WHERE p.permission_name IN (
@@ -103,7 +103,7 @@ SELECT
     'manager', 
     '$2a$10$0PXADQYqxs.AZu/GBr522O5DdO1z2Z6XHlUoNRblyKyW/McKYm1Yq', 
     TRUE, 
-    (SELECT role_id FROM role WHERE role_name = 'ROLE_MANAGER'),	-- 動態獲取 ID
+    (SELECT role_id FROM roles WHERE role_name = 'ROLE_MANAGER'),	-- 動態獲取 ID
     CURRENT_TIMESTAMP, 
     CURRENT_TIMESTAMP;
 
@@ -148,7 +148,7 @@ FROM (
         TRUE
     ) AS u	-- 建立一個 臨時表格 u 存放資料
 CROSS JOIN	-- 將 四行 臨時資料 和 一行 role_id 交叉組合
-(SELECT role_id FROM role WHERE role_name = 'ROLE_STAFF') AS r;	-- 取出 條件下的 role_id
+(SELECT role_id FROM roles WHERE role_name = 'ROLE_STAFF') AS r;	-- 取出 條件下的 role_id
 
 -- 民眾帳號 (role_name = 'ROLE_PUBLIC')
 INSERT INTO users (user_email, user_phone_number, user_account, user_password, user_is_active, role_id, create_date, update_date) 
@@ -198,7 +198,7 @@ FROM (
         TRUE
 ) AS u -- 民眾資料
 CROSS JOIN 
-(SELECT role_id FROM role WHERE role_name = 'ROLE_PUBLIC') AS r;
+(SELECT role_id FROM roles WHERE role_name = 'ROLE_PUBLIC') AS r;
 
 -- 預設 員工資料
 INSERT INTO admin_user (admin_id, admin_name, admin_job_title, organization_id, create_date, update_date)
