@@ -17,6 +17,8 @@ import com.github.lianick.model.dto.clazz.ClassLinkCaseDTO;
 import com.github.lianick.response.ApiResponse;
 import com.github.lianick.service.ClassService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 /**
  * ClassController
  * Request Mapping: "/class"
@@ -26,6 +28,7 @@ import com.github.lianick.service.ClassService;
  * DELETE	"/delete", "/delete/"		刪除 	班級			"/class/delete/"			AUTHENTICATED
  * */
 
+@SecurityRequirement(name = "bearerAuth")
 @RestController
 @RequestMapping("/class")
 public class ClassController {

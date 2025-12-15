@@ -55,11 +55,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{	// OncePerReq
 		// 如果是 PUBLIC → 放行
 		boolean isPublic = SecurityPaths.PUBLIC.stream()
 								.anyMatch(pattern -> antPathMatcher.match(pattern, path));
+		boolean isDoc = SecurityPaths.DOCS.stream()
+				.anyMatch(pattern -> antPathMatcher.match(pattern, path));
+		
 		boolean isAuthenticatedApi = SecurityPaths.AUTHENTICATED.stream()
 										.anyMatch(pattern -> antPathMatcher.match(pattern, path));
 
+		// 假設 是 公開 或者 文件 直接 跳過過濾
+		if (isPublic || isDoc) {
+			filterChain.doFilter(request, response);
+			return;
+		}
+		
 		// 不在任何已知路徑 → 404
-		if (!isPublic && !isAuthenticatedApi) {
+		if (!isPublic && !isDoc && !isAuthenticatedApi) {
 			response.setStatus(HttpStatus.NOT_FOUND.value());
 		    response.setContentType("application/json;charset=UTF-8");
 		    

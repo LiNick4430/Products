@@ -28,6 +28,8 @@ import com.github.lianick.response.DownloadResponse;
 import com.github.lianick.service.AnnouncementService;
 import com.github.lianick.util.JsonUtil;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 /**AnnouncementController
  * Request Mapping: "/announcement"
  * GET		"/find/all", "/find/all/"				搜尋 全部公告			"/announcement/find/all/"			PUBLIC
@@ -61,6 +63,7 @@ public class AnnouncementController {
 		return ApiResponse.success("搜尋 全部公告 成功", announcementDTOs);
 	}
 	
+	@SecurityRequirement(name = "bearerAuth")
 	@GetMapping(value = {"/find/all/no/expiry", "/find/all/no/expiry/"})
 	public ApiResponse<List<AnnouncementDTO>> findAllNoExpiry() {
 		List<AnnouncementDTO> announcementDTOs = announcementService.findAllNoExpiryAnnouncement();
@@ -73,6 +76,7 @@ public class AnnouncementController {
 		return ApiResponse.success("搜尋 特定公告 成功", announcementDTO);
 	}
 	
+	@SecurityRequirement(name = "bearerAuth")
 	@PostMapping(value = {"/find/no/expiry", "/find/no/expiry/"})
 	public ApiResponse<AnnouncementDTO> findNoExpiryById(@RequestBody AnnouncementFindDTO announcementFindDTO) {
 		AnnouncementDTO announcementDTO = announcementService.findNoExpiryAnnouncementById(announcementFindDTO);
@@ -85,18 +89,21 @@ public class AnnouncementController {
 		return DownloadResponse.create(downloadDTO);
 	}
 	
+	@SecurityRequirement(name = "bearerAuth")
 	@PostMapping(value = {"/create", "/create/"})
 	public ApiResponse<AnnouncementDTO> create(@RequestBody AnnouncementCreateDTO announcementCreateDTO) {
 		AnnouncementDTO announcementDTO = announcementService.createAnnouncement(announcementCreateDTO);
 		return ApiResponse.success("建立公告 成功", announcementDTO);
 	}
 	
+	@SecurityRequirement(name = "bearerAuth")
 	@PostMapping(value = {"/update", "/update/"})
 	public ApiResponse<AnnouncementDTO> update(@RequestBody AnnouncementUpdateDTO announcementUpdateDTO) {
 		AnnouncementDTO announcementDTO = announcementService.updateAnnouncement(announcementUpdateDTO);
 		return ApiResponse.success("更新公告 成功", announcementDTO);
 	}
 	
+	@SecurityRequirement(name = "bearerAuth")
 	@PostMapping(value = {"/upload/doc", "/upload/doc/"}, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ApiResponse<AnnouncementDTO> upload(
 			@RequestPart("file") MultipartFile file,
@@ -109,24 +116,28 @@ public class AnnouncementController {
 		return ApiResponse.success("上傳 公告附件 成功", announcementDTO);
 	}
 	
+	@SecurityRequirement(name = "bearerAuth")
 	@DeleteMapping(value = {"/delete/doc", "/delete/doc/"})
 	public ApiResponse<Void> deleteDocument(@RequestBody AnnouncementDocumnetDTO announcementDocumnetDTO) {
 		announcementService.deleteAnnouncementDocument(announcementDocumnetDTO);
 		return ApiResponse.success("刪除 公告附件 成功", null);
 	}
 	
+	@SecurityRequirement(name = "bearerAuth")
 	@DeleteMapping(value = {"/delete", "/delete/"})
 	public ApiResponse<Void> delete(@RequestBody AnnouncementDeleteDTO announcementDeleteDTO) {
 		announcementService.deleteAnnouncement(announcementDeleteDTO);
 		return ApiResponse.success("刪除 公告 成功", null);
 	}
 	
+	@SecurityRequirement(name = "bearerAuth")
 	@GetMapping(value = {"/find/not/publish", "/find/not/publish/"})
 	public ApiResponse<List<AnnouncementDTO>> findAllNotPublish() {
 		List<AnnouncementDTO> announcementDTOs = announcementService.findAllAnnouncementNotPublish();
 		return ApiResponse.success("搜尋 尚未發布公告 成功", announcementDTOs);
 	}
 	
+	@SecurityRequirement(name = "bearerAuth")
 	@PostMapping(value = {"/publish", "/publish/"})
 	public ApiResponse<AnnouncementDTO> publish(@RequestBody AnnouncementPublishDTO announcementPublishDTO) {
 		AnnouncementDTO announcementDTO = announcementService.publishAnnouncement(announcementPublishDTO);

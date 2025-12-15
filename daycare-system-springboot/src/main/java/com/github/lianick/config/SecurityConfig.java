@@ -92,6 +92,11 @@ public class SecurityConfig {
 			// 3. 設置授權規則
 			.authorizeHttpRequests(authorize -> authorize
 				
+					// 0. API 文件使用 ： 允許任何人存取以下路徑
+					.requestMatchers(
+							SecurityPaths.DOCS.toArray(new String[0])
+					).permitAll()
+					
 					// 1. 公開 API ： 允許任何人存取以下路徑
 					.requestMatchers(
 							SecurityPaths.PUBLIC.toArray(new String[0])

@@ -17,6 +17,8 @@ import com.github.lianick.model.dto.userPublic.UserPublicUpdateDTO;
 import com.github.lianick.response.ApiResponse;
 import com.github.lianick.service.UserPublicService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 /**
  * UserPublicController
  * Request Mapping: "/public/user"
@@ -28,6 +30,7 @@ import com.github.lianick.service.UserPublicService;
  * DELETE	"/delete", "/delete/"			刪除	帳號			"/public/user/delete/"			AUTHENTICATED
  * */
 
+@SecurityRequirement(name = "bearerAuth")
 @RestController
 @RequestMapping("/public/user")
 public class UserPublicController {

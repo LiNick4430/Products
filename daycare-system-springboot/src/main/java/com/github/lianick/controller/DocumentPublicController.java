@@ -23,6 +23,8 @@ import com.github.lianick.response.ApiResponse;
 import com.github.lianick.service.DocumentPublicService;
 import com.github.lianick.util.JsonUtil;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 /**
  * DocumentPublicController	
  * Request Mapping: "/document"
@@ -36,6 +38,7 @@ import com.github.lianick.util.JsonUtil;
  * DELETE 	"/public/delete", "/public/delete/"			民眾刪除 附件			"/document/public/delete/" 		AUTHENTICATED
  * */
 
+@SecurityRequirement(name = "bearerAuth")
 @RestController
 @RequestMapping("/document")
 public class DocumentPublicController {

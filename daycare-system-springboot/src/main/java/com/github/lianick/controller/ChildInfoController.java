@@ -15,6 +15,8 @@ import com.github.lianick.model.dto.child.ChildUpdateDTO;
 import com.github.lianick.response.ApiResponse;
 import com.github.lianick.service.ChildInfoService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -29,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestBody;
  * DELETE	"/delete", "/delete/"		刪除 民眾底下 特定幼兒資料		"/child/delete/"			AUTHENTICATED
  * */
 
+@SecurityRequirement(name = "bearerAuth")
 @RestController
 @RequestMapping("/child")
 public class ChildInfoController {

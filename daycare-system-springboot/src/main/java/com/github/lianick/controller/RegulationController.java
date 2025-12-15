@@ -14,6 +14,9 @@ import com.github.lianick.model.dto.regulation.RegulationFindDTO;
 import com.github.lianick.model.dto.regulation.RegulationUpdateDTO;
 import com.github.lianick.response.ApiResponse;
 import com.github.lianick.service.RegulationService;
+
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -47,18 +50,21 @@ public class RegulationController {
 		return ApiResponse.success("搜尋 特定規範 成功", regulationDTO);
 	}
 	
+	@SecurityRequirement(name = "bearerAuth")
 	@PostMapping(value = {"/create", "/create/"})
 	public ApiResponse<RegulationDTO> createRegulation(@RequestBody RegulationCreateDTO regulationCreateDTO) {
 		RegulationDTO regulationDTO = regulationService.createRegulation(regulationCreateDTO);
 		return ApiResponse.success("建立 規範 成功", regulationDTO);
 	}
 	
+	@SecurityRequirement(name = "bearerAuth")
 	@PostMapping(value = {"/update", "/update/"})
 	public ApiResponse<RegulationDTO> updateRegulation(@RequestBody RegulationUpdateDTO regulationUpdateDTO) {
 		RegulationDTO regulationDTO = regulationService.updateRegulation(regulationUpdateDTO);
 		return ApiResponse.success("更新 規範 成功", regulationDTO);
 	}
 	
+	@SecurityRequirement(name = "bearerAuth")
 	@DeleteMapping(value = {"/delete", "/delete/"})
 	public ApiResponse<Void> deleteRegulation(@RequestBody RegulationDeleteDTO regulationDeleteDTO) {
 		regulationService.deleteRegulation(regulationDeleteDTO);

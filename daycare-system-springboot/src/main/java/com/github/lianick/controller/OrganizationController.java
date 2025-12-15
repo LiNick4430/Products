@@ -27,6 +27,8 @@ import com.github.lianick.response.DownloadResponse;
 import com.github.lianick.service.OrganizationService;
 import com.github.lianick.util.JsonUtil;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 /**
  * OrganizationController
  * Request Mapping: "/organization"
@@ -62,6 +64,7 @@ public class OrganizationController {
 		return ApiResponse.success("關鍵字 搜尋 機構 資料 成功", organizationDTOs);
 	}
 	
+	@SecurityRequirement(name = "bearerAuth")
 	@PostMapping(value = {"/download/doc/", "/download/doc"})
 	public ResponseEntity<Resource> download(@RequestBody OrganizationDocumentDTO organizationDocumentDTO) {
 		// 1. 獲取所有下載所需資訊
@@ -71,12 +74,14 @@ public class OrganizationController {
 		return DownloadResponse.create(downloadDTO);
 	}
 	
+	@SecurityRequirement(name = "bearerAuth")
 	@PostMapping(value = {"/create", "/create/"})
 	public ApiResponse<OrganizationDTO> createOrganization(@RequestBody OrganizationCreateDTO organizationCreateDTO) {
 		OrganizationDTO organizationDTO = organizationService.createOrganization(organizationCreateDTO);
 		return ApiResponse.success("建立 新的機構 成功", organizationDTO);
 	}
 	
+	@SecurityRequirement(name = "bearerAuth")
 	@PostMapping(value = {"/upload/doc", "/upload/doc/"}, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ApiResponse<OrganizationDTO> uploadOrganizationDocument(
 			@RequestPart("file") MultipartFile file,
@@ -89,18 +94,21 @@ public class OrganizationController {
 		return ApiResponse.success("上傳附件 成功", organizationDTO);
 	}
 	
+	@SecurityRequirement(name = "bearerAuth")
 	@PostMapping(value = {"/update", "/update/"})
 	public ApiResponse<OrganizationDTO> updateOrganization(@RequestBody OrganizationUpdateDTO organizationUpdateDTO) {
 		OrganizationDTO organizationDTO = organizationService.updateOrganization(organizationUpdateDTO);
 		return ApiResponse.success("更新 機構資料 成功", organizationDTO);
 	}
 	
+	@SecurityRequirement(name = "bearerAuth")
 	@DeleteMapping(value = {"/delete/doc", "/delete/doc/"})
 	public ApiResponse<Void> deleteOrganizationDocument(@RequestBody OrganizationDocumentDTO organizationDocumentDTO) {
 		organizationService.deleteOrganizationDocument(organizationDocumentDTO);
 		return ApiResponse.success("刪除 機構附件 成功", null);
 	}
 	
+	@SecurityRequirement(name = "bearerAuth")
 	@DeleteMapping(value = {"/delete", "/delete/"})
 	public ApiResponse<Void> deleteOrganization(@RequestBody OrganizationDeleteDTO organizationDeleteDTO) {
 		organizationService.deleteOrganization(organizationDeleteDTO);

@@ -11,12 +11,15 @@ import com.github.lianick.model.dto.cases.CaseDTO;
 import com.github.lianick.response.ApiResponse;
 import com.github.lianick.service.CaseService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 /**
  * CaseController
  * Request Mapping: "/case"
  * POST	"/create", "/create/"					民眾建立新的案件			"/case/create/"						AUTHENTICATED
  * */
 
+@SecurityRequirement(name = "bearerAuth")
 @RestController
 @RequestMapping("/case")
 public class CaseController {

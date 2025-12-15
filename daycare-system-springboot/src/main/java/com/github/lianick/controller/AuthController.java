@@ -17,6 +17,8 @@ import com.github.lianick.service.RefreshTokenService;
 import com.github.lianick.service.UserPublicService;
 import com.github.lianick.service.UserService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 import org.springframework.web.bind.annotation.GetMapping;
 
 /**
@@ -53,6 +55,7 @@ public class AuthController {
 	}
 	
 	// 在 JWT 架構中，登出行為由前端負責銷毀 Token。
+	@SecurityRequirement(name = "bearerAuth")
 	@GetMapping(value = {"/logout", "/logout/"})
 	public ApiResponse<Void> logout () {
 		authService.logout();		// 刪除 RefreshToken
@@ -60,6 +63,7 @@ public class AuthController {
 		return ApiResponse.success("登出成功，請清除客戶端 Token", null);
 	}
 	
+	@SecurityRequirement(name = "bearerAuth")
 	@PostMapping(value = {"/check/password", "/check/password/"})
 	public ApiResponse<UserUpdateDTO> updateCheckPassword (@RequestBody UserUpdateDTO userUpdateDTO) {
 		userUpdateDTO = userService.updateUserCheckPassword(userUpdateDTO);
@@ -67,6 +71,7 @@ public class AuthController {
 		return ApiResponse.success("密碼確認成功, 進入修改資料網頁", userUpdateDTO);
 	}
 	
+	@SecurityRequirement(name = "bearerAuth")
 	@PostMapping(value = {"/public/check/password", "/public/check/password/"})
 	public ApiResponse<UserPublicDTO> updatePublicCheckPassword (@RequestBody UserPublicUpdateDTO userPublicUpdateDTO) {
 		UserPublicDTO userPublicDTO = userPublicService.updateUserPublicCheckPassword(userPublicUpdateDTO);

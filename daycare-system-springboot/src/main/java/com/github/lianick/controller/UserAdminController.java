@@ -17,6 +17,8 @@ import com.github.lianick.model.dto.userAdmin.UserAdminUpdateDTO;
 import com.github.lianick.response.ApiResponse;
 import com.github.lianick.service.UserAdminService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 /**
  * UserAdminController
  * Request Mapping: "/admin/user"
@@ -28,6 +30,7 @@ import com.github.lianick.service.UserAdminService;
  * DELETE"/delete", "/delete/"			主管 刪除 特定員工帳號		"/admin/user/delete/"		AUTHENTICATED
  * */
 
+@SecurityRequirement(name = "bearerAuth")
 @RestController
 @RequestMapping("/admin/user")
 public class UserAdminController {

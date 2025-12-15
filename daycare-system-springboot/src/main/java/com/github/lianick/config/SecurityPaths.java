@@ -3,7 +3,15 @@ package com.github.lianick.config;
 import java.util.List;
 
 public class SecurityPaths {
-
+	
+	/**
+	 * 限定 內部 使用的 跳板
+	 * */
+	private static final List<String> INTERNAL = List.of(
+			// 錯誤處理 相關
+			// "/error/access-denied"
+			);
+	
 	public static final List<String> PUBLIC = List.of(
 				// 前端工程師 用的 ENUM 接口
 				"/enum/document/type",
@@ -15,8 +23,6 @@ public class SecurityPaths {
 				"/enum/lottery/queue/status",
 				"/enum/lottery/result/status",
 				"/enum/withdrawal/request/status",
-				// 錯誤處理 相關
-				"/error/access-denied",
 				// 使用者 相關
 				"/user/register/**",		// 註冊
 				"/user/reset/password/**",	// (忘記密碼)重設密碼
@@ -122,4 +128,14 @@ public class SecurityPaths {
 		    
 		    
 			);
+	
+	/**
+	 * API 文件使用 (Spring doc OpenAPI (Swagger UI) Dependency)
+	 * */
+	public static final List<String> DOCS = List.of(
+		    "/swagger-ui.html",
+		    "/swagger-ui/**",
+		    "/v3/api-docs",
+		    "/v3/api-docs/**"
+		);
 }
