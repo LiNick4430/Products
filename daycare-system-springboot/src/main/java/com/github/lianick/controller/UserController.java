@@ -67,8 +67,8 @@ public class UserController{
 			summary = "更新使用者資料",
 			description = """
 					需要 JWT。
-					- 可更新密碼
-					- 可更新電話號碼
+					- 可更新 密碼
+					- 可更新 電話號碼
 					"""
 			)
 	@SecurityRequirement(name = "bearerAuth")

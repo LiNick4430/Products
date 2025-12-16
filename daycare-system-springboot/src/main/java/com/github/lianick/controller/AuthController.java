@@ -17,7 +17,9 @@ import com.github.lianick.service.RefreshTokenService;
 import com.github.lianick.service.UserPublicService;
 import com.github.lianick.service.UserService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -31,6 +33,10 @@ import org.springframework.web.bind.annotation.GetMapping;
  * POST	"/access/token/refresh", "/access/token/refresh/"	access token 刷新		"/auth/access/token/refresh/"	PUBLIC(當前端收到 "JWT_EXPIRED" "Access Token is expired" 時使用)
  * */
 
+@Tag(
+		name = "Auth",
+		description = "驗證相關的API"
+		)
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -47,6 +53,12 @@ public class AuthController {
 	@Autowired
 	private AuthService authService;
 	
+	@Operation(
+			summary = "使用者登錄",
+			description = """
+					輸入帳號密碼, 進行登入, 同時回傳 JWT 和 刷新TOKEN
+					"""
+			)
 	@PostMapping(value = {"/login", "/login/"})
 	public ApiResponse<AuthResponseDTO> login (@RequestBody UserLoginDTO userLoginDTO) {		
 		AuthResponseDTO authResponseDTO = authService.login(userLoginDTO);	
@@ -55,6 +67,12 @@ public class AuthController {
 	}
 	
 	// 在 JWT 架構中，登出行為由前端負責銷毀 Token。
+	@Operation(
+			summary = "使用者登出",
+			description = """
+					進行登出程序, 作廢 刷新TOKEN, 並提醒前端 作廢 JWT
+					"""
+			)
 	@SecurityRequirement(name = "bearerAuth")
 	@GetMapping(value = {"/logout", "/logout/"})
 	public ApiResponse<Void> logout () {
@@ -63,6 +81,12 @@ public class AuthController {
 		return ApiResponse.success("登出成功，請清除客戶端 Token", null);
 	}
 	
+	@Operation(
+			summary = "使用者更新前 密碼驗證",
+			description = """
+					使用者更新資料前, 進行的密碼驗證
+					"""
+			)
 	@SecurityRequirement(name = "bearerAuth")
 	@PostMapping(value = {"/check/password", "/check/password/"})
 	public ApiResponse<UserUpdateDTO> updateCheckPassword (@RequestBody UserUpdateDTO userUpdateDTO) {
@@ -71,6 +95,13 @@ public class AuthController {
 		return ApiResponse.success("密碼確認成功, 進入修改資料網頁", userUpdateDTO);
 	}
 	
+	@Operation(
+			summary = "民眾更新前 密碼驗證",
+			description = """
+					民眾更新資料前, 進行的密碼驗證
+					- 權限限制：ROLE_PUBLIC
+					"""
+			)
 	@SecurityRequirement(name = "bearerAuth")
 	@PostMapping(value = {"/public/check/password", "/public/check/password/"})
 	public ApiResponse<UserPublicDTO> updatePublicCheckPassword (@RequestBody UserPublicUpdateDTO userPublicUpdateDTO) {
@@ -79,6 +110,14 @@ public class AuthController {
 		return ApiResponse.success("密碼確認成功, 進入修改資料網頁", userPublicDTO);
 	}
 	
+	@Operation(
+			summary = "JWT 到期時 自動進行刷新程序",
+			description = """
+					JWT 過期的時候 會返回 ErrorCode: "JWT_EXPIRED"
+					前端 將 收到這個錯誤代碼後 自動使用這個方法(回傳 更新TOKEN)
+					刷新同時 會作廢 過去的 TOKEN們 並回傳 新的
+					"""
+			)
 	@PostMapping(value = {"/access/token/refresh", "/access/token/refresh/"})
 	public ApiResponse<AuthResponseDTO> updateAccessToken(@RequestBody AuthResponseDTO authResponseDTO) {
 		authResponseDTO = refreshTokenService.updateRefreshToken(authResponseDTO.getRefreshToken());

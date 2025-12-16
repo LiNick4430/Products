@@ -179,8 +179,9 @@ public class UserPublicServiceImpl implements UserPublicService{
 	    userService.checkPassword(userDeleteDTO, tableUser);
 	    
 	    // 3. 找到對應的 userPublic
-	    UserPublic userPublic = entityFetcher.getUsersPublicByUser(tableUser);
-		// 4. 執行 軟刪除 (核心 Entity)
+	    UserPublic userPublic = userSecurityUtil.getCurrentUserPublicEntity();
+		
+	    // 4. 執行 軟刪除 (核心 Entity)
 	    userPublic.setDeleteAt(deleteTime);
 	    userPublic.setNationalIdNo(userPublic.getNationalIdNo() + deleteSuffix);
 	    

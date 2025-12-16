@@ -23,7 +23,9 @@ import com.github.lianick.response.ApiResponse;
 import com.github.lianick.service.DocumentPublicService;
 import com.github.lianick.util.JsonUtil;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * DocumentPublicController	
@@ -38,6 +40,10 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
  * DELETE 	"/public/delete", "/public/delete/"			民眾刪除 附件			"/document/public/delete/" 		AUTHENTICATED
  * */
 
+@Tag(
+		name = "DocumentPublic",
+		description = "民眾附件相關API"
+		)
 @SecurityRequirement(name = "bearerAuth")
 @RestController
 @RequestMapping("/document")
@@ -49,24 +55,55 @@ public class DocumentPublicController {
 	@Autowired 
 	private JsonUtil jsonUtil;
 
+	@Operation(
+			summary = "獲取附件資料",
+			description = """
+					民眾 獲取自身底下的 所有附件
+					- 權限限制：ROLE_PUBLIC
+					"""
+			)
 	@GetMapping(value = {"/public/find", "/public/find/"})
 	public ApiResponse<List<DocumentPublicDTO>> findAllDocByPublic() {
 		List<DocumentPublicDTO> documentPublicDTOs = documentPublicService.findAllDocByPublic();
 		return ApiResponse.success("民眾 尋找 旗下附件 成功", documentPublicDTOs);
 	}
 	
+	@Operation(
+			summary = "獲取附件資料",
+			description = """
+					員工/主管 獲取 民眾(userId) 底下的 所有附件
+					- 權限限制：ROLE_MANAGER, ROLE_STAFF 
+					"""
+			)
 	@PostMapping(value = {"/admin/find", "/admin/find/"})
 	public ApiResponse<List<DocumentPublicDTO>> findAllDocByAdmin(@RequestBody DocumentPublicFindDTO documentPublicFindDTO) {
 		List<DocumentPublicDTO> documentPublicDTOs = documentPublicService.findAllDocByAdmin(documentPublicFindDTO);
 		return ApiResponse.success("尋找 民眾 旗下附件 成功", documentPublicDTOs);
 	}
 	
+	@Operation(
+			summary = "獲取附件資料",
+			description = """
+					員工/主管 獲取 案件(caseId) 底下的 所有附件
+					- 權限限制：ROLE_MANAGER, ROLE_STAFF 
+					"""
+			)
 	@PostMapping(value = {"/case/find", "/case/find/"})
 	public ApiResponse<List<DocumentPublicDTO>> findAllDocByCase(@RequestBody DocumentPublicFindDTO documentPublicFindDTO) {
 		List<DocumentPublicDTO> documentPublicDTOs = documentPublicService.findAllDocByCase(documentPublicFindDTO);
 		return ApiResponse.success("尋找 案件 旗下附件 成功", documentPublicDTOs);
 	}
 	
+	@Operation(
+			summary = "上傳附件資料",
+			description = """
+					民眾 上傳 新的附件
+					- 附件格式 限制 PDF, PNG, JPG, JPEG
+					- 附件大小 限制 10 MB
+					- 權限限制：ROLE_PUBLIC
+					- (測試環境 上傳附件 不會永久儲存)
+					"""
+			)
 	@PostMapping(value = {"/public/create", "/public/create/"}, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ApiResponse<DocumentPublicDTO> createDocumentByPublic(
 			@RequestPart("file") MultipartFile file,
@@ -80,6 +117,16 @@ public class DocumentPublicController {
 		return ApiResponse.success("民眾附件 上傳成功", documentPublicDTO);
 	}
 	
+	@Operation(
+			summary = "上傳附件資料",
+			description = """
+					民眾 上傳 新的附件, 並馬上和 案件 做關聯
+					- 附件格式 限制 PDF, PNG, JPG, JPEG
+					- 附件大小 限制 10 MB
+					- 權限限制：ROLE_PUBLIC
+					- (測試環境 上傳附件 不會永久儲存)
+					"""
+			)
 	@PostMapping(value = {"/case/create", "/case/create/"}, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ApiResponse<DocumentPublicDTO> createDocumentByCase(
 			@RequestPart("file") MultipartFile file,
@@ -92,18 +139,40 @@ public class DocumentPublicController {
 		return ApiResponse.success("案件用附件 上傳成功", documentPublicDTO);
 	}
 	
+	@Operation(
+			summary = "關聯附件資料",
+			description = """
+					民眾 將 認證後的附件, 和 案件 做關聯
+					- 權限限制：ROLE_PUBLIC
+					"""
+			)
 	@PostMapping(value = {"/public/link/case", "/public/link/case/"})
 	public ApiResponse<DocumentPublicDTO> documentLinkCase(@RequestBody DocumentPublicLinkDTO documentPublicLinkDTO) {
 		DocumentPublicDTO documentPublicDTO = documentPublicService.documentLinkCase(documentPublicLinkDTO);
 		return ApiResponse.success("案件 連接附件 成功", documentPublicDTO);
 	}
 	
+	@Operation(
+			summary = "審核通過 附件資料",
+			description = """
+					員工/主管 審核通過 民眾 的 附件
+					- 權限限制：ROLE_MANAGER, ROLE_STAFF 
+					"""
+			)
 	@PostMapping(value = {"/admin/verify", "/admin/verify/"})
 	public ApiResponse<DocumentPublicDTO> verifyDocument(@RequestBody DocumentPublicVerifyDTO documentPublicVerifyDTO) {
 		DocumentPublicDTO documentPublicDTO = documentPublicService.verifyDocument(documentPublicVerifyDTO);
 		return ApiResponse.success("附件審核 成功", documentPublicDTO);
 	}
 	
+	@Operation(
+			summary = "刪除附件資料",
+			description = """
+					民眾 刪除附件 資料
+					- 該 附件 用於案件 則無法刪除
+					- 權限限制：ROLE_PUBLIC
+					"""
+			)
 	@DeleteMapping(value = {"/public/delete", "/public/delete/"})
 	public ApiResponse<Void> deleteDocument(@RequestBody DocumentPublicDeleteDTO documentPublicDeleteDTO) {
 		documentPublicService.deleteDocument(documentPublicDeleteDTO);
