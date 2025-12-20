@@ -32,6 +32,8 @@ public class SecurityConfig {
 	@Autowired
 	private CustomAccessDeniedHandler customAccessDeniedHandler;
 	
+	@Autowired
+	private FrontendProperties frontendProperties;
 	/**
      * 將 BCryptPasswordEncoder 註冊為 Spring Bean
      */
@@ -48,7 +50,7 @@ public class SecurityConfig {
 		CorsConfiguration configuration = new CorsConfiguration();
 		
 		// 允許前端的來源 ( 前端來源 )
-		configuration.setAllowedOrigins(List.of("http://localhost:5173"));
+		configuration.setAllowedOrigins(List.of(frontendProperties.getUrl()));
 		
 		// 允許的方法 (全部)
 		configuration.setAllowedMethods(List.of("*"));
