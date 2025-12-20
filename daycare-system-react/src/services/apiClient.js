@@ -1,6 +1,6 @@
 // services/authService.js
 
-const API_BASE_URL = "http://localhost:8080";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 /**
  * 一個通用的 API 請求客戶端。
@@ -19,6 +19,8 @@ const API_BASE_URL = "http://localhost:8080";
  */
 
 export async function request(url, method = 'GET', data = null, requiresAuth = false, accessToken = null) {
+  // console.log("API_BASE_URL =", API_BASE_URL);  // 測試檢測用
+
   // 1. 嘗試取得 Access Token
   let currentToken = accessToken;
   if (!currentToken) {
