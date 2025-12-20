@@ -35,7 +35,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService{
 	@Override
 	public RefreshToken generateToken(Users users) {
 		// 1. 軟刪除用戶所有現存的有效 Refresh Token (單點登入強制作廢)
-		refreshTokenRepository.markAllTokenAsDeleteByAccount(users.getAccount());
+		refreshTokenRepository.markAllTokenAsDeleteByAccount(users.getUserId());
 		
 		// 2. 生成唯一的 Token 字串
 		String token = tokenUUID.generateToken();
@@ -99,8 +99,10 @@ public class RefreshTokenServiceImpl implements RefreshTokenService{
 
 	@Override
 	public void deleteRefreshToken(String account) {
+		Users users = entityFetcher.getUsersByUsername(account);
+		
 		// 1. 軟刪除用戶所有現存的有效 Refresh Token (登出)
-		refreshTokenRepository.markAllTokenAsDeleteByAccount(account);
+		refreshTokenRepository.markAllTokenAsDeleteByAccount(users.getUserId());
 	}
 
 }

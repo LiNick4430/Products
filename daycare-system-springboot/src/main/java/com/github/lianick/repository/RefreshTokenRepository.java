@@ -27,12 +27,11 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long
 	@Transactional
 	@Query(value = 
 			"UPDATE refresh_token "
-			+ "JOIN users ON users.user_id = refresh_token.user_id "
-			+ "SET refresh_token.delete_at = CURRENT_TIMESTAMP "
-			+ "WHERE refresh_token.delete_at IS NULL "
-			+ "AND user_account = :account "
+			+ "SET delete_at = CURRENT_TIMESTAMP "
+			+ "WHERE delete_at IS NULL "
+			+ "AND user_id = :userId "
 			, nativeQuery = true)
-	Integer markAllTokenAsDeleteByAccount(@Param("account") String account);
+	Integer markAllTokenAsDeleteByAccount(@Param("userId") Long userId);
 	
 	// 登入狀態下 重新發行 TOKEN 的時候 所使用
 	@Modifying
