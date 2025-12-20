@@ -8,7 +8,7 @@ services:
     # 建立 image (假設 未存在)
     build:
       context: ./daycare-system-react  # <--- 指向包含 Dockerfile 和程式碼的目錄
-      dockerfile: Dockerfile           # <--- 指明 Dockerfile 名稱 (通常省略，但寫明更清晰)
+      dockerfile: Dockerfile.dev       # <--- 指明 Dockerfile 名稱 (通常省略，但寫明更清晰)
       
     container_name: daycare-react-app
 
