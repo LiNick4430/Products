@@ -71,10 +71,10 @@ public class CreateUser {
 		user.setPassword(hashPassord);
 		user.setRole(ROLE_PUBLIC);
 		
-		usersRepository.save(user);
+		user = usersRepository.save(user);
 		
 		// 2. 建立 帳號啟動驗證碼
-		usersVeriftyRepository.markAllUnusedTokenAsUsed(account);	// 先將 未使用的 token 變成 已使用
+		usersVeriftyRepository.markAllUnusedTokenAsUsed(user.getUserId());	// 先將 未使用的 token 變成 已使用
 		
 		UserVerify userVerify = new UserVerify();
 		userVerify.setToken(token);

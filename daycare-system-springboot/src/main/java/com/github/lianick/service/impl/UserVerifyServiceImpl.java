@@ -33,7 +33,7 @@ public class UserVerifyServiceImpl implements UserVerifyService{
 	/** 生成驗證碼 + 寄信 私用方法 */
 	private void generateUserTokenAndSendEmail(Users users, String subject, String apiName) {
 		// 1. 取出/建立 所需資料
-		String account = users.getAccount();
+		Long userId = users.getUserId();
 		String email = users.getEmail();
 		String token = tokenUUID.generateToken();
 		LocalDateTime expiryTime;
@@ -46,7 +46,7 @@ public class UserVerifyServiceImpl implements UserVerifyService{
 
 		// 將該帳號所有未使用的舊 Token 標記為「已使用」(isUsed = true)。
 		// 以確保同一時間只存在一個有效的認證 Token，防止使用者誤用或惡意重發。
-		usersVerifyRepository.markAllUnusedTokenAsUsed(account);
+		usersVerifyRepository.markAllUnusedTokenAsUsed(userId);
 
 		// 2. 產生驗證碼 並存回去
 		UserVerify userVerify = new UserVerify();

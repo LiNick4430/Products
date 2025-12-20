@@ -59,4 +59,13 @@ public interface UsersRepository extends JpaRepository<Users, Long> {
 	// 查詢 目標 帳號 用信箱
 	Optional<Users> findByEmail(String email);
 	
+	// 用 帳號名 找尋 使用者 ID
+	// 用於 UsersVerifyRepository 的 markAllUnusedTokenAsUsed
+	@Query(value =  
+			"SELECT user_id FROM users "
+			+ "WHERE user_account = :account "
+			+ "AND delete_at IS NULL"
+			, nativeQuery = true)
+	Long findUserIdByAccount(@Param("account") String account);
+	
 }

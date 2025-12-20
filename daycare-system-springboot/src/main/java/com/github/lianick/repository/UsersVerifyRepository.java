@@ -33,12 +33,11 @@ public interface UsersVerifyRepository extends JpaRepository<UserVerify, Long> {
     @Transactional 	// 確保修改操作在事務中進行
  	@Query(value = 
 			"UPDATE verify_user "
-			+ "JOIN users ON users.user_id = verify_user.user_id "
-			+ "SET verify_user.verify_user_is_used = true "
-			+ "WHERE verify_user.verify_user_is_used = false "
-			+ "AND user_account = :account "
+			+ "SET verify_user_is_used = true "
+			+ "WHERE verify_user_is_used = false "
+			+ "AND user_id = :userId "
 			, nativeQuery = true)
-	Integer markAllUnusedTokenAsUsed(@Param("account") String account);
+	int markAllUnusedTokenAsUsed(@Param("userId") Long userId);
 	
 	// 使用 Token 反找
 	Optional<UserVerify> findByToken(String token);

@@ -308,7 +308,7 @@ public class UserServiceImpl implements UserService{
 			tableUser.setPassword(hashPassword);
 			
 			// 密碼改變， 同時將所有 UserVerify Token 作廢 
-			usersVerifyRepository.markAllUnusedTokenAsUsed(tableUser.getAccount());
+			usersVerifyRepository.markAllUnusedTokenAsUsed(tableUser.getUserId());
 		}
 		
 		if (newPhoneNumber != null && !newPhoneNumber.isBlank()) {
