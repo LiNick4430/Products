@@ -36,9 +36,11 @@ public class OpenApiConfig {
     OperationCustomizer removeDefaultResponsesCustomizer() {
         return (operation, handlerMethod) -> {
             ApiResponses responses = operation.getResponses();
-            responses.keySet().removeIf(
-                status -> !ALLOWED_RESPONSES.contains(status)
-            );
+            if (responses != null) {
+                responses.keySet().removeIf(
+                    status -> !ALLOWED_RESPONSES.contains(status)
+                );
+            }
             return operation;
         };
     }
