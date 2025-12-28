@@ -8,10 +8,13 @@ import java.lang.annotation.Target;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
+@Api200401
+@Api400
 @Operation(
 		summary = "使用者登錄",
 		description = """
@@ -19,7 +22,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 				"""
 		)
 @ApiResponses(value = {
-		@io.swagger.v3.oas.annotations.responses.ApiResponse(
+		@ApiResponse(
 				responseCode = "200",
 				description = "登入成功",
 				content = @Content(
@@ -39,7 +42,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 		                		)
 		            )
 				),
-		@io.swagger.v3.oas.annotations.responses.ApiResponse(
+		@ApiResponse(
 				responseCode = "401",
 				description = "帳號或密碼錯誤",
 				content = @Content(
