@@ -18,6 +18,10 @@ import com.github.lianick.service.UserPublicService;
 import com.github.lianick.service.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -59,11 +63,63 @@ public class AuthController {
 					輸入帳號密碼, 進行登入, 同時回傳 JWT 和 刷新TOKEN
 					"""
 			)
+	@io.swagger.v3.oas.annotations.parameters.RequestBody(description = """
+			- 帳號預設 manager
+			- 密碼預設 123456
+			""",
+			content = @Content(
+					mediaType = "application/json",
+					examples = @ExampleObject(value = """
+							{
+							  "username": "manager",
+							  "password": "123456"
+							}
+							"""
+							)
+					)
+			)
+	@ApiResponses(value = {
+			@io.swagger.v3.oas.annotations.responses.ApiResponse(
+					responseCode = "200",
+					description = "登入成功",
+					content = @Content(
+			                mediaType = "application/json",
+			                examples = @ExampleObject(value = """
+			                				{
+											  "code": 200,
+											  "message": "登入成功",
+											  "data": {
+											    "accessToken": "accessToken",
+											    "refreshToken": "refreshToken",
+											    "username": "manager",
+											    "roleName": "ROLE_MANAGER"
+											  }
+											}
+			                		"""
+			                		)
+			            )
+					),
+			@io.swagger.v3.oas.annotations.responses.ApiResponse(
+					responseCode = "401",
+					description = "帳號或密碼錯誤",
+					content = @Content(
+			                mediaType = "application/json",
+			                examples = @ExampleObject(value = """
+										{
+											  "code": 401,
+											  "errorCode": "USER_NOT_FOUND",
+											  "message": "帳號或密碼錯誤"
+										}
+			                		"""
+			                		)
+			            )
+					)
+	})
 	@PostMapping(value = {"/login", "/login/"})
 	public ApiResponse<AuthResponseDTO> login (@RequestBody UserLoginDTO userLoginDTO) {		
 		AuthResponseDTO authResponseDTO = authService.login(userLoginDTO);	
 		// return new ApiResponse<>(HttpStatus.OK.value(), "登陸成功", authResponseDTO);
-		return ApiResponse.success("登陸成功", authResponseDTO);
+		return ApiResponse.success("登入成功", authResponseDTO);
 	}
 	
 	// 在 JWT 架構中，登出行為由前端負責銷毀 Token。
