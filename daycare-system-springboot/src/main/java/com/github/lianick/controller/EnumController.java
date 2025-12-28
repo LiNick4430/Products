@@ -16,6 +16,8 @@ import com.github.lianick.model.enums.document.DocumentType;
 import com.github.lianick.response.ApiResponse;
 import com.github.lianick.service.EnumService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +40,14 @@ import org.springframework.web.bind.annotation.GetMapping;
  * GET 	"/withdrawal/request/status" 	WithdrawalRequestStatus
  * */
 
+@Tag(
+		name = "Enum",
+		description = """
+				尋找特定 Enum 的API
+				- 前台 顯示 需要
+				- DTO 回傳 需要
+				"""
+		)
 @RestController
 @RequestMapping("/enum")
 public class EnumController {

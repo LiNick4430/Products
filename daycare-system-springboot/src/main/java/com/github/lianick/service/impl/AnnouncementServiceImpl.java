@@ -259,6 +259,8 @@ public class AnnouncementServiceImpl implements AnnouncementService{
 			throw new AnnouncementFailureException("公告尚未過期 無法刪除");
 		}
 		
+		// TODO 還需要刪除關聯附件
+		
 		// 3. 執行刪除
 		announcements.setDeleteAt(LocalDateTime.now());
 		announcementsRepository.save(announcements);

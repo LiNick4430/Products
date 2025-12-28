@@ -27,7 +27,9 @@ import com.github.lianick.response.DownloadResponse;
 import com.github.lianick.service.OrganizationService;
 import com.github.lianick.util.JsonUtil;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * OrganizationController
@@ -42,6 +44,10 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
  * DELETE	"/delete", "/delete/"			主管 刪除 機構資料		"/organization/delete/"			AUTHENTICATED
  * */
 
+@Tag(
+		name = "Organization",
+		description = "機構相關的API"
+		)
 @RestController
 @RequestMapping("/organization")
 public class OrganizationController {
@@ -52,18 +58,36 @@ public class OrganizationController {
 	@Autowired 
 	private JsonUtil jsonUtil;
 
+	@Operation(
+			summary = "搜尋全部機構",
+			description = "搜尋全部機構"
+			)
 	@GetMapping(value = {"/find/all", "/find/all/"})
 	public ApiResponse<List<OrganizationDTO>> findAllOrganization() {
 		List<OrganizationDTO> organizationDTOs = organizationService.findAllOrganization();
 		return ApiResponse.success("搜尋 全部 機構 資料 成功", organizationDTOs);
 	}
 	
+	@Operation(
+			summary = "搜尋特定機構",
+			description = """
+					使用關鍵字搜尋特定的機構
+					- name -> 機構名字(可以部份符合)
+					- address -> 機構住址(可以部份符合)
+					"""
+			)
 	@PostMapping(value = {"/find", "/find/"})
 	public ApiResponse<List<OrganizationDTO>> findOrganization(@RequestBody OrganizationFindDTO organizationFindDTO) {
 		List<OrganizationDTO> organizationDTOs = organizationService.findOrganization(organizationFindDTO);
 		return ApiResponse.success("關鍵字 搜尋 機構 資料 成功", organizationDTOs);
 	}
 	
+	@Operation(
+			summary = "下載機構附件",
+			description = """
+					下載特定的機構的特定附件
+					"""
+			)
 	@SecurityRequirement(name = "bearerAuth")
 	@PostMapping(value = {"/download/doc/", "/download/doc"})
 	public ResponseEntity<Resource> download(@RequestBody OrganizationDocumentDTO organizationDocumentDTO) {
@@ -74,6 +98,13 @@ public class OrganizationController {
 		return DownloadResponse.create(downloadDTO);
 	}
 	
+	@Operation(
+			summary = "建立新的機構",
+			description = """
+					主管 建立新的機構
+					- 權限限制：ROLE_ADMIN
+					"""
+			)
 	@SecurityRequirement(name = "bearerAuth")
 	@PostMapping(value = {"/create", "/create/"})
 	public ApiResponse<OrganizationDTO> createOrganization(@RequestBody OrganizationCreateDTO organizationCreateDTO) {
@@ -81,6 +112,15 @@ public class OrganizationController {
 		return ApiResponse.success("建立 新的機構 成功", organizationDTO);
 	}
 	
+	@Operation(
+			summary = "上傳機構附件",
+			description = """
+					主管/員工 上傳機構附件
+					- 主管 可以上傳 全部的機構
+					- 員工 可以上傳 自己的機構
+					- 權限限制：ROLE_ADMIN, ROLE_STAFF 
+					"""
+			)
 	@SecurityRequirement(name = "bearerAuth")
 	@PostMapping(value = {"/upload/doc", "/upload/doc/"}, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ApiResponse<OrganizationDTO> uploadOrganizationDocument(
@@ -94,6 +134,15 @@ public class OrganizationController {
 		return ApiResponse.success("上傳附件 成功", organizationDTO);
 	}
 	
+	@Operation(
+			summary = "更新機構訊息",
+			description = """
+					主管/員工 更新機構訊息
+					- 主管 可以更新 全部的機構
+					- 員工 可以更新 自己的機構
+					- 權限限制：ROLE_ADMIN, ROLE_STAFF 
+					"""
+			)
 	@SecurityRequirement(name = "bearerAuth")
 	@PostMapping(value = {"/update", "/update/"})
 	public ApiResponse<OrganizationDTO> updateOrganization(@RequestBody OrganizationUpdateDTO organizationUpdateDTO) {
@@ -101,6 +150,13 @@ public class OrganizationController {
 		return ApiResponse.success("更新 機構資料 成功", organizationDTO);
 	}
 	
+	@Operation(
+			summary = "刪除機構附件",
+			description = """
+					主管 刪除機構附件
+					- 權限限制：ROLE_ADMIN
+					"""
+			)
 	@SecurityRequirement(name = "bearerAuth")
 	@DeleteMapping(value = {"/delete/doc", "/delete/doc/"})
 	public ApiResponse<Void> deleteOrganizationDocument(@RequestBody OrganizationDocumentDTO organizationDocumentDTO) {
@@ -108,6 +164,14 @@ public class OrganizationController {
 		return ApiResponse.success("刪除 機構附件 成功", null);
 	}
 	
+	@Operation(
+			summary = "刪除機構",
+			description = """
+					主管 刪除機構
+					- 機構中還有關聯員工 將無法刪除
+					- 權限限制：ROLE_ADMIN
+					"""
+			)
 	@SecurityRequirement(name = "bearerAuth")
 	@DeleteMapping(value = {"/delete", "/delete/"})
 	public ApiResponse<Void> deleteOrganization(@RequestBody OrganizationDeleteDTO organizationDeleteDTO) {
